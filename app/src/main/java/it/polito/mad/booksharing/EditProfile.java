@@ -4,6 +4,9 @@ package it.polito.mad.booksharing;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
@@ -13,17 +16,17 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-enum lock{
-    open,
-    closed
-}
+import java.io.IOException;
+
 
 public class EditProfile extends AppCompatActivity {
 
@@ -36,9 +39,7 @@ public class EditProfile extends AppCompatActivity {
     Uri imageUri;
     Bundle extras;
     User user;
-
-    //set the lockValue
-    lock lockValue = lock.closed;
+    Switch swPhone, swStreet, swMail;
 
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
 
@@ -67,16 +68,67 @@ public class EditProfile extends AppCompatActivity {
         edtPhone = (MaterialEditText) findViewById(R.id.edtPhone);
         edtMail = (MaterialEditText) findViewById(R.id.edtMail);
         edtDescription = (TextInputEditText) findViewById(R.id.description);
-        btnStreet = (ImageButton) findViewById(R.id.btnStreet);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnEditImg = (ImageButton)findViewById(R.id.btnEditImg);
         profileImg = (ImageView) findViewById(R.id.profileImage);
+        swPhone = (Switch) findViewById(R.id.swPhone);
+        swStreet = (Switch) findViewById(R.id.swStreet);
+        swMail = (Switch) findViewById(R.id.swMail);
 
         //Get the user object coming from the activity ShowProfile in order to initialize all the fields
         extras = getIntent().getExtras();
         user = (User)extras.getParcelable("user");
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
+
+
+        swMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(swMail.isChecked()){
+                    user.setCheckMail(1);
+                    edtMail.setTextColor(Color.BLACK);
+                    edtMail.setUnderlineColor(Color.BLACK);
+                }
+                else{
+                    user.setCheckMail(0);
+                    edtMail.setTextColor(Color.parseColor("#A2A0A0"));
+                    edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
+                }
+            }
+        });
+
+        swStreet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(swStreet.isChecked()){
+                    user.setCheckStreet(1);
+                    edtStreet.setTextColor(Color.BLACK);
+                    edtStreet.setUnderlineColor(Color.BLACK);
+                }
+                else{
+                    user.setCheckStreet(0);
+                    edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
+                    edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
+                }
+            }
+        });
+
+        swPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(swPhone.isChecked()){
+                    user.setCheckPhone(1);
+                    edtPhone.setTextColor(Color.BLACK);
+                    edtPhone.setUnderlineColor(Color.BLACK);
+                }
+                else{
+                    user.setCheckPhone(0);
+                    edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
+                    edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
+                }
+            }
+        });
 
         //The following listener are useful to understand when some modification on the text happens.
         //I created one listener for each field, in order to modify it and propagate the result to the activity "ShowProfile"
@@ -234,21 +286,6 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
-        //It's useful to change the color of the lock (To change with a different button, it works only for the street lock)
-        btnStreet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(lockValue == lock.open){
-                    btnStreet.setImageResource(R.drawable.ic_lock_outline_black_24dp);
-                    lockValue = lock.closed;
-                }
-                else{
-                    btnStreet.setImageResource(R.drawable.ic_lock_open_black_24dp);
-                    lockValue = lock.open;
-                }
-            }
-        });
-
         //Catch when the button "done" is pressed
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,6 +323,7 @@ public class EditProfile extends AppCompatActivity {
                 //Depends on the result, i call a different activity
                 if(activity == IMAGE_CAMERA){
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
                     startActivityForResult(takePicture, IMAGE_CAMERA);//zero can be replaced with any action code
                 }
                 else if(IMAGE_GALLERY == activity){
@@ -311,7 +349,6 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
-
     private void setUser(User user){
         edtName.setText(user.getName());
         edtSurname.setText(user.getSurname());
@@ -321,5 +358,26 @@ public class EditProfile extends AppCompatActivity {
         edtPhone.setText(user.getPhone());
         edtMail.setText(user.getEmail());
         edtDescription.setText(user.getDescription());
+
+        if(user.isCheckMail()==1){
+            swMail.setChecked(true);
+        }
+        else{
+            swMail.setChecked(false);
+        }
+
+        if(user.isCheckPhone()==1){
+            swPhone.setChecked(true);
+        }
+        else{
+            swPhone.setChecked(false);
+        }
+
+        if(user.isCheckStreet()==1){
+            swStreet.setChecked(true);
+        }
+        else{
+            swStreet.setChecked(false);
+        }
     }
 }

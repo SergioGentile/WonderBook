@@ -32,28 +32,26 @@
                 android:src="@drawable/ic_mode_edit_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
 
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="match_parent">
+
                 <LinearLayout
+                    android:id="@+id/llParent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp">
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical">
 
                     <RelativeLayout
-                        android:layout_marginTop="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        >
+                        android:layout_marginTop="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -85,123 +83,134 @@
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:layout_marginTop="15dp"
+                        android:id="@+id/llStreet"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="horizontal">
+
                         <ImageView
-                            android:src="@drawable/ic_home_black_24dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
+                            android:src="@drawable/ic_home_black_24dp"
 
                             />
 
                         <TextView
                             android:id="@+id/tvStreet"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Via Galliari 30, Torino"
-                            android:textSize="18sp"
-                            android:textColor="@android:color/black"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
-                            />
+                            android:text="Via Galliari 30, Torino"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/tv_dim" />
 
                     </LinearLayout>
+
                     <LinearLayout
-                        android:layout_marginTop="15dp"
+                        android:id="@+id/llPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="horizontal">
+
                         <ImageView
-                            android:src="@drawable/ic_phone_black_24dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
+                            android:src="@drawable/ic_phone_black_24dp"
 
                             />
 
                         <TextView
                             android:id="@+id/tvPhone"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="3277984218"
-                            android:textSize="18sp"
-                            android:textColor="@android:color/black"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
-                            />
+                            android:text="3277984218"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/tv_dim" />
 
                     </LinearLayout>
+
                     <LinearLayout
-                        android:layout_marginTop="15dp"
+                        android:id="@+id/llMail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="horizontal">
+
                         <ImageView
-                            android:src="@drawable/ic_mail_black_24dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
+                            android:src="@drawable/ic_mail_black_24dp"
 
                             />
 
                         <TextView
                             android:id="@+id/tvMail"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="sergiogentile@gmail.com"
-                            android:textSize="18sp"
-                            android:textColor="@android:color/black"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
-                            />
+                            android:text="sergiogentile@gmail.com"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/tv_dim" />
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:text="Description"
-                        android:textStyle="bold|italic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <android.support.v7.widget.CardView
+                    <LinearLayout
+                        android:id="@+id/llDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="3dp"
-                        >
+                        android:orientation="vertical">
                         <TextView
-                            android:id="@+id/tvDescription"
-                            android:textColor="@android:color/black"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:textSize="18sp"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/description"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/tv_dim"
+                            android:textStyle="bold|italic" />
+
+                        <android.support.v7.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="15dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="3dp">
 
-                    </android.support.v7.widget.CardView>
+                            <TextView
+                                android:id="@+id/tvDescription"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="10dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/tv_dim" />
 
+                        </android.support.v7.widget.CardView>
+                    </LinearLayout>
                 </LinearLayout>
             </ScrollView>
         </RelativeLayout>

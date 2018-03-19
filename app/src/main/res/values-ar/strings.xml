@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">كتاب تقاسم</string>
+    <string name="action_settings">إعدادات</string>
+    <string name="name">اسم</string>
+    <string name="surname">لقب</string>
+    <string name="cap">قبعة</string>
+    <string name="city">مدينة</string>
+    <string name="street">شارع</string>
+    <string name="description">وصف</string>
+    <string name="phone">رقم الهاتف</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Book Sharing</string>
+    <string name="action_settings">Settings</string>
+    <string name="name">Nome</string>
+    <string name="surname">Cognome</string>
+    <string name="cap">CAP</string>
+    <string name="city">Città</string>
+    <string name="street">Via/Piazza</string>
+    <string name="description">Descrizione</string>
+    <string name="phone">Telefono</string>
+</resources>

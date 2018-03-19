@@ -21,12 +21,13 @@ import android.os.Parcelable;
 
 public class User implements Parcelable{
     private String name, surname, phone, email, description, city, cap, street;
+    private int isCheckStreet, isCheckPhone, isCheckMail;
 
     public User(){
 
     }
 
-    public User(String name, String surname, String phone, String email, String description, String city, String cap, String street) {
+    public User(String name, String surname, String phone, String email, String description, String city, String cap, String street, int isCheckMail, int isCheckPhone, int isCheckStreet) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
@@ -35,6 +36,9 @@ public class User implements Parcelable{
         this.city = city;
         this.cap = cap;
         this.street = street;
+        this.isCheckMail = isCheckMail;
+        this.isCheckPhone = isCheckPhone;
+        this.isCheckStreet = isCheckStreet;
     }
 
     public String getStreet() {
@@ -101,6 +105,30 @@ public class User implements Parcelable{
         this.cap = cap;
     }
 
+    public int isCheckStreet() {
+        return isCheckStreet;
+    }
+
+    public void setCheckStreet(int checkStreet) {
+        isCheckStreet = checkStreet;
+    }
+
+    public int isCheckPhone() {
+        return isCheckPhone;
+    }
+
+    public void setCheckPhone(int checkPhone) {
+        isCheckPhone = checkPhone;
+    }
+
+    public int isCheckMail() {
+        return isCheckMail;
+    }
+
+    public void setCheckMail(int checkMail) {
+        isCheckMail = checkMail;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -116,6 +144,9 @@ public class User implements Parcelable{
         dest.writeString(this.city);
         dest.writeString(this.cap);
         dest.writeString(this.street);
+        dest.writeInt(this.isCheckMail);
+        dest.writeInt(this.isCheckPhone);
+        dest.writeInt(this.isCheckStreet);
     }
 
     public final static Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -139,6 +170,9 @@ public class User implements Parcelable{
         this.city = parcel.readString();
         this.cap = parcel.readString();
         this.street = parcel.readString();
+        this.isCheckMail = parcel.readInt();
+        this.isCheckPhone = parcel.readInt();
+        this.isCheckStreet = parcel.readInt();
     }
 
 
