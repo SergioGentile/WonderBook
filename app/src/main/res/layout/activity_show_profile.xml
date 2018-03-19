@@ -7,81 +7,204 @@
     tools:context="it.polito.mad.booksharing.ShowProfile">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_margin="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:src="@drawable/profile_app"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.ActionBarContainer
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#AABCCC" />
+
+            <ImageButton
+                android:id="@+id/btnModify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="23dp"
+                android:layout_marginTop="15dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_mode_edit_black_24dp" />
+        </android.support.v7.widget.ActionBarContainer>
 
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edtName"
-                android:hint="Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="30sp"
-                android:inputType="text"
-                app:met_baseColor="@android:color/black"
-                app:met_floatingLabel="highlight"
-                app:met_maxCharacters="20"
-                />
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edtSurname"
-                android:hint="Surname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="30sp"
-                android:inputType="text"
-                app:met_baseColor="@android:color/black"
-                app:met_floatingLabel="highlight"
-                app:met_maxCharacters="20"
-                />
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edt1"
-                android:hint="Surname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="30sp"
-                android:inputType="text"
-                app:met_baseColor="@android:color/black"
-                app:met_floatingLabel="highlight"
-                app:met_maxCharacters="20"
-                />
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt2"
-                    android:hint="Surname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="30sp"
-                    android:inputType="text"
-                    app:met_baseColor="@android:color/black"
-                    app:met_floatingLabel="highlight"
-                    app:met_maxCharacters="20"
-                    />
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt2"
-                    android:hint="Surname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="30sp"
-                    android:inputType="text"
-                    app:met_baseColor="@android:color/black"
-                    app:met_floatingLabel="highlight"
-                    app:met_maxCharacters="20"
-                    />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
+
+                    <RelativeLayout
+                        android:layout_marginTop="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profileImage"
+                                android:layout_width="170dp"
+                                android:layout_height="170dp"
+                                android:layout_centerInParent="true"
+                                android:layout_marginTop="15dp"
+                                android:src="@drawable/profile" />
+
+                            <TextView
+                                android:id="@+id/tvName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Sergio Gentile"
+                                android:textColor="@android:color/black"
+                                android:textSize="23sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:src="@drawable/ic_home_black_24dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvStreet"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Via Galliari 30, Torino"
+                            android:textSize="18sp"
+                            android:textColor="@android:color/black"
+                            android:background="?attr/editTextBackground"
+                            android:gravity="center_vertical"
+                            />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:src="@drawable/ic_phone_black_24dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvPhone"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="3277984218"
+                            android:textSize="18sp"
+                            android:textColor="@android:color/black"
+                            android:background="?attr/editTextBackground"
+                            android:gravity="center_vertical"
+                            />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:src="@drawable/ic_mail_black_24dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvMail"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="sergiogentile@gmail.com"
+                            android:textSize="18sp"
+                            android:textColor="@android:color/black"
+                            android:background="?attr/editTextBackground"
+                            android:gravity="center_vertical"
+                            />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:text="Description"
+                        android:textStyle="bold|italic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="3dp"
+                        >
+                        <TextView
+                            android:id="@+id/tvDescription"
+                            android:textColor="@android:color/black"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:textSize="18sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
 
     </LinearLayout>
-
-
 </RelativeLayout>
