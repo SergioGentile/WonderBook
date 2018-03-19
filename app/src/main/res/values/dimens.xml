@@ -1,4 +1,10 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tv_dim">14sp</dimen>
+    <dimen name="margin_right">16dp</dimen>
+    <dimen name="margin_left">16dp</dimen>
+    <dimen name="margin_top">16dp</dimen>
+    <dimen name="margin_sw">10dp</dimen>
+    <dimen name="padding">12dp</dimen>
+
 </resources>

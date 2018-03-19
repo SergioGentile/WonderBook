@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,12 +20,19 @@ public class ShowProfile extends AppCompatActivity {
     Toolbar toolbar;
     TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
     User user;
-    LinearLayout llStreet, llParent, llPhone, llMail, llDescription;
+    LinearLayout llParent, llPhone, llMail, llDescription;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Start the activity
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_profile);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_show_profile);
+        }
+        else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            setContentView(R.layout.activity_show_profile_landscape);
+        }
+
 
         //Take all the references to the fields
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -35,7 +43,6 @@ public class ShowProfile extends AppCompatActivity {
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         btnModify = (ImageButton) findViewById(R.id.btnModify);
 
-        llStreet = (LinearLayout)findViewById(R.id.llStreet);
         llMail = (LinearLayout)findViewById(R.id.llMail);
         llPhone = (LinearLayout)findViewById(R.id.llPhone);
         llParent = (LinearLayout)findViewById(R.id.llParent);
@@ -85,15 +92,19 @@ public class ShowProfile extends AppCompatActivity {
     private void setUser(User user){
 
         tvName.setText(user.getName() + " " +  user.getSurname());
-        tvStreet.setText(user.getStreet() + " (" + user.getCity()+")");
+
         tvPhone.setText(user.getPhone());
         tvMail.setText(user.getEmail());
         tvDescription.setText(user.getDescription());
 
-        //Remove all
-        if (llStreet.getVisibility() == View.VISIBLE) {
-            llParent.removeView(llStreet);
+        if(user.isCheckStreet()==1){
+            tvStreet.setText(user.getStreet() + " (" + user.getCity()+")");
         }
+        else{
+            tvStreet.setText(user.getCity());
+        }
+
+
         if (llPhone.getVisibility() == View.VISIBLE) {
             llParent.removeView(llPhone);
         }
@@ -104,10 +115,7 @@ public class ShowProfile extends AppCompatActivity {
             llParent.removeView(llDescription);
         }
 
-        //Add all in order
-        if(user.isCheckStreet()==1){
-            llParent.addView(llStreet);
-        }
+
         if(user.isCheckPhone()==1){
             llParent.addView(llPhone);
         }

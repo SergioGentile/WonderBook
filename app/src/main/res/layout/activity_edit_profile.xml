@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="it.polito.mad.booksharing.EditProfile">
 
     <LinearLayout
@@ -19,15 +20,16 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:background="#AABCCC" />
 
             <ImageButton
                 android:id="@+id/btnDone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="23dp"
-                android:layout_marginTop="15dp"
+                android:layout_gravity="right|center"
+                android:padding="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_check_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
@@ -35,134 +37,131 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent">
+
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/profileImage"
-                                android:layout_marginTop="15dp"
-                                android:src="@drawable/profile"
                                 android:layout_width="130dp"
-                                android:layout_height="130dp"/>
+                                android:layout_height="130dp"
+                                android:layout_marginTop="@dimen/margin_top"
+                                android:src="@drawable/profile" />
 
                             <ImageButton
                                 android:id="@+id/btnEditImg"
-                                android:background="@android:color/transparent"
-                                android:src="@drawable/ic_add_circle_black_24dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignRight="@id/profileImage"
+                                android:background="@android:color/transparent"
+                                android:src="@drawable/ic_add_circle_black_24dp"
 
                                 />
 
                         </RelativeLayout>
 
                         <LinearLayout
-                            android:gravity="center_vertical"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:orientation="vertical"
-                            android:layout_gravity="center_vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="@dimen/margin_top"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
 
                             <com.rengwuxian.materialedittext.MaterialEditText
-                                android:layout_marginBottom="15dp"
-                                android:textSize="@dimen/tv_dim"
                                 android:id="@+id/edtName"
-                                android:hint="@string/name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textCursorDrawable="@null"
+                                android:layout_marginBottom="15dp"
+                                android:hint="@string/name"
                                 android:inputType="text"
-                                app:met_underlineColor="@android:color/black"
                                 android:nextFocusDown="@id/edtSurname"
-                                />
+                                android:textCursorDrawable="@null"
+                                android:textSize="@dimen/tv_dim"
+                                app:met_underlineColor="@android:color/black" />
 
                             <com.rengwuxian.materialedittext.MaterialEditText
 
                                 android:id="@+id/edtSurname"
-                                android:hint="@string/surname"
-                                android:textSize="@dimen/tv_dim"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textCursorDrawable="@null"
+                                android:hint="@string/surname"
                                 android:inputType="text"
-                                app:met_underlineColor="@android:color/black"
                                 android:nextFocusDown="@id/edtCity"
-                                />
+                                android:textCursorDrawable="@null"
+                                android:textSize="@dimen/tv_dim"
+                                app:met_underlineColor="@android:color/black" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:weightSum="2"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edtCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:layout_weight="0.7"
-                            android:id="@+id/edtCity"
                             android:hint="@string/city"
-                            android:textSize="@dimen/tv_dim"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textCursorDrawable="@null"
                             android:inputType="text"
                             android:nextFocusDown="@id/edtCap"
-                            app:met_underlineColor="@android:color/black"
-                            />
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/tv_dim"
+                            app:met_underlineColor="@android:color/black" />
 
                         <com.rengwuxian.materialedittext.MaterialEditText
-                            android:layout_weight="1.3"
                             android:id="@+id/edtCap"
-                            android:hint="@string/cap"
-                            android:textSize="@dimen/tv_dim"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textCursorDrawable="@null"
+                            android:layout_weight="1.3"
+                            android:hint="@string/cap"
                             android:inputType="number"
                             android:nextFocusDown="@id/edtStreet"
-                            app:met_underlineColor="@android:color/black"
-                            />
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/tv_dim"
+                            app:met_underlineColor="@android:color/black" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/layoutStreet"
-                        android:weightSum="2"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <com.rengwuxian.materialedittext.MaterialEditText
-                            android:layout_weight="0.4"
                             android:id="@+id/edtStreet"
-                            android:hint="@string/street"
-                            android:textSize="@dimen/tv_dim"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textCursorDrawable="@null"
+                            android:layout_weight="0.4"
+                            android:hint="@string/street"
                             android:inputType="text"
-                            app:met_underlineColor="@android:color/black"
-                            />
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/tv_dim"
+                            app:met_underlineColor="@android:color/black" />
                         <!--<ImageButton
                             android:id="@+id/btnStreet"
                             android:layout_gravity="center"
@@ -173,30 +172,29 @@
                             android:layout_height="wrap_content" />-->
                         <Switch
                             android:id="@+id/swStreet"
-                            android:checked="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1.6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            />
+                            android:layout_marginRight="@dimen/margin_sw"
+                            android:layout_weight="1.6"
+                            android:checked="true" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:weightSum="2"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/edtPhone"
-                            android:hint="@string/phone"
-                            android:layout_weight="0.4"
-                            android:textSize="@dimen/tv_dim"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textCursorDrawable="@null"
+                            android:layout_weight="0.4"
+                            android:hint="@string/phone"
                             android:inputType="number"
-                            app:met_underlineColor="@android:color/black"
-                            />
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/tv_dim"
+                            app:met_underlineColor="@android:color/black" />
 
                         <!--<ImageButton
                             android:id="@+id/btnPhone"
@@ -209,31 +207,29 @@
 
                         <Switch
                             android:id="@+id/swPhone"
-                            android:checked="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1.6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            />
+                            android:layout_marginRight="@dimen/margin_sw"
+                            android:layout_weight="1.6"
+                            android:checked="true" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:weightSum="2"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/edtMail"
-                            android:hint="E-Mail"
-                            android:layout_weight="0.4"
-                            android:textSize="@dimen/tv_dim"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textCursorDrawable="@null"
+                            android:layout_weight="0.4"
+                            android:hint="E-Mail"
                             android:inputType="textEmailAddress"
-                            app:met_underlineColor="@android:color/black"
-                            />
+                            android:textCursorDrawable="@null"
+                            android:textSize="@dimen/tv_dim"
+                            app:met_underlineColor="@android:color/black" />
 
                         <!--<ImageButton
                             android:id="@+id/btnMail"
@@ -246,38 +242,31 @@
 
                         <Switch
                             android:id="@+id/swMail"
-                            android:checked="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1.6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                             />
+                            android:layout_marginRight="@dimen/margin_sw"
+                            android:layout_weight="1.6"
+                            android:checked="true" />
                     </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
-                        android:layout_marginTop="30dp"
-                        android:theme="@style/AutocompleteDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textCursorDrawable="@null">
+                        android:layout_marginTop="30dp"
+                        android:textCursorDrawable="@null"
+                        android:theme="@style/AutocompleteDescription">
 
                         <android.support.design.widget.TextInputEditText
-                            android:theme="@style/Autocomplete"
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:hint="@string/description"
+                            android:textCursorDrawable="@null"
                             android:textSize="@dimen/tv_dim"
                             android:textStyle="italic"
-                            android:hint="@string/description"
-                            android:textCursorDrawable="@null"/>
+                            android:theme="@style/Autocomplete" />
                     </android.support.design.widget.TextInputLayout>
-
-
                 </LinearLayout>
-
-
-
-
             </ScrollView>
         </RelativeLayout>
 

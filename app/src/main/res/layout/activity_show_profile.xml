@@ -25,9 +25,9 @@
                 android:id="@+id/btnModify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="23dp"
-                android:layout_marginTop="15dp"
+                android:layout_gravity="right|center"
+                android:padding="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_right"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_mode_edit_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
@@ -44,14 +44,14 @@
                     android:id="@+id/llParent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right"
                     android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp">
+                        android:layout_marginTop="@dimen/margin_top">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -64,7 +64,6 @@
                                 android:layout_width="170dp"
                                 android:layout_height="170dp"
                                 android:layout_centerInParent="true"
-                                android:layout_marginTop="15dp"
                                 android:src="@drawable/profile" />
 
                             <TextView
@@ -83,7 +82,6 @@
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:id="@+id/llStreet"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -93,7 +91,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="10dp"
                             android:src="@drawable/ic_home_black_24dp"
 
                             />
@@ -104,7 +101,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
                             android:text="Via Galliari 30, Torino"
@@ -124,7 +120,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="10dp"
                             android:src="@drawable/ic_phone_black_24dp"
 
                             />
@@ -135,7 +130,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
                             android:text="3277984218"
@@ -155,7 +149,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="10dp"
                             android:src="@drawable/ic_mail_black_24dp"
 
                             />
@@ -166,7 +159,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="15dp"
-                            android:layout_marginRight="15dp"
                             android:background="?attr/editTextBackground"
                             android:gravity="center_vertical"
                             android:text="sergiogentile@gmail.com"
@@ -193,8 +185,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="15dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
                             app:cardCornerRadius="10dp"
                             app:cardElevation="3dp">
 
@@ -202,10 +192,7 @@
                                 android:id="@+id/tvDescription"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
-                                android:layout_marginTop="10dp"
+                                android:layout_margin="10dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/tv_dim" />
 
