@@ -95,6 +95,7 @@ public class User implements Parcelable{
 
     public void setDescription(Pair<String, String> description) {
         this.description = description;
+
     }
 
     public Pair<String, String> getCity() {
