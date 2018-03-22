@@ -41,101 +41,89 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/white"
-                        android:orientation="horizontal">
-
-                        <RelativeLayout
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="@dimen/margin_left"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent">
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/profileImage"
-                                android:layout_width="130dp"
-                                android:layout_height="130dp"
-                                android:layout_marginTop="@dimen/margin_top"
-
-                                android:src="@drawable/profile" />
-
-                            <ImageButton
-                                android:id="@+id/btnEditImg"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignRight="@id/profileImage"
-                                android:background="@android:color/transparent"
-                                android:src="@drawable/ic_add_a_photo_black_24dp"
-                                />
-
-                        </RelativeLayout>
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical">
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edtName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="15dp"
-                                android:hint="@string/name"
-                                android:inputType="text"
-                                android:nextFocusDown="@id/edtSurname"
-                                android:textCursorDrawable="@null"
-                                android:textSize="@dimen/tv_dim"
-                                app:met_underlineColor="@android:color/black" />
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-
-                                android:id="@+id/edtSurname"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/surname"
-                                android:inputType="text"
-                                android:nextFocusDown="@id/edtCity"
-                                android:textCursorDrawable="@null"
-                                android:textSize="@dimen/tv_dim"
-                                app:met_underlineColor="@android:color/black" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white">
-                        <TextView
-                            android:textSize="18dp"
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginLeft="@dimen/margin_left"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text="Privacy"
-                            android:textColor="#842A2A"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <LinearLayout
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+
+                                android:layout_marginLeft="@dimen/margin_left">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/profileImage"
+                                    android:layout_width="130dp"
+                                    android:layout_height="130dp"
+                                    android:layout_marginTop="@dimen/margin_top"
+
+                                    android:src="@drawable/profile" />
+
+                                <ImageButton
+                                    android:id="@+id/btnEditImg"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignRight="@id/profileImage"
+                                    android:background="@android:color/transparent"
+                                    android:src="@drawable/ic_add_a_photo_black_24dp" />
+
+                            </RelativeLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:id="@+id/edtName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="15dp"
+                                    android:hint="@string/name"
+                                    android:inputType="text"
+                                    android:nextFocusDown="@id/edtSurname"
+                                    android:textCursorDrawable="@null"
+                                    android:textSize="@dimen/tv_dim"
+                                    app:met_underlineColor="@android:color/black" />
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+
+                                    android:id="@+id/edtSurname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/surname"
+                                    android:inputType="text"
+                                    android:nextFocusDown="@id/edtCity"
+                                    android:textCursorDrawable="@null"
+                                    android:textSize="@dimen/tv_dim"
+                                    app:met_underlineColor="@android:color/black" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -164,13 +152,92 @@
                                 android:textSize="@dimen/tv_dim"
                                 app:met_underlineColor="@android:color/black" />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@android:color/white"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginTop="10dp"
+                            android:text="Informazioni personali"
+                            android:textColor="#842A2A"
+                            android:textSize="16dp" />
 
                         <LinearLayout
-                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:orientation="horizontal"
+                            android:weightSum="4">
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edtBirth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+                                android:hint="Data di Nascita"
+                                android:inputType="number"
+                                android:nextFocusDown="@id/edtCap"
+                                android:textCursorDrawable="@null"
+                                android:textSize="@dimen/tv_dim"
+                                app:met_underlineColor="@android:color/black" />
+
+                            <Switch
+
+                                android:theme="@style/SwitchTheme"
+                                android:id="@+id/swBirth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="@dimen/margin_sw"
+                                android:layout_weight="1"
+                                android:checked="true" />
+
+                            <RadioGroup
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checked="true"
+                                    android:text="M" />
+
+                                <RadioButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="F" />
+
+                            </RadioGroup>
+
+                            <Switch
+                                android:id="@+id/swSex"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="@dimen/margin_sw"
+                                android:layout_weight="1"
+                                android:checked="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/layoutStreet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -193,19 +260,20 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />-->
                             <Switch
+                                android:theme="@style/SwitchTheme"
+                                android:layout_gravity="center"
                                 android:id="@+id/swStreet"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="@dimen/margin_sw"
                                 android:layout_weight="1.6"
                                 android:checked="true" />
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -230,19 +298,20 @@
                                 android:layout_height="wrap_content" />-->
 
                             <Switch
+                                android:theme="@style/SwitchTheme"
+                                android:layout_gravity="center"
                                 android:id="@+id/swPhone"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="@dimen/margin_sw"
                                 android:layout_weight="1.6"
                                 android:checked="true" />
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -267,10 +336,11 @@
                                 android:layout_height="wrap_content" /> -->
 
                             <Switch
+                                android:layout_gravity="center"
+                                android:theme="@style/SwitchTheme"
                                 android:id="@+id/swMail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="@dimen/margin_sw"
                                 android:layout_weight="1.6"
                                 android:checked="true" />
                         </LinearLayout>
@@ -279,19 +349,19 @@
 
                     <android.support.design.widget.TextInputLayout
 
-                        android:background="@android:color/white"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:background="@android:color/white"
                         android:textCursorDrawable="@null"
                         android:theme="@style/AutocompleteDescription">
 
                         <android.support.design.widget.TextInputEditText
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginLeft="@dimen/margin_left"
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:ellipsize="start"
                             android:hint="@string/description"
                             android:textCursorDrawable="@null"
