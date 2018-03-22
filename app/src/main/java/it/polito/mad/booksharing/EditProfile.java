@@ -312,13 +312,29 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //Create a new intent in order to restore the activity ShowProfile.
                 //I put in a bundle the object user, with all the modification that the user have done previously
-                setUserInfo(user);
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                intent.putExtras(bundle);
-                setResult(Activity.RESULT_OK, intent);
-                finish();
+                if(!user.checkInfo()){
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
+                    alertDialog.setTitle(getString(R.string.alert_title))
+                                .setMessage(getString(R.string.alert_message))
+                                .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //Nothing to do
+                                    }
+                                }).show();
+
+
+
+                }else {
+                    setUserInfo(user);
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", user);
+                    intent.putExtras(bundle);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                }
             }
         });
 
@@ -484,9 +500,12 @@ public class EditProfile extends AppCompatActivity {
 
         if(user.checkMail()){
             swMail.setChecked(true);
+
         }
         else{
             swMail.setChecked(false);
+            edtMail.setTextColor(Color.parseColor("#A2A0A0"));
+            edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         if(user.checkPhone()){
@@ -494,6 +513,8 @@ public class EditProfile extends AppCompatActivity {
         }
         else{
             swPhone.setChecked(false);
+            edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
+            edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         if(user.checkStreet()){
@@ -501,6 +522,8 @@ public class EditProfile extends AppCompatActivity {
         }
         else{
             swStreet.setChecked(false);
+            edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
+            edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         Bitmap image =loadImageFromStorage();
