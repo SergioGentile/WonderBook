@@ -54,7 +54,7 @@ public class EditProfile extends AppCompatActivity {
     User user;
     Switch swPhone, swStreet, swMail;
 
-    private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
+    private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,17 @@ public class EditProfile extends AppCompatActivity {
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
+
+        profileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(user.getImagePath() != null){
+                    Intent intent = new Intent(EditProfile.this, cropper.class);
+                    startActivityForResult(intent, IMAGE_CROP);
+                }
+
+            }
+        });
 
 
         swMail.setOnClickListener(new View.OnClickListener() {
@@ -342,6 +353,8 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -354,10 +367,18 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
+                saveToInternalStorageOriginalImage(bitmap);
                 //user.setUri(pictureUri);
             } else if(requestCode == IMAGE_CAMERA){
                 Uri pictureUri = data.getData();
                 Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
+                profileImg.setImageBitmap(bitmap);
+                profileBitmap = bitmap;
+                saveToInternalStorageOriginalImage(bitmap);
+            }
+
+            if (requestCode == IMAGE_CROP){
+                Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
             }
@@ -532,6 +553,30 @@ public class EditProfile extends AppCompatActivity {
             fos.close();
             user.setImagePath(new String(directory + "/profile.png"));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private String saveToInternalStorageOriginalImage(Bitmap bitmapImage){
+
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        if(!directory.exists()){
+            directory.mkdir();
+        }
+
+        File mypath=new File(directory,"profile_cropper.jpeg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

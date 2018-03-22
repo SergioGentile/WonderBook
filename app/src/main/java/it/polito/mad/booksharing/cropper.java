@@ -32,7 +32,7 @@ public class cropper extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cropper);
 
-        originalBitmap = BitmapFactory.decodeFile("/data/data/it.polito.mad.booksharing/app_profile/profile_cropper.jpeg");
+        originalBitmap = BitmapFactory.decodeFile("/data/data/it.polito.mad.booksharing/app_imageDir/profile_cropper.jpeg");
 
         btnDone = (TextView) findViewById(R.id.btn_done);
         btnCrop = (ImageButton)findViewById(R.id.crop_button);
@@ -101,7 +101,7 @@ public class cropper extends AppCompatActivity {
 
     private void saveImageOnInternalStorage(Bitmap bitmap){
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         if (!directory.exists()) {
             directory.mkdir();
         }
