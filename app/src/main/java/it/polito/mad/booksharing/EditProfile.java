@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -17,6 +18,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +65,12 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         profileBitmap = null;
+
+
+        //Ask permission for editing photo
+        ActivityCompat.requestPermissions(EditProfile.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1);
 
         //Get the toolbar and set the title
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -364,11 +372,32 @@ public class EditProfile extends AppCompatActivity {
 
                 //return null, I don't know why
                 Uri pictureUri = data.getData();
-                Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
-                profileImg.setImageBitmap(bitmap);
-                profileBitmap = bitmap;
-                saveToInternalStorageOriginalImage(bitmap);
-                //user.setUri(pictureUri);
+
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getContentResolver().query(
+                        pictureUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                BitmapFactory.Options opt = new BitmapFactory.Options();
+                opt.inJustDecodeBounds =true;
+                BitmapFactory.decodeFile(filePath, opt);
+
+                //Calculate inSampleSize
+                opt.inSampleSize = calculateInSampleSize(opt,256,256);
+
+                opt.inJustDecodeBounds = false;
+                Bitmap img = BitmapFactory.decodeFile(filePath,opt);
+
+                Bitmap rotateImg = rotateBitmap(getOrientation(pictureUri),img);
+                profileImg.setImageBitmap(rotateImg);
+                profileBitmap = rotateImg;
+                saveToInternalStorageOriginalImage(rotateImg);
+
             } else if(requestCode == IMAGE_CAMERA){
                 Uri pictureUri = data.getData();
                 Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
@@ -494,24 +523,6 @@ public class EditProfile extends AppCompatActivity {
         edit.commit();
     }
 
-    /*private void fromGallerytoStorage() {
-
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-        Cursor cursor = getContentResolver().query(
-                user.getUri(), filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String filePath = cursor.getString(columnIndex);
-        cursor.close();
-
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inSampleSize = 2;
-        Bitmap img = BitmapFactory.decodeFile(filePath, opt);
-        saveToInternalStorage(img);
-    }
-*/
     public User getUserInfo() {
         SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
         String defaultString = "";
@@ -522,17 +533,7 @@ public class EditProfile extends AppCompatActivity {
         Gson json = new Gson();
         return json.fromJson(userName, User.class);
     }
-
-
-    /*
-        private void galleryAddPic() {
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(mCurrentPhotoPath);
-            Uri contentUri = Uri.fromFile(f);
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
-        }
-    */
+    
     private String saveToInternalStorage(Bitmap bitmapImage){
 
 
@@ -615,4 +616,36 @@ public class EditProfile extends AppCompatActivity {
             }
         }
     }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    private Bitmap rotateBitmap(int orientation, Bitmap source){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(orientation);
+        if(source != null){
+            return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        }
+        return null;
+    }
+
 }
