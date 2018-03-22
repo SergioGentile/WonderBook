@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -47,6 +49,7 @@ public class EditProfile extends AppCompatActivity {
     TextInputEditText edtDescription;
     ImageButton btnStreet, btnDone, btnEditImg;
     ImageView profileImg;
+    Bitmap profileBitmap;
     Bundle extras;
     User user;
     Switch swPhone, swStreet, swMail;
@@ -59,7 +62,7 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-
+        profileBitmap = null;
 
         //Get the toolbar and set the title
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -348,23 +351,73 @@ public class EditProfile extends AppCompatActivity {
 
                 //return null, I don't know why
                 Uri pictureUri = data.getData();
-
-                profileImg.setImageURI(pictureUri);
-
-                user.setUri(pictureUri);
-
-
-
+                Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
+                profileImg.setImageBitmap(bitmap);
+                profileBitmap = bitmap;
+                //user.setUri(pictureUri);
             } else if(requestCode == IMAGE_CAMERA){
-
-                Bundle extra = data.getExtras();
-                Bitmap image = (Bitmap) extra.get("data");
-                saveToInternalStorage(image);
-                Bitmap cropedimage = (Bitmap) Bitmap.createBitmap(image,0,0,image.getWidth(),image.getHeight()-100);
-
-                profileImg.setImageBitmap(cropedimage);
+                Uri pictureUri = data.getData();
+                Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
+                profileImg.setImageBitmap(bitmap);
+                profileBitmap = bitmap;
             }
         }
+    }
+
+
+    private String getPath(Uri uri){
+        String path = null;
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = getContentResolver().query(uri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            path =  cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return path;
+    }
+
+    private int getOrientation(Uri uri){
+        int orientationExif, orientation = 0;
+
+        String path = getPath(uri);
+
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        orientationExif = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        if(ExifInterface.ORIENTATION_ROTATE_270 == orientationExif){
+            orientation = 270;
+        }
+        if(ExifInterface.ORIENTATION_ROTATE_180 == orientationExif){
+            orientation = 180;
+        }if(ExifInterface.ORIENTATION_ROTATE_90 == orientationExif){
+            orientation = 90;
+        }
+        return orientation;
+    }
+
+    private Bitmap rotateBitmap(int orientation, Uri uri){
+        Matrix matrix = new Matrix();
+        matrix.postRotate(orientation);
+        Bitmap source = null;
+        try {
+            source = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     private void setUser(User user){
@@ -408,9 +461,8 @@ public class EditProfile extends AppCompatActivity {
 
     protected void setUserInfo(User user){
 
-        if(user.getUri()!=null){
-            fromGallerytoStorage();
-            user.setUri(null);
+        if(profileBitmap!=null){
+            saveToInternalStorage(profileBitmap);
         }
 
         SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
@@ -421,7 +473,7 @@ public class EditProfile extends AppCompatActivity {
         edit.commit();
     }
 
-    private void fromGallerytoStorage() {
+    /*private void fromGallerytoStorage() {
 
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
@@ -438,7 +490,7 @@ public class EditProfile extends AppCompatActivity {
         Bitmap img = BitmapFactory.decodeFile(filePath, opt);
         saveToInternalStorage(img);
     }
-
+*/
     public User getUserInfo() {
         SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
         String defaultString = "";
@@ -476,7 +528,7 @@ public class EditProfile extends AppCompatActivity {
         try {
             fos = new FileOutputStream(mypath);
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
             user.setImagePath(new String(directory + "/profile.png"));
 

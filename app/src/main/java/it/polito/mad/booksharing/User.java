@@ -30,7 +30,7 @@ import java.util.Map;
 public class User implements Parcelable{
     private Pair<String,String> name, surname, phone, email, description, city, cap, street;
     private String imagePath;
-    private Uri imageUri;
+    //private Uri imageUri;
     private static String myDefault="";
     public User(){
 
@@ -42,7 +42,7 @@ public class User implements Parcelable{
         this.city= new Pair<>("","public");
         this.cap= new Pair<>("","public");
         this.street= new Pair<>("","public");
-        this.imageUri = null;
+        //this.imageUri = null;
 
     }
 
@@ -228,12 +228,12 @@ public class User implements Parcelable{
         this.imagePath = path;
     }
 
-    public Uri getUri(){
+   /* public Uri getUri(){
         return this.imageUri;
     }
 
     public void setUri (Uri u){
         this.imageUri = u;
-    }
+    }*/
 
 }
