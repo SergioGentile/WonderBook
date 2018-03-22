@@ -42,10 +42,9 @@
 
                 <LinearLayout
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/margin_left"
-                    android:layout_marginRight="@dimen/margin_right"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -55,6 +54,8 @@
                         android:orientation="horizontal">
 
                         <RelativeLayout
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent">
 
@@ -63,6 +64,7 @@
                                 android:layout_width="130dp"
                                 android:layout_height="130dp"
                                 android:layout_marginTop="@dimen/margin_top"
+
                                 android:src="@drawable/profile" />
 
                             <ImageButton
@@ -73,7 +75,6 @@
                                 android:layout_alignRight="@id/profileImage"
                                 android:background="@android:color/transparent"
                                 android:src="@drawable/ic_add_a_photo_black_24dp"
-
                                 />
 
                         </RelativeLayout>
@@ -83,7 +84,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="@dimen/margin_top"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:gravity="center_vertical"
                             android:orientation="vertical">
 
@@ -119,8 +120,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/white">
+                        <TextView
+                            android:textSize="18dp"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Privacy"
+                            android:textColor="#842A2A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                         <LinearLayout
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -153,6 +166,8 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:id="@+id/layoutStreet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -187,6 +202,8 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -222,6 +239,8 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -259,6 +278,7 @@
                     </LinearLayout>
 
                     <android.support.design.widget.TextInputLayout
+
                         android:background="@android:color/white"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -267,7 +287,8 @@
                         android:theme="@style/AutocompleteDescription">
 
                         <android.support.design.widget.TextInputEditText
-
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginLeft="@dimen/margin_left"
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

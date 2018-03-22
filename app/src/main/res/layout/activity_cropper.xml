@@ -47,10 +47,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
-            app:grid_color="@color/colorAccent"
+            app:grid_color="@android:color/black"
             app:grid_opacity="0"
             app:grid_thickness="0.8dp"
-            app:padding_color="@color/colorAccent" />
+            app:padding_color="@android:color/black" />
     </LinearLayout>
 
     <LinearLayout
