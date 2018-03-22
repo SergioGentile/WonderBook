@@ -376,12 +376,12 @@ public class EditProfile extends AppCompatActivity {
                 profileBitmap = bitmap;
                 saveToInternalStorageOriginalImage(bitmap);
             }
-
-            if (requestCode == IMAGE_CROP){
-                Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
-                profileImg.setImageBitmap(bitmap);
-                profileBitmap = bitmap;
-            }
+        }
+        if (requestCode == IMAGE_CROP){
+            Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
+            Log.d("PATH OF USER", user.getImagePath());
+            profileImg.setImageBitmap(bitmap);
+            profileBitmap = bitmap;
         }
     }
 
@@ -543,7 +543,7 @@ public class EditProfile extends AppCompatActivity {
             directory.mkdir();
         }
 
-        File mypath=new File(directory,"profile.png");
+        File mypath=new File(directory,"profile.jpeg");
 
         FileOutputStream fos = null;
         try {
@@ -551,7 +551,7 @@ public class EditProfile extends AppCompatActivity {
             // Use the compress method on the BitMap object to write image to the OutputStream
             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
-            user.setImagePath(new String(directory + "/profile.png"));
+            user.setImagePath(new String(directory + "/profile.jpeg"));
 
         } catch (Exception e) {
             e.printStackTrace();
