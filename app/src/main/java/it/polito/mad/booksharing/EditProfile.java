@@ -451,15 +451,6 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-    /*
-        private void galleryAddPic() {
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(mCurrentPhotoPath);
-            Uri contentUri = Uri.fromFile(f);
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
-        }
-    */
     private String saveToInternalStorage(Bitmap bitmapImage){
 
 

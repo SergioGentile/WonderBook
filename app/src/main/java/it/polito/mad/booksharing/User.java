@@ -38,7 +38,7 @@ public class User implements Parcelable{
         this.surname=new Pair<>("","public");
         this.phone=new Pair<>("","public");
         this.email = new Pair<>("","public");
-        this.description = new Pair<>("Hi I'm there!","public");
+        this.description = new Pair<>("","public");
         this.city= new Pair<>("","public");
         this.cap= new Pair<>("","public");
         this.street= new Pair<>("","public");

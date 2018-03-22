@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.content.Intent;
 import android.widget.ImageButton;
@@ -89,7 +90,7 @@ public class ShowProfile extends AppCompatActivity {
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
                 Bundle result= data.getExtras();
-                user = (User)result.getParcelable("user");
+                getUserInfo();
                 setUser(user);
             }
         }
@@ -154,5 +155,9 @@ public class ShowProfile extends AppCompatActivity {
             }
             Gson json = new Gson();
             user= json.fromJson(userName, User.class);
+            if(user.getDescription().first.equals("")){
+
+                user.setDescription(new Pair<>(getString(R.string.description_value),"public"));
+            }
         }
 }
