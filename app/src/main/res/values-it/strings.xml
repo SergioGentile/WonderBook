@@ -9,4 +9,11 @@
     <string name="street">Via/Piazza</string>
     <string name="description">Descrizione</string>
     <string name="phone">Telefono</string>
+    <string name="gallery">Galleria</string>
+    <string name="camera">Camera</string>
+    <string name="uploadImage">Carica un Immagine...</string>
+    <string name="description_value">Ciao mondo!</string>
+    <string name="alert_message">I campi nome,cognome,CAP, città e email devono essere compilati!</string>
+    <string name="alert_button">OK</string>
+    <string name="alert_title">Attenzione</string>
 </resources>

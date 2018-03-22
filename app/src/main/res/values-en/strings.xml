@@ -4,9 +4,16 @@
     <string name="action_settings">Settings</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
-    <string name="cap">CAP</string>
+    <string name="cap">Zip Code</string>
     <string name="city">City</string>
     <string name="street">Street/Square</string>
     <string name="description">Description</string>
-    <string name="phone">Phone Number</string>
+    <string name="phone">Phone Number</string>CAP
+    <string name="gallery">Gallery</string>CAP
+    <string name="camera">Camera</string>
+    <string name="uploadImage">Upload Image...</string>
+    <string name="description_value">Hello world!</string>
+    <string name="alert_message">The fields name,sunrname,ZipCode and email must be compiled!</string>
+    <string name="alert_button">OK</string>
+    <string name="alert_title">Attention</string>
 </resources>
