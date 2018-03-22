@@ -9,4 +9,7 @@
     <string name="street">شارع</string>
     <string name="description">وصف</string>
     <string name="phone">رقم الهاتف</string>
+    <string name="gallery">صالة عرض</string>
+    <string name="camera">الة تصوير</string>
+    <string name="uploadImage">تحميل الصور</string>
 </resources>

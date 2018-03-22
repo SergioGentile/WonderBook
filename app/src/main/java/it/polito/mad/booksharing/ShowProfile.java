@@ -143,16 +143,16 @@ public class ShowProfile extends AppCompatActivity {
         }
     }
 
-        protected void getUserInfo(){
-            SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+    protected void getUserInfo(){
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
 
-            String defaultString = "";
-            String userName = sharedPref.getString("user", defaultString);
-            if (userName.equals(defaultString)){
-                user =  new User();
-                return;
-            }
-            Gson json = new Gson();
-            user= json.fromJson(userName, User.class);
+        String defaultString = "";
+        String userName = sharedPref.getString("user", defaultString);
+        if (userName.equals(defaultString)){
+            user =  new User();
+            return;
         }
+        Gson json = new Gson();
+        user= json.fromJson(userName, User.class);
+    }
 }
