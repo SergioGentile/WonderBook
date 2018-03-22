@@ -43,9 +43,9 @@ public class cropper extends AppCompatActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              cropImage();
-              saveImageOnInternalStorage(cropperView.getCroppedBitmap());
-              finish();
+                cropImage();
+                saveImageOnInternalStorage(cropperView.getCroppedBitmap());
+                finish();
             }
         });
 
