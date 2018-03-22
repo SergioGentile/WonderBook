@@ -1,8 +1,16 @@
 package it.polito.mad.booksharing;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Pair;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 //This interface implements the Parcelable interface because the object must be shared between more than one activity.
 //It's better share all the object and not only a string at a time.
@@ -20,14 +28,25 @@ import android.os.Parcelable;
  */
 
 public class User implements Parcelable{
-    private String name, surname, phone, email, description, city, cap, street;
-    private int isCheckStreet, isCheckPhone, isCheckMail;
-
+    private Pair<String,String> name, surname, phone, email, description, city, cap, street;
+    private String imagePath;
+    private Uri imageUri;
+    private static String myDefault="";
     public User(){
+
+        this.name = new Pair<>("","public");
+        this.surname=new Pair<>("","public");
+        this.phone=new Pair<>("","public");
+        this.email = new Pair<>("","public");
+        this.description = new Pair<>("Hi I'm there!","public");
+        this.city= new Pair<>("","public");
+        this.cap= new Pair<>("","public");
+        this.street= new Pair<>("","public");
+        this.imageUri = null;
 
     }
 
-    public User(String name, String surname, String phone, String email, String description, String city, String cap, String street, int isCheckMail, int isCheckPhone, int isCheckStreet) {
+    public User(Pair<String, String> name, Pair<String, String> surname, Pair<String, String> phone, Pair<String, String> email, Pair<String, String> description, Pair<String, String> city, Pair<String, String> cap, Pair<String, String> street) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
@@ -36,98 +55,73 @@ public class User implements Parcelable{
         this.city = city;
         this.cap = cap;
         this.street = street;
-        this.isCheckMail = isCheckMail;
-        this.isCheckPhone = isCheckPhone;
-        this.isCheckStreet = isCheckStreet;
     }
 
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getName() {
+    public Pair<String, String> getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Pair<String, String> name) {
         this.name = name;
     }
 
-    public String getSurname() {
+    public Pair<String, String> getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public void setSurname(Pair<String, String> surname) {
         this.surname = surname;
     }
 
-    public String getPhone() {
+    public Pair<String, String> getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(Pair<String, String> phone) {
         this.phone = phone;
     }
 
-    public String getEmail() {
+    public Pair<String, String> getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Pair<String, String> email) {
         this.email = email;
     }
 
-    public String getDescription() {
+    public Pair<String, String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Pair<String, String> description) {
         this.description = description;
     }
 
-    public String getCity() {
+    public Pair<String, String> getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(Pair<String, String> city) {
         this.city = city;
     }
 
-    public String getCap() {
+    public Pair<String, String> getCap() {
         return cap;
     }
 
-    public void setCap(String cap) {
+    public void setCap(Pair<String, String> cap) {
         this.cap = cap;
     }
 
-    public int isCheckStreet() {
-        return isCheckStreet;
+    public Pair<String, String> getStreet() {
+        return street;
     }
 
-    public void setCheckStreet(int checkStreet) {
-        isCheckStreet = checkStreet;
+    public void setStreet(Pair<String, String> street) {
+        this.street = street;
     }
 
-    public int isCheckPhone() {
-        return isCheckPhone;
-    }
 
-    public void setCheckPhone(int checkPhone) {
-        isCheckPhone = checkPhone;
-    }
-
-    public int isCheckMail() {
-        return isCheckMail;
-    }
-
-    public void setCheckMail(int checkMail) {
-        isCheckMail = checkMail;
-    }
 
     @Override
     public int describeContents() {
@@ -136,17 +130,15 @@ public class User implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.surname);
-        dest.writeString(this.phone);
-        dest.writeString(this.email);
-        dest.writeString(this.description);
-        dest.writeString(this.city);
-        dest.writeString(this.cap);
-        dest.writeString(this.street);
-        dest.writeInt(this.isCheckMail);
-        dest.writeInt(this.isCheckPhone);
-        dest.writeInt(this.isCheckStreet);
+        dest.writeString(this.surname.first+"/t"+this.surname.second);
+        dest.writeString(this.name.first+"/t"+this.name.second);
+        dest.writeString(this.phone.first+"/t"+this.phone.second);
+        dest.writeString(this.email.first+"/t"+this.email.second);
+        dest.writeString(this.description.first + "/t" + this.description.second);
+        dest.writeString(this.city.first+"/t"+this.city.second);
+        dest.writeString(this.cap.first+"/t"+this.cap.second);
+        dest.writeString(this.street.first+"/t"+this.street.second);
+        dest.writeString(this.getImagePath());
     }
 
     public final static Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -162,18 +154,86 @@ public class User implements Parcelable{
     };
 
     public User(Parcel parcel) {
-        this.name = parcel.readString();
-        this.surname = parcel.readString();
-        this.phone = parcel.readString();
-        this.email = parcel.readString();
-        this.description = parcel.readString();
-        this.city = parcel.readString();
-        this.cap = parcel.readString();
-        this.street = parcel.readString();
-        this.isCheckMail = parcel.readInt();
-        this.isCheckPhone = parcel.readInt();
-        this.isCheckStreet = parcel.readInt();
+        String[] newname = parcel.readString().split("/t");
+        this.name = new Pair<String, String>(newname[0],newname[1]);
+        String[] newsurname = parcel.readString().split("/t");
+        this.surname = new Pair<String, String>(newsurname[0],newsurname[1]);
+        String[] newphone = parcel.readString().split("/t");
+        this.phone = new Pair<String, String>(newphone[0],newphone[1]);
+        String[] newmail = parcel.readString().split("/t");
+        this.email = new Pair<String, String>(newmail[0],newmail[1]);
+        String[] descr = parcel.readString().split("/t");
+        this.description = new Pair<String, String>(descr[0],descr[1]);
+        String[] newcity = parcel.readString().split("/t");
+        this.city = new Pair<String, String>(newcity[0],newcity[1]);
+        String[] newcap = parcel.readString().split("/t");
+        this.cap = new Pair<String, String>(newcap[0],newcap[1]);
+        String[] newstreet = parcel.readString().split("/t");
+        this.street = new Pair<String, String>(newstreet[0],newstreet[1]);
+        this.imagePath = parcel.readString();
+
     }
 
+
+    public boolean checkInfo() {
+
+        if(name.first.equals(myDefault) || surname.first.equals(myDefault) || email.first.equals(myDefault) || cap.first.equals(myDefault) || city.first.equals(myDefault)){
+            return false;
+        }
+        return true;
+    }
+
+    public void setCheckMail(String checkMail) {
+        String email = this.email.first;
+        this.email = new Pair<>(email,checkMail);
+    }
+
+    public void setCheckStreet(String checkStreet) {
+        String street = this.street.first;
+        this.street = new Pair<>(street,checkStreet);
+    }
+
+    public void setCheckPhone(String checkPhone) {
+        String phone = this.phone.first;
+        this.phone = new Pair<>(phone,checkPhone);
+    }
+
+    public boolean checkMail(){
+        if(this.email.second.equals("public")){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkStreet(){
+        if(this.street.second.equals("public")){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkPhone(){
+        if(this.phone.second.equals("public")){
+            return true;
+        }
+        return false;
+    }
+
+    public String getImagePath(){
+        return this.imagePath;
+    }
+
+    public void setImagePath(String path){
+
+        this.imagePath = path;
+    }
+
+    public Uri getUri(){
+        return this.imageUri;
+    }
+
+    public void setUri (Uri u){
+        this.imageUri = u;
+    }
 
 }

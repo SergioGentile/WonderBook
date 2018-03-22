@@ -1,7 +1,11 @@
 package it.polito.mad.booksharing;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +16,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ShowProfile extends AppCompatActivity {
@@ -50,10 +57,9 @@ public class ShowProfile extends AppCompatActivity {
 
         toolbar.setTitle("Book Sharing");
         //Initialize the user (must be removed an replace with data stored previously)
-        user = new User("Sergio", "Gentile", "3277984218", "sergiogentile@gmail.com", "Vivo a Torino e sono disponibile a scambi il pomeriggio. "
-                +"Cerco persone con cui scambiare libri nella mia stessa zona. "
-                + "Mi piacciono i libri fantasy e mi piacerebbe confrontarmi con altri utenti.", "Torino", "10125", "Via Galliari 30", 1, 1 ,1 );
-        //Set the user
+
+        getUserInfo();
+
         setUser(user);
 
 
@@ -91,18 +97,19 @@ public class ShowProfile extends AppCompatActivity {
 
     private void setUser(User user){
 
-        tvName.setText(user.getName() + " " +  user.getSurname());
+        tvName.setText(user.getName().first + " " +  user.getSurname().first);
 
-        tvPhone.setText(user.getPhone());
-        tvMail.setText(user.getEmail());
-        tvDescription.setText(user.getDescription());
+        tvPhone.setText(user.getPhone().first);
+        tvMail.setText(user.getEmail().first);
+        tvDescription.setText(user.getDescription().first);
 
-        if(user.isCheckStreet()==1){
-            tvStreet.setText(user.getStreet() + " (" + user.getCity()+")");
+        if(user.checkStreet() && !user.getStreet().first.equals("")){
+            tvStreet.setText(user.getStreet().first + " (" + user.getCity().first+")");
         }
         else{
-            tvStreet.setText(user.getCity());
+            tvStreet.setText(user.getCity().first);
         }
+
 
 
         if (llPhone.getVisibility() == View.VISIBLE) {
@@ -116,12 +123,36 @@ public class ShowProfile extends AppCompatActivity {
         }
 
 
-        if(user.isCheckPhone()==1){
+        if(user.checkPhone() && !user.getPhone().first.equals("")){
             llParent.addView(llPhone);
         }
-        if(user.isCheckMail()==1){
+        if(user.checkMail() && !user.getEmail().first.equals("")){
             llParent.addView(llMail);
         }
         llParent.addView(llDescription);
+        showUserPictureProfile(user);
     }
+
+    private void showUserPictureProfile(User user) {
+        Bitmap image = null;
+
+        if (user.getImagePath() != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath());
+            CircleImageView circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+            circleImageView.setImageBitmap(image);
+        }
+    }
+
+        protected void getUserInfo(){
+            SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+
+            String defaultString = "";
+            String userName = sharedPref.getString("user", defaultString);
+            if (userName.equals(defaultString)){
+                user =  new User();
+                return;
+            }
+            Gson json = new Gson();
+            user= json.fromJson(userName, User.class);
+        }
 }
