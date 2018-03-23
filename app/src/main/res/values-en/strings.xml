@@ -12,7 +12,7 @@
     <string name="gallery">Gallery</string>CAP
     <string name="camera">Camera</string>
     <string name="uploadImage">Upload Image...</string>
-    <string name="description_value">Hello world!</string>
+    <string name="description_value">Input here your profile description</string>
     <string name="alert_message">The fields name,sunrname,ZipCode and email must be compiled!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attention</string>

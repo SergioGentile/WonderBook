@@ -19,8 +19,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                app:titleTextAppearance="@style/ToolbarTitle"/>
+                android:background="@color/colorPrimary"/>
 
             <ImageButton
                 android:id="@+id/btnModify"
@@ -185,9 +184,7 @@
                         <android.support.v7.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="3dp">
+                            android:layout_marginBottom="15dp">
 
                             <TextView
                                 android:id="@+id/tvDescription"

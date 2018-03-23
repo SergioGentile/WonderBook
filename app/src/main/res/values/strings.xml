@@ -6,12 +6,13 @@
     <string name="cap">ZipCode</string>
     <string name="city">City</string>
     <string name="street">Street/Square</string>
+    <string name="mail">E-Mail</string>
     <string name="description">Description</string>
     <string name="phone">Phone Number</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
     <string name="uploadImage">Upload Image...</string>
-    <string name="description_value">Hello world!</string>
+    <string name="description_value">Input here your profile description</string>
     <string name="alert_message"> The fields name,sunrname,ZipCode and email must be compiled!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attention</string>

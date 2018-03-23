@@ -32,6 +32,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -51,7 +52,7 @@ public class EditProfile extends AppCompatActivity {
 
     //All declarations
     Toolbar toolbar;
-    MaterialEditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
+    EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
     ImageButton btnStreet, btnDone, btnEditImg;
     ImageView profileImg;
     Bitmap profileBitmap;
@@ -85,14 +86,14 @@ public class EditProfile extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get all the references to the component
-        edtName = (MaterialEditText) findViewById(R.id.edtName);
-        edtSurname = (MaterialEditText) findViewById(R.id.edtSurname);
-        edtCity = (MaterialEditText) findViewById(R.id.edtCity);
-        edtCap = (MaterialEditText) findViewById(R.id.edtCap);
-        edtStreet = (MaterialEditText) findViewById(R.id.edtStreet);
-        edtPhone = (MaterialEditText) findViewById(R.id.edtPhone);
-        edtMail = (MaterialEditText) findViewById(R.id.edtMail);
-        edtDescription = (MaterialEditText) findViewById(R.id.description);
+        edtName = (EditText) findViewById(R.id.edtName);
+        edtSurname = (EditText) findViewById(R.id.edtSurname);
+        edtCity = (EditText) findViewById(R.id.edtCity);
+        edtCap = (EditText) findViewById(R.id.edtCap);
+        edtStreet = (EditText) findViewById(R.id.edtStreet);
+        edtPhone = (EditText) findViewById(R.id.edtPhone);
+        edtMail = (EditText) findViewById(R.id.edtMail);
+        edtDescription = (EditText) findViewById(R.id.description);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnEditImg = (ImageButton)findViewById(R.id.btnEditImg);
         profileImg = (ImageView) findViewById(R.id.profileImage);
@@ -194,12 +195,10 @@ public class EditProfile extends AppCompatActivity {
                 if(swMail.isChecked()){
                     user.setCheckMail("public");
                     edtMail.setTextColor(Color.BLACK);
-                    edtMail.setUnderlineColor(Color.BLACK);
                 }
                 else{
                     user.setCheckMail("private");
                     edtMail.setTextColor(Color.parseColor("#A2A0A0"));
-                    edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
                 }
             }
         });
@@ -210,12 +209,10 @@ public class EditProfile extends AppCompatActivity {
                 if(swStreet.isChecked()){
                     user.setCheckStreet("public");
                     edtStreet.setTextColor(Color.BLACK);
-                    edtStreet.setUnderlineColor(Color.BLACK);
                 }
                 else{
                     user.setCheckStreet("private");
                     edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
-                    edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
                 }
             }
         });
@@ -227,12 +224,10 @@ public class EditProfile extends AppCompatActivity {
                 if(swPhone.isChecked()){
                     user.setCheckPhone("public");
                     edtPhone.setTextColor(Color.BLACK);
-                    edtPhone.setUnderlineColor(Color.BLACK);
                 }
                 else{
                     user.setCheckPhone("private");
                     edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
-                    edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
                 }
             }
         });
@@ -579,7 +574,6 @@ public class EditProfile extends AppCompatActivity {
         else{
             swMail.setChecked(false);
             edtMail.setTextColor(Color.parseColor("#A2A0A0"));
-            edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         if(user.checkPhone()){
@@ -588,7 +582,6 @@ public class EditProfile extends AppCompatActivity {
         else{
             swPhone.setChecked(false);
             edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
-            edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         if(user.checkStreet()){
@@ -597,7 +590,6 @@ public class EditProfile extends AppCompatActivity {
         else{
             swStreet.setChecked(false);
             edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
-            edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }
 
         Bitmap image =loadImageFromStorage();
