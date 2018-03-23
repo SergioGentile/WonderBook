@@ -51,8 +51,7 @@ public class EditProfile extends AppCompatActivity {
 
     //All declarations
     Toolbar toolbar;
-    MaterialEditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtBirth;
-    TextInputEditText edtDescription;
+    MaterialEditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
     ImageButton btnStreet, btnDone, btnEditImg;
     ImageView profileImg;
     Bitmap profileBitmap;
@@ -79,6 +78,7 @@ public class EditProfile extends AppCompatActivity {
         //Get the toolbar and set the title
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Book Sharing");
+        toolbar.setTitleTextColor(Color.WHITE);
 
         //It's useful to avoid showing keyboard when the activity start(By default keybard
         //is open automatically and the cursor is located in the first field)
@@ -92,14 +92,14 @@ public class EditProfile extends AppCompatActivity {
         edtStreet = (MaterialEditText) findViewById(R.id.edtStreet);
         edtPhone = (MaterialEditText) findViewById(R.id.edtPhone);
         edtMail = (MaterialEditText) findViewById(R.id.edtMail);
-        edtDescription = (TextInputEditText) findViewById(R.id.description);
+        edtDescription = (MaterialEditText) findViewById(R.id.description);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnEditImg = (ImageButton)findViewById(R.id.btnEditImg);
         profileImg = (ImageView) findViewById(R.id.profileImage);
         swPhone = (Switch) findViewById(R.id.swPhone);
         swStreet = (Switch) findViewById(R.id.swStreet);
         swMail = (Switch) findViewById(R.id.swMail);
-        edtBirth = (MaterialEditText) findViewById(R.id.edtBirth);
+        //edtBirth = (MaterialEditText) findViewById(R.id.edtBirth);
 
         //Get the user object coming from the activity ShowProfile in order to initialize all the fields
         extras = getIntent().getExtras();
@@ -107,7 +107,7 @@ public class EditProfile extends AppCompatActivity {
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
 
-        edtBirth.addTextChangedListener(new TextWatcher() {
+        /*edtBirth.addTextChangedListener(new TextWatcher() {
 
             private String current = "";
             private String ddmmyyyy = "DDMMYYYY";
@@ -174,7 +174,7 @@ public class EditProfile extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
 
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,13 +195,11 @@ public class EditProfile extends AppCompatActivity {
                     user.setCheckMail("public");
                     edtMail.setTextColor(Color.BLACK);
                     edtMail.setUnderlineColor(Color.BLACK);
-                    swMail.setThumbResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckMail("private");
                     edtMail.setTextColor(Color.parseColor("#A2A0A0"));
                     edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
-                    swMail.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
@@ -213,13 +211,11 @@ public class EditProfile extends AppCompatActivity {
                     user.setCheckStreet("public");
                     edtStreet.setTextColor(Color.BLACK);
                     edtStreet.setUnderlineColor(Color.BLACK);
-                    swStreet.setThumbResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckStreet("private");
                     edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
                     edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
-                    swStreet.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
@@ -232,13 +228,11 @@ public class EditProfile extends AppCompatActivity {
                     user.setCheckPhone("public");
                     edtPhone.setTextColor(Color.BLACK);
                     edtPhone.setUnderlineColor(Color.BLACK);
-                    swPhone.setThumbResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckPhone("private");
                     edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
                     edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
-                    swPhone.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
@@ -580,34 +574,28 @@ public class EditProfile extends AppCompatActivity {
 
         if(user.checkMail()){
             swMail.setChecked(true);
-            swMail.setThumbResource(R.drawable.ic_lock_open_black_24dp);
 
         }
         else{
             swMail.setChecked(false);
             edtMail.setTextColor(Color.parseColor("#A2A0A0"));
             edtMail.setUnderlineColor(Color.parseColor("#A2A0A0"));
-            swMail.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
         }
 
         if(user.checkPhone()){
             swPhone.setChecked(true);
-            swPhone.setThumbResource(R.drawable.ic_lock_open_black_24dp);
         }
         else{
             swPhone.setChecked(false);
             edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
             edtPhone.setUnderlineColor(Color.parseColor("#A2A0A0"));
-            swPhone.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
         }
 
         if(user.checkStreet()){
             swStreet.setChecked(true);
-            swStreet.setThumbResource(R.drawable.ic_lock_open_black_24dp);
         }
         else{
             swStreet.setChecked(false);
-            swStreet.setThumbResource(R.drawable.ic_lock_outline_black_24dp);
             edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
             edtStreet.setUnderlineColor(Color.parseColor("#A2A0A0"));
         }

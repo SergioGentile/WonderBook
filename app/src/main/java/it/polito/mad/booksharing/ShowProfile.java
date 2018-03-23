@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -57,6 +58,7 @@ public class ShowProfile extends AppCompatActivity {
         llDescription = (LinearLayout)findViewById(R.id.llDescription);
 
         toolbar.setTitle("Book Sharing");
+        toolbar.setTitleTextColor(Color.WHITE);
         //Initialize the user (must be removed an replace with data stored previously)
 
         getUserInfo();

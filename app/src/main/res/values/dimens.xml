@@ -6,5 +6,9 @@
     <dimen name="margin_top">16dp</dimen>
     <dimen name="margin_sw">10dp</dimen>
     <dimen name="padding">12dp</dimen>
+    <dimen name="distance_box">10dp</dimen>
+    <dimen name="top_inside_box">10dp</dimen>
+    <dimen name="bottom_inside_box">10dp</dimen>
+    <dimen name="title">18sp</dimen>
 
 </resources>

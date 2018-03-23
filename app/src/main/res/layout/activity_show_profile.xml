@@ -19,7 +19,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#AABCCC" />
+                android:background="@color/colorPrimary"
+                app:titleTextAppearance="@style/ToolbarTitle"/>
 
             <ImageButton
                 android:id="@+id/btnModify"
