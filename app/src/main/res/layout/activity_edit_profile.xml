@@ -128,7 +128,7 @@
                                         android:textCursorDrawable="@null"
                                         android:textSize="@dimen/tv_dim"
                                         android:theme="@style/TextEdit"
-                                        app:met_primaryColor="@android:color/black"
+                                        app:met_primaryColor="@color/colorAccent"
                                         app:met_underlineColor="@android:color/black" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -154,7 +154,7 @@
                                     android:textCursorDrawable="@null"
                                     android:textSize="@dimen/tv_dim"
                                     android:theme="@style/TextEdit"
-                                    app:met_primaryColor="@android:color/black"
+                                    app:met_primaryColor="@color/colorAccent"
                                     app:met_underlineColor="@android:color/black" />
 
                                 <com.rengwuxian.materialedittext.MaterialEditText
@@ -169,7 +169,7 @@
                                     android:textCursorDrawable="@null"
                                     android:textSize="@dimen/tv_dim"
                                     android:theme="@style/TextEdit"
-                                    app:met_primaryColor="@android:color/black"
+                                    app:met_primaryColor="@color/colorAccent"
                                     app:met_underlineColor="@android:color/black" />
                             </LinearLayout>
                         </LinearLayout>
@@ -238,7 +238,7 @@
                                     android:textCursorDrawable="@null"
                                     android:textSize="@dimen/tv_dim"
                                     android:theme="@style/TextEdit"
-                                    app:met_primaryColor="@android:color/black"
+                                    app:met_primaryColor="@color/colorAccent"
                                     app:met_underlineColor="@android:color/black" />
 
                                 <Switch
@@ -278,7 +278,7 @@
                                     android:textCursorDrawable="@null"
                                     android:textSize="@dimen/tv_dim"
                                     android:theme="@style/TextEdit"
-                                    app:met_primaryColor="@android:color/black"
+                                    app:met_primaryColor="@color/colorAccent"
                                     app:met_underlineColor="@android:color/black" />
 
 
@@ -320,7 +320,7 @@
                                     android:textCursorDrawable="@null"
                                     android:textSize="@dimen/tv_dim"
                                     android:theme="@style/TextEdit"
-                                    app:met_primaryColor="@android:color/black"
+                                    app:met_primaryColor="@color/colorAccent"
                                     app:met_underlineColor="@android:color/black" />
 
                                 <Switch
@@ -375,7 +375,7 @@
                                 android:textCursorDrawable="@null"
                                 android:textSize="@dimen/tv_dim"
                                 android:theme="@style/TextEdit"
-                                app:met_primaryColor="@android:color/black"
+                                app:met_primaryColor="@color/colorAccent"
                                 app:met_underlineColor="@android:color/black" />
 
                         </LinearLayout>
