@@ -76,6 +76,7 @@ public class EditProfile extends AppCompatActivity {
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 1);
 
+
         //Get the toolbar and set the title
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Book Sharing");
@@ -110,6 +111,8 @@ public class EditProfile extends AppCompatActivity {
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
+
+        setUpPictureAction();
 
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,6 +350,18 @@ public class EditProfile extends AppCompatActivity {
                 openGallery();
             }
         });
+    }
+
+    private void setUpPictureAction() {
+
+        if(user.getImagePath()==null){
+            //First Access
+            Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.profile);
+            saveToInternalStorage(image);
+            saveToInternalStorageOriginalImage(image);
+
+        }
+
     }
 
     private void openGallery(){
