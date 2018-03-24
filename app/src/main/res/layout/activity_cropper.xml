@@ -7,53 +7,63 @@
     android:background="@android:color/black"
     tools:context="it.polito.mad.booksharing.cropper">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="top">
 
-        <android.support.v7.widget.ActionBarContainer
-            android:id="@+id/toolbarLayout"
+    <android.support.v7.widget.ActionBarContainer
+        android:id="@+id/toolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="@dimen/margin_left"
+            android:padding="@dimen/padding"
+            android:text="@string/done"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </android.support.v7.widget.ActionBarContainer>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bar"
+        android:layout_below="@+id/toolbarLayout">
+
+        <FrameLayout
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.fenchtose.nocropper.CropperView
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary" />
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                app:grid_color="@android:color/black"
+                app:grid_opacity="0"
+                app:grid_thickness="0.8dp"
+                app:padding_color="@android:color/black" />
 
-            <TextView
-                android:id="@+id/btn_done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center"
-                android:layout_marginRight="@dimen/margin_left"
-                android:padding="@dimen/padding"
-                android:text="Fine"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"/>
-        </android.support.v7.widget.ActionBarContainer>
+            <ImageView
+                android:alpha="0.4"
+                android:id="@+id/imageCircle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/circle_transparent" />
+        </FrameLayout>
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <com.fenchtose.nocropper.CropperView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/black"
-            app:grid_color="@android:color/black"
-            app:grid_opacity="0"
-            app:grid_thickness="0.8dp"
-            app:padding_color="@android:color/black" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

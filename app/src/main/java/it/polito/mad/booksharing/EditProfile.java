@@ -352,10 +352,10 @@ public class EditProfile extends AppCompatActivity {
     private void openGallery(){
 
         //Show a popup where the user can choose to pick a new image from the camera or from the gallery
-        CharSequence chooses[] = new CharSequence[] {"Gallery", "Camera"};
+        CharSequence chooses[] = new CharSequence[] {getString(R.string.gallery), getString(R.string.camera)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Upload image...");
+        builder.setTitle(getString(R.string.uploadImage));
         builder.setItems(chooses, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int activity) {

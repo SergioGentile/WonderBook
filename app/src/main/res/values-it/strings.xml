@@ -16,4 +16,9 @@
     <string name="alert_message">I campi nome,cognome,CAP, città e email devono essere compilati!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attenzione</string>
+    <string name="mail">E-Mail</string>
+    <string name="personal_information">Dati Personali</string>
+    <string name="done">Fine</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_description">Inserisci le informazioni che saranno rese pubbliche o private</string>
 </resources>

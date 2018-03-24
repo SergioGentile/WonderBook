@@ -35,12 +35,7 @@ public class ShowProfile extends AppCompatActivity {
         //Start the activity
         super.onCreate(savedInstanceState);
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setContentView(R.layout.activity_show_profile);
-        }
-        else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            setContentView(R.layout.activity_show_profile_landscape);
-        }
+        setContentView(R.layout.activity_show_profile);
 
 
         //Take all the references to the fields

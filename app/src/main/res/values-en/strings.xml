@@ -16,4 +16,9 @@
     <string name="alert_message">The fields name,sunrname,ZipCode and email must be compiled!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attention</string>
+    <string name="mail">E-Mail</string>
+    <string name="personal_information">Informations</string>
+    <string name="done">Done</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_description">Enter information that will be made public or private</string>
 </resources>
