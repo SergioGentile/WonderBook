@@ -1,5 +1,9 @@
 package it.polito.mad.booksharing;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +11,8 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +20,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.content.Intent;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +37,11 @@ public class ShowProfile extends AppCompatActivity {
     TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
     User user;
     LinearLayout llParent, llPhone, llMail, llDescription;
+    CircleImageView circleImageView;
+    CircleImageView expandedImage;
+
+    Animator mCurrentAnimator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Start the activity
@@ -51,6 +63,8 @@ public class ShowProfile extends AppCompatActivity {
         llPhone = (LinearLayout)findViewById(R.id.llPhone);
         llParent = (LinearLayout)findViewById(R.id.llParent);
         llDescription = (LinearLayout)findViewById(R.id.llDescription);
+
+        circleImageView = (CircleImageView) findViewById(R.id.profileImage);
 
         toolbar.setTitle("Book Sharing");
         toolbar.setTitleTextColor(Color.WHITE);
@@ -74,6 +88,147 @@ public class ShowProfile extends AppCompatActivity {
                 //In this way we can understand that the activity that finish will be associate with that constant
                 //(See later)
                 startActivityForResult(intent, MODIFY_PROFILE);
+            }
+        });
+
+        //Zoom the image when pressed
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomImage();
+            }
+        });
+
+    }
+
+    private void zoomImage() {
+
+        expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
+        expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
+
+
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        // The start bounds are the global visible rectangle of the thumbnail,
+        // and the final bounds are the global visible rectangle of the container
+        // view. Also set the container view's offset as the origin for the
+        // bounds, since that's the origin for the positioning animation
+        // properties (X, Y).
+
+        circleImageView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.container)
+                .getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        // Adjust the start bounds to be the same aspect ratio as the final
+        // bounds using the "center crop" technique. This prevents undesirable
+        // stretching during the animation. Also calculate the start scaling
+        // factor (the end scaling factor is always 1.0).
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation
+        // begins, it will position the zoomed-in view in the place of the
+        // thumbnail.
+
+        expandedImage.setVisibility(View.VISIBLE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations
+        // to the top-left corner of the zoomed-in view (the default
+        // is the center of the view).
+        expandedImage.setPivotX(0f);
+        expandedImage.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and
+        // scale properties (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImage, View.X,
+                        startBounds.left, finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImage, View.Y,
+                        startBounds.top, finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImage, View.SCALE_X,
+                        startScale, 1f))
+                .with(ObjectAnimator.ofFloat(expandedImage,
+                        View.SCALE_Y, startScale, 1f));
+        set.setDuration(100);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        // Upon clicking the zoomed-in image, it should zoom back down
+        // to the original bounds and show the thumbnail instead of
+        // the expanded image.
+        final float startScaleFinal = startScale;
+        expandedImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCurrentAnimator != null) {
+                    mCurrentAnimator.cancel();
+                }
+
+                // Animate the four positioning/sizing properties in parallel,
+                // back to their original values.
+                AnimatorSet set = new AnimatorSet();
+                set.play(ObjectAnimator
+                        .ofFloat(expandedImage, View.X, startBounds.left))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImage,
+                                        View.Y,startBounds.top))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImage,
+                                        View.SCALE_X, startScaleFinal))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImage,
+                                        View.SCALE_Y, startScaleFinal));
+                set.setDuration(100);
+                set.setInterpolator(new DecelerateInterpolator());
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                        expandedImage.setVisibility(View.GONE);
+                        mCurrentAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        circleImageView.setAlpha(1f);
+                        expandedImage.setVisibility(View.GONE);
+                        mCurrentAnimator = null;
+                    }
+                });
+                set.start();
+                mCurrentAnimator = set;
             }
         });
 
@@ -130,7 +285,7 @@ public class ShowProfile extends AppCompatActivity {
 
         if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
-            CircleImageView circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+            circleImageView = (CircleImageView) findViewById(R.id.profileImage);
             circleImageView.setImageBitmap(image);
         }
     }
