@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0ECEC">
+    android:background="@color/colorDivider">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/btnDone"
@@ -31,6 +31,11 @@
                 android:padding="@dimen/padding"
                 android:src="@drawable/ic_check_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/shadow_toolbar" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -45,15 +50,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="20dp"
-                    android:layout_marginTop="@dimen/distance_box"
+
                     android:orientation="vertical">
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp">
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -88,7 +93,7 @@
                                         android:layout_alignParentBottom="true"
                                         android:layout_alignRight="@id/profileImage"
                                         android:background="@android:color/transparent"
-                                        android:src="@drawable/ic_add_a_photo_black_24dp" />
+                                        android:src="@drawable/ic_photo_camera_black_24dp" />
 
                                 </RelativeLayout>
 
@@ -111,10 +116,10 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginBottom="15dp"
-                                            android:singleLine="true"
                                             android:hint="@string/name"
-                                            android:textSize="@dimen/tv_dim"
-                                            android:nextFocusDown="@id/edtSurname"/>
+                                            android:nextFocusDown="@id/edtSurname"
+                                            android:singleLine="true"
+                                            android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
                                     <android.support.design.widget.TextInputLayout
@@ -127,10 +132,10 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginBottom="15dp"
-                                            android:singleLine="true"
                                             android:hint="@string/surname"
-                                            android:textSize="@dimen/tv_dim"
-                                            android:nextFocusDown="@id/edtCity"/>
+                                            android:nextFocusDown="@id/edtCity"
+                                            android:singleLine="true"
+                                            android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
                                 </LinearLayout>
@@ -156,11 +161,11 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginRight="10dp"
-                                        android:singleLine="true"
                                         android:hint="@string/city"
-                                        android:textSize="@dimen/tv_dim"
+                                        android:nextFocusDown="@id/edtCap"
+                                        android:singleLine="true"
 
-                                        android:nextFocusDown="@id/edtCap"/>
+                                        android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
                                 <android.support.design.widget.TextInputLayout
@@ -174,14 +179,13 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="10dp"
-                                        android:singleLine="true"
                                         android:hint="@string/cap"
                                         android:inputType="number"
-                                        android:textSize="@dimen/tv_dim"
+                                        android:nextFocusDown="@id/edtStreet"
+                                        android:singleLine="true"
 
-                                        android:nextFocusDown="@id/edtStreet"/>
+                                        android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
-
 
 
                             </LinearLayout>
@@ -192,8 +196,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right"
                         android:layout_marginTop="@dimen/distance_box">
 
                         <LinearLayout
@@ -243,18 +247,19 @@
                                     android:id="@+id/inputStreet"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="0.5"
-                                    android:layout_marginRight="@dimen/margin_right">
+                                    android:layout_marginLeft="@dimen/margin_left"
+                                    android:layout_weight="0.5">
 
                                     <EditText
                                         android:id="@+id/edtStreet"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:singleLine="true"
+                                        android:layout_gravity="center"
                                         android:hint="@string/street"
                                         android:inputType="text"
-                                        android:textSize="@dimen/tv_dim"
-                                        android:nextFocusDown="@id/edtPhone"/>
+                                        android:nextFocusDown="@id/edtPhone"
+                                        android:singleLine="true"
+                                        android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
 
@@ -287,18 +292,18 @@
                                     android:id="@+id/inputPhone"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="0.5"
-                                    android:layout_marginRight="@dimen/margin_right">
+                                    android:layout_marginLeft="@dimen/margin_left"
+                                    android:layout_weight="0.5">
 
                                     <EditText
                                         android:id="@+id/edtPhone"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:singleLine="true"
                                         android:hint="@string/phone"
                                         android:inputType="phone"
-                                        android:textSize="@dimen/tv_dim"
-                                        android:nextFocusDown="@id/edtMail"/>
+                                        android:nextFocusDown="@id/edtMail"
+                                        android:singleLine="true"
+                                        android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
 
@@ -308,7 +313,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_weight="1.5"
-                                    android:checked="true"/>
+                                    android:checked="true" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -331,17 +336,17 @@
                                     android:id="@+id/inputMail"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="0.5"
-                                    android:layout_marginRight="@dimen/margin_right">
+                                    android:layout_marginLeft="@dimen/margin_left"
+                                    android:layout_weight="0.5">
 
                                     <EditText
                                         android:id="@+id/edtMail"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:singleLine="true"
                                         android:hint="@string/mail"
                                         android:inputType="textEmailAddress"
-                                        android:textSize="@dimen/tv_dim"/>
+                                        android:singleLine="true"
+                                        android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
                                 <Switch
@@ -350,25 +355,24 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_weight="1.5"
-                                    android:checked="true"/>
+                                    android:checked="true" />
                             </LinearLayout>
 
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="@dimen/distance_box"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right"
+                        android:layout_marginTop="@dimen/distance_box">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/distance_box"
-
                             android:background="@android:color/white"
                             android:orientation="vertical">
 
@@ -382,25 +386,16 @@
                                 android:textColor="@android:color/black"
                                 android:textSize="16dp" />
 
-                            <android.support.design.widget.TextInputLayout
-                                android:id="@+id/inputDescription"
+                            <EditText
+                                android:id="@+id/description"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.4"
-                                android:layout_marginRight="@dimen/margin_right">
+                                android:layout_marginBottom="@dimen/bottom_inside_box"
+                                android:layout_marginLeft="@dimen/margin_left"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:inputType="text|textMultiLine"
+                                android:textSize="@dimen/tv_dim" />
 
-                                <EditText
-                                    android:id="@+id/description"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/description_value"
-                                    android:inputType="text|textMultiLine"
-                                    android:textSize="@dimen/tv_dim"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    />
-                            </android.support.design.widget.TextInputLayout>
 
                         </LinearLayout>
                     </android.support.v7.widget.CardView>

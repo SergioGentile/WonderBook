@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorDivider"
     tools:context="it.polito.mad.booksharing.ShowProfile">
 
     <LinearLayout
@@ -19,6 +20,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:background="@color/colorPrimary"/>
 
             <ImageButton
@@ -26,11 +28,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
-                android:padding="@dimen/padding"
                 android:layout_marginRight="@dimen/margin_right"
                 android:background="@android:color/transparent"
+                android:padding="@dimen/padding"
                 android:src="@drawable/ic_mode_edit_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/shadow_toolbar" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -51,7 +58,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_top">
+                        android:background="@android:color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -64,6 +71,7 @@
                                 android:layout_width="170dp"
                                 android:layout_height="170dp"
                                 android:layout_centerInParent="true"
+                                android:layout_marginTop="@dimen/top_inside_box"
                                 android:src="@drawable/profile" />
 
                             <TextView
@@ -71,8 +79,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="@dimen/bottom_inside_box"
+                                android:layout_marginTop="@dimen/top_inside_box"
                                 android:text="Sergio Gentile"
                                 android:textColor="@android:color/black"
                                 android:textSize="23sp"
@@ -81,120 +89,142 @@
 
                     </RelativeLayout>
 
-                    <LinearLayout
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="@dimen/distance_box">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_home_black_24dp"
-
-                            />
-
-                        <TextView
-                            android:id="@+id/tvStreet"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:background="?attr/editTextBackground"
-                            android:gravity="center_vertical"
-                            android:text="Via Galliari 30, Torino"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/tv_dim" />
+                            android:orientation="vertical">
 
-                    </LinearLayout>
+                            <LinearLayout
+                                android:layout_marginLeft="@dimen/margin_left"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/llPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_home_black_24dp"
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_phone_black_24dp"
+                                    />
 
-                            />
+                                <TextView
+                                    android:id="@+id/tvStreet"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="15dp"
+                                    android:background="?attr/editTextBackground"
+                                    android:gravity="center_vertical"
+                                    android:text="Via Galliari 30, Torino"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="@dimen/tv_dim" />
 
-                        <TextView
-                            android:id="@+id/tvPhone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:background="?attr/editTextBackground"
-                            android:gravity="center_vertical"
-                            android:text="3277984218"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/tv_dim" />
+                            </LinearLayout>
 
-                    </LinearLayout>
+                            <LinearLayout
+                                android:layout_marginLeft="@dimen/margin_left"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:id="@+id/llPhone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/llMail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_phone_black_24dp"
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_mail_black_24dp"
+                                    />
 
-                            />
+                                <TextView
+                                    android:id="@+id/tvPhone"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="15dp"
+                                    android:background="?attr/editTextBackground"
+                                    android:gravity="center_vertical"
+                                    android:text="3277984218"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="@dimen/tv_dim" />
 
-                        <TextView
-                            android:id="@+id/tvMail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:background="?attr/editTextBackground"
-                            android:gravity="center_vertical"
-                            android:text="sergiogentile@gmail.com"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/tv_dim" />
-                    </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_marginLeft="@dimen/margin_left"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:id="@+id/llMail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_mail_black_24dp"
+
+                                    />
+
+                                <TextView
+                                    android:id="@+id/tvMail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="15dp"
+                                    android:background="?attr/editTextBackground"
+                                    android:gravity="center_vertical"
+                                    android:text="sergiogentile@gmail.com"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="@dimen/tv_dim" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"></android.support.v7.widget.CardView>
 
                     <LinearLayout
                         android:id="@+id/llDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distance_box"
+                        android:background="@android:color/white"
                         android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginTop="15dp"
-                            android:text="@string/description"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/tv_dim"
-                            android:textStyle="bold|italic" />
 
-                        <android.support.v7.widget.CardView
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp">
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:text="@string/description"
+                            android:textColor="@android:color/black"
+                            android:textSize="16dp" />
 
-                            <TextView
-                                android:id="@+id/tvDescription"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="10dp"
-                                android:textColor="@android:color/black"
-                                android:textSize="@dimen/tv_dim" />
 
-                        </android.support.v7.widget.CardView>
+                        <TextView
+                            android:id="@+id/tvDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="16dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/tv_dim" />
+
+
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

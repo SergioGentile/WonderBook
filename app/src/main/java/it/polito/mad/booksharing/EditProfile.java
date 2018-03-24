@@ -54,7 +54,7 @@ public class EditProfile extends AppCompatActivity {
     Toolbar toolbar;
     EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
     ImageButton btnStreet, btnDone, btnEditImg;
-    ImageView profileImg;
+    ImageView profileImg, lockStreet, lockPhone, lockMail;
     Bitmap profileBitmap;
     Bundle extras;
     User user;
@@ -100,6 +100,9 @@ public class EditProfile extends AppCompatActivity {
         swPhone = (Switch) findViewById(R.id.swPhone);
         swStreet = (Switch) findViewById(R.id.swStreet);
         swMail = (Switch) findViewById(R.id.swMail);
+        lockStreet = (ImageView)findViewById(R.id.lockStreet);
+        lockPhone = (ImageView)findViewById(R.id.lockPhine);
+        lockMail = (ImageView)findViewById(R.id.lockMail);
         //edtBirth = (MaterialEditText) findViewById(R.id.edtBirth);
 
         //Get the user object coming from the activity ShowProfile in order to initialize all the fields
@@ -107,75 +110,6 @@ public class EditProfile extends AppCompatActivity {
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
-
-        /*edtBirth.addTextChangedListener(new TextWatcher() {
-
-            private String current = "";
-            private String ddmmyyyy = "DDMMYYYY";
-            private Calendar cal = Calendar.getInstance();
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals(current)) {
-                    String clean = s.toString().replaceAll("[^\\d.]|\\.", "");
-                    String cleanC = current.replaceAll("[^\\d.]|\\.", "");
-
-                    int cl = clean.length();
-                    int sel = cl;
-                    for (int i = 2; i <= cl && i < 6; i += 2) {
-                        sel++;
-                    }
-                    //Fix for pressing delete next to a forward slash
-                    if (clean.equals(cleanC)) sel--;
-
-                    if (clean.length() < 8){
-                        clean = clean + ddmmyyyy.substring(clean.length());
-                    }else{
-                        //This part makes sure that when we finish entering numbers
-                        //the date is correct, fixing it otherwise
-                        int day  = Integer.parseInt(clean.substring(0,2));
-                        int mon  = Integer.parseInt(clean.substring(2,4));
-                        int year = Integer.parseInt(clean.substring(4,8));
-
-                        mon = mon < 1 ? 1 : mon > 12 ? 12 : mon;
-                        cal.set(Calendar.MONTH, mon-1);
-                        year = (year<1900)?1900:(year>2100)?2100:year;
-                        cal.set(Calendar.YEAR, year);
-                        // ^ first set year for the line below to work correctly
-                        //with leap years - otherwise, date e.g. 29/02/2012
-                        //would be automatically corrected to 28/02/2012
-
-                        day = (day > cal.getActualMaximum(Calendar.DATE))? cal.getActualMaximum(Calendar.DATE):day;
-                        clean = String.format("%02d%02d%02d",day, mon, year);
-                    }
-
-                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
-                            clean.substring(2, 4),
-                            clean.substring(4, 8));
-
-                    sel = sel < 0 ? 0 : sel;
-                    current = clean;
-
-                    Spannable modifiedText = new SpannableString(current);
-                    if(sel<=10){
-                        modifiedText.setSpan(new ForegroundColorSpan(Color.GRAY), sel, 10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-                    edtBirth.setText(modifiedText);
-                    edtBirth.setSelection(sel < current.length() ? sel : current.length());
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
 
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,11 +128,11 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 if(swMail.isChecked()){
                     user.setCheckMail("public");
-                    edtMail.setTextColor(Color.BLACK);
+                    lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckMail("private");
-                    edtMail.setTextColor(Color.parseColor("#A2A0A0"));
+                    lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
@@ -208,11 +142,11 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 if(swStreet.isChecked()){
                     user.setCheckStreet("public");
-                    edtStreet.setTextColor(Color.BLACK);
+                    lockStreet.setImageResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckStreet("private");
-                    edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
+                    lockStreet.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
@@ -223,12 +157,13 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 if(swPhone.isChecked()){
                     user.setCheckPhone("public");
-                    edtPhone.setTextColor(Color.BLACK);
+                    lockPhone.setImageResource(R.drawable.ic_lock_open_black_24dp);
                 }
                 else{
                     user.setCheckPhone("private");
-                    edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
+                    lockPhone.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
+
             }
         });
 
@@ -248,8 +183,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 user.setName(new Pair<>(edtName.getText().toString(),user.getName().second));
-
-
             }
         });
 
@@ -385,13 +318,13 @@ public class EditProfile extends AppCompatActivity {
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
                     alertDialog.setTitle(getString(R.string.alert_title))
-                                .setMessage(getString(R.string.alert_message))
-                                .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        //Nothing to do
-                                    }
-                                }).show();
+                            .setMessage(getString(R.string.alert_message))
+                            .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Nothing to do
+                                }
+                            }).show();
 
 
 
@@ -431,7 +364,6 @@ public class EditProfile extends AppCompatActivity {
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePicture.resolveActivity(getPackageManager())!=null) {
-
                         startActivityForResult(takePicture, IMAGE_CAMERA);//zero can be replaced with any action code
                     }
                 }
@@ -484,8 +416,11 @@ public class EditProfile extends AppCompatActivity {
                 saveToInternalStorageOriginalImage(rotateImg);
 
             } else if(requestCode == IMAGE_CAMERA){
-                Uri pictureUri = data.getData();
-                Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
+
+                Bundle extras = data.getExtras();
+                Bitmap bitmap = (Bitmap) extras.get("data");
+                //Uri pictureUri = data.getData();
+               // Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
                 saveToInternalStorageOriginalImage(bitmap);
@@ -569,27 +504,29 @@ public class EditProfile extends AppCompatActivity {
 
         if(user.checkMail()){
             swMail.setChecked(true);
-
+            lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
         }
         else{
             swMail.setChecked(false);
-            edtMail.setTextColor(Color.parseColor("#A2A0A0"));
+            lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
         }
 
         if(user.checkPhone()){
+            lockPhone.setImageResource(R.drawable.ic_lock_open_black_24dp);
             swPhone.setChecked(true);
         }
         else{
+            lockPhone.setImageResource(R.drawable.ic_lock_outline_black_24dp);
             swPhone.setChecked(false);
-            edtPhone.setTextColor(Color.parseColor("#A2A0A0"));
         }
 
         if(user.checkStreet()){
+            lockStreet.setImageResource(R.drawable.ic_lock_open_black_24dp);
             swStreet.setChecked(true);
         }
         else{
+            lockStreet.setImageResource(R.drawable.ic_lock_outline_black_24dp);
             swStreet.setChecked(false);
-            edtStreet.setTextColor(Color.parseColor("#A2A0A0"));
         }
 
         Bitmap image =loadImageFromStorage();

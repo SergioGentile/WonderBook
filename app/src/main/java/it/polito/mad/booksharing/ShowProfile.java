@@ -113,26 +113,20 @@ public class ShowProfile extends AppCompatActivity {
             tvStreet.setText(user.getCity().first);
         }
 
-
-
-        if (llPhone.getVisibility() == View.VISIBLE) {
-            llParent.removeView(llPhone);
+        if (!user.checkPhone() || user.getPhone().first.equals("") ) {
+            llPhone.setVisibility(View.GONE);
         }
-        if (llMail.getVisibility() == View.VISIBLE) {
-            llParent.removeView(llMail);
-        }
-        if (llDescription.getVisibility() == View.VISIBLE) {
-            llParent.removeView(llDescription);
+        else{
+            llPhone.setVisibility(View.VISIBLE);
         }
 
+        if (!user.checkMail() || user.getEmail().first.equals("") ) {
+            llMail.setVisibility(View.GONE);
+        }
+        else{
+            llMail.setVisibility(View.VISIBLE);
+        }
 
-        if(user.checkPhone() && !user.getPhone().first.equals("")){
-            llParent.addView(llPhone);
-        }
-        if(user.checkMail() && !user.getEmail().first.equals("")){
-            llParent.addView(llMail);
-        }
-        llParent.addView(llDescription);
         showUserPictureProfile(user);
     }
 
