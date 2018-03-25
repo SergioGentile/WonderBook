@@ -1,16 +1,12 @@
 package it.polito.mad.booksharing;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //This interface implements the Parcelable interface because the object must be shared between more than one activity.
 //It's better share all the object and not only a string at a time.
@@ -30,6 +26,10 @@ import java.util.Map;
 public class User implements Parcelable{
     private Pair<String,String> name, surname, phone, email, description, city, cap, street;
     private String imagePath;
+
+    public static final String profileImgName = "profile.jpeg";
+    public static final String profileImgNameCrop = "profile_cropper.jpeg";
+    public static final String imageDir = "imageDir";
 
     private static String myDefault="";
     public User(){
@@ -176,12 +176,71 @@ public class User implements Parcelable{
     }
 
 
-    public boolean checkInfo() {
+    public String checkInfo(Context context) {
 
-        if(name.first.equals(myDefault) || surname.first.equals(myDefault) || email.first.equals(myDefault) || cap.first.equals(myDefault) || city.first.equals(myDefault)){
-            return false;
+        int counter = 0;
+        boolean return_null = true;
+        String correctly = "";
+        String message = "";
+
+        Pattern namePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
+        Matcher matcherName = namePatter.matcher(name.first);
+        if(name.first.equals(myDefault) || !matcherName.find()){
+            counter++;
+            return_null = false;
+            message += " -" + context.getString(R.string.name) + "\n";
+            if(!matcherName.find()){
+                correctly = context.getString(R.string.correctly);
+            }
         }
-        return true;
+
+        Pattern surnamePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
+        Matcher matcherSurname = surnamePatter.matcher(surname.first);
+        if(surname.first.equals(myDefault) || !matcherSurname.find()){
+            counter++;
+            return_null = false;
+            message += " -" + context.getString(R.string.surname) + "\n";
+            if(!matcherSurname.find()){
+                correctly = context.getString(R.string.correctly);
+            }
+        }
+
+        Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcherMail = emailPatter.matcher(email.first);
+        if(email.first.equals(myDefault) || !matcherMail.find()){
+            counter++;
+            return_null = false;
+            message += " -" + context.getString(R.string.mail) + "\n";
+            if(!matcherMail.find()){
+                correctly = context.getString(R.string.correctly);
+            }
+        }
+
+        if(cap.first.equals(myDefault)){
+            counter++;
+            return_null = false;
+            message += " -" + context.getString(R.string.cap) + "\n";
+        }
+
+        if(city.first.equals(myDefault)){
+            counter++;
+            return_null = false;
+            message += " -" + context.getString(R.string.city) + "\n";
+        }
+
+
+        if(return_null){
+            return null;
+        }
+        else{
+            if(counter<=1){
+                return context.getString(R.string.field_sin) + "\n" + message + context.getString(R.string.allert_end_sin) + " " + correctly;
+            }
+            else{
+                return context.getString(R.string.field_pl) + "\n" + message + context.getString(R.string.allert_end_pl) + " " + correctly;
+            }
+
+        }
     }
 
     public void setCheckMail(String checkMail) {

@@ -13,12 +13,18 @@
     <string name="camera">الة تصوير</string>
     <string name="uploadImage">تحميل الصور</string>
     <string name="description_value">مرحبا العالم</string>
-    <string name="alert_message">    يجب إكمال اسم الحقول ، واللقب ، والرمز البريدي ، والمدينة ، والبريد الإلكتروني!
-</string>
     <string name="alert_button">حسنا</string>
     <string name="alert_title">الحذر</string>
     <string name="mail">بريد</string>
     <string name="personal_information">معلومات</string>
     <string name="done">فعله</string>
     <string name="privacy_description">أدخل المعلومات التي سيتم جعلها عامة أو خاصة</string>
+    <string name="privacy">الإجمالية</string>
+    <string name="permission_ext_storage_denied">تم رفض الإذن أثناء قراءة الذاكرة</string>
+    <string name="error_upload_image">حدث خطأ أثناء تحميل صورة جديدة</string>
+    <string name="field_pl">حقل:</string>
+    <string name="allert_end_pl">يجب أن توضع</string>
+    <string name="field_sin">حقل:</string>
+    <string name="allert_end_sin">يجب أن توضع</string>
+    <string name="correctly">بشكل صحيح</string>
 </resources>

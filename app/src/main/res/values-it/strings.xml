@@ -13,7 +13,6 @@
     <string name="camera">Camera</string>
     <string name="uploadImage">Carica un Immagine...</string>
     <string name="description_value">Ciao mondo!</string>
-    <string name="alert_message">I campi nome,cognome,CAP, città e email devono essere compilati!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attenzione</string>
     <string name="mail">E-Mail</string>
@@ -21,4 +20,11 @@
     <string name="done">Fine</string>
     <string name="privacy">Privacy</string>
     <string name="privacy_description">Inserisci le informazioni che saranno rese pubbliche o private</string>
+    <string name="permission_ext_storage_denied">"Permesso negato durante la lettura della memoria "</string>
+    <string name="error_upload_image">Errore nella fase di caricamento di una nuova immagine</string>
+    <string name="field_pl">"I campi: "</string>
+    <string name="allert_end_pl">devono essere inseriti</string>
+    <string name="field_sin">Il campo:</string>
+    <string name="allert_end_sin">deve essere inserito</string>
+    <string name="correctly">correttamente</string>
 </resources>

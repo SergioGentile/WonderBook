@@ -13,11 +13,17 @@
     <string name="camera">Camera</string>
     <string name="uploadImage">Upload Image...</string>
     <string name="description_value">Input here your profile description</string>
-    <string name="alert_message"> The fields name,sunrname,ZipCode and email must be compiled!</string>
     <string name="alert_button">OK</string>
     <string name="alert_title">Attention</string>
     <string name="personal_information">Informations</string>
     <string name="done">Done</string>
     <string name="privacy">Privacy</string>
     <string name="privacy_description">Enter information that will be made public or private</string>
+    <string name="permission_ext_storage_denied">Permission denied to read your external storage</string>
+    <string name="error_upload_image">Error while uploading a new image</string>
+    <string name="field_pl">"The fields: "</string>
+    <string name="allert_end_pl">must be setted.</string>
+    <string name="field_sin">The field:</string>
+    <string name="allert_end_sin">must be setted</string>
+    <string name="correctly">correctly</string>
 </resources>

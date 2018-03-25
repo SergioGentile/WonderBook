@@ -1,5 +1,6 @@
 package it.polito.mad.booksharing;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fenchtose.nocropper.CropperView;
 
@@ -26,14 +28,17 @@ public class cropper extends AppCompatActivity {
     TextView btnDone;
     CropperView cropperView;
     Bitmap newBitmap, originalBitmap;
-    boolean isSnappedtoCenter = false;
+    boolean isSnappedToCenter = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cropper);
 
-        originalBitmap = BitmapFactory.decodeFile("/data/data/it.polito.mad.booksharing/app_imageDir/profile_cropper.jpeg");
+        //Get the path where the image is located
+        String path = getIntent().getExtras().getString("user-path");
+        //Decode the user image as bitmap
+        originalBitmap = BitmapFactory.decodeFile(path.replace("profile", "profile_cropper"));
 
         btnDone = (TextView) findViewById(R.id.btn_done);
         btnCrop = (ImageButton)findViewById(R.id.crop_button);
@@ -41,20 +46,25 @@ public class cropper extends AppCompatActivity {
         cropperView = (CropperView)findViewById(R.id.imageView);
         cropperView.setImageBitmap(originalBitmap);
 
+        //Catch when the button done is pressed, so the user end to modify own image
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cropImage();
+                //Save the cropped image on the storage
                 saveImageOnInternalStorage(cropperView.getCroppedBitmap());
+                setResult(Activity.RESULT_OK);
                 finish();
             }
         });
 
 
+        //Rotate the image by 90°
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                //Rotate the image
                 if(newBitmap!=null){
                     cropperView.setImageBitmap(rotateBitmap(newBitmap, 90));
                     newBitmap = cropperView.getCroppedBitmap();
@@ -67,21 +77,23 @@ public class cropper extends AppCompatActivity {
             }
         });
 
+        //Fit the image to the center
         btnCrop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSnappedtoCenter){
+                if(isSnappedToCenter){
                     cropperView.cropToCenter();
                 }
                 else{
                     cropperView.fitToCenter();
                 }
-                isSnappedtoCenter = !isSnappedtoCenter;
+                isSnappedToCenter = !isSnappedToCenter;
             }
         });
 
     }
 
+    //Function to rotate the bitmap
     private Bitmap rotateBitmap(Bitmap mBitmap, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
@@ -89,10 +101,11 @@ public class cropper extends AppCompatActivity {
     }
 
 
+    //Function to crop the image.
+    //Set the new cropped image as new user image profile
     private void cropImage(){
         newBitmap = cropperView.getCroppedBitmap();
         if(newBitmap!=null ){
-            Log.d("DEBUG CROP", "Arrivo nella parte di setting");
             cropperView.setImageBitmap(newBitmap);
         }
         else{
@@ -100,21 +113,21 @@ public class cropper extends AppCompatActivity {
         }
     }
 
+    //Save the image on the storage dedicated to the application.
     private void saveImageOnInternalStorage(Bitmap bitmap){
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
         if (!directory.exists()) {
             directory.mkdir();
         }
-        File mypath = new File(directory, "profile.jpeg");
+        File mypath = new File(directory, User.profileImgName);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(mypath);
-            Log.e("PATH", directory + "/profile.jpeg");
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
         } catch (Exception e) {
-            Log.e("SAVE_IMAGE", e.getMessage(), e);
+            Toast.makeText(cropper.this, R.string.error_upload_image, Toast.LENGTH_SHORT).show();
         }
     }
 }

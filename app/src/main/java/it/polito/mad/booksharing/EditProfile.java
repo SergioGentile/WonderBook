@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
@@ -53,12 +54,13 @@ public class EditProfile extends AppCompatActivity {
     //All declarations
     Toolbar toolbar;
     EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
-    ImageButton btnStreet, btnDone, btnEditImg;
+    ImageButton btnDone, btnEditImg;
     ImageView profileImg, lockStreet, lockPhone, lockMail;
-    Bitmap profileBitmap;
+    Bitmap profileBitmap, originalBitmapNormal, originalBitmapCrop;
     Bundle extras;
     User user;
     Switch swPhone, swStreet, swMail;
+    Uri imageCameraUri;
 
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
 
@@ -69,7 +71,8 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         profileBitmap = null;
-
+        originalBitmapCrop = null;
+        originalBitmapNormal = null;
 
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(EditProfile.this,
@@ -119,6 +122,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 if(user.getImagePath() != null){
                     Intent intent = new Intent(EditProfile.this, cropper.class);
+                    intent.putExtra("user-path", user.getImagePath());
                     startActivityForResult(intent, IMAGE_CROP);
                 }
 
@@ -226,6 +230,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
+
         edtCity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -317,20 +322,17 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //Create a new intent in order to restore the activity ShowProfile.
                 //I put in a bundle the object user, with all the modification that the user have done previously
-                if(!user.checkInfo()){
-
+                String alertMessage  = user.checkInfo(getApplicationContext());
+                if(alertMessage!=null){
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
                     alertDialog.setTitle(getString(R.string.alert_title))
-                            .setMessage(getString(R.string.alert_message))
+                            .setMessage(alertMessage)
                             .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //Nothing to do
                                 }
                             }).show();
-
-
-
                 }else {
                     setUserInfo(user);
                     Intent intent = new Intent();
@@ -350,6 +352,17 @@ public class EditProfile extends AppCompatActivity {
                 openGallery();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(originalBitmapCrop!=null){
+            saveToInternalStorageOriginalImage(originalBitmapCrop);
+        }
+        if(originalBitmapNormal!=null){
+            saveToInternalStorage(originalBitmapNormal);
+        }
     }
 
     private void setUpPictureAction() {
@@ -379,6 +392,9 @@ public class EditProfile extends AppCompatActivity {
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePicture.resolveActivity(getPackageManager())!=null) {
+                        imageCameraUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/phototmp.jpeg"));
+                        takePicture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                                imageCameraUri);
                         startActivityForResult(takePicture, IMAGE_CAMERA);//zero can be replaced with any action code
                     }
                 }
@@ -398,6 +414,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+
         //Set a new image on the profile
         if(resultCode == RESULT_OK ){
             if(requestCode == IMAGE_GALLERY){
@@ -405,8 +422,8 @@ public class EditProfile extends AppCompatActivity {
                 //return null, I don't know why
                 Uri pictureUri = data.getData();
 
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(
                         pictureUri, filePathColumn, null, null, null);
                 cursor.moveToFirst();
@@ -425,52 +442,42 @@ public class EditProfile extends AppCompatActivity {
                 opt.inJustDecodeBounds = false;
                 Bitmap img = BitmapFactory.decodeFile(filePath,opt);
 
-                Bitmap rotateImg = rotateBitmap(getOrientation(pictureUri),img);
+                Bitmap rotateImg = rotateBitmap(getOrientation(filePath),img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
                 saveToInternalStorageOriginalImage(rotateImg);
 
             } else if(requestCode == IMAGE_CAMERA){
 
-                Bundle extras = data.getExtras();
-                Bitmap bitmap = (Bitmap) extras.get("data");
-                //Uri pictureUri = data.getData();
-               // Bitmap bitmap = rotateBitmap(getOrientation(pictureUri), pictureUri);
+                String filePath = imageCameraUri.getPath();
+
+                BitmapFactory.Options opt = new BitmapFactory.Options();
+                opt.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(filePath, opt);
+
+                //Calculate inSampleSize
+                opt.inSampleSize = calculateInSampleSize(opt, 256, 256);
+
+                opt.inJustDecodeBounds = false;
+                Bitmap img = BitmapFactory.decodeFile(filePath, opt);
+                Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
+
+                profileImg.setImageBitmap(rotateImg);
+                profileBitmap = rotateImg;
+                saveToInternalStorageOriginalImage(rotateImg);
+            }
+            if (requestCode == IMAGE_CROP){
+                Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
-                saveToInternalStorageOriginalImage(bitmap);
             }
         }
-        if (requestCode == IMAGE_CROP){
-            Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
-            Log.d("PATH OF USER", user.getImagePath());
-            profileImg.setImageBitmap(bitmap);
-            profileBitmap = bitmap;
-        }
+
     }
 
 
-    private String getPath(Uri uri){
-        String path = null;
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = getContentResolver().query(uri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            path =  cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return path;
-    }
-
-    private int getOrientation(Uri uri){
+    private int getOrientation(String path) {
         int orientationExif, orientation = 0;
-
-        String path = getPath(uri);
 
         ExifInterface exif = null;
         try {
@@ -480,29 +487,16 @@ public class EditProfile extends AppCompatActivity {
         }
         orientationExif = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
-        if(ExifInterface.ORIENTATION_ROTATE_270 == orientationExif){
+        if (ExifInterface.ORIENTATION_ROTATE_270 == orientationExif) {
             orientation = 270;
         }
-        if(ExifInterface.ORIENTATION_ROTATE_180 == orientationExif){
+        if (ExifInterface.ORIENTATION_ROTATE_180 == orientationExif) {
             orientation = 180;
-        }if(ExifInterface.ORIENTATION_ROTATE_90 == orientationExif){
+        }
+        if (ExifInterface.ORIENTATION_ROTATE_90 == orientationExif) {
             orientation = 90;
         }
         return orientation;
-    }
-
-    private Bitmap rotateBitmap(int orientation, Uri uri){
-        Matrix matrix = new Matrix();
-        matrix.postRotate(orientation);
-        Bitmap source = null;
-        try {
-            source = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     private void setUser(User user){
@@ -544,9 +538,15 @@ public class EditProfile extends AppCompatActivity {
             swStreet.setChecked(false);
         }
 
-        Bitmap image =loadImageFromStorage();
-        if(image!=null){
-            profileImg.setImageBitmap(image);
+        Bitmap imageNormal = loadImageFromStorage();
+        if (imageNormal != null) {
+            originalBitmapNormal = imageNormal;
+            profileImg.setImageBitmap(imageNormal);
+        }
+
+        Bitmap imageCropper = loadImageFromStorageOriginal();
+        if (imageCropper != null) {
+            originalBitmapCrop = imageCropper;
         }
     }
 
@@ -582,12 +582,12 @@ public class EditProfile extends AppCompatActivity {
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
         if(!directory.exists()){
             directory.mkdir();
         }
 
-        File mypath=new File(directory,"profile.jpeg");
+        File mypath=new File(directory,User.profileImgName);
 
         FileOutputStream fos = null;
         try {
@@ -595,7 +595,7 @@ public class EditProfile extends AppCompatActivity {
             // Use the compress method on the BitMap object to write image to the OutputStream
             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
-            user.setImagePath(new String(directory + "/profile.jpeg"));
+            user.setImagePath(new String(directory + "/" + User.profileImgName));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -608,12 +608,12 @@ public class EditProfile extends AppCompatActivity {
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
         if(!directory.exists()){
             directory.mkdir();
         }
 
-        File mypath=new File(directory,"profile_cropper.jpeg");
+        File mypath=new File(directory,User.profileImgNameCrop);
 
         FileOutputStream fos = null;
         try {
@@ -637,6 +637,14 @@ public class EditProfile extends AppCompatActivity {
         return image;
     }
 
+    private Bitmap loadImageFromStorageOriginal() {
+        Bitmap image = null;
+        if (user.getImagePath() != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath().replace("profile", "profile_cropper"));
+        }
+        return image;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -653,7 +661,7 @@ public class EditProfile extends AppCompatActivity {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(EditProfile.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfile.this, R.string.permission_ext_storage_denied, Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
