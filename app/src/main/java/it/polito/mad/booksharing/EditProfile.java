@@ -80,10 +80,7 @@ public class EditProfile extends AppCompatActivity {
                 1);
 
 
-        //Get the toolbar and set the title
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("Book Sharing");
-        toolbar.setTitleTextColor(Color.WHITE);
 
         //It's useful to avoid showing keyboard when the activity start(By default keybard
         //is open automatically and the cursor is located in the first field)

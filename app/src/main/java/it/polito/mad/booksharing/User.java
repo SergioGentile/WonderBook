@@ -179,61 +179,58 @@ public class User implements Parcelable{
     public String checkInfo(Context context) {
 
         int counter = 0;
-        boolean return_null = true;
         String correctly = "";
         String message = "";
 
         Pattern namePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherName = namePatter.matcher(name.first);
-        if(name.first.equals(myDefault) || !matcherName.find()){
+        boolean findName = matcherName.find();
+        if(name.first.equals(myDefault) || !findName){
             counter++;
-            return_null = false;
             message += " -" + context.getString(R.string.name) + "\n";
-            if(!matcherName.find()){
+            if(!findName && !name.first.equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
         Pattern surnamePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherSurname = surnamePatter.matcher(surname.first);
-        if(surname.first.equals(myDefault) || !matcherSurname.find()){
+        boolean findSurname = matcherSurname.find();
+        if(surname.first.equals(myDefault) || !findSurname){
             counter++;
-            return_null = false;
             message += " -" + context.getString(R.string.surname) + "\n";
-            if(!matcherSurname.find()){
+            if(!findSurname && !surname.first.equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcherMail = emailPatter.matcher(email.first);
-        if(email.first.equals(myDefault) || !matcherMail.find()){
+        boolean findMail = matcherMail.find();
+        if(email.first.equals(myDefault) || !findMail){
             counter++;
-            return_null = false;
             message += " -" + context.getString(R.string.mail) + "\n";
-            if(!matcherMail.find()){
+            if(!findMail && !email.first.equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
         if(cap.first.equals(myDefault)){
             counter++;
-            return_null = false;
             message += " -" + context.getString(R.string.cap) + "\n";
         }
 
         if(city.first.equals(myDefault)){
             counter++;
-            return_null = false;
             message += " -" + context.getString(R.string.city) + "\n";
         }
 
 
-        if(return_null){
+        if(counter == 0){
             return null;
         }
         else{
-            if(counter<=1){
+            if(counter==1){
                 return context.getString(R.string.field_sin) + "\n" + message + context.getString(R.string.allert_end_sin) + " " + correctly;
             }
             else{

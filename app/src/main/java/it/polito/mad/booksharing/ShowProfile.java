@@ -66,12 +66,9 @@ public class ShowProfile extends AppCompatActivity {
 
         circleImageView = (CircleImageView) findViewById(R.id.profileImage);
 
-        toolbar.setTitle("Book Sharing");
-        toolbar.setTitleTextColor(Color.WHITE);
+
         //Initialize the user (must be removed an replace with data stored previously)
-
         getUserInfo();
-
         setUser(user);
 
 
