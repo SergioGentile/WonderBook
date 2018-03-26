@@ -29,16 +29,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     //Added by me
-    compile 'com.rengwuxian.materialedittext:library:2.1.4'
-    compile 'com.cepheuen.elegant-number-button:lib:1.0.2'
     compile 'com.android.support:cardview-v7:26.+'
     compile 'com.android.support:recyclerview-v7:26.+'
     compile 'com.android.support:design:26.+'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.fenchtose.nocropper:nocropper:0.1.7'
     compile 'com.google.code.gson:gson:2.8.2'
-
 
 }

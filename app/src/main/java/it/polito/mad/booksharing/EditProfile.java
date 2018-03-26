@@ -380,9 +380,21 @@ public class EditProfile extends AppCompatActivity {
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePicture.resolveActivity(getPackageManager())!=null) {
-                        imageCameraUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/phototmp.jpeg"));
+                        File photo = new File(Environment.getExternalStorageDirectory() + "/phototmp.jpeg");
+
+                        user.setImagePath(photo.getAbsolutePath());
+                        if (!photo.exists()) {
+                            try {
+                                photo.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        imageCameraUri = BookSharingFileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photo);
+
                         takePicture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
                                 imageCameraUri);
+                        takePicture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivityForResult(takePicture, IMAGE_CAMERA);//zero can be replaced with any action code
                     }
                 }
@@ -437,7 +449,7 @@ public class EditProfile extends AppCompatActivity {
 
             } else if(requestCode == IMAGE_CAMERA){
 
-                String filePath = imageCameraUri.getPath();
+                String filePath = user.getImagePath();
 
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
