@@ -11,5 +11,8 @@
     <dimen name="bottom_inside_box">10dp</dimen>
     <dimen name="title">18sp</dimen>
     <dimen name="land_photo">150dp</dimen>
-
+    <dimen name="shadow">8dp</dimen>
+    <dimen name="top_photo_land">30dp</dimen>
+    <dimen name="title_box_size">16sp</dimen>
+    <dimen name="name_size">20sp</dimen>
 </resources>

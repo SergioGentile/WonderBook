@@ -27,4 +27,5 @@
     <string name="field_sin">The field:</string>
     <string name="allert_end_pl">must be setted</string>
     <string name="correctly">correctly</string>
+    <string name="description_description">Add a brief description of yourself here</string>
 </resources>

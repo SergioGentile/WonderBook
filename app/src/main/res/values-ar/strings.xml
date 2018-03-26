@@ -27,4 +27,5 @@
     <string name="field_sin">حقل:</string>
     <string name="allert_end_sin">يجب أن توضع</string>
     <string name="correctly">بشكل صحيح</string>
+    <string name="description_description">أضف وصفاً موجزاً عن نفسك هنا</string>
 </resources>

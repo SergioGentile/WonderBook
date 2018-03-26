@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditProfile"></activity>
-        <activity android:name=".cropper"></activity>
+        <activity android:name=".Cropper"></activity>
     </application>
 
 </manifest>

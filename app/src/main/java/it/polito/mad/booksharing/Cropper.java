@@ -8,21 +8,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fenchtose.nocropper.CropperView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-public class cropper extends AppCompatActivity {
+public class Cropper extends AppCompatActivity {
 
     ImageButton btnRotate, btnCrop;
     TextView btnDone;
@@ -127,7 +123,7 @@ public class cropper extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
         } catch (Exception e) {
-            Toast.makeText(cropper.this, R.string.error_upload_image, Toast.LENGTH_SHORT).show();
+            Toast.makeText(Cropper.this, R.string.error_upload_image, Toast.LENGTH_SHORT).show();
         }
     }
 }

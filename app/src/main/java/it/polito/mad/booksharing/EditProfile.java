@@ -12,24 +12,18 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
@@ -40,13 +34,10 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 
 public class EditProfile extends AppCompatActivity {
@@ -118,7 +109,7 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(user.getImagePath() != null){
-                    Intent intent = new Intent(EditProfile.this, cropper.class);
+                    Intent intent = new Intent(EditProfile.this, Cropper.class);
                     intent.putExtra("user-path", user.getImagePath());
                     startActivityForResult(intent, IMAGE_CROP);
                 }
