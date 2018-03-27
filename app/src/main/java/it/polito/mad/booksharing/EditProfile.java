@@ -52,6 +52,7 @@ public class EditProfile extends AppCompatActivity {
     User user;
     Switch swPhone, swStreet, swMail;
     Uri imageCameraUri;
+    String imageCameraPath;
 
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
 
@@ -380,9 +381,10 @@ public class EditProfile extends AppCompatActivity {
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePicture.resolveActivity(getPackageManager())!=null) {
-                        File photo = new File(Environment.getExternalStorageDirectory() + "/phototmp.jpeg");
-
-                        user.setImagePath(photo.getAbsolutePath());
+                        Long tsLong = System.currentTimeMillis()/1000;
+                        String ts = tsLong.toString();
+                        File photo = new File(Environment.getExternalStorageDirectory() + "/photo" + ts + ".jpeg");
+                        imageCameraPath = photo.getAbsolutePath();
                         if (!photo.exists()) {
                             try {
                                 photo.createNewFile();
@@ -449,7 +451,7 @@ public class EditProfile extends AppCompatActivity {
 
             } else if(requestCode == IMAGE_CAMERA){
 
-                String filePath = user.getImagePath();
+                String filePath = imageCameraPath;
 
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
