@@ -101,7 +101,11 @@ public class ShowProfile extends AppCompatActivity {
     private void zoomImage() {
 
         expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
-        expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
+        if(user.getImagePath()!=null) {
+            expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
+        }else{
+            expandedImage.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile));
+        }
 
 
         final Rect startBounds = new Rect();
