@@ -99,12 +99,13 @@ public class EditProfile extends AppCompatActivity {
         lockPhone = (ImageView) findViewById(R.id.lockPhine);
         lockMail = (ImageView) findViewById(R.id.lockMail);
 
-        //Get the user object coming from the activity ShowProfile in order to initialize all the fields
+        //Get the user object stored in the SharedPreferences in order to initialize all the fields
         extras = getIntent().getExtras();
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
 
+        //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
 
         //catch the ACTION_DOWN event on the user image.
@@ -375,7 +376,7 @@ public class EditProfile extends AppCompatActivity {
 
     private void setUpPictureAction() {
         if (user.getImagePath() == null) {
-            //First Access
+            //On the first access the default image is copied in the internal storage in order to perform the crop operation
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
             saveToInternalStorage(image);
             saveToInternalStorageOriginalImage(image);
@@ -448,6 +449,9 @@ public class EditProfile extends AppCompatActivity {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
+
+                //In order to avoid to copy big images (eg. 2 Mb) inside the Internal Storage (slowing down the process)
+                //we reduce the resolution of the selected image
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(filePath, opt);
@@ -456,7 +460,7 @@ public class EditProfile extends AppCompatActivity {
                 opt.inJustDecodeBounds = false;
                 Bitmap img = BitmapFactory.decodeFile(filePath, opt);
 
-                //Because some version of andorid return the photos from the gallery with a strange orientation,
+                //Because some version of android return the photos from the gallery with a strange orientation,
                 //I rotate the bitmap in order to correct it.
                 //So if the image will be return with 90°, i rotate and carry it to 0°
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
@@ -466,6 +470,7 @@ public class EditProfile extends AppCompatActivity {
 
             } else if (requestCode == IMAGE_CAMERA) {
 
+                //The image is snapped from the camera
                 String filePath = imageCameraPath;
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
@@ -572,10 +577,14 @@ public class EditProfile extends AppCompatActivity {
 
     protected void setUserInfo(User user) {
 
+
         if (profileBitmap != null) {
+            //If I'm here the user has changed the image so I need to save it inside the Internal Storage
             saveToInternalStorage(profileBitmap);
         }
 
+        //I Create a new json object in order to store all the information contained inside my user object.
+        //Then I save it inside the SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         Gson json = new Gson();
@@ -585,29 +594,37 @@ public class EditProfile extends AppCompatActivity {
     }
 
     public User getUserInfo() {
+        //I retrieve all the information about the user from the sharedPreferences in a form of a Json Object
+        //and then I deserialize it obtainig a User object
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         String defaultString = "";
-        String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)) {
+        String jsonString = sharedPref.getString("user", defaultString);
+        //If the sharedPreferences are empty this is the first access so I create a new User Object
+        if (jsonString.equals(defaultString)) {
             return new User();
         }
+        //else I deserialize the jsonString and populate the User object
         Gson json = new Gson();
-        return json.fromJson(userName, User.class);
+        return json.fromJson(jsonString, User.class);
     }
 
 
+    //This method will save a bitmap inside the Internal Storage of the application
     private String saveToInternalStorage(Bitmap bitmapImage) {
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+        //If the directory where I want to save the image does not exist I create it
         if (!directory.exists()) {
             directory.mkdir();
         }
 
+        //Create of the destination path
         File mypath = new File(directory, User.profileImgName);
 
         FileOutputStream fos = null;
+        //Copy of the file
         try {
             fos = new FileOutputStream(mypath);
             // Use the compress method on the BitMap object to write image to the OutputStream
@@ -621,6 +638,9 @@ public class EditProfile extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
+
+    // In order to allow the user to modify the way in witch the image is cropped I need to save also
+    //the original image
     private String saveToInternalStorageOriginalImage(Bitmap bitmapImage) {
 
 
@@ -645,6 +665,7 @@ public class EditProfile extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
+    //This method will load the bitmap saved inside the Internal Storage of the application
     private Bitmap loadImageFromStorage() {
         Bitmap image = null;
 
@@ -653,7 +674,7 @@ public class EditProfile extends AppCompatActivity {
         }
         return image;
     }
-
+    //This method will load the original bitmap saved inside the Internal Storage of the application
     private Bitmap loadImageFromStorageOriginal() {
         Bitmap image = null;
         if (user.getImagePath() != null) {
@@ -685,6 +706,7 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
+    //Calculate the parameter used for reduce the dimension and the resolution of the image
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;

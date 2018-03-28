@@ -8,20 +8,11 @@ import android.util.Pair;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+//The User class will contain all the information about the user info and their status (private || public)
+
+
 //This interface implements the Parcelable interface because the object must be shared between more than one activity.
-//It's better share all the object and not only a string at a time.
-/*
-    putExtras("user", user)
-
-    Instead of
-
-    putExtraString("name", name)
-    putExtraString("surname", surname)
-    putExtraString("phone", phone)
-    and so on....
-
-
- */
 
 public class User implements Parcelable{
     private Pair<String,String> name, surname, phone, email, description, city, cap, street;
@@ -33,7 +24,7 @@ public class User implements Parcelable{
 
     private static String myDefault="";
     public User(){
-
+        //When a new object is created all the field will be empty and public
         this.name = new Pair<>("","public");
         this.surname=new Pair<>("","public");
         this.phone=new Pair<>("","public");
@@ -57,6 +48,7 @@ public class User implements Parcelable{
         this.street = street;
     }
 
+    //All the setter and getter of the fields
     public Pair<String, String> getName() {
         return name;
     }
@@ -122,6 +114,14 @@ public class User implements Parcelable{
         this.street = street;
     }
 
+    public String getImagePath(){
+        return this.imagePath;
+    }
+
+    public void setImagePath(String path){
+
+        this.imagePath = path;
+    }
 
 
     @Override
@@ -129,6 +129,7 @@ public class User implements Parcelable{
         return 0;
     }
 
+    //Used to serialize the object
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.surname.first+"/t"+this.surname.second);
@@ -154,6 +155,7 @@ public class User implements Parcelable{
         }
     };
 
+    //Method used to deserialize the method
     public User(Parcel parcel) {
         String[] newname = parcel.readString().split("/t");
         this.name = new Pair<String, String>(newname[0],newname[1]);
@@ -176,12 +178,14 @@ public class User implements Parcelable{
     }
 
 
+    //Method used to check if the information placed by the user during the edit phase are correct
     public String checkInfo(Context context) {
 
         int counter = 0;
         String correctly = "";
         String message = "";
 
+        //Name check
         Pattern namePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherName = namePatter.matcher(name.first);
         boolean findName = matcherName.find();
@@ -193,6 +197,7 @@ public class User implements Parcelable{
             }
         }
 
+        //surname check
         Pattern surnamePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherSurname = surnamePatter.matcher(surname.first);
         boolean findSurname = matcherSurname.find();
@@ -204,6 +209,7 @@ public class User implements Parcelable{
             }
         }
 
+        //email check
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcherMail = emailPatter.matcher(email.first);
         boolean findMail = matcherMail.find();
@@ -240,6 +246,7 @@ public class User implements Parcelable{
         }
     }
 
+    //Methods used to change the status of an attribute (private|| public)
     public void setCheckMail(String checkMail) {
         String email = this.email.first;
         this.email = new Pair<>(email,checkMail);
@@ -254,6 +261,8 @@ public class User implements Parcelable{
         String phone = this.phone.first;
         this.phone = new Pair<>(phone,checkPhone);
     }
+
+    //Methods used to check if an attribute is public(return true) or private(return false)
 
     public boolean checkMail(){
         if(this.email.second.equals("public")){
@@ -276,12 +285,5 @@ public class User implements Parcelable{
         return false;
     }
 
-    public String getImagePath(){
-        return this.imagePath;
-    }
 
-    public void setImagePath(String path){
-
-        this.imagePath = path;
-    }
 }

@@ -32,15 +32,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowProfile extends AppCompatActivity {
     private static final int MODIFY_PROFILE = 1;
-    ImageButton btnModify;
-    Toolbar toolbar;
-    TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
-    User user;
-    LinearLayout llParent, llPhone, llMail, llDescription;
-    CircleImageView circleImageView;
-    CircleImageView expandedImage;
+    private ImageButton btnModify;
+    private Toolbar toolbar;
+    private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
+    private  User user;
+    private LinearLayout llParent, llPhone, llMail, llDescription;
+    private CircleImageView circleImageView;
+    private CircleImageView expandedImage;
 
-    Animator mCurrentAnimator;
+    private Animator mCurrentAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +99,18 @@ public class ShowProfile extends AppCompatActivity {
 
     private void zoomImage() {
 
+        //Take the reference of the field
         expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
+        //If the user image is setted I take that from the path specified inside the user object
+        //else I user the default one specified inside the resources
         if(user.getImagePath()!=null) {
             expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
         }else{
             expandedImage.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile));
         }
 
+
+        //Structure I need to perform the zoom
 
         final Rect startBounds = new Rect();
         final Rect finalBounds = new Rect();
@@ -294,17 +299,27 @@ public class ShowProfile extends AppCompatActivity {
         }
     }
 
+    //All of the user info are stored inside the SharedPrefernces as String that is
+    //the serialization of a json object populated with the information about a user
     protected void getUserInfo(){
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
 
             String defaultString = "";
-            String userName = sharedPref.getString("user", defaultString);
-            if (userName.equals(defaultString)){
+            String jsonString = sharedPref.getString("user", defaultString);
+            if (jsonString.equals(defaultString)){
+                //If there are no information about the user in the shared preferences
+                //than I need to create a new Object
                 user =  new User();
                 return;
             }
+
+            //If I'm here I have retrieved the serialized json object
+            //So I just need to deserialize it in order to obtain a User object populated with
+            //all the info saved by the user user
             Gson json = new Gson();
-            user= json.fromJson(userName, User.class);
+            user= json.fromJson(jsonString, User.class);
+            //The the field of the user description is empty I will intialize it with the defualt
+            // description specified inside the strings.xml
             if(user.getDescription().first.equals("")){
 
                 user.setDescription(new Pair<>(getString(R.string.description_value),"public"));
