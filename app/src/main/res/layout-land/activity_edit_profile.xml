@@ -363,7 +363,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/distance_box"
-                            android:layout_marginRight="@dimen/margin_right"
                             android:layout_marginTop="@dimen/distance_box"
                             android:background="@color/windowBackground"
                             android:orientation="vertical">

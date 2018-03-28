@@ -33,9 +33,11 @@ public class Cropper extends AppCompatActivity {
 
         //Get the path where the image is located
         String path = getIntent().getExtras().getString("user-path");
-        //Decode the user image as bitmap
+        //Decode the user image as bitmap. I replace profile with profile_cropper because i will work with the original
+        //version of the image.
         originalBitmap = BitmapFactory.decodeFile(path.replace("profile", "profile_cropper"));
 
+        //Take all the references to the view
         btnDone = (TextView) findViewById(R.id.btn_done);
         btnCrop = (ImageButton)findViewById(R.id.crop_button);
         btnRotate = (ImageButton)findViewById(R.id.rotate_button);
@@ -59,17 +61,10 @@ public class Cropper extends AppCompatActivity {
         btnRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //Rotate the image
-                if(newBitmap!=null){
-                    cropperView.setImageBitmap(rotateBitmap(newBitmap, 90));
-                    newBitmap = cropperView.getCroppedBitmap();
-                }
-                else{
-                    cropperView.setImageBitmap(rotateBitmap(originalBitmap, 90));
-                    newBitmap = cropperView.getCroppedBitmap();
-                }
-
+                //newBitmap contain the new version of the image
+                cropperView.setImageBitmap(rotateBitmap(cropperView.getCroppedBitmap(), 90));
+                newBitmap = cropperView.getCroppedBitmap();
             }
         });
 
@@ -77,13 +72,7 @@ public class Cropper extends AppCompatActivity {
         btnCrop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSnappedToCenter){
-                    cropperView.cropToCenter();
-                }
-                else{
-                    cropperView.fitToCenter();
-                }
-                isSnappedToCenter = !isSnappedToCenter;
+                cropperView.setImageBitmap(originalBitmap);
             }
         });
 
@@ -101,6 +90,7 @@ public class Cropper extends AppCompatActivity {
     //Set the new cropped image as new user image profile
     private void cropImage(){
         newBitmap = cropperView.getCroppedBitmap();
+        //If the image is the same of the original one, set the same image.
         if(newBitmap!=null ){
             cropperView.setImageBitmap(newBitmap);
         }

@@ -49,7 +49,6 @@ public class ShowProfile extends AppCompatActivity {
 
         setContentView(R.layout.activity_show_profile);
 
-
         //Take all the references to the fields
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         tvName = (TextView) findViewById(R.id.tvName);
@@ -249,14 +248,16 @@ public class ShowProfile extends AppCompatActivity {
         }
     }
 
+    //Take all the user information from User object and fill the screen with that information
     private void setUser(User user){
 
+        //Text information
         tvName.setText(user.getName().first + " " +  user.getSurname().first);
-
         tvPhone.setText(user.getPhone().first);
         tvMail.setText(user.getEmail().first);
         tvDescription.setText(user.getDescription().first);
 
+        //Show only the information that have not been made private by the user
         if(user.checkStreet() && !user.getStreet().first.equals("")){
             tvStreet.setText(user.getStreet().first + " (" + user.getCity().first+")");
         }
@@ -278,9 +279,11 @@ public class ShowProfile extends AppCompatActivity {
             llMail.setVisibility(View.VISIBLE);
         }
 
+        //Set the user profile image
         showUserPictureProfile(user);
     }
 
+    //Set the user profile image
     private void showUserPictureProfile(User user) {
         Bitmap image = null;
 

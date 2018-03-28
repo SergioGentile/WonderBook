@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ public class EditProfile extends AppCompatActivity {
     Uri imageCameraUri;
     String imageCameraPath;
 
+    //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
 
     @Override
@@ -62,9 +64,10 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        profileBitmap = null;
-        originalBitmapCrop = null;
-        originalBitmapNormal = null;
+
+        profileBitmap = null;//-profileBitmap: contain the current profile image
+        originalBitmapCrop = null; //-contain the original image (cropped version )
+        originalBitmapNormal = null; //-contain the original image (image without cropping)
 
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(EditProfile.this,
@@ -72,13 +75,12 @@ public class EditProfile extends AppCompatActivity {
                 1);
 
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-
         //It's useful to avoid showing keyboard when the activity start(By default keybard
         //is open automatically and the cursor is located in the first field)
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get all the references to the component
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         edtName = (EditText) findViewById(R.id.edtName);
         edtSurname = (EditText) findViewById(R.id.edtSurname);
         edtCity = (EditText) findViewById(R.id.edtCity);
@@ -88,15 +90,14 @@ public class EditProfile extends AppCompatActivity {
         edtMail = (EditText) findViewById(R.id.edtMail);
         edtDescription = (EditText) findViewById(R.id.description);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
-        btnEditImg = (ImageButton)findViewById(R.id.btnEditImg);
+        btnEditImg = (ImageButton) findViewById(R.id.btnEditImg);
         profileImg = (ImageView) findViewById(R.id.profileImage);
         swPhone = (Switch) findViewById(R.id.swPhone);
         swStreet = (Switch) findViewById(R.id.swStreet);
         swMail = (Switch) findViewById(R.id.swMail);
-        lockStreet = (ImageView)findViewById(R.id.lockStreet);
-        lockPhone = (ImageView)findViewById(R.id.lockPhine);
-        lockMail = (ImageView)findViewById(R.id.lockMail);
-        //edtBirth = (MaterialEditText) findViewById(R.id.edtBirth);
+        lockStreet = (ImageView) findViewById(R.id.lockStreet);
+        lockPhone = (ImageView) findViewById(R.id.lockPhine);
+        lockMail = (ImageView) findViewById(R.id.lockMail);
 
         //Get the user object coming from the activity ShowProfile in order to initialize all the fields
         extras = getIntent().getExtras();
@@ -106,11 +107,14 @@ public class EditProfile extends AppCompatActivity {
 
         setUpPictureAction();
 
+        //catch the ACTION_DOWN event on the user image.
+        //In this case a new activity (the one for cropping the image) will be launch
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(user.getImagePath() != null){
+                if (user.getImagePath() != null) {
                     Intent intent = new Intent(EditProfile.this, Cropper.class);
+                    //Put the path of the image as extra
                     intent.putExtra("user-path", user.getImagePath());
                     startActivityForResult(intent, IMAGE_CROP);
                 }
@@ -119,28 +123,34 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
+        //catch when the switch button related to the e-mail field is crushed
         swMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(swMail.isChecked()){
+                //Verify the status of the field.
+                //If it's public, it will become private, otherwise will become public.
+                //In both cases, change also the state of the lock.
+                if (swMail.isChecked()) {
                     user.setCheckMail("public");
                     lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
-                }
-                else{
+                } else {
                     user.setCheckMail("private");
                     lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
             }
         });
 
+        //catch when the switch button related to the street field is crushed
         swStreet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(swStreet.isChecked()){
+                //Verify the status of the field.
+                //If it's public, it will become private, otherwise will become public.
+                //In both cases, change also the state of the lock.
+                if (swStreet.isChecked()) {
                     user.setCheckStreet("public");
                     lockStreet.setImageResource(R.drawable.ic_lock_open_black_24dp);
-                }
-                else{
+                } else {
                     user.setCheckStreet("private");
                     lockStreet.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
@@ -148,14 +158,17 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
+        //catch when the switch button related to the phone field is crushed
         swPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(swPhone.isChecked()){
+                //Verify the status of the field.
+                //If it's public, it will become private, otherwise will become public.
+                //In both cases, change also the state of the lock.
+                if (swPhone.isChecked()) {
                     user.setCheckPhone("public");
                     lockPhone.setImageResource(R.drawable.ic_lock_open_black_24dp);
-                }
-                else{
+                } else {
                     user.setCheckPhone("private");
                     lockPhone.setImageResource(R.drawable.ic_lock_outline_black_24dp);
                 }
@@ -178,10 +191,9 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setName(new Pair<>(edtName.getText().toString(),user.getName().second));
+                user.setName(new Pair<>(edtName.getText().toString(), user.getName().second));
             }
         });
-
 
 
         edtSurname.addTextChangedListener(new TextWatcher() {
@@ -197,7 +209,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setSurname(new Pair<>(edtSurname.getText().toString(),user.getSurname().second));
+                user.setSurname(new Pair<>(edtSurname.getText().toString(), user.getSurname().second));
             }
         });
 
@@ -214,10 +226,9 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setEmail(new Pair<>(edtMail.getText().toString(),user.getEmail().second));
+                user.setEmail(new Pair<>(edtMail.getText().toString(), user.getEmail().second));
             }
         });
-
 
 
         edtCity.addTextChangedListener(new TextWatcher() {
@@ -233,7 +244,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setCity(new Pair<>(edtCity.getText().toString(),user.getCity().second));
+                user.setCity(new Pair<>(edtCity.getText().toString(), user.getCity().second));
             }
         });
 
@@ -250,7 +261,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setPhone(new Pair<>(edtPhone.getText().toString(),user.getPhone().second));
+                user.setPhone(new Pair<>(edtPhone.getText().toString(), user.getPhone().second));
             }
         });
 
@@ -267,7 +278,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setCap(new Pair<>(edtCap.getText().toString(),user.getCap().second));
+                user.setCap(new Pair<>(edtCap.getText().toString(), user.getCap().second));
             }
         });
 
@@ -284,7 +295,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setStreet(new Pair<>(edtStreet.getText().toString(),user.getStreet().second));
+                user.setStreet(new Pair<>(edtStreet.getText().toString(), user.getStreet().second));
             }
         });
 
@@ -301,7 +312,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setDescription(new Pair<>(edtDescription.getText().toString(),user.getDescription().second));
+                user.setDescription(new Pair<>(edtDescription.getText().toString(), user.getDescription().second));
             }
         });
 
@@ -311,8 +322,10 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //Create a new intent in order to restore the activity ShowProfile.
                 //I put in a bundle the object user, with all the modification that the user have done previously
-                String alertMessage  = user.checkInfo(getApplicationContext());
-                if(alertMessage!=null){
+                //But before, check if all the mandatory fields have been completed.
+                //If some errors occurs, show an error message to the user that ask for the completion of all the fields
+                String alertMessage = user.checkInfo(getApplicationContext());
+                if (alertMessage != null) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
                     alertDialog.setTitle(getString(R.string.alert_title))
                             .setMessage(alertMessage)
@@ -322,7 +335,8 @@ public class EditProfile extends AppCompatActivity {
                                     //Nothing to do
                                 }
                             }).show();
-                }else {
+                } else {
+                    //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
                     setUserInfo(user);
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
@@ -343,22 +357,26 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onBackPressed() {
+        //If the back button will be presses, it means that
+        //the user will want to cancel all changes made so far.
         super.onBackPressed();
-        if(originalBitmapCrop!=null){
+        //For the data no modification are useful, instead it's necessary to restore
+        //the two original image profile
+        if (originalBitmapCrop != null) {
             saveToInternalStorageOriginalImage(originalBitmapCrop);
         }
-        if(originalBitmapNormal!=null){
+        if (originalBitmapNormal != null) {
             saveToInternalStorage(originalBitmapNormal);
         }
     }
 
     private void setUpPictureAction() {
-
-        if(user.getImagePath()==null){
+        if (user.getImagePath() == null) {
             //First Access
-            Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.profile);
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
             saveToInternalStorage(image);
             saveToInternalStorageOriginalImage(image);
 
@@ -366,10 +384,11 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void openGallery(){
+    //Open the gallery or the camera in order to modify the current image profile.
+    private void openGallery() {
 
         //Show a popup where the user can choose to pick a new image from the camera or from the gallery
-        CharSequence chooses[] = new CharSequence[] {getString(R.string.gallery), getString(R.string.camera)};
+        CharSequence chooses[] = new CharSequence[]{getString(R.string.gallery), getString(R.string.camera)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.uploadImage));
@@ -377,11 +396,13 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int activity) {
                 //Depends on the result, i call a different activity
-                if(activity == IMAGE_CAMERA){
-
+                if (activity == IMAGE_CAMERA) {
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if(takePicture.resolveActivity(getPackageManager())!=null) {
-                        Long tsLong = System.currentTimeMillis()/1000;
+                    if (takePicture.resolveActivity(getPackageManager()) != null) {
+                        //I use this method because the simplest method of taking the uri alone doesn't work from android 7.0.
+                        //Moreover the method to take the image from the bundle imply a low quality of the image.
+                        //So i create a new image and take it when it will be taken.
+                        Long tsLong = System.currentTimeMillis() / 1000;
                         String ts = tsLong.toString();
                         File photo = new File(Environment.getExternalStorageDirectory() + "/photo" + ts + ".jpeg");
                         imageCameraPath = photo.getAbsolutePath();
@@ -392,15 +413,15 @@ public class EditProfile extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        imageCameraUri = BookSharingFileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photo);
-
+                        //Take the URI where the image will be stored.
+                        imageCameraUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photo);
                         takePicture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
                                 imageCameraUri);
                         takePicture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivityForResult(takePicture, IMAGE_CAMERA);//zero can be replaced with any action code
                     }
-                }
-                else if(activity == IMAGE_GALLERY){
+                } else if (activity == IMAGE_GALLERY) {
+                    //Take the image from the gallery
                     Intent takePicture = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                     startActivityForResult(takePicture, IMAGE_GALLERY);//zero can be replaced with any action code
                 }
@@ -412,63 +433,58 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Set a new image on the profile
-        if(resultCode == RESULT_OK ){
-            if(requestCode == IMAGE_GALLERY){
-
-                //return null, I don't know why
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_GALLERY) {
                 Uri pictureUri = data.getData();
-
-
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(
                         pictureUri, filePathColumn, null, null, null);
                 cursor.moveToFirst();
-
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
-
                 BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inJustDecodeBounds =true;
+                opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(filePath, opt);
-
                 //Calculate inSampleSize
-                opt.inSampleSize = calculateInSampleSize(opt,256,256);
-
+                opt.inSampleSize = calculateInSampleSize(opt, 256, 256);
                 opt.inJustDecodeBounds = false;
-                Bitmap img = BitmapFactory.decodeFile(filePath,opt);
+                Bitmap img = BitmapFactory.decodeFile(filePath, opt);
 
-                Bitmap rotateImg = rotateBitmap(getOrientation(filePath),img);
+                //Because some version of andorid return the photos from the gallery with a strange orientation,
+                //I rotate the bitmap in order to correct it.
+                //So if the image will be return with 90°, i rotate and carry it to 0°
+                Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
                 saveToInternalStorageOriginalImage(rotateImg);
 
-            } else if(requestCode == IMAGE_CAMERA){
+            } else if (requestCode == IMAGE_CAMERA) {
 
                 String filePath = imageCameraPath;
-
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(filePath, opt);
-
                 //Calculate inSampleSize
                 opt.inSampleSize = calculateInSampleSize(opt, 256, 256);
-
                 opt.inJustDecodeBounds = false;
                 Bitmap img = BitmapFactory.decodeFile(filePath, opt);
+                //Because some version of andorid return the photos from the gallery with a strange orientation,
+                //I rotate the bitmap in order to correct it.
+                //So if the image will be return with 90°, i rotate and carry it to 0°
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
-
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
                 saveToInternalStorageOriginalImage(rotateImg);
             }
-            if (requestCode == IMAGE_CROP){
+            if (requestCode == IMAGE_CROP) {
+                //Case when the image was cropped.
+                //I take the new image and set it as user image
                 Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
@@ -478,6 +494,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
+    //Get the orientation of the image specified on the path.
     private int getOrientation(String path) {
         int orientationExif, orientation = 0;
 
@@ -501,8 +518,10 @@ public class EditProfile extends AppCompatActivity {
         return orientation;
     }
 
-    private void setUser(User user){
+    //Take all the user information from User object and fill the screen with that information
+    private void setUser(User user) {
 
+        //Text information
         edtName.setText(user.getName().first);
         edtSurname.setText(user.getSurname().first);
         edtCity.setText(user.getCity().first);
@@ -512,34 +531,32 @@ public class EditProfile extends AppCompatActivity {
         edtMail.setText(user.getEmail().first);
         edtDescription.setText(user.getDescription().first);
 
-
-        if(user.checkMail()){
+        //set the correct status of the lock and switch button
+        if (user.checkMail()) {
             swMail.setChecked(true);
             lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
-        }
-        else{
+        } else {
             swMail.setChecked(false);
             lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
         }
 
-        if(user.checkPhone()){
+        if (user.checkPhone()) {
             lockPhone.setImageResource(R.drawable.ic_lock_open_black_24dp);
             swPhone.setChecked(true);
-        }
-        else{
+        } else {
             lockPhone.setImageResource(R.drawable.ic_lock_outline_black_24dp);
             swPhone.setChecked(false);
         }
 
-        if(user.checkStreet()){
+        if (user.checkStreet()) {
             lockStreet.setImageResource(R.drawable.ic_lock_open_black_24dp);
             swStreet.setChecked(true);
-        }
-        else{
+        } else {
             lockStreet.setImageResource(R.drawable.ic_lock_outline_black_24dp);
             swStreet.setChecked(false);
         }
 
+        //Upload the user image
         Bitmap imageNormal = loadImageFromStorage();
         if (imageNormal != null) {
             originalBitmapNormal = imageNormal;
@@ -552,25 +569,26 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
-    protected void setUserInfo(User user){
 
-        if(profileBitmap!=null){
+    protected void setUserInfo(User user) {
+
+        if (profileBitmap != null) {
             saveToInternalStorage(profileBitmap);
         }
 
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         Gson json = new Gson();
         String toStore = json.toJson(user);
-        edit.putString("user",toStore).commit();
+        edit.putString("user", toStore).commit();
         edit.commit();
     }
 
     public User getUserInfo() {
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         String defaultString = "";
         String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)){
+        if (userName.equals(defaultString)) {
             return new User();
         }
         Gson json = new Gson();
@@ -578,18 +596,16 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-
-    private String saveToInternalStorage(Bitmap bitmapImage){
-
+    private String saveToInternalStorage(Bitmap bitmapImage) {
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
-        if(!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        File mypath=new File(directory,User.profileImgName);
+        File mypath = new File(directory, User.profileImgName);
 
         FileOutputStream fos = null;
         try {
@@ -605,17 +621,17 @@ public class EditProfile extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
-    private String saveToInternalStorageOriginalImage(Bitmap bitmapImage){
+    private String saveToInternalStorageOriginalImage(Bitmap bitmapImage) {
 
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
-        if(!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        File mypath=new File(directory,User.profileImgNameCrop);
+        File mypath = new File(directory, User.profileImgNameCrop);
 
         FileOutputStream fos = null;
         try {
@@ -629,11 +645,10 @@ public class EditProfile extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
-    private Bitmap loadImageFromStorage()
-    {
-        Bitmap image=null;
+    private Bitmap loadImageFromStorage() {
+        Bitmap image = null;
 
-        if(user.getImagePath()!=null) {
+        if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
         }
         return image;
@@ -692,10 +707,11 @@ public class EditProfile extends AppCompatActivity {
         return inSampleSize;
     }
 
-    private Bitmap rotateBitmap(int orientation, Bitmap source){
+    //Rotate the bitmap source of the orientation specified as parameter
+    private Bitmap rotateBitmap(int orientation, Bitmap source) {
         Matrix matrix = new Matrix();
         matrix.postRotate(orientation);
-        if(source != null){
+        if (source != null) {
             return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
         }
         return null;
