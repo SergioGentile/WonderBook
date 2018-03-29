@@ -456,7 +456,7 @@ public class EditProfile extends AppCompatActivity {
                 opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(filePath, opt);
                 //Calculate inSampleSize
-                opt.inSampleSize = calculateInSampleSize(opt, 256, 256);
+                opt.inSampleSize = calculateInSampleSize(opt, 512, 512);
                 opt.inJustDecodeBounds = false;
                 Bitmap img = BitmapFactory.decodeFile(filePath, opt);
 
@@ -476,7 +476,7 @@ public class EditProfile extends AppCompatActivity {
                 opt.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(filePath, opt);
                 //Calculate inSampleSize
-                opt.inSampleSize = calculateInSampleSize(opt, 256, 256);
+                opt.inSampleSize = calculateInSampleSize(opt, 512, 512);
                 opt.inJustDecodeBounds = false;
                 Bitmap img = BitmapFactory.decodeFile(filePath, opt);
                 //Because some version of andorid return the photos from the gallery with a strange orientation,
