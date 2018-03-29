@@ -71,7 +71,7 @@ public class EditProfile extends AppCompatActivity {
 
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(EditProfile.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1);
 
 
@@ -589,7 +589,7 @@ public class EditProfile extends AppCompatActivity {
         SharedPreferences.Editor edit = sharedPref.edit();
         Gson json = new Gson();
         String toStore = json.toJson(user);
-        edit.putString("user", toStore).commit();
+        edit.putString("user", toStore).apply();
         edit.commit();
     }
 
