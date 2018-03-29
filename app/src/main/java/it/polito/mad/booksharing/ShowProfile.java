@@ -293,17 +293,17 @@ public class ShowProfile extends AppCompatActivity {
     protected void getUserInfo(){
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
 
-            String defaultString = "";
-            String userName = sharedPref.getString("user", defaultString);
+        String defaultString = "";
+        String userName = sharedPref.getString("user", defaultString);
             if (userName.equals(defaultString)){
                 user =  new User();
-                return;
-            }
-            Gson json = new Gson();
+            return;
+        }
+        Gson json = new Gson();
             user= json.fromJson(userName, User.class);
             if(user.getDescription().first.equals("")){
 
                 user.setDescription(new Pair<>(getString(R.string.description_value),"public"));
-            }
         }
+    }
 }
