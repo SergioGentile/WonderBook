@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
@@ -18,8 +19,11 @@ public class User implements Parcelable{
     private Pair<String,String> name, surname, phone, email, description, city, cap, street;
     private String imagePath;
 
-    public static final String profileImgName = "profile.jpeg";
-    public static final String profileImgNameCrop = "profile_cropper.jpeg";
+    public static final int IMAGE_QUALITY = 100;
+    public static final Bitmap.CompressFormat COMPRESS_FORMAT_BIT= Bitmap.CompressFormat.JPEG;
+    public static final String COMPRESS_FORMAT_STR = "jpeg";
+    public static final String profileImgName = "profile." + COMPRESS_FORMAT_STR;
+    public static final String profileImgNameCrop = "profile_cropper." + COMPRESS_FORMAT_STR;
     public static final String imageDir = "imageDir";
 
     private static String myDefault="";

@@ -20,11 +20,12 @@ import java.io.FileOutputStream;
 
 public class Cropper extends AppCompatActivity {
 
-    ImageButton btnRotate, btnCrop;
-    TextView btnDone;
-    CropperView cropperView;
-    Bitmap newBitmap, originalBitmap;
-    boolean isSnappedToCenter = false;
+    private ImageButton btnRotate, btnCrop;
+    private TextView btnDone;
+    private CropperView cropperView;
+    private Bitmap originalBitmap;
+    private float rotation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +44,14 @@ public class Cropper extends AppCompatActivity {
         btnRotate = (ImageButton)findViewById(R.id.rotate_button);
         cropperView = (CropperView)findViewById(R.id.imageView);
         cropperView.setImageBitmap(originalBitmap);
+        rotation = 0;
 
         //Catch when the button done is pressed, so the user end to modify own image
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cropImage();
                 //Save the cropped image on the storage
-                saveImageOnInternalStorage(cropperView.getCroppedBitmap());
+                saveImageOnInternalStorage(rotateBitmap(cropperView.getCroppedBitmap(), rotation%360));
                 setResult(Activity.RESULT_OK);
                 finish();
             }
@@ -63,16 +64,7 @@ public class Cropper extends AppCompatActivity {
             public void onClick(View v) {
                 //Rotate the image
                 //newBitmap contain the new version of the image
-                if(newBitmap!=null){
-                    cropperView.setImageBitmap(rotateBitmap(newBitmap, 90));
-                    newBitmap = cropperView.getCroppedBitmap();
-                }
-                else{
-                    cropperView.setImageBitmap(rotateBitmap(originalBitmap, 90));
-                    newBitmap = cropperView.getCroppedBitmap();
-                }
-                /*cropperView.setImageBitmap(rotateBitmap(cropperView.getCroppedBitmap() , 90));
-                newBitmap = cropperView.getCroppedBitmap();*/
+                cropperView.setRotation(rotation+=90);
             }
         });
 
@@ -91,9 +83,9 @@ public class Cropper extends AppCompatActivity {
         //If the back button will be presses, it means that
         //the user will want to cancel all changes made so far.
         super.onBackPressed();
-        //For the data no modification are useful, instead it's necessary to restore
-        //the two original image profile
-        newBitmap = originalBitmap;
+        setResult(Activity.RESULT_CANCELED);
+        finish();
+
     }
 
     //Function to rotate the bitmap
@@ -103,19 +95,6 @@ public class Cropper extends AppCompatActivity {
         return Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
     }
 
-
-    //Function to crop the image.
-    //Set the new cropped image as new user image profile
-    private void cropImage(){
-        newBitmap = cropperView.getCroppedBitmap();
-        //If the image is the same of the original one, set the same image.
-        if(newBitmap!=null ){
-            cropperView.setImageBitmap(newBitmap);
-        }
-        else{
-            newBitmap = originalBitmap;
-        }
-    }
 
     //Save the image on the storage dedicated to the application.
     private void saveImageOnInternalStorage(Bitmap bitmap){
@@ -128,7 +107,7 @@ public class Cropper extends AppCompatActivity {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(mypath);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmap.compress(User.COMPRESS_FORMAT_BIT, User.IMAGE_QUALITY, fos);
             fos.close();
         } catch (Exception e) {
             Toast.makeText(Cropper.this, R.string.error_upload_image, Toast.LENGTH_SHORT).show();

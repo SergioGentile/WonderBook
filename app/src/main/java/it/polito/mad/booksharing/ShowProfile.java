@@ -35,7 +35,7 @@ public class ShowProfile extends AppCompatActivity {
     private ImageButton btnModify;
     private Toolbar toolbar;
     private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
-    private  User user;
+    private User user;
     private LinearLayout llParent, llPhone, llMail, llDescription;
     private CircleImageView circleImageView;
     private CircleImageView expandedImage;

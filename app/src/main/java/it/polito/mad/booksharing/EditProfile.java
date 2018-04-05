@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
@@ -39,21 +41,22 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
 
 
 public class EditProfile extends AppCompatActivity {
 
     //All declarations
-    Toolbar toolbar;
-    EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
-    ImageButton btnDone, btnEditImg;
-    ImageView profileImg, lockStreet, lockPhone, lockMail;
-    Bitmap profileBitmap, originalBitmapNormal, originalBitmapCrop;
-    Bundle extras;
-    User user;
-    Switch swPhone, swStreet, swMail;
-    Uri imageCameraUri;
-    String imageCameraPath;
+    private EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
+    private ImageButton btnDone, btnEditImg;
+    private ImageView profileImg, lockStreet, lockPhone, lockMail;
+    private Bitmap profileBitmap, originalBitmapNormal, originalBitmapCrop;
+    private User user;
+    private Switch swPhone, swStreet, swMail;
+    private Uri imageCameraUri;
+    private String imageCameraPath;
+    private File photoStorage;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -80,7 +83,6 @@ public class EditProfile extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get all the references to the component
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         edtName = (EditText) findViewById(R.id.edtName);
         edtSurname = (EditText) findViewById(R.id.edtSurname);
         edtCity = (EditText) findViewById(R.id.edtCity);
@@ -100,7 +102,6 @@ public class EditProfile extends AppCompatActivity {
         lockMail = (ImageView) findViewById(R.id.lockMail);
 
         //Get the user object stored in the SharedPreferences in order to initialize all the fields
-        extras = getIntent().getExtras();
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
@@ -403,19 +404,18 @@ public class EditProfile extends AppCompatActivity {
                         //I use this method because the simplest method of taking the uri alone doesn't work from android 7.0.
                         //Moreover the method to take the image from the bundle imply a low quality of the image.
                         //So i create a new image and take it when it will be taken.
-                        Long tsLong = System.currentTimeMillis() / 1000;
-                        String ts = tsLong.toString();
-                        File photo = new File(Environment.getExternalStorageDirectory() + "/photo" + ts + ".jpeg");
-                        imageCameraPath = photo.getAbsolutePath();
-                        if (!photo.exists()) {
+                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date()).replace(" ", "_").replace(":", "_");
+                        photoStorage = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/" + getResources().getString(R.string.app_name).replace(" ", "_") + "_" + currentDateTimeString + "." + User.COMPRESS_FORMAT_STR);
+                        imageCameraPath = photoStorage.getAbsolutePath();
+                        if (!photoStorage.exists()) {
                             try {
-                                photo.createNewFile();
+                                photoStorage.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
                         //Take the URI where the image will be stored.
-                        imageCameraUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photo);
+                        imageCameraUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photoStorage);
                         takePicture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
                                 imageCameraUri);
                         takePicture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -486,6 +486,7 @@ public class EditProfile extends AppCompatActivity {
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
                 saveToInternalStorageOriginalImage(rotateImg);
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
             }
             if (requestCode == IMAGE_CROP) {
                 //Case when the image was cropped.
@@ -628,7 +629,7 @@ public class EditProfile extends AppCompatActivity {
         try {
             fos = new FileOutputStream(mypath);
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmapImage.compress(User.COMPRESS_FORMAT_BIT, User.IMAGE_QUALITY, fos);
             fos.close();
             user.setImagePath(new String(directory + "/" + User.profileImgName));
 
@@ -657,7 +658,7 @@ public class EditProfile extends AppCompatActivity {
         try {
             fos = new FileOutputStream(mypath);
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmapImage.compress(User.COMPRESS_FORMAT_BIT, User.IMAGE_QUALITY, fos);
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();

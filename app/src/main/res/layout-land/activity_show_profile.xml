@@ -153,7 +153,6 @@
                                         android:layout_marginLeft="@dimen/margin_left"
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
-                                        android:gravity="center_vertical"
                                         android:textColor="@android:color/black"
                                         android:textSize="@dimen/tv_dim" />
 
@@ -181,11 +180,9 @@
                                         android:id="@+id/tvPhone"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
                                         android:layout_marginLeft="@dimen/margin_left"
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
-                                        android:gravity="center_vertical"
                                         android:textColor="@android:color/black"
                                         android:textSize="@dimen/tv_dim" />
                                 </LinearLayout>
@@ -211,11 +208,9 @@
                                         android:id="@+id/tvMail"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
                                         android:layout_marginLeft="@dimen/margin_left"
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
-                                        android:gravity="center_vertical"
                                         android:textColor="@android:color/black"
                                         android:textSize="@dimen/tv_dim" />
                                 </LinearLayout>
