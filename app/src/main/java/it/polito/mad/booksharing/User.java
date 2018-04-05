@@ -186,7 +186,7 @@ public class User implements Parcelable{
         String message = "";
 
         //Name check
-        Pattern namePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
+        Pattern namePatter = Pattern.compile("^[a-z ,.'-]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherName = namePatter.matcher(name.first);
         boolean findName = matcherName.find();
         if(name.first.equals(myDefault) || !findName){
@@ -198,7 +198,7 @@ public class User implements Parcelable{
         }
 
         //surname check
-        Pattern surnamePatter = Pattern.compile("^[a-z]+$", Pattern.CASE_INSENSITIVE);
+        Pattern surnamePatter = Pattern.compile("^[a-z ,.'-]+$", Pattern.CASE_INSENSITIVE);
         Matcher matcherSurname = surnamePatter.matcher(surname.first);
         boolean findSurname = matcherSurname.find();
         if(surname.first.equals(myDefault) || !findSurname){

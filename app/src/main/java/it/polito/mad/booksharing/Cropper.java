@@ -63,8 +63,16 @@ public class Cropper extends AppCompatActivity {
             public void onClick(View v) {
                 //Rotate the image
                 //newBitmap contain the new version of the image
-                cropperView.setImageBitmap(rotateBitmap(cropperView.getCroppedBitmap(), 90));
-                newBitmap = cropperView.getCroppedBitmap();
+                if(newBitmap!=null){
+                    cropperView.setImageBitmap(rotateBitmap(newBitmap, 90));
+                    newBitmap = cropperView.getCroppedBitmap();
+                }
+                else{
+                    cropperView.setImageBitmap(rotateBitmap(originalBitmap, 90));
+                    newBitmap = cropperView.getCroppedBitmap();
+                }
+                /*cropperView.setImageBitmap(rotateBitmap(cropperView.getCroppedBitmap() , 90));
+                newBitmap = cropperView.getCroppedBitmap();*/
             }
         });
 
@@ -76,6 +84,16 @@ public class Cropper extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //If the back button will be presses, it means that
+        //the user will want to cancel all changes made so far.
+        super.onBackPressed();
+        //For the data no modification are useful, instead it's necessary to restore
+        //the two original image profile
+        newBitmap = originalBitmap;
     }
 
     //Function to rotate the bitmap
