@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 
 public class Cropper extends AppCompatActivity {
 
-    private ImageButton btnRotate, btnCrop;
+    private ImageButton btnRotate;
     private TextView btnDone;
     private CropperView cropperView;
     private Bitmap originalBitmap;
@@ -40,7 +40,6 @@ public class Cropper extends AppCompatActivity {
 
         //Take all the references to the view
         btnDone = (TextView) findViewById(R.id.btn_done);
-        btnCrop = (ImageButton)findViewById(R.id.crop_button);
         btnRotate = (ImageButton)findViewById(R.id.rotate_button);
         cropperView = (CropperView)findViewById(R.id.imageView);
         cropperView.setImageBitmap(originalBitmap);
@@ -65,14 +64,6 @@ public class Cropper extends AppCompatActivity {
                 //Rotate the image
                 //newBitmap contain the new version of the image
                 cropperView.setRotation(rotation+=90);
-            }
-        });
-
-        //Fit the image to the center
-        btnCrop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cropperView.setImageBitmap(originalBitmap);
             }
         });
 

@@ -129,6 +129,7 @@
                                             android:hint="@string/name"
                                             android:nextFocusDown="@id/edtSurname"
                                             android:singleLine="true"
+                                            android:inputType="textMultiLine|textNoSuggestions"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
@@ -145,6 +146,7 @@
                                             android:hint="@string/surname"
                                             android:nextFocusDown="@id/edtCity"
                                             android:singleLine="true"
+                                            android:inputType="textMultiLine|textNoSuggestions"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
@@ -174,6 +176,7 @@
                                         android:hint="@string/city"
                                         android:nextFocusDown="@id/edtCap"
                                         android:singleLine="true"
+                                        android:inputType="textMultiLine|textNoSuggestions"
                                         android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
@@ -264,7 +267,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
                                         android:hint="@string/street"
-                                        android:inputType="text"
+                                        android:inputType="text|textNoSuggestions"
                                         android:nextFocusDown="@id/edtPhone"
                                         android:singleLine="true"
                                         android:textSize="@dimen/tv_dim" />
@@ -352,7 +355,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="@string/mail"
-                                        android:inputType="textEmailAddress"
+                                        android:inputType="textEmailAddress|textNoSuggestions"
                                         android:singleLine="true"
                                         android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
@@ -411,7 +414,7 @@
                                 android:layout_marginBottom="@dimen/bottom_inside_box"
                                 android:layout_marginLeft="@dimen/margin_left"
                                 android:layout_marginRight="@dimen/margin_right"
-                                android:inputType="text|textMultiLine"
+                                android:inputType="text|textMultiLine|textNoSuggestions"
                                 android:textSize="@dimen/tv_dim" />
 
                         </LinearLayout>

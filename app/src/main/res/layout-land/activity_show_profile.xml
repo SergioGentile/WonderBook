@@ -89,7 +89,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="@dimen/top_inside_box"
-                            android:inputType="textMultiLine"
+                            android:inputType="textMultiLine|textNoSuggestions"
                             android:gravity="center"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/name_size"
@@ -154,6 +154,7 @@
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
                                         android:textColor="@android:color/black"
+                                        android:inputType="textMultiLine|textNoSuggestions"
                                         android:textSize="@dimen/tv_dim" />
 
                                 </LinearLayout>
@@ -184,6 +185,7 @@
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
                                         android:textColor="@android:color/black"
+                                        android:inputType="textMultiLine|textNoSuggestions"
                                         android:textSize="@dimen/tv_dim" />
                                 </LinearLayout>
 
@@ -193,6 +195,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
+                                    android:inputType="textMultiLine|textNoSuggestions"
                                     android:orientation="horizontal">
 
                                     <ImageView
@@ -212,6 +215,7 @@
                                         android:layout_marginRight="@dimen/margin_right"
                                         android:background="?attr/editTextBackground"
                                         android:textColor="@android:color/black"
+                                        android:inputType="textMultiLine|textNoSuggestions"
                                         android:textSize="@dimen/tv_dim" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -243,6 +247,7 @@
                                     android:layout_marginLeft="@dimen/margin_left"
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
                                     android:textColor="@android:color/black"
+                                    android:inputType="textMultiLine|textNoSuggestions"
                                     android:textSize="@dimen/tv_dim" />
                             </LinearLayout>
                         </LinearLayout>
