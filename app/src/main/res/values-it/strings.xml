@@ -28,4 +28,12 @@
     <string name="allert_end_sin">deve essere inserito</string>
     <string name="correctly">correttamente</string>
     <string name="description_description">Aggiungi una breve descrizione di te</string>
+    <string name="information">Informazioni</string>
+    <string name="bar_code_fill">Compila tramite codice a barre</string>
+    <string name="title">Titolo</string>
+    <string name="author">Autore</string>
+    <string name="year">Anno</string>
+    <string name="publisher">Casa Editrice</string>
+    <string name="condition">Condizioni</string>
+    <string name="condition_description">Descrivi la condizione del tuo libro e documenta con una foto</string>
 </resources>

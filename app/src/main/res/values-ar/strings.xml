@@ -28,4 +28,13 @@
     <string name="allert_end_sin">يجب أن توضع</string>
     <string name="correctly">بشكل صحيح</string>
     <string name="description_description">أضف وصفاً موجزاً عن نفسك هنا</string>
+    <string name="information">معلومات</string>
+    <string name="bar_code_fill">املأ مع الباركود</string>
+    <string name="title">لقب</string>
+    <string name="author">مؤلف</string>
+    <string name="year">عام</string>
+    <string name="publisher">الناشر</string>
+    <string name="condition_description">وصف حالة كتابك ومستندك مع صورة</string>
+    <string name="condition">الشروط</string>
+
 </resources>

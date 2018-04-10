@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1002589308770",
+    "firebase_url": "https://sharingbook-5d02a.firebaseio.com",
+    "project_id": "sharingbook-5d02a",
+    "storage_bucket": "sharingbook-5d02a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002589308770:android:0861ad273ee7ebb1",
+        "android_client_info": {
+          "package_name": "it.polito.mad.booksharing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1002589308770-5kr8mgmn81t01bsscpa85h14l348acs8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8cVgw45xC5PhJIT5nrS3oQd3hxSFPsoM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002589308770:android:a3c580eb1a6d307d",
+        "android_client_info": {
+          "package_name": "it.sergiogentile.barcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1002589308770-5kr8mgmn81t01bsscpa85h14l348acs8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8cVgw45xC5PhJIT5nrS3oQd3hxSFPsoM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
