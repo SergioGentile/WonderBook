@@ -1,10 +1,13 @@
 package it.polito.mad.booksharing;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Pair;
+
+import com.google.gson.Gson;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -287,6 +290,34 @@ public class User implements Parcelable{
             return true;
         }
         return false;
+    }
+
+    //All of the user info are stored inside the SharedPrefernces as String that is
+    //the serialization of a json object populated with the information about a user
+    public static User getUserInfo(Context context){
+        User user;
+        SharedPreferences sharedPref =  context.getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+
+        String defaultString = "";
+        String jsonString = sharedPref.getString("user", defaultString);
+        if (jsonString.equals(defaultString)){
+            //If there are no information about the user in the shared preferences
+            //than I need to create a new Object
+            return new User();
+        }
+
+        //If I'm here I have retrieved the serialized json object
+        //So I just need to deserialize it in order to obtain a User object populated with
+        //all the info saved by the user user
+        Gson json = new Gson();
+        user= json.fromJson(jsonString, User.class);
+        //The the field of the user description is empty I will intialize it with the defualt
+        // description specified inside the strings.xml
+        if(user.getDescription().first.equals("")){
+
+            user.setDescription(new Pair<>(context.getString(R.string.description_value),"public"));
+        }
+        return user;
     }
 
 

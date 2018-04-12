@@ -18,8 +18,11 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AlertDialogLayout;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -48,18 +52,61 @@ import java.util.Date;
 
 public class AddBook extends Activity {
 
-    String photoName;
-    private ImageButton btnDone;
+    private String photoName;
+    private ImageButton btnDone, btnDelete;
     private ImageView btnScan;
-    EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription;
-    ImageView myImageBook;
-    String urlImageBook, urlMyImageBook, isbn10, isbn13;
+    private EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription;
+    private ImageView myImageBook;
+    private String urlImageBook, urlMyImageBook, isbn10, isbn13;
     final static int SCAN_CODE = 2, IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
     private String pathMyImageBook;
     private RatingBar ratingBar;
+    private Book book;
+    private String key;
+    private boolean edit;
+    private String uploadDate;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState); // the UI component values are saved here.
+        outState.putParcelable("book", book);
+        outState.putString("path", pathMyImageBook);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        book = inState.getParcelable("book");
+        pathMyImageBook = inState.getString("path");
+
+        /*ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        //If the directory where I want to save the image does not exist I create it
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+
+        Bitmap bitmapImage = null;
+        //Create of the destination path
+        pathMyImageBook = new String(directory + "/book.jpeg");
+
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        opt.inSampleSize = calculateInSampleSize(opt, 512, 512);
+        opt.inJustDecodeBounds = false;
+        Bitmap img = BitmapFactory.decodeFile(pathMyImageBook, opt);
+        if(img!=null && !edit){
+            myImageBook.setImageBitmap(img);
+            myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+        }*/
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +115,7 @@ public class AddBook extends Activity {
         setContentView(R.layout.activity_add_book);
         btnScan = (ImageView) findViewById(R.id.btnScan);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
+        btnDelete = (ImageButton) findViewById(R.id.btnDelete);
         tvAuthor = (EditText) findViewById(R.id.tvAuthor);
         tvTitle = (EditText) findViewById(R.id.tvTitle);
         tvProduction = (EditText) findViewById(R.id.tvProduction);
@@ -76,6 +124,72 @@ public class AddBook extends Activity {
         myImageBook = (ImageView) findViewById(R.id.myImageBook);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         urlImageBook = new String("");
+        pathMyImageBook = "";
+
+        edit = getIntent().getBooleanExtra("edit", false);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        if (!edit) {
+            btnDelete.setVisibility(View.GONE);
+        } else {
+            btnDelete.setVisibility(View.VISIBLE);
+            key = getIntent().getExtras().getString("key");
+            book = getIntent().getParcelableExtra("book");
+            tvTitle.setText(book.getTitle());
+            tvAuthor.setText(book.getAuthor());
+            tvYear.setText(book.getYear());
+            tvDescription.setText(book.getDescription());
+            ratingBar.setRating(new Float(book.getRating()));
+            tvProduction.setText(book.getPublisher());
+            urlImageBook = new String(book.getUrlImage());
+            urlMyImageBook = new String(book.getUrlMyImage());
+            myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+            uploadDate = book.getDate();
+
+
+            Picasso.with(AddBook.this).load(urlMyImageBook).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(myImageBook, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+
+
+            });
+        }
+
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence chooses[] = new CharSequence[]{"Yes", "No"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
+                builder.setTitle("Sei sicuro di voler cancellare il libro?");
+                builder.setItems(chooses, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int choose) {
+                        Log.d("Choose", choose + "");
+                        if (choose == 0) {
+                            //User is sure, i must delete all
+                            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
+                            storageReference.delete();
+                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+                            databaseReference.removeValue();
+                            finish();
+
+                        }
+                    }
+                });
+                builder.show();
+
+            }
+        });
 
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,12 +204,15 @@ public class AddBook extends Activity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !urlImageBook.isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && urlMyImageBook!="") {
-                    if(urlImageBook.isEmpty()){
+                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !urlImageBook.isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
+                    if (urlImageBook.isEmpty()) {
                         urlImageBook = urlMyImageBook;
                     }
-                    uploadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", "Sergio", isbn10, isbn13, Float.toString(ratingBar.getRating())));
-                    //startActivity(new Intent(MainActivity.this, SearchAdd.class));
+                    if (edit) {
+                        reloadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, "Sergio", book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
+                    } else {
+                        uploadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", "Sergio", isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                    }
                     finish();
                 } else {
                     Toast.makeText(AddBook.this, "Attenzione: compilare tutti i campi", Toast.LENGTH_SHORT).show();
@@ -138,7 +255,7 @@ public class AddBook extends Activity {
                 if (urlImage != null) {
                     urlImageBook = urlImage;
                 }
-                if(publisher!=null){
+                if (publisher != null) {
                     tvProduction.setText(publisher);
                 }
             } else {
@@ -224,6 +341,23 @@ public class AddBook extends Activity {
         return directory.getAbsolutePath();
     }
 
+    public void reloadDatabase(Book book) {
+        final Book bookToUpload = book;
+        //Replace with the real upload date
+        bookToUpload.setDate(uploadDate);
+        //Replace the image file
+        if (!pathMyImageBook.isEmpty()) {
+
+            Uri file = Uri.fromFile(new File(pathMyImageBook));
+            StorageReference riversRef = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
+            riversRef.putFile(file);
+        }
+        //Replace the content of the database
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+        databaseReference.setValue(bookToUpload);
+    }
+
     public void uploadDatabase(Book book) {
         final Book bookToUpload = book;
         //Upload the image
@@ -244,7 +378,6 @@ public class AddBook extends Activity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 urlMyImageBook = downloadUrl.toString();
-                Log.d("IMAGE URI", downloadUrl.toString());
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference databaseReference = firebaseDatabase.getReference("books");
                 bookToUpload.setUrlMyImage(urlMyImageBook);
@@ -276,13 +409,13 @@ public class AddBook extends Activity {
 
         return inSampleSize;
     }
-    
+
     private void openGallery() {
 
         //Show a popup where the user can choose to pick a new image from the camera or from the gallery
         CharSequence chooses[] = new CharSequence[]{getString(R.string.gallery), getString(R.string.camera)};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
         builder.setTitle(getString(R.string.uploadImage));
         builder.setItems(chooses, new DialogInterface.OnClickListener() {
             @Override

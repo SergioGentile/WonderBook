@@ -39,8 +39,18 @@ public class CameraScan extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("PAUSE", "CALLED!");
         mScannerView.stopCamera();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("PAUSE", "CALLED!");
+        mScannerView.startCamera();
+    }
+
+
 
     public void scanCode() {
         mScannerView = new ZXingScannerView(this);

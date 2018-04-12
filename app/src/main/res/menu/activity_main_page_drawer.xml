@@ -6,6 +6,7 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:iconTint="@color/windowBackground"
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="Mostra profilo" />

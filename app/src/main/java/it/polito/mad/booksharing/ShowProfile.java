@@ -68,7 +68,7 @@ public class ShowProfile extends AppCompatActivity {
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        getUserInfo();
+        user = User.getUserInfo(ShowProfile.this);
         setUser(user);
 
 

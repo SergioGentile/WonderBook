@@ -1,8 +1,11 @@
 package it.polito.mad.booksharing;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,6 +29,7 @@ public class ShowAllMyBook extends AppCompatActivity {
 
     ListView lv;
     List<Book> data;
+    List<String> keys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +38,18 @@ public class ShowAllMyBook extends AppCompatActivity {
 
         lv = (ListView)findViewById(R.id.lv);
         data = new ArrayList<>();
+        keys = new ArrayList<>();
 
         showAllMyBooks("Sergio");
     }
 
 
     private void showAllMyBooks(String ownerName){
+        final List<String> colors = new ArrayList<>();
+        colors.add(new String("#00897B"));
+        colors.add(new String("#3F51B5"));
+        colors.add(new String("#C62828"));
+        colors.add(new String("#512DA8"));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("books").orderByChild("owner").equalTo(ownerName);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -49,6 +59,8 @@ public class ShowAllMyBook extends AppCompatActivity {
                     for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
                         Book book = bookSnap.getValue(Book.class);
                         data.add(book);
+                        Log.d("Butto dentro ", bookSnap.getKey());
+                        keys.add(bookSnap.getKey());
                     }
                 }
 
@@ -77,30 +89,59 @@ public class ShowAllMyBook extends AppCompatActivity {
                         //Now convertView refers to an instance of my layout.
                         TextView title = (TextView) convertView.findViewById(R.id.title_adapter);
                         TextView author = (TextView) convertView.findViewById(R.id.author_adapter);
+                        TextView publication = (TextView) convertView.findViewById(R.id.publication_adapter);
                         // TextView owner = (TextView) convertView.findViewById(R.id.owner_adapter);
-                        ImageView imageBook = (ImageView) convertView.findViewById(R.id.image_adapter);
-
+                        final ImageView imageBook = (ImageView) convertView.findViewById(R.id.image_adapter);
+                        imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         Book book = data.get(position);
                         title.setText(book.getTitle());
                         author.setText(book.getAuthor());
+                        publication.setText(book.getPublisher() + ", " + book.getYear());
                         //owner.setText(book.getOwner());
 
-                        Picasso.with( ShowAllMyBook.this )
-                                .load( book.getUrlMyImage() ).noFade()
-                                // .error( R.drawable.ic_error_black_24dp )
+                        Picasso.with(ShowAllMyBook.this)
+                                .load(book.getUrlImage()).noFade()
                                 .placeholder( R.drawable.progress_animation )
-                                .into( imageBook );
+                                .into(imageBook, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                                    }
+
+                                    @Override
+                                    public void onError() {
+
+                                    }
+                                });
+
 
                         //Here to show all the book
-                        LinearLayout ll = (LinearLayout) convertView.findViewById(R.id.adapter_ll);
-                        ll.setOnClickListener(new View.OnClickListener() {
+                        CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv);
+                        cv.setCardBackgroundColor(Color.parseColor(colors.get(position%colors.size())));
+                        TextView tvEdit = (TextView) convertView.findViewById(R.id.editMyBook);
+
+                        tvEdit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(ShowAllMyBook.this, AddBook.class).putExtra("edit", true);
+                                intent.putExtra("book", data.get(position));
+                                intent.putExtra("key", keys.get(position));
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+
+
+                        cv.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, ShowBookFull.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable("book", data.get(position));
+                                intent.putExtra("key", keys.get(position));
                                 intent.putExtras(bundle);
                                 startActivity(intent);
+                                finish();
                             }
                         });
 
