@@ -46,6 +46,7 @@ public class MainPage extends AppCompatActivity
         User user = User.getUserInfo(MainPage.this);
         TextView tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         tvName.setText(user.getName() + " " + user.getSurname());
+        navView.getBackground().setAlpha(80);
     }
 
     @Override

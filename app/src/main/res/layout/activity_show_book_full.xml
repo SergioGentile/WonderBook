@@ -167,7 +167,7 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:text="Informazioni"
+                        android:text="@string/information"
                         android:textSize="15sp" />
 
                     <LinearLayout
@@ -256,7 +256,7 @@
                             android:layout_marginRight="16dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
-                            android:text="Condizione"
+                            android:text="@string/condition"
                             android:textSize="15sp" />
 
                         <RelativeLayout
