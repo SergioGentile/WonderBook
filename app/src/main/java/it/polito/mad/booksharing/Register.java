@@ -35,7 +35,6 @@ public class Register extends AppCompatActivity {
                 u.setKey(instanceReference.getKey().toString());
                 instanceReference.setValue(u);
                 Bundle bundle = new Bundle();
-
                 Intent intent = new Intent(Register.this, EditProfile.class);
                 bundle.putParcelable("user", u);
                 intent.putExtras(bundle);

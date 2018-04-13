@@ -571,8 +571,8 @@ public class EditProfile extends AppCompatActivity {
         edtStreet.setText(user.getStreet().getValue());
         edtPhone.setText(user.getPhone().getValue());
         edtMail.setText(user.getEmail().getValue());
-       // edtDescription.setText(user.getDescription().getValue());
-        edtDescription.setText(user.getKey());
+        edtDescription.setText(user.getDescription().getValue());
+
         //set the correct status of the lock and switch button
         if (user.checkMail()) {
             swMail.setChecked(true);
