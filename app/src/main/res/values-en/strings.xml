@@ -40,5 +40,6 @@
     <string name="register">Sing in</string>
     <string name="login">Login</string>
     <string name="loginDescription">Insert your email and password</string>
+    <string name ="changeMail">You are changing your access credential. Are you sure?</string>
 
 </resources>

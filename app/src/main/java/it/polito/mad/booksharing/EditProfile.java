@@ -59,6 +59,7 @@ public class EditProfile extends AppCompatActivity {
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
+    private String initialMail;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -108,7 +109,7 @@ public class EditProfile extends AppCompatActivity {
         user = getUserInfo();
         //Set all the fields of the user in edtName, edtSurname...
         setUser(user);
-
+        initialMail = user.getEmail().first;
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
 
@@ -340,7 +341,33 @@ public class EditProfile extends AppCompatActivity {
                                     //Nothing to do
                                 }
                             }).show();
-                } else {
+                }
+                else if(!initialMail.equals(user.getEmail().first)){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
+                    alertDialog.setTitle(getString(R.string.alert_title));
+                    alertDialog.setMessage(getString((R.string.changeMail)));
+                    alertDialog.setPositiveButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    setUserInfo(user);
+                                    Intent intent = new Intent();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("user", user);
+                                    intent.putExtras(bundle);
+                                    setResult(Activity.RESULT_OK, intent);
+                                    finish();
+                                }
+                            });
+                    alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Nothing to do
+                                }
+                            });
+                    alertDialog.show();
+                }
+                else {
                     //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
                     setUserInfo(user);
                     Intent intent = new Intent();
