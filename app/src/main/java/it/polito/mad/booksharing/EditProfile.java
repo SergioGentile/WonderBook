@@ -20,6 +20,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -123,10 +124,10 @@ public class EditProfile extends AppCompatActivity {
 
         user = getIntent().getParcelableExtra("user");
 
-        user = getUserInfo();
+
         //Set all the fields of the user in edtName, edtSurname...
 
-        initialMail = user.getEmail().first;
+        initialMail = user.getEmail().getValue();
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
 
@@ -361,7 +362,7 @@ public class EditProfile extends AppCompatActivity {
                                 }
                             }).show();
                 }
-                else if(!initialMail.equals(user.getEmail().first)){
+                else if(!initialMail.equals(user.getEmail().getValue())){
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
                     alertDialog.setTitle(getString(R.string.alert_title));
                     alertDialog.setMessage(getString((R.string.changeMail)));
