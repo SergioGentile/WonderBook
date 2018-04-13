@@ -20,7 +20,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -32,15 +31,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -77,6 +72,7 @@ public class EditProfile extends AppCompatActivity {
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
+    private String initialMail;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -122,15 +118,15 @@ public class EditProfile extends AppCompatActivity {
         lockPhone = (ImageView) findViewById(R.id.lockPhine);
         lockMail = (ImageView) findViewById(R.id.lockMail);
 
-
-
-
-
         //Get the user object stored in the SharedPreferences in order to initialize all the fields
      //   getUserInfoFromShared();
 
         user = getIntent().getParcelableExtra("user");
 
+        user = getUserInfo();
+        //Set all the fields of the user in edtName, edtSurname...
+
+        initialMail = user.getEmail().first;
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
 
@@ -364,7 +360,33 @@ public class EditProfile extends AppCompatActivity {
                                     //Nothing to do
                                 }
                             }).show();
-                } else {
+                }
+                else if(!initialMail.equals(user.getEmail().first)){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
+                    alertDialog.setTitle(getString(R.string.alert_title));
+                    alertDialog.setMessage(getString((R.string.changeMail)));
+                    alertDialog.setPositiveButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    setUserInfo();
+                                    Intent intent = new Intent();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("user", user);
+                                    intent.putExtras(bundle);
+                                    setResult(Activity.RESULT_OK, intent);
+                                    finish();
+                                }
+                            });
+                    alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Nothing to do
+                                }
+                            });
+                    alertDialog.show();
+                }
+                else {
                     //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
                     setUserInfo();
                     Intent intent = new Intent();
@@ -533,7 +555,6 @@ public class EditProfile extends AppCompatActivity {
         }
 
     }
-
 
 
     //Get the orientation of the image specified on the path.

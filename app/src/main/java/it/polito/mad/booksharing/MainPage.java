@@ -248,6 +248,8 @@ public class MainPage extends AppCompatActivity
 
     private void setUser( ){
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
         profileImage = (ImageView)navView.findViewById(R.id.profileImageNavBar);
         tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
         Bitmap image = null;
