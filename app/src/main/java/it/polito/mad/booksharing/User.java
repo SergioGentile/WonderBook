@@ -1,11 +1,8 @@
 package it.polito.mad.booksharing;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Pair;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +13,7 @@ import java.util.regex.Pattern;
 //This interface implements the Parcelable interface because the object must be shared between more than one activity.
 
 public class User implements Parcelable{
-    private Pair<String,String> name, surname, phone, email, description, city, cap, street;
+    private MyPair name, surname, phone, email, description, city, cap, street;
     private String imagePath;
 
     public static final int IMAGE_QUALITY = 100;
@@ -26,22 +23,21 @@ public class User implements Parcelable{
     public static final String profileImgNameCrop = "profile_cropper." + COMPRESS_FORMAT_STR;
     public static final String imageDir = "imageDir";
 
+
     private static String myDefault="";
     public User(){
-        //When a new object is created all the field will be empty and public
-        this.name = new Pair<>("","public");
-        this.surname=new Pair<>("","public");
-        this.phone=new Pair<>("","public");
-        this.email = new Pair<>("","public");
-        this.description = new Pair<>("","public");
-        this.city= new Pair<>("","public");
-        this.cap= new Pair<>("","public");
-        this.street= new Pair<>("","public");
 
-
+        name=new MyPair();
+        surname=new MyPair();
+        phone=new MyPair();
+        email=new MyPair();
+        description=new MyPair();
+        city=new MyPair();
+        cap=new MyPair();
+        street = new MyPair();
     }
 
-    public User(Pair<String, String> name, Pair<String, String> surname, Pair<String, String> phone, Pair<String, String> email, Pair<String, String> description, Pair<String, String> city, Pair<String, String> cap, Pair<String, String> street) {
+    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
@@ -50,82 +46,100 @@ public class User implements Parcelable{
         this.city = city;
         this.cap = cap;
         this.street = street;
+    }
+
+    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street,String imagePath) {
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.email = email;
+        this.description = description;
+        this.city = city;
+        this.cap = cap;
+        this.street = street;
+        this.imagePath = imagePath;
+    }
+
+    public User(User value) {
+
+        this.name = new MyPair(value.getName());
+        this.surname = new MyPair(value.getSurname());
+        this.phone = new MyPair(value.getPhone());
+        this.email = new MyPair(value.getEmail());
+        this.description = new MyPair(value.getDescription());
+        this.city = new MyPair(value.getCity());
+        this.cap = new MyPair(value.getCap());
+        this.street =new MyPair( value.getStreet());
+        this.imagePath = new String(value.getImagePath());
     }
 
     //All the setter and getter of the fields
-    public Pair<String, String> getName() {
+    public MyPair getName() {
         return name;
     }
 
-    public void setName(Pair<String, String> name) {
+    public void setName(MyPair name) {
         this.name = name;
     }
 
-    public Pair<String, String> getSurname() {
+    public MyPair getSurname() {
         return surname;
     }
 
-    public void setSurname(Pair<String, String> surname) {
+    public void setSurname(MyPair surname) {
         this.surname = surname;
     }
 
-    public Pair<String, String> getPhone() {
+    public MyPair getPhone() {
         return phone;
     }
 
-    public void setPhone(Pair<String, String> phone) {
+    public void setPhone(MyPair phone) {
         this.phone = phone;
     }
 
-    public Pair<String, String> getEmail() {
+    public MyPair getEmail() {
         return email;
     }
 
-    public void setEmail(Pair<String, String> email) {
+    public void setEmail(MyPair email) {
         this.email = email;
     }
 
-    public Pair<String, String> getDescription() {
+    public MyPair getDescription() {
         return description;
     }
 
-    public void setDescription(Pair<String, String> description) {
+    public void setDescription(MyPair description) {
         this.description = description;
 
     }
 
-    public Pair<String, String> getCity() {
+    public MyPair getCity() {
         return city;
     }
 
-    public void setCity(Pair<String, String> city) {
+    public void setCity(MyPair city) {
         this.city = city;
     }
 
-    public Pair<String, String> getCap() {
+    public MyPair getCap() {
         return cap;
     }
 
-    public void setCap(Pair<String, String> cap) {
+    public void setCap(MyPair cap) {
         this.cap = cap;
     }
 
-    public Pair<String, String> getStreet() {
+    public MyPair getStreet() {
         return street;
     }
 
-    public void setStreet(Pair<String, String> street) {
+    public void setStreet(MyPair street) {
         this.street = street;
     }
 
-    public String getImagePath(){
-        return this.imagePath;
-    }
 
-    public void setImagePath(String path){
-
-        this.imagePath = path;
-    }
 
 
     @Override
@@ -136,14 +150,14 @@ public class User implements Parcelable{
     //Used to serialize the object
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.surname.first+"/t"+this.surname.second);
-        dest.writeString(this.name.first+"/t"+this.name.second);
-        dest.writeString(this.phone.first+"/t"+this.phone.second);
-        dest.writeString(this.email.first+"/t"+this.email.second);
-        dest.writeString(this.description.first + "/t" + this.description.second);
-        dest.writeString(this.city.first+"/t"+this.city.second);
-        dest.writeString(this.cap.first+"/t"+this.cap.second);
-        dest.writeString(this.street.first+"/t"+this.street.second);
+        dest.writeString(this.surname.getValue()+"/t"+this.surname.getStatus());
+        dest.writeString(this.name.getValue()+"/t"+this.name.getStatus());
+        dest.writeString(this.phone.getValue()+"/t"+this.phone.getStatus());
+        dest.writeString(this.email.getValue()+"/t"+this.email.getStatus());
+        dest.writeString(this.description.getValue() + "/t" + this.description.getStatus());
+        dest.writeString(this.city.getValue()+"/t"+this.city.getStatus());
+        dest.writeString(this.cap.getValue()+"/t"+this.cap.getStatus());
+        dest.writeString(this.street.getValue()+"/t"+this.street.getStatus());
         dest.writeString(this.getImagePath());
     }
 
@@ -162,21 +176,21 @@ public class User implements Parcelable{
     //Method used to deserialize the method
     public User(Parcel parcel) {
         String[] newname = parcel.readString().split("/t");
-        this.name = new Pair<String, String>(newname[0],newname[1]);
+        this.name = new MyPair(newname[0],newname[1]);
         String[] newsurname = parcel.readString().split("/t");
-        this.surname = new Pair<String, String>(newsurname[0],newsurname[1]);
+        this.surname = new MyPair(newsurname[0],newsurname[1]);
         String[] newphone = parcel.readString().split("/t");
-        this.phone = new Pair<String, String>(newphone[0],newphone[1]);
+        this.phone = new MyPair(newphone[0],newphone[1]);
         String[] newmail = parcel.readString().split("/t");
-        this.email = new Pair<String, String>(newmail[0],newmail[1]);
+        this.email = new MyPair(newmail[0],newmail[1]);
         String[] descr = parcel.readString().split("/t");
-        this.description = new Pair<String, String>(descr[0],descr[1]);
+        this.description = new MyPair(descr[0],descr[1]);
         String[] newcity = parcel.readString().split("/t");
-        this.city = new Pair<String, String>(newcity[0],newcity[1]);
+        this.city = new MyPair(newcity[0],newcity[1]);
         String[] newcap = parcel.readString().split("/t");
-        this.cap = new Pair<String, String>(newcap[0],newcap[1]);
+        this.cap = new MyPair(newcap[0],newcap[1]);
         String[] newstreet = parcel.readString().split("/t");
-        this.street = new Pair<String, String>(newstreet[0],newstreet[1]);
+        this.street = new MyPair(newstreet[0],newstreet[1]);
         this.imagePath = parcel.readString();
 
     }
@@ -191,46 +205,46 @@ public class User implements Parcelable{
 
         //Name check
         Pattern namePatter = Pattern.compile("^[a-z ,.'-]+$", Pattern.CASE_INSENSITIVE);
-        Matcher matcherName = namePatter.matcher(name.first);
+        Matcher matcherName = namePatter.matcher(name.getValue());
         boolean findName = matcherName.find();
-        if(name.first.equals(myDefault) || !findName){
+        if(name.getValue().equals(myDefault) || !findName){
             counter++;
             message += " -" + context.getString(R.string.name) + "\n";
-            if(!findName && !name.first.equals(myDefault)){
+            if(!findName && !name.getValue().equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
         //surname check
         Pattern surnamePatter = Pattern.compile("^[a-z ,.'-]+$", Pattern.CASE_INSENSITIVE);
-        Matcher matcherSurname = surnamePatter.matcher(surname.first);
+        Matcher matcherSurname = surnamePatter.matcher(surname.getValue());
         boolean findSurname = matcherSurname.find();
-        if(surname.first.equals(myDefault) || !findSurname){
+        if(surname.getValue().equals(myDefault) || !findSurname){
             counter++;
             message += " -" + context.getString(R.string.surname) + "\n";
-            if(!findSurname && !surname.first.equals(myDefault)){
+            if(!findSurname && !surname.getValue().equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
         //email check
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcherMail = emailPatter.matcher(email.first);
+        Matcher matcherMail = emailPatter.matcher(email.getValue());
         boolean findMail = matcherMail.find();
-        if(email.first.equals(myDefault) || !findMail){
+        if(email.getValue().equals(myDefault) || !findMail){
             counter++;
             message += " -" + context.getString(R.string.mail) + "\n";
-            if(!findMail && !email.first.equals(myDefault)){
+            if(!findMail && !email.getValue().equals(myDefault)){
                 correctly = context.getString(R.string.correctly);
             }
         }
 
-        if(cap.first.equals(myDefault)){
+        if(cap.getValue().equals(myDefault)){
             counter++;
             message += " -" + context.getString(R.string.cap) + "\n";
         }
 
-        if(city.first.equals(myDefault)){
+        if(city.getValue().equals(myDefault)){
             counter++;
             message += " -" + context.getString(R.string.city) + "\n";
         }
@@ -252,42 +266,88 @@ public class User implements Parcelable{
 
     //Methods used to change the status of an attribute (private|| public)
     public void setCheckMail(String checkMail) {
-        String email = this.email.first;
-        this.email = new Pair<>(email,checkMail);
+        String email = this.email.getValue();
+        this.email = new MyPair(email,checkMail);
     }
 
     public void setCheckStreet(String checkStreet) {
-        String street = this.street.first;
-        this.street = new Pair<>(street,checkStreet);
+        String street = this.street.getValue();
+        this.street = new MyPair(street,checkStreet);
     }
 
     public void setCheckPhone(String checkPhone) {
-        String phone = this.phone.first;
-        this.phone = new Pair<>(phone,checkPhone);
+        String phone = this.phone.getValue();
+        this.phone = new MyPair(phone,checkPhone);
     }
 
     //Methods used to check if an attribute is public(return true) or private(return false)
 
     public boolean checkMail(){
-        if(this.email.second.equals("public")){
+        if(this.email.getStatus().equals("public")){
             return true;
         }
         return false;
     }
 
     public boolean checkStreet(){
-        if(this.street.second.equals("public")){
+        if(this.street.getStatus().equals("public")){
             return true;
         }
         return false;
     }
 
     public boolean checkPhone(){
-        if(this.phone.second.equals("public")){
+        if(this.phone.getStatus().equals("public")){
             return true;
         }
         return false;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+
+    public static class MyPair{
+
+        private String value;
+        private String status;
+
+        MyPair(){
+            status = "public";
+            value="";
+        }
+
+        MyPair(String value,String status){
+            this.value = value;
+            this.status = status;
+        }
+
+        public MyPair(MyPair name) {
+            this.value = new String(name.getValue());
+            this.status = new String(name.getStatus());
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
 }

@@ -20,6 +20,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -31,14 +32,31 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,13 +121,16 @@ public class EditProfile extends AppCompatActivity {
         lockPhone = (ImageView) findViewById(R.id.lockPhine);
         lockMail = (ImageView) findViewById(R.id.lockMail);
 
+
+
         //Get the user object stored in the SharedPreferences in order to initialize all the fields
-        user = getUserInfo();
-        //Set all the fields of the user in edtName, edtSurname...
-        setUser(user);
+        getUserInfoFromShared();
+
 
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
+
+        setUser(user);
 
         //catch the ACTION_DOWN event on the user image.
         //In this case a new activity (the one for cropping the image) will be launch
@@ -195,7 +216,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setName(new Pair<>(edtName.getText().toString(), user.getName().second));
+                user.setName(new User.MyPair(edtName.getText().toString(), user.getName().getStatus()));
             }
         });
 
@@ -213,7 +234,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setSurname(new Pair<>(edtSurname.getText().toString(), user.getSurname().second));
+                user.setSurname(new User.MyPair(edtSurname.getText().toString(), user.getSurname().getStatus()));
             }
         });
 
@@ -230,7 +251,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setEmail(new Pair<>(edtMail.getText().toString(), user.getEmail().second));
+                user.setEmail(new User.MyPair(edtMail.getText().toString(), user.getEmail().getStatus()));
             }
         });
 
@@ -248,7 +269,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setCity(new Pair<>(edtCity.getText().toString(), user.getCity().second));
+                user.setCity(new User.MyPair(edtCity.getText().toString(), user.getCity().getStatus()));
             }
         });
 
@@ -265,7 +286,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setPhone(new Pair<>(edtPhone.getText().toString(), user.getPhone().second));
+                user.setPhone(new User.MyPair(edtPhone.getText().toString(), user.getPhone().getStatus()));
             }
         });
 
@@ -282,7 +303,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setCap(new Pair<>(edtCap.getText().toString(), user.getCap().second));
+                user.setCap(new User.MyPair(edtCap.getText().toString(), user.getCap().getStatus()));
             }
         });
 
@@ -299,7 +320,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setStreet(new Pair<>(edtStreet.getText().toString(), user.getStreet().second));
+                user.setStreet(new User.MyPair(edtStreet.getText().toString(), user.getStreet().getStatus()));
             }
         });
 
@@ -316,7 +337,7 @@ public class EditProfile extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                user.setDescription(new Pair<>(edtDescription.getText().toString(), user.getDescription().second));
+                user.setDescription(new User.MyPair(edtDescription.getText().toString(), user.getDescription().getStatus()));
             }
         });
 
@@ -370,10 +391,14 @@ public class EditProfile extends AppCompatActivity {
         //For the data no modification are useful, instead it's necessary to restore
         //the two original image profile
         if (originalBitmapCrop != null) {
-            saveToInternalStorageOriginalImage(originalBitmapCrop);
+
+            String imagePath =saveToInternalStorageOriginalImage(originalBitmapCrop);
+            saveOnFireBaseOriginalImage(imagePath);
         }
         if (originalBitmapNormal != null) {
-            saveToInternalStorage(originalBitmapNormal);
+            String imagePath =saveToInternalStorage(originalBitmapNormal);
+            saveonFirebase(imagePath);
+
         }
     }
 
@@ -381,8 +406,10 @@ public class EditProfile extends AppCompatActivity {
         if (user.getImagePath() == null) {
             //On the first access the default image is copied in the internal storage in order to perform the crop operation
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
-            saveToInternalStorage(image);
-            saveToInternalStorageOriginalImage(image);
+            String imagePathUser =saveToInternalStorage(image);
+            saveonFirebase(imagePathUser);
+            String imagePathOrigin =saveToInternalStorageOriginalImage(image);
+            saveOnFireBaseOriginalImage(imagePathOrigin);
 
         }
 
@@ -468,7 +495,8 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
-                saveToInternalStorageOriginalImage(rotateImg);
+                String imagePath=saveToInternalStorageOriginalImage(rotateImg);
+                saveOnFireBaseOriginalImage(imagePath);
 
             } else if (requestCode == IMAGE_CAMERA) {
 
@@ -487,7 +515,8 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
-                saveToInternalStorageOriginalImage(rotateImg);
+                String imagePath=saveToInternalStorageOriginalImage(rotateImg);
+                saveOnFireBaseOriginalImage(imagePath);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
             }
             if (requestCode == IMAGE_CROP) {
@@ -500,6 +529,7 @@ public class EditProfile extends AppCompatActivity {
         }
 
     }
+
 
 
     //Get the orientation of the image specified on the path.
@@ -530,14 +560,14 @@ public class EditProfile extends AppCompatActivity {
     private void setUser(User user) {
 
         //Text information
-        edtName.setText(user.getName().first);
-        edtSurname.setText(user.getSurname().first);
-        edtCity.setText(user.getCity().first);
-        edtCap.setText(user.getCap().first);
-        edtStreet.setText(user.getStreet().first);
-        edtPhone.setText(user.getPhone().first);
-        edtMail.setText(user.getEmail().first);
-        edtDescription.setText(user.getDescription().first);
+        edtName.setText(user.getName().getValue());
+        edtSurname.setText(user.getSurname().getValue());
+        edtCity.setText(user.getCity().getValue());
+        edtCap.setText(user.getCap().getValue());
+        edtStreet.setText(user.getStreet().getValue());
+        edtPhone.setText(user.getPhone().getValue());
+        edtMail.setText(user.getEmail().getValue());
+        edtDescription.setText(user.getDescription().getValue());
 
         //set the correct status of the lock and switch button
         if (user.checkMail()) {
@@ -583,32 +613,89 @@ public class EditProfile extends AppCompatActivity {
 
         if (profileBitmap != null) {
             //If I'm here the user has changed the image so I need to save it inside the Internal Storage
-            saveToInternalStorage(profileBitmap);
+            String imagePath =saveToInternalStorage(profileBitmap);
+            saveonFirebase(imagePath);
         }
 
+
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+        dbref.child("users").child(user.getName().getValue()).setValue(user);
+
+        setSharedPrefUserInfo(user);
+    }
+
+    private void setSharedPrefUserInfo(User u){
         //I Create a new json object in order to store all the information contained inside my user object.
         //Then I save it inside the SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         Gson json = new Gson();
-        String toStore = json.toJson(user);
+        String toStore = json.toJson(u);
         edit.putString("user", toStore).apply();
         edit.commit();
+        setUser(u);
+
+
+    }
+    private void saveonFirebase(String imagePath) {
+
+        Uri file = Uri.fromFile(new File(imagePath));
+        //Create a storage reference from our app
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getName().getValue()+"/picture.jpg");
+        UploadTask uploadTask = riversRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+
+            }
+        });
     }
 
-    public User getUserInfo() {
-        //I retrieve all the information about the user from the sharedPreferences in a form of a Json Object
-        //and then I deserialize it obtainig a User object
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+    private void saveOnFireBaseOriginalImage(String imagePath) {
+
+
+        Uri file = Uri.fromFile(new File(imagePath));
+        //Create a storage reference from our app
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getName().getValue()+"/picture_Original.jpg");
+        UploadTask uploadTask = riversRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+
+            }
+        });
+    }
+
+
+
+
+    private void getUserInfoFromShared() {
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
         String defaultString = "";
-        String jsonString = sharedPref.getString("user", defaultString);
-        //If the sharedPreferences are empty this is the first access so I create a new User Object
-        if (jsonString.equals(defaultString)) {
-            return new User();
+        String userName = sharedPref.getString("user", defaultString);
+        if (userName.equals(defaultString)){
+            user= new User();
+            return;
         }
-        //else I deserialize the jsonString and populate the User object
         Gson json = new Gson();
-        return json.fromJson(jsonString, User.class);
+        user=json.fromJson(userName, User.class);
+
     }
 
 
@@ -622,7 +709,7 @@ public class EditProfile extends AppCompatActivity {
         if (!directory.exists()) {
             directory.mkdir();
         }
-
+        String imagePath=null;
         //Create of the destination path
         File mypath = new File(directory, User.profileImgName);
 
@@ -633,12 +720,13 @@ public class EditProfile extends AppCompatActivity {
             // Use the compress method on the BitMap object to write image to the OutputStream
             bitmapImage.compress(User.COMPRESS_FORMAT_BIT, User.IMAGE_QUALITY, fos);
             fos.close();
-            user.setImagePath(new String(directory + "/" + User.profileImgName));
+            imagePath = new String(directory + "/" + User.profileImgName);
+            user.setImagePath(imagePath);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return directory.getAbsolutePath();
+        return imagePath;
     }
 
 
@@ -665,7 +753,7 @@ public class EditProfile extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return directory.getAbsolutePath();
+        return new String(directory + "/" + User.profileImgNameCrop);
     }
 
     //This method will load the bitmap saved inside the Internal Storage of the application

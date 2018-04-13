@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +27,22 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,8 +85,7 @@ public class ShowProfile extends AppCompatActivity {
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        getUserInfo();
-        setUser(user);
+        getUserInfoFromFireBase("Alessia");
 
 
         //Catch when the button modify it's pressed
@@ -97,6 +113,7 @@ public class ShowProfile extends AppCompatActivity {
         });
 
     }
+
 
     private void zoomImage() {
 
@@ -248,8 +265,7 @@ public class ShowProfile extends AppCompatActivity {
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
                 Bundle result= data.getExtras();
-                getUserInfo();
-                setUser(user);
+                getUserInfoFromSharedPref("Alessia");
             }
         }
     }
@@ -258,27 +274,27 @@ public class ShowProfile extends AppCompatActivity {
     private void setUser(User user){
 
         //Text information
-        tvName.setText(user.getName().first + " " +  user.getSurname().first);
-        tvPhone.setText(user.getPhone().first);
-        tvMail.setText(user.getEmail().first);
-        tvDescription.setText(user.getDescription().first);
+        tvName.setText(user.getName().getValue() + " " +  user.getSurname().getValue());
+        tvPhone.setText(user.getPhone().getValue());
+        tvMail.setText(user.getEmail().getValue());
+        tvDescription.setText(user.getDescription().getValue());
 
         //Show only the information that have not been made private by the user
-        if(user.checkStreet() && !user.getStreet().first.equals("")){
-            tvStreet.setText(user.getStreet().first + " (" + user.getCity().first+")");
+        if(user.checkStreet() && !user.getStreet().getValue().equals("")){
+            tvStreet.setText(user.getStreet().getValue() + " (" + user.getCity().getValue()+")");
         }
         else{
-            tvStreet.setText(user.getCity().first);
+            tvStreet.setText(user.getCity().getValue());
         }
 
-        if (!user.checkPhone() || user.getPhone().first.equals("") ) {
+        if (!user.checkPhone() || user.getPhone().getValue().equals("") ) {
             llPhone.setVisibility(View.GONE);
         }
         else{
             llPhone.setVisibility(View.VISIBLE);
         }
 
-        if (!user.checkMail() || user.getEmail().first.equals("") ) {
+        if (!user.checkMail() || user.getEmail().getValue().equals("") ) {
             llMail.setVisibility(View.GONE);
         }
         else{
@@ -302,28 +318,122 @@ public class ShowProfile extends AppCompatActivity {
 
     //All of the user info are stored inside the SharedPrefernces as String that is
     //the serialization of a json object populated with the information about a user
-    protected void getUserInfo(){
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
 
-            String defaultString = "";
-            String jsonString = sharedPref.getString("user", defaultString);
-            if (jsonString.equals(defaultString)){
-                //If there are no information about the user in the shared preferences
-                //than I need to create a new Object
-                user =  new User();
-                return;
+    private void getUserInfoFromFireBase(String userID) {
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("users").child("Alessia").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
+                    getImageInfoFromFireBase("Alessia");
+
+
+
             }
 
-            //If I'm here I have retrieved the serialized json object
-            //So I just need to deserialize it in order to obtain a User object populated with
-            //all the info saved by the user user
-            Gson json = new Gson();
-            user= json.fromJson(jsonString, User.class);
-            //The the field of the user description is empty I will intialize it with the defualt
-            // description specified inside the strings.xml
-            if(user.getDescription().first.equals("")){
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                user.setDescription(new Pair<>(getString(R.string.description_value),"public"));
+            }
+        });
+
+
+
+
+    }
+
+    private void getImageInfoFromFireBase(String userID) {
+
+
+
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference();
+        StorageReference userPictureRef = riversRef.child("userImgProfile/" +userID+"/picture.jpg");
+
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+        //If the directory where I want to save the image does not exist I create it
+        if (!directory.exists()) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
+            circleImageView.setImageBitmap(image);
         }
+
+        //Create of the destination path
+        File userPicture = new File(directory, User.profileImgName);
+
+        userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                showUserPictureProfile(user);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + userID+"/picture_Original.jpg");
+
+
+        File originalPicture = new File(directory, User.profileImgNameCrop);
+
+        originalPictureRef.getFile(originalPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                showUserPictureProfile(user);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println(e.toString());
+            }
+        });
+
+
+    }
+
+    private void saveUserInfoInSharedPref(User user) {
+
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        Gson json = new Gson();
+        String toStore = json.toJson(user);
+        this.user = new User(user);
+        edit.putString("user", toStore).apply();
+        edit.commit();
+
+
+        //getUserInfoFromSharedPref("Alessia");
+        setUser(user);
+
+    }
+
+
+    protected void getUserInfoFromSharedPref(String userid){
+
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        String defaultString = "";
+        String userName = sharedPref.getString("user", defaultString);
+        if (userName.equals(defaultString)){
+            user= new User();
+            return;
+        }
+        Gson json = new Gson();
+        user=json.fromJson(userName, User.class);
+        if(user.getDescription().getValue().equals("")){
+
+            user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+        }
+        setUser(user);
+
     }
 }
