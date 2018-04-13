@@ -114,7 +114,6 @@ public class ShowProfile extends AppCompatActivity {
 
     }
 
-
     private void zoomImage() {
 
         //Take the reference of the field

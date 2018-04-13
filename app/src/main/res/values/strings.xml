@@ -38,4 +38,26 @@
     <string name="publisher">Publisher</string>
     <string name="condition">Condition</string>
     <string name="condition_description">Describe the condition of your book here</string>
+    <string name="title_activity_start">Start</string>
+    <string name="slogan">Share your library, find a world of books</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="register">Sing in</string>
+    <string name="login">Login</string>
+    <string name="title_activity_login">Login</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="loginDescription">Insert your email and password</string>
+    <string name="title_activity_register">Register</string>
+
 </resources>

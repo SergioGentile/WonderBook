@@ -36,5 +36,9 @@
     <string name="publisher">الناشر</string>
     <string name="condition_description">وصف حالة كتابك ومستندك مع صورة</string>
     <string name="condition">الشروط</string>
+    <string name="slogan">کتابخانه خود را به اشتراک بگذارید، یک دنیای کتاب پیدا کنید</string>
+    <string name="register">ثبت نام</string>
+    <string name="login">ورود</string>
+    <string name="loginDescription">آدرس ایمیل و رمز عبور خود را وارد کنید</string>
 
 </resources>

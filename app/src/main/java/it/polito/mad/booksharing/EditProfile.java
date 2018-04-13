@@ -94,7 +94,8 @@ public class EditProfile extends AppCompatActivity {
 
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(EditProfile.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA},
                 1);
 
 

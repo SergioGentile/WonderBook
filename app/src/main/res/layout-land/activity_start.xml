@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad.booksharing.Start"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:gravity="center"
+                android:textSize="35sp"
+                android:textColor="@color/colorPrimaryDark"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/slogan"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="10dp"
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonRegister"
+                android:layout_width="@dimen/button_w"
+                android:layout_height="@dimen/button_h"
+                android:background="@drawable/my_rounded_button"
+                android:text="@string/register"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="15dp"/>
+
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="@dimen/button_w"
+                android:layout_height="@dimen/button_h"
+                android:background="@drawable/my_rounded_button"
+                android:text="@string/login"
+                android:textColor="@android:color/white"/>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

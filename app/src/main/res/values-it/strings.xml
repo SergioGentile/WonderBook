@@ -36,4 +36,8 @@
     <string name="publisher">Casa Editrice</string>
     <string name="condition">Condizioni</string>
     <string name="condition_description">Descrivi la condizione del tuo libro e documenta con una foto</string>
+    <string name="login">Accedi</string>
+    <string name="register">Regitrati</string>
+    <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
+    <string name="loginDescription">Inserisci la tua email e password</string>
 </resources>
