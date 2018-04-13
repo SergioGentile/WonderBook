@@ -68,11 +68,12 @@ public class AddBook extends Activity {
     private String key;
     private boolean edit;
     private String uploadDate;
+    private User user;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState); // the UI component values are saved here.
-        Book bookToSave = new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, "Sergio", isbn10, isbn13, Float.toString(ratingBar.getNumStars()));
+        Book bookToSave = new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getNumStars()));
         if (uploadDate != null) {
             bookToSave.setDate(uploadDate);
         }
@@ -129,6 +130,8 @@ public class AddBook extends Activity {
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         urlImageBook = "";
         urlMyImageBook = "";
+
+        user = getIntent().getExtras().getParcelable("user");
         if(savedInstanceState!=null){
             pathMyImageBook = savedInstanceState.getString("path", "");
         }
@@ -217,9 +220,9 @@ public class AddBook extends Activity {
             public void onClick(View v) {
                 if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
                     if (edit) {
-                        reloadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, "Sergio", book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
+                        reloadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
                     } else {
-                        uploadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", "Sergio", isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                        uploadDatabase(new Book(tvTitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                     }
                     finish();
                 } else {

@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            app:titleTextColor="@android:color/white"
-            app:title="@string/app_name" />
+            app:title="@string/app_name"
+            app:titleTextColor="@android:color/white" />
 
         <ImageButton
             android:id="@+id/btnEdit"
@@ -45,7 +45,7 @@
             android:layout_marginLeft="26dp"
             android:layout_marginRight="20dp"
             android:scaleType="fitXY"
-            android:src="@drawable/libro_prova"/>
+            android:src="@drawable/libro_prova" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -91,227 +91,245 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@android:color/white"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:text="Condiviso da"
-                        android:textSize="15sp" />
+                    android:layout_marginRight="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/profileImage"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="16dp"
-                            android:src="@drawable/profile" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginRight="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/shOwner"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Angela Amato"
-
-                                android:textColor="@android:color/black"
-                                android:textSize="18sp" />
-
-                            <TextView
-
-                                android:id="@+id/shPosition"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Torino, Via Bernardino Galliari 30"
-                                android:textColor="@android:color/darker_gray"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@android:color/white"
-                    android:orientation="vertical"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/information"
-                        android:textSize="15sp" />
-
-                    <LinearLayout
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_marginBottom="@dimen/bottom_inside_box"
-                            android:orientation="horizontal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:text="Casa Editrice: "
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <TextView
-                                android:textColor="@color/colorSecondaryText"
-                                android:id="@+id/shPublisher"
-                                android:layout_marginLeft="5dp"
-                                android:text="Mondadori, 2018"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:text="Stato: "
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <TextView
-                                android:textColor="@android:color/holo_green_dark"
-                                android:layout_marginLeft="5dp"
-                                android:text="Disponibile"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:text="Disponibile dal: "
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <TextView
-                                android:id="@+id/publishDate"
-                                android:textColor="@android:color/darker_gray"
-                                android:layout_marginLeft="5dp"
-                                android:text="10/10/2019"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@android:color/white"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:background="@android:color/white"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_marginLeft="16dp"
                             android:layout_marginRight="16dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:text="@string/condition"
+                            android:text="Condiviso da"
                             android:textSize="15sp" />
 
-                        <RelativeLayout
-                            android:layout_marginLeft="@dimen/margin_left"
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginBottom="@dimen/bottom_inside_box"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                            <android.support.v7.widget.CardView
-                                android:layout_marginRight="@dimen/margin_right"
-                                app:cardUseCompatPadding="true"
-                                android:id="@+id/cvImage"
-                                android:layout_width="90dp"
-                                android:layout_height="125dp"
-                                android:layout_alignParentLeft="true">
-
-                                <ImageView
-                                    android:id="@+id/shMyImage"
-                                    android:layout_width="90dp"
-                                    android:layout_height="125dp"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:scaleType="fitXY"
-                                    android:src="@mipmap/sharebook_icon" />
-                            </android.support.v7.widget.CardView>
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profileImage"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:src="@drawable/profile" />
 
                             <LinearLayout
-                                android:layout_marginTop="@dimen/top_inside_box"
-                                android:layout_toRightOf="@+id/cvImage"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginRight="10dp"
                                 android:orientation="vertical">
 
-                                <RatingBar
-                                    android:layout_marginBottom="10dp"
-                                    android:id="@+id/ratingBar"
-                                    style="?android:attr/ratingBarStyleSmall"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:numStars="5"
-                                    android:rating="2.5"
-                                    android:stepSize="0.5"
-                                    android:theme="@style/RatingBar" />
-
                                 <TextView
-                                    android:id="@+id/shDescription"
+                                    android:id="@+id/shOwner"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:inputType="textMultiLine"
-                                    android:text="Il libro si presenta in buone condizioni. Presenta solamente qualche problematica nei bordi ma è leggibille." />
+                                    android:text="Angela Amato"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="15sp" />
+
+                                <TextView
+                                    android:id="@+id/shPosition"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Torino, Via Bernardino Galliari 30"
+                                    android:textColor="@android:color/darker_gray"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/information"
+                            android:textSize="15sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/bottom_inside_box"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Casa Editrice: " />
+
+                                <TextView
+                                    android:id="@+id/shPublisher"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="Mondadori, 2018"
+                                    android:textColor="@color/colorSecondaryText" />
                             </LinearLayout>
 
-                        </RelativeLayout>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Stato: " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="Disponibile"
+                                    android:textColor="@android:color/holo_green_dark" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Disponibile dal: " />
+
+                                <TextView
+                                    android:id="@+id/publishDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="10/10/2019"
+                                    android:textColor="@android:color/darker_gray" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="@dimen/bottom_inside_box"
+                    android:layout_marginTop="10dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="10dp"
+                                android:text="@string/condition"
+                                android:textSize="15sp" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/bottom_inside_box"
+                                android:layout_marginLeft="@dimen/margin_left"
+                                android:layout_marginRight="@dimen/margin_right">
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/cvImage"
+                                    android:layout_width="90dp"
+                                    android:layout_height="125dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginRight="@dimen/margin_right"
+                                    app:cardUseCompatPadding="true">
+
+                                    <ImageView
+                                        android:id="@+id/shMyImage"
+                                        android:layout_width="90dp"
+                                        android:layout_height="125dp"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:scaleType="fitXY"
+                                        android:src="@mipmap/sharebook_icon" />
+                                </android.support.v7.widget.CardView>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/top_inside_box"
+                                    android:layout_toRightOf="@+id/cvImage"
+                                    android:orientation="vertical">
+
+                                    <RatingBar
+                                        android:id="@+id/ratingBar"
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:numStars="5"
+                                        android:rating="2.5"
+                                        android:stepSize="0.5"
+                                        android:theme="@style/RatingBar" />
+
+                                    <TextView
+                                        android:id="@+id/shDescription"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="textMultiLine"
+                                        android:text="Il libro si presenta in buone condizioni. Presenta solamente qualche problematica nei bordi ma è leggibille." />
+                                </LinearLayout>
+
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 

@@ -30,6 +30,7 @@ public class ShowAllMyBook extends AppCompatActivity {
     ListView lv;
     List<Book> data;
     List<String> keys;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +40,18 @@ public class ShowAllMyBook extends AppCompatActivity {
         lv = (ListView)findViewById(R.id.lv);
         data = new ArrayList<>();
         keys = new ArrayList<>();
-
-        showAllMyBooks("Sergio");
+        user = getIntent().getExtras().getParcelable("user");
+        showAllMyBooks(user.getKey());
     }
 
-
-    private void showAllMyBooks(String ownerName){
+    private void showAllMyBooks(String keyOwner){
         final List<String> colors = new ArrayList<>();
         colors.add(new String("#00897B"));
         colors.add(new String("#3F51B5"));
         colors.add(new String("#C62828"));
         colors.add(new String("#512DA8"));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("books").orderByChild("owner").equalTo(ownerName);
+        Query query = reference.child("books").orderByChild("owner").equalTo(keyOwner);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -59,7 +59,6 @@ public class ShowAllMyBook extends AppCompatActivity {
                     for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
                         Book book = bookSnap.getValue(Book.class);
                         data.add(book);
-                        Log.d("Butto dentro ", bookSnap.getKey());
                         keys.add(bookSnap.getKey());
                     }
                 }
@@ -124,7 +123,10 @@ public class ShowAllMyBook extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, AddBook.class).putExtra("edit", true);
-                                intent.putExtra("book", data.get(position));
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", user);
+                                bundle.putParcelable("book", data.get(position));
+                                intent.putExtras(bundle);
                                 intent.putExtra("key", keys.get(position));
                                 startActivity(intent);
                                 finish();
@@ -137,6 +139,7 @@ public class ShowAllMyBook extends AppCompatActivity {
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, ShowBookFull.class);
                                 Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", user);
                                 bundle.putParcelable("book", data.get(position));
                                 intent.putExtra("key", keys.get(position));
                                 intent.putExtras(bundle);
