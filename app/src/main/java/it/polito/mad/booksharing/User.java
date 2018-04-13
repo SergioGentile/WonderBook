@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class User implements Parcelable{
     private MyPair name, surname, phone, email, description, city, cap, street;
-    private String imagePath;
+    private String imagePath="";
     private String key;
     public static final int IMAGE_QUALITY = 100;
     public static final Bitmap.CompressFormat COMPRESS_FORMAT_BIT= Bitmap.CompressFormat.JPEG;
@@ -38,6 +38,7 @@ public class User implements Parcelable{
         city=new MyPair();
         cap=new MyPair();
         street = new MyPair();
+
     }
 
     public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street) {
