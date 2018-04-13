@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="it.polito.mad.booksharing.Start"
-    android:background="@android:color/white">
+    android:background="@color/colorDivider"
+    android:theme="@style/ThemeStart">
 
     <LinearLayout
         android:id="@+id/container"

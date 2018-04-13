@@ -27,4 +27,11 @@
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <!-- My Box Theme -->
+    <style name="ThemeStart" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/my_box</item>
+        <item name="colorControlActivated">@color/my_box</item>
+        <item name="colorControlNormal">@color/my_box</item>
+        <item name="android:textColorHint">@color/colorSecondaryText</item>
+    </style>
 </resources>

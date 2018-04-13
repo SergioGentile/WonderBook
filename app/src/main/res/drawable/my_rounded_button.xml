@@ -22,7 +22,7 @@
             <solid android:color="@color/colorPrimaryDark" />
             <stroke
                 android:width="1dip"
-                android:color="@color/colorAccent" />
+                android:color="@color/my_box" />
             <padding
                 android:bottom="4dp"
                 android:left="4dp"

@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="it.polito.mad.booksharing.Login"
-    android:background="@android:color/white">
+    android:background="@color/colorDivider"
+    android:theme="@style/ThemeStart">
 
     <!-- Login progress -->
     <ProgressBar
@@ -35,11 +36,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Book Sharing"
-                android:textSize="25dp"
                 android:gravity="center"
-                android:textColor="@color/colorAccent"
-                />
+                android:text="Book Sharing"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -108,7 +108,7 @@
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/colorAccent"
+                            android:backgroundTint="@color/my_box"
                             android:nextFocusDown="@id/edtLoginPassword"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -131,7 +131,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
-                            android:backgroundTint="@color/colorAccent"
+                            android:backgroundTint="@color/my_box"
                             android:hint="password"
                             android:inputType="textNoSuggestions|textPassword"
                             android:singleLine="true"
