@@ -17,7 +17,8 @@
         android:id="@+id/profileImageNavBar"
         android:src="@mipmap/ic_launcher_round"
         android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        />
 
     <TextView
         android:id="@+id/profileNameNavBar"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:textSize="@dimen/title_box_size"
+        android:text=""
         />
 
 </LinearLayout>

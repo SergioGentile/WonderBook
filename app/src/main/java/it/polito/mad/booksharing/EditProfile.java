@@ -445,6 +445,7 @@ public class EditProfile extends AppCompatActivity {
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
             String imagePathUser =saveToInternalStorage(image);
             saveonFirebase(imagePathUser);
+            user.setImagePath(imagePathUser);
             String imagePathOrigin =saveToInternalStorageOriginalImage(image);
             saveOnFireBaseOriginalImage(imagePathOrigin);
 

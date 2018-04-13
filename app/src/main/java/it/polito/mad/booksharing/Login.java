@@ -77,6 +77,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
 
 
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +85,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 //Start MainPage Activity
                 Intent intent = new Intent(Login.this, MainPage.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("userMail", loginEmail.getText().toString());
+                String clean_email = loginEmail.getText().toString().replace(" ","");
+                bundle.putString("userMail", clean_email);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

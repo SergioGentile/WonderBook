@@ -59,4 +59,5 @@
     <string name="loginDescription">Insert your email and password</string>
     <string name="title_activity_register">Register</string>
     <string name ="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="registerMessage">Email not avaiable!</string>
 </resources>

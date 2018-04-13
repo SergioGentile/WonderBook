@@ -109,7 +109,8 @@ public class User implements Parcelable{
     }
 
     public void setEmail(MyPair email) {
-        this.email = email;
+        String clean_email = email.getValue().replace(" ","");
+        this.email = new MyPair(clean_email,email.getStatus());
     }
 
     public MyPair getDescription() {

@@ -41,4 +41,5 @@
     <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tue credenziali di accesso. Sei sicuro?</string>
+    <string name="registerMessage">Email not avaiable!</string>
 </resources>

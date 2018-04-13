@@ -36,6 +36,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -55,7 +56,7 @@ public class MainPage extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
 
-        String userId= getIntent().getStringExtra("userMail");
+        userId= getIntent().getStringExtra("userMail");
 
 
 
@@ -155,8 +156,8 @@ public class MainPage extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot!=null) {
-                    for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
-                        saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
+                    for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
+                        saveUserInfoInSharedPref(dataSnap.getValue(User.class));
                         getImageInfoFromFireBase();
                     }
 
@@ -184,7 +185,8 @@ public class MainPage extends AppCompatActivity
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
-        StorageReference userPictureRef = riversRef.child("userImgProfile/" +userId+"/picture.jpg");
+        StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture.jpg");
+
 
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
@@ -203,15 +205,16 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
+                setUser();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                    String x;
             }
         });
 
-        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + userId+"/picture_Original.jpg");
+        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey()+"/picture_Original.jpg");
 
 
         File originalPicture = new File(directory, User.profileImgNameCrop);
@@ -242,7 +245,7 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
-        setUser();
+
 
     }
 
