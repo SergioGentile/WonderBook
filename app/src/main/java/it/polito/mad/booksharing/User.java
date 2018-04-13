@@ -3,6 +3,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +18,7 @@ import java.util.regex.Pattern;
 public class User implements Parcelable{
     private MyPair name, surname, phone, email, description, city, cap, street;
     private String imagePath;
-
+    private String key;
     public static final int IMAGE_QUALITY = 100;
     public static final Bitmap.CompressFormat COMPRESS_FORMAT_BIT= Bitmap.CompressFormat.JPEG;
     public static final String COMPRESS_FORMAT_STR = "jpeg";
@@ -48,7 +51,7 @@ public class User implements Parcelable{
         this.street = street;
     }
 
-    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street,String imagePath) {
+    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street,String imagePath,String key) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
@@ -58,6 +61,7 @@ public class User implements Parcelable{
         this.cap = cap;
         this.street = street;
         this.imagePath = imagePath;
+        this.key = key;
     }
 
     public User(User value) {
@@ -71,6 +75,7 @@ public class User implements Parcelable{
         this.cap = new MyPair(value.getCap());
         this.street =new MyPair( value.getStreet());
         this.imagePath = new String(value.getImagePath());
+        this.key = new String(value.getKey());
     }
 
     //All the setter and getter of the fields
@@ -159,6 +164,7 @@ public class User implements Parcelable{
         dest.writeString(this.cap.getValue()+"/t"+this.cap.getStatus());
         dest.writeString(this.street.getValue()+"/t"+this.street.getStatus());
         dest.writeString(this.getImagePath());
+        dest.writeString(this.getKey());
     }
 
     public final static Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -192,7 +198,7 @@ public class User implements Parcelable{
         String[] newstreet = parcel.readString().split("/t");
         this.street = new MyPair(newstreet[0],newstreet[1]);
         this.imagePath = parcel.readString();
-
+        this.key = parcel.readString();
     }
 
 
@@ -309,6 +315,14 @@ public class User implements Parcelable{
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
 

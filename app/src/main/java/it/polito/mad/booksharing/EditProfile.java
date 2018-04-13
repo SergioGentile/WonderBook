@@ -124,9 +124,12 @@ public class EditProfile extends AppCompatActivity {
 
 
 
-        //Get the user object stored in the SharedPreferences in order to initialize all the fields
-        getUserInfoFromShared();
 
+
+        //Get the user object stored in the SharedPreferences in order to initialize all the fields
+     //   getUserInfoFromShared();
+
+        user = getIntent().getParcelableExtra("user");
 
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
@@ -363,7 +366,7 @@ public class EditProfile extends AppCompatActivity {
                             }).show();
                 } else {
                     //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
-                    setUserInfo(user);
+                    setUserInfo();
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("user", user);
@@ -568,8 +571,8 @@ public class EditProfile extends AppCompatActivity {
         edtStreet.setText(user.getStreet().getValue());
         edtPhone.setText(user.getPhone().getValue());
         edtMail.setText(user.getEmail().getValue());
-        edtDescription.setText(user.getDescription().getValue());
-
+       // edtDescription.setText(user.getDescription().getValue());
+        edtDescription.setText(user.getKey());
         //set the correct status of the lock and switch button
         if (user.checkMail()) {
             swMail.setChecked(true);
@@ -609,7 +612,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-    protected void setUserInfo(User user) {
+    protected void setUserInfo() {
 
 
         if (profileBitmap != null) {
@@ -620,7 +623,7 @@ public class EditProfile extends AppCompatActivity {
 
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-        dbref.child("users").child(user.getName().getValue()).setValue(user);
+        dbref.child("users").child(user.getKey()).setValue(user);
 
         setSharedPrefUserInfo(user);
     }
@@ -642,7 +645,7 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getName().getValue()+"/picture.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getKey()+"/picture.jpg");
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -665,7 +668,7 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getName().getValue()+"/picture_Original.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getKey()+"/picture_Original.jpg");
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails

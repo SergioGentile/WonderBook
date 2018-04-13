@@ -85,7 +85,7 @@ public class ShowProfile extends AppCompatActivity {
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        getUserInfoFromFireBase("Alessia");
+        getUserInfoFromSharedPref();
 
 
         //Catch when the button modify it's pressed
@@ -264,7 +264,7 @@ public class ShowProfile extends AppCompatActivity {
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
                 Bundle result= data.getExtras();
-                getUserInfoFromSharedPref("Alessia");
+                getUserInfoFromSharedPref();
             }
         }
     }
@@ -318,106 +318,7 @@ public class ShowProfile extends AppCompatActivity {
     //All of the user info are stored inside the SharedPrefernces as String that is
     //the serialization of a json object populated with the information about a user
 
-    private void getUserInfoFromFireBase(String userID) {
-
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-        reference.child("users").child("Alessia").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
-                    getImageInfoFromFireBase("Alessia");
-
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-    }
-
-    private void getImageInfoFromFireBase(String userID) {
-
-
-
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference();
-        StorageReference userPictureRef = riversRef.child("userImgProfile/" +userID+"/picture.jpg");
-
-
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
-        //If the directory where I want to save the image does not exist I create it
-        if (!directory.exists()) {
-            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
-            circleImageView.setImageBitmap(image);
-        }
-
-        //Create of the destination path
-        File userPicture = new File(directory, User.profileImgName);
-
-        userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                showUserPictureProfile(user);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + userID+"/picture_Original.jpg");
-
-
-        File originalPicture = new File(directory, User.profileImgNameCrop);
-
-        originalPictureRef.getFile(originalPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                showUserPictureProfile(user);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println(e.toString());
-            }
-        });
-
-
-    }
-
-    private void saveUserInfoInSharedPref(User user) {
-
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = sharedPref.edit();
-        Gson json = new Gson();
-        String toStore = json.toJson(user);
-        this.user = new User(user);
-        edit.putString("user", toStore).apply();
-        edit.commit();
-
-
-        //getUserInfoFromSharedPref("Alessia");
-        setUser(user);
-
-    }
-
-
-    protected void getUserInfoFromSharedPref(String userid){
+    protected void getUserInfoFromSharedPref(){
 
         SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
         String defaultString = "";

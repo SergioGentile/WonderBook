@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +76,16 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginEmail = (EditText) findViewById(R.id.edtLoginName);
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
 
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //Start MainPage Activity
                 Intent intent = new Intent(Login.this, MainPage.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userMail", loginEmail.getText().toString());
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
