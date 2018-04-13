@@ -57,6 +57,7 @@ public class Register extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(Register.this, EditProfile.class);
                 bundle.putParcelable("user", u);
+                bundle.putString("from","Register");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

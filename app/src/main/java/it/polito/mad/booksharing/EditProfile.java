@@ -74,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
     private String imageCameraPath;
     private File photoStorage;
     private String initialMail;
+    private String fromActivity;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -123,7 +124,7 @@ public class EditProfile extends AppCompatActivity {
      //   getUserInfoFromShared();
 
         user = getIntent().getParcelableExtra("user");
-
+        fromActivity = getIntent().getStringExtra("from");
 
         //Set all the fields of the user in edtName, edtSurname...
 
@@ -395,7 +396,16 @@ public class EditProfile extends AppCompatActivity {
                     bundle.putParcelable("user", user);
                     intent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, intent);
-                    finish();
+
+                    if(fromActivity.equals("Register")){
+
+                        Intent intent2 = new Intent(EditProfile.this, MainPage.class);
+                        intent2.putExtras(bundle);
+                        startActivity(intent2);
+                    }else{
+                        finish();
+                    }
+
                 }
             }
         });
@@ -430,7 +440,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void setUpPictureAction() {
-        if (user.getImagePath() == null) {
+        if (user.getImagePath().equals("")) {
             //On the first access the default image is copied in the internal storage in order to perform the crop operation
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
             String imagePathUser =saveToInternalStorage(image);

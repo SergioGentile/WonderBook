@@ -96,7 +96,9 @@ public class ShowProfile extends AppCompatActivity {
                 Intent intent = new Intent(ShowProfile.this, EditProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user", user);
+                bundle.putString("from","Show");
                 intent.putExtras(bundle);
+
                 //The costant MODIFY_PROFILE is useful when onActivityResult will be called.
                 //In this way we can understand that the activity that finish will be associate with that constant
                 //(See later)
