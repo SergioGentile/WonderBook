@@ -85,7 +85,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 //Start MainPage Activity
                 Intent intent = new Intent(Login.this, MainPage.class);
                 Bundle bundle = new Bundle();
-                String clean_email = loginEmail.getText().toString().replace(" ","");
+                String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ","");
                 bundle.putString("userMail", clean_email);
                 intent.putExtras(bundle);
                 startActivity(intent);
