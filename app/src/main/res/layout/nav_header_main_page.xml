@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:scaleType="centerCrop"
         android:id="@+id/profileImageNavBar"
         android:src="@mipmap/ic_launcher_round"

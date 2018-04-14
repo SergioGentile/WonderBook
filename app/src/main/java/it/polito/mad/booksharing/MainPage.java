@@ -36,7 +36,6 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -48,7 +47,7 @@ public class MainPage extends AppCompatActivity
 
     private User user;
     private TextView tvName;
-    private ImageView profileImage;
+    private CircleImageView profileImage;
     private View navView;
     private String userId;
     @Override
@@ -58,9 +57,6 @@ public class MainPage extends AppCompatActivity
 
         userId= getIntent().getStringExtra("userMail");
 
-
-
-
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,7 +65,9 @@ public class MainPage extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainPage.this, AddBook.class));
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                startActivity(new Intent(MainPage.this, AddBook.class).putExtras(bundle));
             }
         });
 
@@ -137,14 +135,15 @@ public class MainPage extends AppCompatActivity
 
         } else if (id == R.id.nav_show_shared_book) {
            //Start the intent
-            startActivity(new Intent(MainPage.this, ShowAllMyBook.class));
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     private void getUserInfoFromFireBase() {
 
@@ -210,7 +209,7 @@ public class MainPage extends AppCompatActivity
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                    String x;
+
             }
         });
 
@@ -245,7 +244,7 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
-
+        setUser();
 
     }
 
@@ -253,7 +252,7 @@ public class MainPage extends AppCompatActivity
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (ImageView)navView.findViewById(R.id.profileImageNavBar);
+        profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
         tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
         Bitmap image = null;
 
