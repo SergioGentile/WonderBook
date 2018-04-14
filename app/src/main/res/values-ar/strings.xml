@@ -42,4 +42,5 @@
     <string name="loginDescription">آدرس ایمیل و رمز عبور خود را وارد کنید</string>
     <string name ="changeMail">شما اعتبار دسترسی خود را تغییر می دهید. شما مطمئن هستید؟</string>
     <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">العنوان الفرعي (إن وجد)</string>
 </resources>

@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowBookFull extends AppCompatActivity {
 
-    private TextView title, author, owner, publisher, description, publishDate, position;
+    private TextView title, subtitle, author, owner, publisher, description, publishDate, position;
     private CircleImageView profileImage;
     private ImageView imageBook, imageMyBook;
     private ImageButton btnEdit;
@@ -29,29 +29,41 @@ public class ShowBookFull extends AppCompatActivity {
     private Book book;
     private User user;
     private String key;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_book_full);
 
-        title = (TextView)findViewById(R.id.shTitle);
-        author = (TextView)findViewById(R.id.shAuthor);
-        owner = (TextView)findViewById(R.id.shOwner);
-        owner = (TextView)findViewById(R.id.shOwner);
-        publisher = (TextView)findViewById(R.id.shPublisher);
-        description = (TextView)findViewById(R.id.shDescription);
-        publishDate = (TextView)findViewById(R.id.publishDate);
-        position = (TextView)findViewById(R.id.shPosition);
+        title = (TextView) findViewById(R.id.shTitle);
+        subtitle = (TextView) findViewById(R.id.shSubtitle);
+        author = (TextView) findViewById(R.id.shAuthor);
+        owner = (TextView) findViewById(R.id.shOwner);
+        owner = (TextView) findViewById(R.id.shOwner);
+        publisher = (TextView) findViewById(R.id.shPublisher);
+        description = (TextView) findViewById(R.id.shDescription);
+        publishDate = (TextView) findViewById(R.id.publishDate);
+        position = (TextView) findViewById(R.id.shPosition);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
-        imageMyBook = (ImageView)findViewById(R.id.shMyImage);
-        imageBook = (ImageView)findViewById(R.id.shImage);
+        imageMyBook = (ImageView) findViewById(R.id.shMyImage);
+        imageBook = (ImageView) findViewById(R.id.shImage);
         profileImage = (CircleImageView) findViewById(R.id.profileImage);
 
         book = getIntent().getParcelableExtra("book");
         user = getIntent().getParcelableExtra("user");
         key = getIntent().getExtras().getString("key");
         title.setText(book.getTitle());
+        if (book.getSubtitle() != null) {
+            if (book.getSubtitle().isEmpty()) {
+                subtitle.setVisibility(View.GONE);
+            } else {
+                subtitle.setVisibility(View.VISIBLE);
+                subtitle.setText(book.getSubtitle());
+            }
+        } else {
+            subtitle.setVisibility(View.GONE);
+        }
         author.setText(book.getAuthor());
         owner.setText(user.getName().getValue() + " " + user.getSurname().getValue());
         position.setText(user.getCity().getValue());
@@ -61,7 +73,7 @@ public class ShowBookFull extends AppCompatActivity {
         publishDate.setText(book.getDate());
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
-       profileImage.setImageBitmap(image);
+        profileImage.setImageBitmap(image);
 
         Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(imageMyBook);
         Picasso.with(ShowBookFull.this).load(book.getUrlImage()).into(imageBook);

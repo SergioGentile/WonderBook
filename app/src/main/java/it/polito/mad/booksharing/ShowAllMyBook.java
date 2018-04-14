@@ -27,16 +27,23 @@ import java.util.List;
 
 public class ShowAllMyBook extends AppCompatActivity {
 
-    ListView lv;
-    List<Book> data;
-    List<String> keys;
-    User user;
+    private ListView lv;
+    private List<Book> data;
+    private List<String> keys;
+    private User user;
+    private LinearLayout llEmpty;
+    private ImageView animation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_all_my_book);
 
+        animation = (ImageView) findViewById(R.id.progressAnimation);
+        animation.setVisibility(View.VISIBLE);
+        llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
+        llEmpty.setVisibility(View.GONE);
         lv = (ListView)findViewById(R.id.lv);
         data = new ArrayList<>();
         keys = new ArrayList<>();
@@ -61,6 +68,15 @@ public class ShowAllMyBook extends AppCompatActivity {
                         data.add(book);
                         keys.add(bookSnap.getKey());
                     }
+                }
+
+
+                animation.setVisibility(View.GONE);
+                if(data.isEmpty()){
+                    llEmpty.setVisibility(View.VISIBLE);
+                }
+                else{
+                    llEmpty.setVisibility(View.GONE);
                 }
 
                 lv.setAdapter(new BaseAdapter() {

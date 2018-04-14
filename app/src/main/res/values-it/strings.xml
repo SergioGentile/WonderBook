@@ -42,4 +42,5 @@
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tue credenziali di accesso. Sei sicuro?</string>
     <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">Sottotitolo (Se presente)</string>
 </resources>

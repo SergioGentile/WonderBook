@@ -39,7 +39,6 @@ public class Register extends AppCompatActivity {
 
 
     Button btnRegister;
-    EditText email;
 
     private String clean_email;
     @Override
@@ -55,7 +54,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                clean_email = email.getText().toString().toLowerCase().replace(" ","");
+                clean_email = loginEmail.getText().toString().toLowerCase().replace(" ","");
                 check_email(clean_email);
 
                     //Start MainPage Activity

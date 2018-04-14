@@ -62,6 +62,14 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+            <TextView
+                android:layout_marginBottom="@dimen/bottom_inside_box"
+                android:id="@+id/shSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Il primo Libro"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/shAuthor"

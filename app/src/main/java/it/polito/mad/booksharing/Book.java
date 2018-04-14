@@ -14,15 +14,16 @@ import java.util.Date;
 
 public class Book implements Parcelable {
 
-    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date;
+    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle;
 
 
     public Book() {
 
     }
 
-    public Book(String title, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating) {
+    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating) {
         this.title = title;
+        this.subtitle = subtitle;
         this.author = author;
         this.year = year;
         this.urlImage = urlImage;
@@ -36,6 +37,14 @@ public class Book implements Parcelable {
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.format(dateCalendar);
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public String getDate() {
@@ -136,22 +145,23 @@ public class Book implements Parcelable {
 
     // Parcelling part
     public Book(Parcel in) {
-        String[] data = new String[12];
+        String[] data = new String[13];
 
         in.readStringArray(data);
         // the order needs to be the same as in writeToParcel() method
         this.title = data[0];
-        this.author = data[1];
-        this.year = data[2];
-        this.publisher = data[3];
-        this.description = data[4];
-        this.urlImage = data[5];
-        this.urlMyImage = data[6];
-        this.owner = data[7];
-        this.isbn10 = data[8];
-        this.isbn13 = data[9];
-        this.rating = data[10];
-        this.date = data[11];
+        this.subtitle = data[1];
+        this.author = data[2];
+        this.year = data[3];
+        this.publisher = data[4];
+        this.description = data[5];
+        this.urlImage = data[6];
+        this.urlMyImage = data[7];
+        this.owner = data[8];
+        this.isbn10 = data[9];
+        this.isbn13 = data[10];
+        this.rating = data[11];
+        this.date = data[12];
     }
 
     @Override
@@ -162,6 +172,7 @@ public class Book implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[]{this.title,
+                this.subtitle,
                 this.author,
                 this.year,
                 this.publisher,

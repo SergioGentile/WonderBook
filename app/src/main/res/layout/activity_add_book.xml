@@ -113,7 +113,6 @@
                         </LinearLayout>
 
                         <EditText
-
                             android:id="@+id/tvTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -121,6 +120,16 @@
                             android:layout_marginRight="@dimen/margin_right"
                             android:layout_marginTop="@dimen/top_inside_box"
                             android:hint="@string/title"
+                            android:singleLine="true"
+                            android:textSize="@dimen/tv_dim" />
+                        <EditText
+                            android:id="@+id/tvSubtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/subtitle"
                             android:singleLine="true"
                             android:textSize="@dimen/tv_dim" />
 
@@ -248,8 +257,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
                                     android:layout_marginRight="@dimen/margin_right"
-                                    android:backgroundTint="@android:color/darker_gray"
-                                    android:hint="Descrizione"
+                                    android:hint="@string/description"
                                     android:inputType="textMultiLine"
                                     android:singleLine="false"
                                     android:textSize="@dimen/tv_dim" />
