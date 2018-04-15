@@ -21,7 +21,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-
     <style name="RatingBar" parent="Theme.AppCompat">
         <item name="colorControlNormal">@android:color/black</item>
         <item name="colorControlActivated">@color/colorAccent</item>
@@ -33,5 +32,9 @@
         <item name="colorControlActivated">@color/my_box</item>
         <item name="colorControlNormal">@color/my_box</item>
         <item name="android:textColorHint">@color/colorSecondaryText</item>
+    </style>
+
+    <style name="Menu_Color_Item" parent= "Theme.AppCompat">
+        <item name="colorPrimary">@android:color/black</item>
     </style>
 </resources>

@@ -58,5 +58,12 @@
         completions."</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name="title_activity_register">Register</string>
-    <string name ="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="title_activity_test">Test</string>
+
+    <!-- String nav bar -->
+    <string name="home">Home</string>
+    <string name="show_profile">Profile</string>
+    <string name="show_book">Shared Book</string>
+    <string name="logout">Logout</string>
 </resources>

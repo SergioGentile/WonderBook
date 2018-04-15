@@ -41,4 +41,10 @@
     <string name="login">ورود</string>
     <string name="loginDescription">آدرس ایمیل و رمز عبور خود را وارد کنید</string>
     <string name ="changeMail">شما اعتبار دسترسی خود را تغییر می دهید. شما مطمئن هستید؟</string>
+
+    <!-- String nav bar -->
+    <string name="home">خانه</string>
+    <string name="show_profile">نمایه</string>
+    <string name="show_book">کتابهای به اشتراک گذاشته شده</string>
+    <string name="logout">خروج</string>
 </resources>

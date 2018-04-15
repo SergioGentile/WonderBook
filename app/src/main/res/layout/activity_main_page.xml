@@ -16,16 +16,12 @@
 
 
     <android.support.design.widget.NavigationView
-        android:background="@color/windowBackground"
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:itemTextColor="@drawable/navigation_color"
-        app:itemIconTint="@drawable/navigation_color_background"
-        app:itemBackground="@android:color/transparent"
         app:headerLayout="@layout/nav_header_main_page"
-        app:menu="@menu/activity_main_page_drawer" />
+        app:menu="@menu/activity_main_page_drawer"  />
 
 </android.support.v4.widget.DrawerLayout>

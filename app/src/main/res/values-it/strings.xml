@@ -41,4 +41,10 @@
     <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tue credenziali di accesso. Sei sicuro?</string>
+
+    <!-- String nav bar -->
+    <string name="home">Home</string>
+    <string name="show_profile">Profilo</string>
+    <string name="show_book">Libri Condivisi</string>
+    <string name="logout">Esci</string>
 </resources>

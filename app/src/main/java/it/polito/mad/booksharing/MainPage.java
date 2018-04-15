@@ -94,6 +94,9 @@ public class MainPage extends AppCompatActivity
            //Start the intent
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class));
         }
+        else if(id == R.id.nav_exit){
+            startActivity(new Intent(MainPage.this,Start.class));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
