@@ -57,6 +57,7 @@
         android:background="@color/colorDivider">
 
         <ScrollView
+            android:id="@+id/scrollAb"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -66,10 +67,11 @@
                 android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
+                    android:elevation="@dimen/elevation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp">
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -108,41 +110,59 @@
                                 android:gravity="center"
                                 android:text="@string/bar_code_fill"
                                 android:textColor="@color/colorSecondaryText"
-                                android:textSize="@dimen/title_box_size" />
-
+                                android:textSize="@dimen/subtitle_box_size" />
                         </LinearLayout>
 
-                        <EditText
-                            android:id="@+id/tvTitle"
+                        <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box"
-                            android:hint="@string/title"
-                            android:singleLine="true"
-                            android:textSize="@dimen/tv_dim" />
-                        <EditText
-                            android:id="@+id/tvSubtitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_left"
-                            android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box"
-                            android:hint="@string/subtitle"
-                            android:singleLine="true"
-                            android:textSize="@dimen/tv_dim" />
+                            android:layout_marginTop="@dimen/top_inside_box">
 
-                        <EditText
-                            android:id="@+id/tvAuthor"
+                            <EditText
+                                android:inputType="text"
+                                android:id="@+id/tvTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/title"
+                                android:singleLine="true"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box"
-                            android:hint="@string/author"
-                            android:singleLine="true"
-                            android:textSize="@dimen/tv_dim" />
+                            android:layout_marginTop="@dimen/top_inside_box">
+
+                            <EditText
+                                android:inputType="text"
+                                android:id="@+id/tvSubtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/subtitle"
+                                android:singleLine="true"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginTop="@dimen/top_inside_box">
+
+                            <EditText
+                                android:inputType="text"
+                                android:id="@+id/tvAuthor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/author"
+                                android:singleLine="true"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -154,29 +174,42 @@
                             android:orientation="horizontal"
                             android:weightSum="2">
 
-                            <EditText
-                                android:id="@+id/tvProduction"
+                            <android.support.design.widget.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/margin_right"
-                                android:layout_weight="0.5"
-                                android:hint="@string/publisher"
-                                android:singleLine="true"
-                                android:textSize="@dimen/tv_dim" />
+                                android:layout_weight="0.5">
 
-                            <EditText
-                                android:id="@+id/tvYear"
+                                <EditText
+                                    android:inputType="text"
+                                    android:id="@+id/tvProduction"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/publisher"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/tv_dim" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:hint="@string/year"
-                                android:singleLine="true"
-                                android:textSize="@dimen/tv_dim" />
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:layout_weight="0.5">
+                                <EditText
+                                    android:inputType="number"
+                                    android:id="@+id/tvYear"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/year"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/tv_dim" />
+                            </android.support.design.widget.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
+                    android:elevation="@dimen/elevation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left"
@@ -258,7 +291,9 @@
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
                                     android:layout_marginRight="@dimen/margin_right"
                                     android:hint="@string/description"
-                                    android:inputType="textMultiLine"
+                                    android:maxLines="5"
+                                    android:scrollbars="vertical"
+                                    android:inputType="textMultiLine|text"
                                     android:singleLine="false"
                                     android:textSize="@dimen/tv_dim" />
                             </LinearLayout>

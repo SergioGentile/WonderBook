@@ -2,6 +2,7 @@ package it.polito.mad.booksharing;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +35,7 @@ public class ShowAllMyBook extends AppCompatActivity {
     private User user;
     private LinearLayout llEmpty;
     private ImageView animation;
+    private SwipeRefreshLayout srl;
 
 
     @Override
@@ -40,19 +43,42 @@ public class ShowAllMyBook extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_all_my_book);
 
+        srl = (SwipeRefreshLayout) findViewById(R.id.srl);
         animation = (ImageView) findViewById(R.id.progressAnimation);
         animation.setVisibility(View.VISIBLE);
         llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
-        llEmpty.setVisibility(View.GONE);
         lv = (ListView)findViewById(R.id.lv);
+        llEmpty.setVisibility(View.GONE);
         data = new ArrayList<>();
         keys = new ArrayList<>();
         user = getIntent().getExtras().getParcelable("user");
         showAllMyBooks(user.getKey());
+
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(ShowAllMyBook.this, getString(R.string.updating), Toast.LENGTH_SHORT).show();
+                srl.setRefreshing(true);
+                lv.setVisibility(View.GONE);
+                llEmpty.setVisibility(View.GONE);
+                showAllMyBooks(user.getKey());
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animation.setVisibility(View.VISIBLE);
+        lv.setVisibility(View.GONE);
+        llEmpty.setVisibility(View.GONE);
+        showAllMyBooks(user.getKey());
+
     }
 
     private void showAllMyBooks(String keyOwner){
         final List<String> colors = new ArrayList<>();
+
         colors.add(new String("#00897B"));
         colors.add(new String("#3F51B5"));
         colors.add(new String("#C62828"));
@@ -62,6 +88,8 @@ public class ShowAllMyBook extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                data.clear();
+                keys.clear();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
                         Book book = bookSnap.getValue(Book.class);
@@ -74,11 +102,13 @@ public class ShowAllMyBook extends AppCompatActivity {
                 animation.setVisibility(View.GONE);
                 if(data.isEmpty()){
                     llEmpty.setVisibility(View.VISIBLE);
+                    lv.setVisibility(View.GONE);
                 }
                 else{
+                    lv.setVisibility(View.VISIBLE);
                     llEmpty.setVisibility(View.GONE);
                 }
-
+                srl.setRefreshing(false);
                 lv.setAdapter(new BaseAdapter() {
                     @Override
                     public int getCount() {
@@ -117,6 +147,7 @@ public class ShowAllMyBook extends AppCompatActivity {
                         Picasso.with(ShowAllMyBook.this)
                                 .load(book.getUrlImage()).noFade()
                                 .placeholder( R.drawable.progress_animation )
+                                .error(R.drawable.ic_error_outline_black_24dp)
                                 .into(imageBook, new com.squareup.picasso.Callback() {
                                     @Override
                                     public void onSuccess() {
@@ -125,7 +156,7 @@ public class ShowAllMyBook extends AppCompatActivity {
 
                                     @Override
                                     public void onError() {
-
+                                        imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                                     }
                                 });
 
@@ -145,7 +176,6 @@ public class ShowAllMyBook extends AppCompatActivity {
                                 intent.putExtras(bundle);
                                 intent.putExtra("key", keys.get(position));
                                 startActivity(intent);
-                                finish();
                             }
                         });
 
@@ -160,7 +190,6 @@ public class ShowAllMyBook extends AppCompatActivity {
                                 intent.putExtra("key", keys.get(position));
                                 intent.putExtras(bundle);
                                 startActivity(intent);
-                                finish();
                             }
                         });
 

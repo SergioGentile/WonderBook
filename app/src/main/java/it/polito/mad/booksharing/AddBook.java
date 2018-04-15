@@ -19,8 +19,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AlertDialogLayout;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -70,6 +74,7 @@ public class AddBook extends Activity {
     private boolean edit;
     private String uploadDate;
     private User user;
+    private ScrollView sv;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -80,14 +85,12 @@ public class AddBook extends Activity {
         }
         outState.putParcelable("book", bookToSave);
         outState.putString("path", pathMyImageBook);
-        Log.d("SAVE", "pass " + pathMyImageBook);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
         book = inState.getParcelable("book");
-        Log.d("RESTORE", "path: " + pathMyImageBook);
 
         tvTitle.setText(book.getTitle());
         tvSubtitle.setText(book.getSubtitle());
@@ -128,6 +131,35 @@ public class AddBook extends Activity {
         tvSubtitle = (EditText) findViewById(R.id.tvSubtitle);
         tvProduction = (EditText) findViewById(R.id.tvProduction);
         tvDescription = (EditText) findViewById(R.id.tvDescription);
+        sv = (ScrollView)findViewById(R.id.scrollAb);
+
+        tvDescription.setMovementMethod(new ScrollingMovementMethod());
+        sv.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(tvDescription.getLineCount() >= tvDescription.getMaxLines()){
+                    tvDescription.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+
+                return false;
+            }
+        });
+
+        tvDescription.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(tvDescription.getLineCount() >= tvDescription.getMaxLines()) {
+                    tvDescription.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                return false;
+            }
+        });
+
+
         tvYear = (EditText) findViewById(R.id.tvYear);
         myImageBook = (ImageView) findViewById(R.id.myImageBook);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
@@ -164,7 +196,8 @@ public class AddBook extends Activity {
             ratingBar.setRating(new Float(book.getRating()));
             tvProduction.setText(book.getPublisher());
             if(pathMyImageBook.isEmpty()){
-                Picasso.with(AddBook.this).load(urlMyImageBook).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(myImageBook, new com.squareup.picasso.Callback() {
+                Picasso.with(AddBook.this).load(urlMyImageBook).noFade().placeholder( R.drawable.progress_animation )
+                        .error(R.drawable.ic_error_outline_black_24dp).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(myImageBook, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -172,7 +205,7 @@ public class AddBook extends Activity {
 
                     @Override
                     public void onError() {
-
+                        myImageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     }
                 });
             }
@@ -185,9 +218,9 @@ public class AddBook extends Activity {
         {
             @Override
             public void onClick(View v) {
-                CharSequence chooses[] = new CharSequence[]{"Yes", "No"};
+                CharSequence chooses[] = new CharSequence[]{getString(R.string.yes), getString(R.string.no)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
-                builder.setTitle("Sei sicuro di voler cancellare il libro?");
+                builder.setTitle(getString(R.string.ask_to_delete_book));
                 builder.setItems(chooses, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int choose) {
@@ -198,6 +231,9 @@ public class AddBook extends Activity {
                             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                             DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
                             databaseReference.removeValue();
+                            Intent intent = new Intent();
+                            setResult(RESULT_OK, intent);
+                            intent.putExtra("cancelled", true);
                             finish();
 
                         }
@@ -228,9 +264,16 @@ public class AddBook extends Activity {
                     } else {
                         uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(),tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                     }
+
+                    Intent intent = new Intent();
+                    intent.putExtra("modified", true);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
                     finish();
                 } else {
-                    Toast.makeText(AddBook.this, "Attenzione: compilare tutti i campi", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBook.this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -280,7 +323,7 @@ public class AddBook extends Activity {
                     tvProduction.setText(publisher);
                 }
             } else {
-                Toast.makeText(AddBook.this, "Attenzione: non è stato possibile precompilare i form.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddBook.this, getString(R.string.fill_not_possible), Toast.LENGTH_SHORT).show();
             }
         }
         if (requestCode == IMAGE_GALLERY && resultCode == RESULT_OK) {

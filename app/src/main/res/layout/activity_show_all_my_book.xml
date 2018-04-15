@@ -27,51 +27,56 @@
         android:layout_height="8dp"
         android:background="@drawable/shadow_toolbar" />
 
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/lv"
-            android:background="@color/colorDivider"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/colorDivider"
-            android:dividerHeight="0dp"
-            tools:context="it.polito.mad.booksharing.ShowAllMyBook">
-        </ListView>
+            android:layout_height="match_parent">
+
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorDivider"
+                android:divider="@color/colorDivider"
+                android:dividerHeight="0dp"
+                tools:context="it.polito.mad.booksharing.ShowAllMyBook"></ListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <ImageView
             android:id="@+id/progressAnimation"
-            android:layout_gravity="center"
-            android:src="@drawable/progress_animation"
             android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/progress_animation" />
 
         <LinearLayout
-            android:layout_marginBottom="40dp"
             android:id="@+id/llEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="50dp"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="100dp"
-                android:layout_height="90dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_cloud_queue_black_24dp"
-              />
+                android:src="@drawable/ic_cloud_queue_black_24dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Nessun libro è stato ancora condiviso."
+                android:text="@string/no_book_shared_title"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/tv_dim" />
 
@@ -80,12 +85,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Inizia subito a condividere"
+                android:text="@string/no_book_shared_subtitle"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/tv_dim" />
 
         </LinearLayout>
     </FrameLayout>
-
 </LinearLayout>
 

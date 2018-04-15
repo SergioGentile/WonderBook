@@ -33,7 +33,7 @@
     <string name="title">Titolo</string>
     <string name="author">Autore</string>
     <string name="year">Anno</string>
-    <string name="publisher">Casa Editrice</string>
+    <string name="publisher">Casa editrice</string>
     <string name="condition">Condizioni</string>
     <string name="condition_description">Descrivi la condizione del tuo libro e documenta con una foto</string>
     <string name="login">Accedi</string>
@@ -49,4 +49,20 @@
     <string name="logout">Esci</string>
     <string name="registerMessage">Email not avaiable!</string>
     <string name="subtitle">Sottotitolo (Se presente)</string>
+    <string name="no_book_shared_title">Nessun libro è stato ancora condiviso</string>
+    <string name="no_book_shared_subtitle">Inizia subito a condividere</string>
+    <string name="shared_by">Condiviso da</string>
+    <string name="publisher_point">Casa editrice:</string>
+    <string name="state_point">Stato</string>
+    <string name="available">disponibile</string>
+    <string name="unavailable">non disponibile</string>
+    <string name="available_by_point">Disponibile dal:</string>
+    <string name="edit">Modifica</string>
+    <string name="show_my_shared_book">Mostra i miei libri condivisi</string>
+    <string name="fill_all_fields">Attenzione: compilare tutti i campi devono essere compilati</string>
+    <string name="fill_not_possible">Attenzione: non è stato possibile precompilare i campi</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="ask_to_delete_book">Attenzione: sei sicuro di voler cancellare questo libro?</string>
+    <string name="updating">Aggiorno...</string>
 </resources>

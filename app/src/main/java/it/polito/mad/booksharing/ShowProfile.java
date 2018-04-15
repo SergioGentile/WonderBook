@@ -70,7 +70,6 @@ public class ShowProfile extends AppCompatActivity
 
         setContentView(R.layout.activity_show_profile);
 
-
         //Take all the references to the fields
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         tvName = (TextView) findViewById(R.id.tvName);

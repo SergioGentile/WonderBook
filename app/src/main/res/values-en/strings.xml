@@ -43,6 +43,22 @@
     <string name ="changeMail">You are changing your access credential. Are you sure?</string>
     <string name="registerMessage">Email not avaiable!</string>
     <string name="subtitle">Subtitle (if present)</string>
+    <string name="no_book_shared_title">No books have yet been shared</string>
+    <string name="no_book_shared_subtitle">Start sharing now</string>
+    <string name="shared_by">Shared by</string>
+    <string name="publisher_point">Publisher:</string>
+    <string name="state_point">State:</string>
+    <string name="available">available</string>
+    <string name="unavailable">unavailable</string>
+    <string name="available_by_point">Available from:</string>
+    <string name="edit">Edit</string>
+    <string name="show_my_shared_book">Show my shared book</string>
+    <string name="fill_all_fields">Attention: all fields must be fill in</string>
+    <string name="fill_not_possible">Attention: it wasn\'t possible to pre-fill all the fields</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ask_to_delete_book">Attention: are you sure to delete this book?</string>
+    <string name="updating">Updating..</string>
 
     <!-- String nav bar -->
     <string name="home">Home</string>
