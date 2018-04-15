@@ -207,7 +207,7 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                setUser();
+                setUserInfoNavBar();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -247,11 +247,11 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
-        setUser();
+        setUserInfoNavBar();
 
     }
 
-    private void setUser( ){
+    private void setUserInfoNavBar(){
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
@@ -269,7 +269,7 @@ public class MainPage extends AppCompatActivity
     public void onResume() {
          super.onResume();
          getUserFromSharedPreference();
-         setUser();
+         setUserInfoNavBar();
      }
 
     private void getUserFromSharedPreference() {

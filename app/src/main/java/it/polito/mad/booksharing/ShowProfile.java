@@ -59,8 +59,9 @@ public class ShowProfile extends AppCompatActivity
     private LinearLayout llParent, llPhone, llMail, llDescription;
     private CircleImageView circleImageView;
     private CircleImageView expandedImage;
-
+    private View navView;
     private Animator mCurrentAnimator;
+    private CircleImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +127,8 @@ public class ShowProfile extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
-        User user = User.getUserInfo(ShowProfile.this);
-        TextView tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
-        tvName.setText(user.getName() + " " + user.getSurname());
+        navView = navigationView.getHeaderView(0);
+        setUserInfoNavBar();
     }
 
     private void zoomImage() {
@@ -362,7 +361,9 @@ public class ShowProfile extends AppCompatActivity
 
         if (id == R.id.nav_show_shared_book) {
             //Start the intent
-            startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class));
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class).putExtras(bundle));
         }
         else if(id == R.id.nav_home){
             startActivity(new Intent(ShowProfile.this,MainPage.class));
@@ -399,6 +400,20 @@ public class ShowProfile extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void setUserInfoNavBar() {
+        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+        Bitmap image = null;
+
+        if (this.user.getImagePath() != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath());
+            this.profileImage.setImageBitmap(image);
         }
     }
 }
