@@ -13,12 +13,17 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
+            android:theme="@style/ThemeToolbar"
             app:title="@string/app_name"
             app:titleTextColor="@color/textColorPrimary"
             app:navigationIcon="@drawable/ic_menu_black_24dp"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="@string/app_name"
+            app:titleTextColor="@android:color/white"
+            app:subtitleTextColor="@color/windowBackground"
+
             android:layout_alignParentBottom="true"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"

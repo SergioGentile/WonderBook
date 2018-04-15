@@ -372,7 +372,7 @@
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 
-                    <LinearLayout
+                    <android.support.v7.widget.CardView
                         android:background="@color/windowBackground"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -420,7 +420,7 @@
                                 android:textSize="@dimen/tv_dim" />
 
                         </LinearLayout>
-                    </LinearLayout>
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
             </ScrollView>
         </RelativeLayout>

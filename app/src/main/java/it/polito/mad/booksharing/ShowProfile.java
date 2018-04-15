@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,9 +17,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +31,19 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -72,8 +88,7 @@ public class ShowProfile extends AppCompatActivity
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        user = User.getUserInfo(ShowProfile.this);
-        setUser(user);
+        getUserInfoFromSharedPref();
 
 
         //Catch when the button modify it's pressed
@@ -84,7 +99,9 @@ public class ShowProfile extends AppCompatActivity
                 Intent intent = new Intent(ShowProfile.this, EditProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user", user);
+                bundle.putString("from","Show");
                 intent.putExtras(bundle);
+
                 //The costant MODIFY_PROFILE is useful when onActivityResult will be called.
                 //In this way we can understand that the activity that finish will be associate with that constant
                 //(See later)
@@ -265,8 +282,7 @@ public class ShowProfile extends AppCompatActivity
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
                 Bundle result= data.getExtras();
-                getUserInfo();
-                setUser(user);
+                getUserInfoFromSharedPref();
             }
         }
     }
@@ -275,27 +291,27 @@ public class ShowProfile extends AppCompatActivity
     private void setUser(User user){
 
         //Text information
-        tvName.setText(user.getName().first + " " +  user.getSurname().first);
-        tvPhone.setText(user.getPhone().first);
-        tvMail.setText(user.getEmail().first);
-        tvDescription.setText(user.getDescription().first);
+        tvName.setText(user.getName().getValue() + " " +  user.getSurname().getValue());
+        tvPhone.setText(user.getPhone().getValue());
+        tvMail.setText(user.getEmail().getValue());
+        tvDescription.setText(user.getDescription().getValue());
 
         //Show only the information that have not been made private by the user
-        if(user.checkStreet() && !user.getStreet().first.equals("")){
-            tvStreet.setText(user.getStreet().first + " (" + user.getCity().first+")");
+        if(user.checkStreet() && !user.getStreet().getValue().equals("")){
+            tvStreet.setText(user.getStreet().getValue() + " (" + user.getCity().getValue()+")");
         }
         else{
-            tvStreet.setText(user.getCity().first);
+            tvStreet.setText(user.getCity().getValue());
         }
 
-        if (!user.checkPhone() || user.getPhone().first.equals("") ) {
+        if (!user.checkPhone() || user.getPhone().getValue().equals("") ) {
             llPhone.setVisibility(View.GONE);
         }
         else{
             llPhone.setVisibility(View.VISIBLE);
         }
 
-        if (!user.checkMail() || user.getEmail().first.equals("") ) {
+        if (!user.checkMail() || user.getEmail().getValue().equals("") ) {
             llMail.setVisibility(View.GONE);
         }
         else{
@@ -319,29 +335,24 @@ public class ShowProfile extends AppCompatActivity
 
     //All of the user info are stored inside the SharedPrefernces as String that is
     //the serialization of a json object populated with the information about a user
-    protected void getUserInfo(){
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
 
-            String defaultString = "";
-            String jsonString = sharedPref.getString("user", defaultString);
-            if (jsonString.equals(defaultString)){
-                //If there are no information about the user in the shared preferences
-                //than I need to create a new Object
-                user =  new User();
-                return;
-            }
+    protected void getUserInfoFromSharedPref(){
 
-            //If I'm here I have retrieved the serialized json object
-            //So I just need to deserialize it in order to obtain a User object populated with
-            //all the info saved by the user user
-            Gson json = new Gson();
-            user= json.fromJson(jsonString, User.class);
-            //The the field of the user description is empty I will intialize it with the defualt
-            // description specified inside the strings.xml
-            if(user.getDescription().first.equals("")){
-
-                user.setDescription(new Pair<>(getString(R.string.description_value),"public"));
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        String defaultString = "";
+        String userName = sharedPref.getString("user", defaultString);
+        if (userName.equals(defaultString)){
+            user= new User();
+            return;
         }
+        Gson json = new Gson();
+        user=json.fromJson(userName, User.class);
+        if(user.getDescription().getValue().equals("")){
+
+            user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+        }
+        setUser(user);
+
     }
 
     @Override

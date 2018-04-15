@@ -41,6 +41,8 @@
     <string name="login">Login</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name ="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">Subtitle (if present)</string>
 
     <!-- String nav bar -->
     <string name="home">Home</string>

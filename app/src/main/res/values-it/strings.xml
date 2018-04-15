@@ -47,4 +47,6 @@
     <string name="show_profile">Profilo</string>
     <string name="show_book">Libri Condivisi</string>
     <string name="logout">Esci</string>
+    <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">Sottotitolo (Se presente)</string>
 </resources>

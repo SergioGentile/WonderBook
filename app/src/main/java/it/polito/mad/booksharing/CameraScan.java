@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -21,6 +22,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -39,17 +42,14 @@ public class CameraScan extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("PAUSE", "CALLED!");
         mScannerView.stopCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("PAUSE", "CALLED!");
-        mScannerView.startCamera();
+        scanCode();
     }
-
 
 
     public void scanCode() {
@@ -72,7 +72,7 @@ public class CameraScan extends AppCompatActivity {
     }
 
 
-    private class DownloadJson extends AsyncTask<String, String, String> {
+    private class DownloadJson extends AsyncTask<String, String, List<String>> {
 
         private Context context;
 
@@ -91,13 +91,13 @@ public class CameraScan extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected List<String> doInBackground(String... params) {
 
             //First take the selfLink
             //Get the self link
             HttpURLConnection connection = null;
             BufferedReader reader = null;
-            String selfLink = null;
+            List<String> selfLinks = new ArrayList<>();
 
             try {
                 URL url = new URL(params[0]);
@@ -118,11 +118,12 @@ public class CameraScan extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject(resultJson);
                 JSONArray jArray = jsonObject.getJSONArray("items");
-                //for(int i = 0; i < jArray.length(); i++){
-                selfLink = jArray.getJSONObject(0).getString("selfLink");
-                Log.d("Link", selfLink);
 
-            }catch (JSONException e ){
+                for (int i = 0; i < jArray.length(); i++) {
+                    selfLinks.add(jArray.getJSONObject(i).getString("selfLink"));
+                }
+
+            } catch (JSONException e) {
                 e.printStackTrace();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -144,46 +145,53 @@ public class CameraScan extends AppCompatActivity {
             connection = null;
             reader = null;
 
-            try {
-                URL url = new URL(selfLink);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-                return buffer.toString();
-
-
-            } catch (MalformedURLException e) {
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
+            List<String> results = new ArrayList<>();
+            for (String selfLink : selfLinks) {
                 try {
-                    if (reader != null) {
-                        reader.close();
+                    URL url = new URL(selfLink);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+
+                    InputStream stream = connection.getInputStream();
+
+                    reader = new BufferedReader(new InputStreamReader(stream));
+
+                    StringBuffer buffer = new StringBuffer();
+                    String line = "";
+
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
                     }
-                } catch (IOException e) {
+                    results.add(buffer.toString());
+                } catch (
+                        MalformedURLException e)
+
+                {
+                } catch (
+                        IOException e)
+
+                {
                     e.printStackTrace();
+                } finally
+                {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                    try {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-            return null;
+            return results;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(List<String> results) {
+            super.onPostExecute(results);
 
             if (pd.isShowing()) {
                 pd.dismiss();
@@ -191,55 +199,55 @@ public class CameraScan extends AppCompatActivity {
 
             Intent intent = new Intent();
 
-            if (result == null) {
+            if (results.isEmpty()) {
                 setResult(RESULT_CANCELED, intent);
             } else {
-                try {
-                    setResult(RESULT_OK, intent);
-                    JSONObject jsonObject = new JSONObject(result);
-                    JSONObject volumeInfo = jsonObject.getJSONObject("volumeInfo");
-                    String title = volumeInfo.getString("title");
-                    if (title == null) {
-                        Log.d("title", "Title è null!");
-                    } else {
-                        Log.d("title", "titolo " + title);
-                    }
-                    JSONArray authors = volumeInfo.getJSONArray("authors");
-                    String author = "";
-                    for (int j = 0; j < authors.length(); j++) {
-                        author += authors.getString(j) + " ";
-                    }
-                    String date = volumeInfo.getString("publishedDate");
-                    String publisher = volumeInfo.getString("publisher");
-                    JSONObject imageLink = volumeInfo.getJSONObject("imageLinks");
-                    String urlStr = imageLink.getString("thumbnail");
+                setResult(RESULT_OK, intent);
+                List<Book> books = new ArrayList<>();
+                for(String result : results) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        JSONObject volumeInfo = jsonObject.getJSONObject("volumeInfo");
+                        String title = volumeInfo.getString("title");
+                        String subtitle = "";
+                        if(volumeInfo.has("subtitle")){
+                            subtitle =  volumeInfo.getString("subtitle");
+                        }
+                        JSONArray authors = volumeInfo.getJSONArray("authors");
+                        String author = "";
+                        for (int j = 0; j < authors.length(); j++) {
+                            author += authors.getString(j) + " ";
+                        }
+                        String date = volumeInfo.getString("publishedDate");
+                        String publisher = volumeInfo.getString("publisher");
+                        JSONObject imageLink = volumeInfo.getJSONObject("imageLinks");
+                        String urlStr = imageLink.getString("thumbnail");
 
-                    //Take isbn
-                    String isbn10 = null, isbn13 = null;
-                    JSONArray ibans = volumeInfo.getJSONArray("industryIdentifiers");
-                    if (ibans.getJSONObject(0).getString("type").equals("ISBN_10")) {
-                        isbn10 = ibans.getJSONObject(0).getString("identifier");
-                    } else if (ibans.getJSONObject(0).getString("type").equals("ISBN_13")) {
-                        isbn13 = ibans.getJSONObject(0).getString("identifier");
+                        //Take isbn
+                        String isbn10 = null, isbn13 = null;
+                        JSONArray ibans = volumeInfo.getJSONArray("industryIdentifiers");
+                        if (ibans.getJSONObject(0).getString("type").equals("ISBN_10")) {
+                            isbn10 = ibans.getJSONObject(0).getString("identifier");
+                        } else if (ibans.getJSONObject(0).getString("type").equals("ISBN_13")) {
+                            isbn13 = ibans.getJSONObject(0).getString("identifier");
+                        }
+                        if (ibans.getJSONObject(1).getString("type").equals("ISBN_10")) {
+                            isbn10 = ibans.getJSONObject(1).getString("identifier");
+                        } else if (ibans.getJSONObject(1).getString("type").equals("ISBN_13")) {
+                            isbn13 = ibans.getJSONObject(1).getString("identifier");
+                        }
+
+                        Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "");
+                        books.add(book);
+                    } catch (JSONException e) {
+                        setResult(RESULT_CANCELED, intent);
+                        e.printStackTrace();
+                        break;
                     }
-                    if (ibans.getJSONObject(1).getString("type").equals("ISBN_10")) {
-                        isbn10 = ibans.getJSONObject(1).getString("identifier");
-                    } else if (ibans.getJSONObject(1).getString("type").equals("ISBN_13")) {
-                        isbn13 = ibans.getJSONObject(1).getString("identifier");
-                    }
-
-                    Log.d("ISBN10", isbn10);
-                    Log.d("ISBN13", isbn13);
-
-                    Book book = new Book(title, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "");
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", book);
-                    intent.putExtras(bundle);
-
-                } catch (JSONException e) {
-                    setResult(RESULT_CANCELED, intent);
-                    e.printStackTrace();
                 }
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("books", (ArrayList<? extends Parcelable>) books);
+                intent.putExtras(bundle);
             }
             finish();
         }

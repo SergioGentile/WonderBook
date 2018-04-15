@@ -47,4 +47,6 @@
     <string name="show_profile">نمایه</string>
     <string name="show_book">کتابهای به اشتراک گذاشته شده</string>
     <string name="logout">خروج</string>
+    <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">العنوان الفرعي (إن وجد)</string>
 </resources>
