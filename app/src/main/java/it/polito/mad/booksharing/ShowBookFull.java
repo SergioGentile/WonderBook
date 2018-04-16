@@ -25,10 +25,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowBookFull extends AppCompatActivity {
 
-    private TextView title, subtitle, author, owner, publisher, description, publishDate, position;
-    private CircleImageView profileImage;
+    private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
-    private CardView sharedBy;
     private ImageButton btnEdit;
     private RatingBar ratingBar;
     private Book book;
@@ -45,13 +43,9 @@ public class ShowBookFull extends AppCompatActivity {
         title = (TextView) findViewById(R.id.shTitle);
         subtitle = (TextView) findViewById(R.id.shSubtitle);
         author = (TextView) findViewById(R.id.shAuthor);
-        owner = (TextView) findViewById(R.id.shOwner);
-        owner = (TextView) findViewById(R.id.shOwner);
         publisher = (TextView) findViewById(R.id.shPublisher);
         description = (TextView) findViewById(R.id.shDescription);
         sv = (ScrollView) findViewById(R.id.scrollSh);
-        sharedBy = (CardView)findViewById(R.id.sharedBy);
-        sharedBy.setVisibility(View.GONE);
         /*description.setScroller(new Scroller(ShowBookFull.this));
         description.setMaxLines(5);
         description.setVerticalScrollBarEnabled(true);*/
@@ -87,12 +81,10 @@ public class ShowBookFull extends AppCompatActivity {
         });
 
         publishDate = (TextView) findViewById(R.id.publishDate);
-        position = (TextView) findViewById(R.id.shPosition);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
         imageMyBook = (ImageView) findViewById(R.id.shMyImage);
         imageBook = (ImageView) findViewById(R.id.shImage);
-        profileImage = (CircleImageView) findViewById(R.id.profileImage);
 
         //Fill all the textView of the view with the information about the book.
         book = getIntent().getParcelableExtra("book");
@@ -110,12 +102,10 @@ public class ShowBookFull extends AppCompatActivity {
             subtitle.setVisibility(View.GONE);
         }
         author.setText(book.getAuthor());
-        owner.setText(user.getName().getValue() + " " + user.getSurname().getValue());
         String street = "";
         if (user.getStreet().getStatus().equals("public")) {
             street = ", " + user.getStreet().getValue();
         }
-        position.setText(user.getCity().getValue() + street);
         publisher.setText(book.getPublisher() + ", " + book.getYear());
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
@@ -123,7 +113,6 @@ public class ShowBookFull extends AppCompatActivity {
 
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
-        profileImage.setImageBitmap(image);
 
         Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                 .error(R.drawable.ic_error_outline_black_24dp).into(imageMyBook, new com.squareup.picasso.Callback() {
@@ -183,7 +172,6 @@ public class ShowBookFull extends AppCompatActivity {
             if (data.getExtras().getBoolean("modified", false)) {
                 Book bookModified = data.getExtras().getParcelable("book");
                 title.setText(bookModified.getTitle());
-
                 if (bookModified.getSubtitle() != null) {
                     if (bookModified.getSubtitle().isEmpty()) {
                         subtitle.setVisibility(View.GONE);
@@ -197,13 +185,21 @@ public class ShowBookFull extends AppCompatActivity {
                     subtitle.setVisibility(View.GONE);
                 }
                 author.setText(bookModified.getAuthor());
-                publisher.setText(bookModified.getPublisher());
                 publisher.setText(bookModified.getPublisher() + ", " + bookModified.getYear());
                 description.setText(bookModified.getDescription());
                 ratingBar.setRating(new Float(bookModified.getRating()));
                 Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
-                profileImage.setImageBitmap(image);
 
+                book.setTitle(bookModified.getTitle());
+                book.setAuthor(bookModified.getAuthor());
+                book.setSubtitle(bookModified.getSubtitle());
+                book.setIsbn13(bookModified.getIsbn13());
+                book.setIsbn10(bookModified.getIsbn10());
+                book.setYear(bookModified.getYear());
+                book.setDescription(bookModified.getDescription());
+                book.setOwner(bookModified.getOwner());
+                book.setPublisher(bookModified.getPublisher());
+                book.setRating(bookModified.getRating());
                 book.setUrlImage(bookModified.getUrlImage());
                 book.setUrlMyImage(bookModified.getUrlMyImage());
 

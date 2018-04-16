@@ -65,7 +65,7 @@ public class AddBook extends Activity {
     private LinearLayout btnScan;
     private EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription, tvSubtitle, tvISBN;
     private ImageView myImageBook;
-    private String urlMyImageBook, isbn10;
+    private String urlMyImageBook;
     final static int SCAN_CODE = 2, IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
     private Uri imageCameraUri;
     private String imageCameraPath;
@@ -86,7 +86,21 @@ public class AddBook extends Activity {
         super.onSaveInstanceState(outState);
         //Save the book that the user is writing.
         //It's useful if the user rotate the screen
-        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, tvISBN.getText().toString(), Float.toString(ratingBar.getNumStars()));
+        String isbn10 = new String(tvISBN.getText().toString());
+        String isbn13 = new String("");
+        if(tvISBN.getText().toString().length()==13){
+            isbn13 = tvISBN.getText().toString();
+        }
+        else if(book!=null && book.getIsbn13()!=null){
+            isbn13 = book.getIsbn13();
+        }
+        if(tvISBN.getText().toString().length()==10){
+            isbn10 = tvISBN.getText().toString();
+        }
+        else if(book!=null &&  book.getIsbn10()!=null){
+            isbn10 = book.getIsbn10();
+        }
+        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()));
         if (uploadDate != null) {
             bookToSave.setDate(uploadDate);
         }
@@ -107,7 +121,15 @@ public class AddBook extends Activity {
         tvSubtitle.setText(book.getSubtitle());
         tvAuthor.setText(book.getAuthor());
         tvYear.setText(book.getYear());
-        tvISBN.setText(book.getIsbn13());
+
+        String isbn = new String("");
+        if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+            isbn = book.getIsbn13();
+        }
+        else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+            isbn = book.getIsbn10();
+        }
+        tvISBN.setText(isbn);
         tvDescription.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         tvProduction.setText(book.getPublisher());
@@ -210,7 +232,15 @@ public class AddBook extends Activity {
             uploadDate = book.getDate();
             tvTitle.setText(book.getTitle());
             tvSubtitle.setText(book.getSubtitle());
-            tvISBN.setText(book.getIsbn13());
+
+            String isbn = new String("");
+            if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+                isbn = book.getIsbn13();
+            }
+            else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+                isbn = book.getIsbn10();
+            }
+            tvISBN.setText(isbn);
             tvAuthor.setText(book.getAuthor());
             tvYear.setText(book.getYear());
             tvDescription.setText(book.getDescription());
@@ -288,10 +318,38 @@ public class AddBook extends Activity {
                     if (tvISBN.getText().toString().length() == 13 || tvISBN.getText().toString().length() == 10) {
                         if (edit) {
                             //if we are in the edit mode, reload the information
-                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), book.getIsbn10(), tvISBN.getText().toString(), Float.toString(ratingBar.getRating())));
+                            String isbn10 = new String("");
+                            String isbn13 = new String("");
+                            if(tvISBN.getText().toString().length()==13){
+                                isbn13 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn13()!=null){
+                                isbn13 = book.getIsbn13();
+                            }
+                            if(tvISBN.getText().toString().length()==10){
+                                isbn10 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn10()!=null){
+                                isbn10 = book.getIsbn10();
+                            }
+                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                         } else {
                             //Otherwise it's the first time
-                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, tvISBN.getText().toString(), Float.toString(ratingBar.getRating())));
+                            String isbn10 = new String("");
+                            String isbn13 = new String("");
+                            if(tvISBN.getText().toString().length()==13){
+                                isbn13 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn13()!=null){
+                                isbn13 = book.getIsbn13();
+                            }
+                            if(tvISBN.getText().toString().length()==10){
+                                isbn10 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn10()!=null){
+                                isbn10 = book.getIsbn10();
+                            }
+                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                         }
                     } else {
                         Toast.makeText(AddBook.this, getString(R.string.wrong_isbn), Toast.LENGTH_SHORT).show();
@@ -319,7 +377,6 @@ public class AddBook extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == SCAN_CODE) {
             //Flush all the field
-            isbn10 = "";
             tvISBN.setText("");
             tvTitle.setText("");
             tvSubtitle.setText("");
@@ -327,10 +384,6 @@ public class AddBook extends Activity {
             tvYear.setText("");
             urlImageBook = "";
             tvProduction.setText("");
-            ratingBar.setRating(0);
-            tvDescription.setText("");
-            myImageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            myImageBook.setImageDrawable(getDrawable(R.drawable.ic_photo_camera_black_24dp));
 
             if (resultCode == RESULT_OK) {
                 List<Book> books = intent.getParcelableArrayListExtra("books");
@@ -342,8 +395,14 @@ public class AddBook extends Activity {
                 String year = book.getYear();
                 String urlImage = book.getUrlImage();
                 String publisher = book.getPublisher();
-                isbn10 = book.getIsbn10();
-                tvISBN.setText(book.getIsbn13());
+                String isbn = new String("");
+                if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+                    isbn = book.getIsbn13();
+                }
+                else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+                    isbn = book.getIsbn10();
+                }
+                tvISBN.setText(isbn);
                 tvTitle.setText(title);
                 tvSubtitle.setText(subtitle);
                 tvAuthor.setText(author);
@@ -470,7 +529,21 @@ public class AddBook extends Activity {
                     Intent intent = new Intent();
                     intent.putExtra("modified", true);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, tvISBN.getText().toString(), Float.toString(ratingBar.getRating())));
+                    String isbn10 = new String("");
+                    String isbn13 = new String("");
+                    if(tvISBN.getText().toString().length()==13){
+                        isbn13 = tvISBN.getText().toString();
+                    }
+                    else {
+                        isbn13 = bookToUpload.getIsbn13();
+                    }
+                    if(tvISBN.getText().toString().length()==10){
+                        isbn10 = tvISBN.getText().toString();
+                    }
+                    else{
+                        isbn10 = bookToUpload.getIsbn10();
+                    }
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                     intent.putExtras(bundle);
                     setResult(RESULT_CANCELED, intent);
                     if (pd.isShowing()) {
@@ -501,7 +574,21 @@ public class AddBook extends Activity {
                     Intent intent = new Intent();
                     intent.putExtra("modified", true);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, tvISBN.getText().toString(), Float.toString(ratingBar.getRating())));
+                    String isbn10 = new String("");
+                    String isbn13 = new String("");
+                    if(tvISBN.getText().toString().length()==13){
+                        isbn13 = tvISBN.getText().toString();
+                    }
+                    else {
+                        isbn13 = bookToUpload.getIsbn13();
+                    }
+                    if(tvISBN.getText().toString().length()==10){
+                        isbn10 = tvISBN.getText().toString();
+                    }
+                    else{
+                        isbn10 = bookToUpload.getIsbn10();
+                    }
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
                     intent.putExtras(bundle);
                     setResult(RESULT_OK, intent);
                     //Upload with the new settings
@@ -525,7 +612,21 @@ public class AddBook extends Activity {
             Intent intent = new Intent();
             intent.putExtra("modified", true);
             Bundle bundle = new Bundle();
-            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, tvISBN.getText().toString(), Float.toString(ratingBar.getRating())));
+            String isbn10 = new String("");
+            String isbn13 = new String("");
+            if(tvISBN.getText().toString().length()==13){
+                isbn13 = tvISBN.getText().toString();
+            }
+            else if(book.getIsbn13()!=null){
+                isbn13 = book.getIsbn13();
+            }
+            if(tvISBN.getText().toString().length()==10){
+                isbn10 = tvISBN.getText().toString();
+            }
+            else if(book.getIsbn10()!=null){
+                isbn10 = book.getIsbn10();
+            }
+            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
             intent.putExtras(bundle);
             setResult(RESULT_OK, intent);
             if (pd.isShowing()) {
