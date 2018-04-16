@@ -66,6 +66,7 @@
     <string name="show_profile">Profile</string>
     <string name="show_book">Shared Book</string>
     <string name="logout">Logout</string>
-    <string name ="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="changeMail">You are changing your access credential. Are you sure?</string>
     <string name="registerMessage">Email not avaiable!</string>
+    <string name="edit">Edit</string>
 </resources>

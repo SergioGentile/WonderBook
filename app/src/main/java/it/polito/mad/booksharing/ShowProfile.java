@@ -131,6 +131,13 @@ public class ShowProfile extends AppCompatActivity
         setUserInfoNavBar();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(1).setChecked(true);
+    }
+
     private void zoomImage() {
 
         //Take the reference of the field

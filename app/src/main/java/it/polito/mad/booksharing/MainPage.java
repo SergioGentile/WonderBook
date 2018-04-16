@@ -83,12 +83,7 @@ public class MainPage extends AppCompatActivity
        // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
 
-
-
         getUserInfoFromFireBase();
-
-
-
     }
 
     @Override
@@ -268,6 +263,8 @@ public class MainPage extends AppCompatActivity
      @Override
     public void onResume() {
          super.onResume();
+         NavigationView navigationView = findViewById(R.id.nav_view);
+         navigationView.getMenu().getItem(0).setChecked(true);
          getUserFromSharedPreference();
          setUserInfoNavBar();
      }
