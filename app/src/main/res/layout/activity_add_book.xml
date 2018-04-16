@@ -89,6 +89,7 @@
                             android:textSize="@dimen/title_box_size" />
 
                         <LinearLayout
+                            android:id="@+id/btnScan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="16dp"
@@ -96,7 +97,6 @@
                             android:layout_marginTop="10dp">
 
                             <ImageView
-                                android:id="@+id/btnScan"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:layout_gravity="center"
@@ -205,6 +205,25 @@
                                     android:textSize="@dimen/tv_dim" />
                             </android.support.design.widget.TextInputLayout>
                         </LinearLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_marginBottom="@dimen/bottom_inside_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:layout_marginTop="@dimen/top_inside_box">
+
+                            <EditText
+                                android:inputType="text"
+                                android:id="@+id/tvISBN"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/isbn"
+                                android:singleLine="true"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
+
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 

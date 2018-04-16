@@ -66,4 +66,8 @@
     <string name="no">No</string>
     <string name="ask_to_delete_book">Attenzione: sei sicuro di voler cancellare questo libro?</string>
     <string name="updating">Aggiorno...</string>
+    <string name="isbn">ISBN</string>
+    <string name="wait">Attendi...</string>
+    <string name="error_reload_new_book">Attenzione: si è riscontrata una problematica nel caricamento delle nuove impostazioni</string>
+    <string name="wrong_isbn">Attenzione: l\'ISBN deve essere lungo 13 o 10 caratteri</string>
 </resources>

@@ -65,5 +65,9 @@
     <string name="show_profile">Profile</string>
     <string name="show_book">Shared Book</string>
     <string name="logout">Logout</string>
+    <string name="isbn">ISBN</string>
+    <string name="wait">Please wait...</string>
+    <string name="error_reload_new_book">Attention: there was a problem while loading the new settings</string>
+    <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
 
 </resources>
