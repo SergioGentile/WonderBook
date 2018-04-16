@@ -82,12 +82,23 @@ public class MainPage extends AppCompatActivity
 
        // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
+        setDefaultUser();
 
 
 
         getUserInfoFromFireBase();
 
 
+
+    }
+
+    private void setDefaultUser() {
+        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
+        tvName.setText("");
+        profileImage.setImageResource(R.drawable.profile);
 
     }
 
