@@ -140,6 +140,7 @@ public class MainPage extends AppCompatActivity
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
         }
         else if(id == R.id.nav_exit){
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainPage.this,Start.class));
         }
 
@@ -164,7 +165,6 @@ public class MainPage extends AppCompatActivity
                     }
 
                 }
-
 
             }
 
@@ -279,9 +279,11 @@ public class MainPage extends AppCompatActivity
         String userName = sharedPref.getString("user", defaultString);
         Gson json = new Gson();
         this.user=json.fromJson(userName, User.class);
-        if(this.user.getDescription().getValue().equals("")){
-
-            this.user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+        //if the user is new there is no previous data
+        if (this.user != null) {
+            if (this.user.getDescription().getValue().equals("")) {
+                this.user.setDescription(new User.MyPair(getString(R.string.description_value), "public"));
+            }
         }
     }
 

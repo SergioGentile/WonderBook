@@ -37,7 +37,8 @@
     <string name="condition">Condizioni</string>
     <string name="condition_description">Descrivi la condizione del tuo libro e documenta con una foto</string>
     <string name="login">Accedi</string>
-    <string name="register">Regitrati</string>
+    <string name="register">Registrati</string>
+    <string name="confirm">conferma password</string>
     <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tue credenziali di accesso. Sei sicuro?</string>
@@ -47,7 +48,7 @@
     <string name="show_profile">Profilo</string>
     <string name="show_book">Libri Condivisi</string>
     <string name="logout">Esci</string>
-    <string name="registerMessage">Email not avaiable!</string>
+    <string name="registerMessage">Email not available!</string>
     <string name="subtitle">Sottotitolo (Se presente)</string>
     <string name="no_book_shared_title">Nessun libro è stato ancora condiviso</string>
     <string name="no_book_shared_subtitle">Inizia subito a condividere</string>

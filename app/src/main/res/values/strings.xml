@@ -41,8 +41,9 @@
     <string name="title_activity_start">Start</string>
     <string name="slogan">Share your library, find a world of books</string>
     <string name="title_activity_sign_in">Sign In</string>
-    <string name="register">Sing in</string>
+    <string name="register">Sign in</string>
     <string name="login">Login</string>
+    <string name="confirm">confirm password</string>
     <string name="subtitle">Subtitle (if present)</string>
     <string name="title_activity_login">Login</string>
     <string name="updating">Updating...</string>
