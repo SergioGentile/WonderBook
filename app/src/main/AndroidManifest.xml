@@ -33,7 +33,9 @@
         <activity android:name=".ShowProfile" />
         <activity android:name=".EditProfile" />
         <activity android:name=".Cropper" />
-        <activity android:name=".CameraScan" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".CameraScan"
+            android:screenOrientation="portrait" />
         <activity android:name=".AddBook" />
         <activity android:name=".ShowAllMyBook" />
 
@@ -65,7 +67,7 @@
         <activity
             android:name=".Register"
             android:label="@string/title_activity_register"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
     </application>
 
 </manifest>

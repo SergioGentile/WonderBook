@@ -9,7 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="it.polito.mad.booksharing.Register"
-    android:background="@android:color/white">
+    android:background="@color/colorDivider"
+    android:theme="@style/ThemeStart">
 
 
     <LinearLayout
@@ -35,7 +36,7 @@
                 android:text="Book Sharing"
                 android:textSize="25dp"
                 android:gravity="center"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 />
 
             <TextView
@@ -107,7 +108,7 @@
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/colorAccent"
+                            android:backgroundTint="@color/my_box"
                             />
 
                     </android.support.design.widget.TextInputLayout>
@@ -135,7 +136,7 @@
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/colorAccent"/>
+                            android:backgroundTint="@color/my_box"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -162,7 +163,7 @@
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/colorAccent"/>
+                            android:backgroundTint="@color/my_box"/>
 
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>

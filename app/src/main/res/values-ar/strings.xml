@@ -41,5 +41,28 @@
     <string name="login">ورود</string>
     <string name="loginDescription">آدرس ایمیل و رمز عبور خود را وارد کنید</string>
     <string name ="changeMail">شما اعتبار دسترسی خود را تغییر می دهید. شما مطمئن هستید؟</string>
+
+    <!-- String nav bar -->
+    <string name="home">خانه</string>
+    <string name="show_profile">نمایه</string>
+    <string name="show_book">کتابهای به اشتراک گذاشته شده</string>
+    <string name="logout">خروج</string>
     <string name="registerMessage">Email not avaiable!</string>
+    <string name="subtitle">العنوان الفرعي (إن وجد)</string>
+    <string name="no_book_shared_title">لم يتم بعد مشاركة أي كتب</string>
+    <string name="no_book_shared_subtitle">على الفور بدء المشاركة</string>
+    <string name="shared_by">مشتركة من قبل</string>
+    <string name="publisher_point">الناشر:</string>
+    <string name="state_point">دولة</string>
+    <string name="available">متاح</string>
+    <string name="unavailable">غير متوفرة</string>
+    <string name="available_by_point">المتاحة من:</string>
+    <string name="edit">تحرير</string>
+    <string name="show_my_shared_book">عرض كتبي المشتركة</string>
+    <string name="fill_all_fields">تحذير: يجب ملء تعبئة جميع الحقول</string>
+    <string name="fill_not_possible">تحذير: لم يكن من الممكن ملء الحقول مسبقًا</string>
+    <string name="yes">نعم فعلا</string>
+    <string name="no">لا</string>
+    <string name="ask_to_delete_book">انتباه: هل أنت متأكد من حذف هذا الكتاب؟</string>
+    <string name="updating">تحديث...</string>
 </resources>

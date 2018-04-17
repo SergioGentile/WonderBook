@@ -17,6 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
             app:title="@string/app_name"
             app:titleTextColor="@android:color/white"
             app:subtitleTextColor="@color/windowBackground"
@@ -36,12 +37,12 @@
         <include layout="@layout/content_main_page" />
 
         <android.support.design.widget.FloatingActionButton
-            app:elevation="10dp"
+            app:elevation="@dimen/elevation"
             android:id="@+id/fabAdd"
             android:layout_gravity="bottom|end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="40dp"
+            android:layout_margin="30dp"
             app:srcCompat="@drawable/ic_add_black_24dp" />
 
 

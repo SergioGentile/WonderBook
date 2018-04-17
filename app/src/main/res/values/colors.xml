@@ -12,6 +12,7 @@
     <color name="textColorPrimary">@android:color/white</color>
     <color name="lock">@android:color/black</color>
     <color name="unlock">@android:color/black</color>
+    <color name="my_box">#448AFF</color>
 </resources>
 
 

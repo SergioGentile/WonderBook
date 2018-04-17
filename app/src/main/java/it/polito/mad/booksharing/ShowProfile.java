@@ -8,18 +8,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.view.animation.DecelerateInterpolator;
@@ -42,12 +46,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
-import java.io.File;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ShowProfile extends AppCompatActivity {
+public class ShowProfile extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MODIFY_PROFILE = 1;
     private ImageButton btnModify;
     private Toolbar toolbar;
@@ -56,8 +59,9 @@ public class ShowProfile extends AppCompatActivity {
     private LinearLayout llParent, llPhone, llMail, llDescription;
     private CircleImageView circleImageView;
     private CircleImageView expandedImage;
-
+    private View navView;
     private Animator mCurrentAnimator;
+    private CircleImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,6 @@ public class ShowProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_show_profile);
-
 
         //Take all the references to the fields
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -114,6 +117,17 @@ public class ShowProfile extends AppCompatActivity {
             }
         });
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        navView = navigationView.getHeaderView(0);
+        setUserInfoNavBar();
     }
 
     private void zoomImage() {
@@ -337,5 +351,68 @@ public class ShowProfile extends AppCompatActivity {
         }
         setUser(user);
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_show_shared_book) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class).putExtras(bundle));
+        }
+        else if(id == R.id.nav_home){
+            startActivity(new Intent(ShowProfile.this,MainPage.class));
+        }
+        else if(id == R.id.nav_exit){
+            startActivity(new Intent(ShowProfile.this,Start.class));
+        }
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+       /* if (id == R.id.action_settings) {
+            return true;
+        }*/
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void setUserInfoNavBar() {
+        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+        Bitmap image = null;
+
+        if (this.user.getImagePath() != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath());
+            this.profileImage.setImageBitmap(image);
+        }
     }
 }

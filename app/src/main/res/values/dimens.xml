@@ -10,11 +10,18 @@
     <dimen name="top_inside_box">10dp</dimen>
     <dimen name="bottom_inside_box">10dp</dimen>
     <dimen name="title">18sp</dimen>
+    <dimen name="subtitle">15sp</dimen>
     <dimen name="land_photo">150dp</dimen>
     <dimen name="shadow">8dp</dimen>
     <dimen name="top_photo_land">30dp</dimen>
     <dimen name="title_box_size">16sp</dimen>
+    <dimen name="subtitle_box_size">12sp</dimen>
     <dimen name="name_size">20sp</dimen>
+    <dimen name="width_book">90dp</dimen>
+    <dimen name="height_book">125dp</dimen>
+    <dimen name="step_size">1</dimen>
+    <dimen name="elevation">10dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

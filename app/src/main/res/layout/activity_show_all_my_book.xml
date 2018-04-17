@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorDivider"
+    android:orientation="vertical"
     tools:context="it.polito.mad.booksharing.ShowAllMyBook">
 
     <android.support.v7.widget.ActionBarContainer
@@ -27,17 +27,69 @@
         android:layout_height="8dp"
         android:background="@drawable/shadow_toolbar" />
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/lv"
-        android:background="@color/colorDivider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/colorDivider"
-        android:dividerHeight="0dp"
-        tools:context="it.polito.mad.booksharing.ShowAllMyBook">
-    </ListView>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorDivider"
+                android:divider="@color/colorDivider"
+                android:dividerHeight="0dp"
+                tools:context="it.polito.mad.booksharing.ShowAllMyBook"></ListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <ImageView
+            android:id="@+id/progressAnimation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/progress_animation" />
+
+        <LinearLayout
+            android:id="@+id/llEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_cloud_queue_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_book_shared_title"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/tv_dim" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_book_shared_subtitle"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/tv_dim" />
+
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
 

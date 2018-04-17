@@ -150,6 +150,9 @@ public class MainPage extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
         }
+        else if(id == R.id.nav_exit){
+            startActivity(new Intent(MainPage.this,Start.class));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -215,7 +218,7 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                setUser();
+                setUserInfoNavBar();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -255,11 +258,11 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
-        setUser();
+        setUserInfoNavBar();
 
     }
 
-    private void setUser( ){
+    private void setUserInfoNavBar(){
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
@@ -277,7 +280,7 @@ public class MainPage extends AppCompatActivity
     public void onResume() {
          super.onResume();
          getUserFromSharedPreference();
-         setUser();
+         setUserInfoNavBar();
      }
 
     private void getUserFromSharedPreference() {

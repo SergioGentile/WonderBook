@@ -20,8 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 public class Register extends AppCompatActivity {
 
     private EditText loginEmail , loginPassword, loginConfirmPassword;
-    private Button btnRegister;
-    private String clean_email;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -40,7 +38,9 @@ public class Register extends AppCompatActivity {
     }
 
 
+    Button btnRegister;
 
+    private String clean_email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

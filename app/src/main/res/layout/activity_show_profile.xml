@@ -6,14 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/colorDivider"
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_main_page"
+        layout="@layout/app_bar_show_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -22,6 +20,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main_page"
-        app:menu="@menu/activity_main_page_drawer"  />
+        app:menu="@menu/activity_main_page_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
