@@ -55,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -105,7 +104,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="e-mail"
-                            android:textColor="@android:color/black"
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
@@ -132,7 +130,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="password"
-                            android:textColor="@android:color/black"
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"

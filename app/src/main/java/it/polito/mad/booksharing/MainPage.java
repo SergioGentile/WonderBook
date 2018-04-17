@@ -103,9 +103,11 @@ public class MainPage extends AppCompatActivity
         if (currentUser != null) {
             if (!currentUser.isEmailVerified()){
                 // If sign in fails, display a message to the user.
-                if (!getCallingActivity().getClassName().equals("Register")) {
-                    Toast.makeText(MainPage.this, "Please verify your email address.",
-                            Toast.LENGTH_LONG).show();
+                if (getCallingActivity() != null) {
+                    if (!getCallingActivity().getClassName().equals("Register")) {
+                        Toast.makeText(MainPage.this, "Please verify your email address.",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
                 mAuth.signOut();
                 Intent intent = new Intent(MainPage.this, Start.class);

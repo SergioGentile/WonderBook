@@ -64,6 +64,7 @@ public class Start extends AppCompatActivity {
             Intent intent = new Intent(Start.this, MainPage.class);
             intent.putExtras(bundle);
             startActivity(intent);
+            finish();
         }
     }
 
