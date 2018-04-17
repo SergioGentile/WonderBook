@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -377,6 +378,7 @@ public class EditProfile extends AppCompatActivity {
                                     bundle.putParcelable("user", user);
                                     intent.putExtras(bundle);
                                     setResult(Activity.RESULT_OK, intent);
+                                    FirebaseAuth.getInstance().getCurrentUser().updateEmail(user.getEmail().getValue());
                                     finish();
                                 }
                             });
