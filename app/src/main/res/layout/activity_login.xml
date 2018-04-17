@@ -109,6 +109,7 @@
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
                             android:backgroundTint="@color/my_box"
+                            android:textColor="@android:color/black"
                             android:nextFocusDown="@id/edtLoginPassword"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -132,6 +133,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:backgroundTint="@color/my_box"
+                            android:textColor="@android:color/black"
                             android:hint="password"
                             android:inputType="textNoSuggestions|textPassword"
                             android:singleLine="true"

@@ -157,8 +157,8 @@ public class User implements Parcelable{
     //Used to serialize the object
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.surname.getValue()+"/t"+this.surname.getStatus());
         dest.writeString(this.name.getValue()+"/t"+this.name.getStatus());
+        dest.writeString(this.surname.getValue()+"/t"+this.surname.getStatus());
         dest.writeString(this.phone.getValue()+"/t"+this.phone.getStatus());
         dest.writeString(this.email.getValue()+"/t"+this.email.getStatus());
         dest.writeString(this.description.getValue() + "/t" + this.description.getStatus());
