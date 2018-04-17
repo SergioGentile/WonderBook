@@ -114,6 +114,10 @@ public class MainPage extends AppCompatActivity
                 startActivity(intent);
             }
 
+        }else{
+            mAuth.signOut();
+            Intent intent = new Intent(MainPage.this, Start.class);
+            startActivity(intent);
         }
     }
 
@@ -194,17 +198,17 @@ public class MainPage extends AppCompatActivity
 
     private void getUserInfoFromFireBase() {
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("users").orderByChild("email/value").equalTo(userId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference child = reference.child("users").child(currentUser.getUid());
+        child.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.exists()) {
-                    for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
-                        saveUserInfoInSharedPref(dataSnap.getValue(User.class));
+                        saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
-                    }
+                    
 
                 }else{
                     goToEdit(userId);
@@ -224,8 +228,6 @@ public class MainPage extends AppCompatActivity
 
 
 
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
         StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture.jpg");
@@ -297,19 +299,22 @@ public class MainPage extends AppCompatActivity
         navView.getBackground().setAlpha(80);
 
         profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
-        tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-        Bitmap image = null;
+        if(user!=null) {
+            tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
 
-        if (this.user.getImagePath() != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath());
-            this.profileImage.setImageBitmap(image);
+            Bitmap image = null;
+
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                this.profileImage.setImageBitmap(image);
+            }
         }
-
     }
      @Override
     public void onResume() {
          super.onResume();
          getUserFromSharedPreference();
+
          setUserInfoNavBar();
      }
 
@@ -331,13 +336,13 @@ public class MainPage extends AppCompatActivity
 
     private void goToEdit(String userEmail) {
 
-
         User u = new User();
         u.setEmail(new User.MyPair(userEmail, "public"));
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users");
-        DatabaseReference instanceReference = databaseReference.push();
-        u.setKey(instanceReference.getKey().toString());
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        u.setKey(currentUser.getUid());
+        DatabaseReference instanceReference = databaseReference.child(u.getKey());
         instanceReference.setValue(u);
         Bundle bundle = new Bundle();
         Intent intent = new Intent(MainPage.this, EditProfile.class);
