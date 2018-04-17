@@ -59,6 +59,7 @@ public class Start extends AppCompatActivity {
         if (currentUser != null) {
             Intent intent = new Intent(Start.this, MainPage.class);
             startActivity(intent);
+            finish();
         }
     }
 
