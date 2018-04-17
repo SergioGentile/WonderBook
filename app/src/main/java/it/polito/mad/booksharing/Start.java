@@ -57,7 +57,12 @@ public class Start extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Start Login Activity if logged in
         if (currentUser != null) {
+            String mail = currentUser.getEmail();
+            Bundle bundle = new Bundle();
+            bundle.putString("userMail",mail);
+
             Intent intent = new Intent(Start.this, MainPage.class);
+            intent.putExtras(bundle);
             startActivity(intent);
         }
     }

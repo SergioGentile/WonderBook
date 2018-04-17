@@ -61,6 +61,8 @@ public class MainPage extends AppCompatActivity
 
         userId= getIntent().getStringExtra("userMail");
 
+        checkLogin();
+
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,24 +95,13 @@ public class MainPage extends AppCompatActivity
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+    private void checkLogin() {
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        getUserFromSharedPreference();
         //Start Login Activity if logged in
         if (currentUser != null) {
-            if (currentUser.isEmailVerified()) {
-                //check profile info
-                if (this.user == null) {
-                    goToEdit(currentUser.getEmail());
-                } else
-                if (this.user.checkInfo(MainPage.this) != null) {
-                    goToEdit(currentUser.getEmail());
-                }
-            } else {
+            if (!currentUser.isEmailVerified()){
                 // If sign in fails, display a message to the user.
                 if (!getCallingActivity().getClassName().equals("Register")) {
                     Toast.makeText(MainPage.this, "Please verify your email address.",
@@ -122,6 +113,13 @@ public class MainPage extends AppCompatActivity
             }
 
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+
     }
 
     private void setDefaultUser() {
@@ -200,12 +198,14 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot!=null) {
+                if(dataSnapshot.exists()) {
                     for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
                         saveUserInfoInSharedPref(dataSnap.getValue(User.class));
                         getImageInfoFromFireBase();
                     }
 
+                }else{
+                    goToEdit(userId);
                 }
 
             }
