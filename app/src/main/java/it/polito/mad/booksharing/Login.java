@@ -24,6 +24,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +46,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     private Button button;
     private EditText loginEmail , loginPassword;
+    private ProgressBar progress;
+    private LinearLayout container;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -81,7 +85,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         button = (Button) findViewById(R.id.LoginButton);
         loginEmail = (EditText) findViewById(R.id.edtLoginName);
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
-
+        progress = (ProgressBar) findViewById(R.id.login_progress);
+        container = (LinearLayout) findViewById(R.id.LoginContainer);
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -95,6 +100,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        container.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+    }
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -104,9 +116,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     }
 
     private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
         if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
@@ -150,7 +159,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = loginEmail.getText().toString();
+        String email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
         String password = loginPassword.getText().toString();
 
         boolean cancel = false;
@@ -181,30 +190,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user = mAuth.getCurrentUser();
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                startMain(user.getEmail());
+            } else {
+                container.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
+                                    startMain(clean_email);
+                                } else {
+                                    // If sign in fails, display a message to the user.
 
-                                //Start MainPage Activity
-                                Intent intent = new Intent(Login.this, MainPage.class);
-                                Bundle bundle = new Bundle();
-                                String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ","");
-                                bundle.putString("userMail", clean_email);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
+                                    Toast.makeText(Login.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
 
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(Login.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+
+                                // ...
+
                             }
-                            // ...
-
-                        }
-                    });
+                        });
+            }
         }
     }
 
@@ -216,6 +227,16 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private void startMain(String userEmail){
+        //Start MainPage Activity
+        Intent intent = new Intent(Login.this, MainPage.class);
+        Bundle bundle = new Bundle();
+
+        bundle.putString("userMail", userEmail);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     /**

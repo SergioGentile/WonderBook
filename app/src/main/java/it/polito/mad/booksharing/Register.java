@@ -104,7 +104,12 @@ public class Register extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        goToEdit();
+                                        mAuth.getCurrentUser().sendEmailVerification();
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Register.this, getString(R.string.email_verif_toast1) +clean_email+ getString(R.string.email_verif_toast2),
+                                                Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(Register.this, MainPage.class);
+                                        startActivity(intent);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(Register.this, "Authentication failed.",
@@ -113,30 +118,12 @@ public class Register extends AppCompatActivity {
                                     // ...
                                 }
                             });
-
                 }
 
             }
         });
     }
 
-    private void goToEdit() {
-
-
-        User u = new User();
-        u.setEmail(new User.MyPair(clean_email, "public"));
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
-        DatabaseReference instanceReference = databaseReference.push();
-        u.setKey(instanceReference.getKey().toString());
-        instanceReference.setValue(u);
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(Register.this, EditProfile.class);
-        bundle.putParcelable("user", u);
-        bundle.putString("from", "Register");
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic

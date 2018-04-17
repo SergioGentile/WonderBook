@@ -57,11 +57,17 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_auth_failed">Authentication failed.</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_test">Test</string>
+    <string name="email_verif_toast1">An email has been sent to </string>
+    <string name="email_verif_toast2">, click on the link to verify your account.</string>
+    <string name="email_not_verif">Please, verify your email address.</string>
+    <string name="resend_email">Resend verification email</string>
+
 
     <!-- String nav bar -->
     <string name="home">Home</string>

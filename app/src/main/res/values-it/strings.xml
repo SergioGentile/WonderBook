@@ -42,7 +42,11 @@
     <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tue credenziali di accesso. Sei sicuro?</string>
-
+    <string name="email_verif_toast1">Abbiamo inviato una email a </string>
+    <string name="email_verif_toast2">, segui il link per verificare il tuo account.</string>
+    <string name="email_not_verif">Per favore, verifica il tuo indirizzo email.</string>
+    <string name="error_auth_failed">Autenticazione fallita.</string>
+    <string name="resend_email">Invia nuovamente email di verifica</string>
     <!-- String nav bar -->
     <string name="home">Home</string>
     <string name="show_profile">Profilo</string>
