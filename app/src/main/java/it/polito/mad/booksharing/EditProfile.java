@@ -672,7 +672,6 @@ public class EditProfile extends AppCompatActivity {
             saveonFirebase(imagePath);
         }
 
-
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
         dbref.child("users").child(user.getKey()).setValue(user);
 
