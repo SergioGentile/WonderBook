@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://C:\Users\danie\AndroidStudioProjects\mad\SharingBook.iml" filepath="C:\Users\danie\AndroidStudioProjects\mad\SharingBook.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mad.iml" filepath="$PROJECT_DIR$/mad.iml" />
     </modules>

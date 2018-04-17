@@ -422,6 +422,22 @@ public class EditProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        String alertMessage = user.checkInfo(EditProfile.this);
+
+        if (alertMessage != null) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
+            alertDialog.setTitle(getString(R.string.alert_title))
+                    .setMessage(alertMessage)
+                    .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Nothing to do
+                        }
+                    }).show();
+            return;
+        }
+
         //If the back button will be presses, it means that
         //the user will want to cancel all changes made so far.
         super.onBackPressed();

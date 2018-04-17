@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,10 +51,13 @@ public class MainPage extends AppCompatActivity
     private CircleImageView profileImage;
     private View navView;
     private String userId;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
 
         userId= getIntent().getStringExtra("userMail");
 
@@ -84,12 +88,40 @@ public class MainPage extends AppCompatActivity
         navView = navigationView.getHeaderView(0);
         setDefaultUser();
 
-
-
         getUserInfoFromFireBase();
 
 
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        getUserFromSharedPreference();
+        //Start Login Activity if logged in
+        if (currentUser != null) {
+            if (currentUser.isEmailVerified()) {
+                //check profile info
+                if (this.user == null) {
+                    goToEdit(currentUser.getEmail());
+                } else
+                if (this.user.checkInfo(MainPage.this) != null) {
+                    goToEdit(currentUser.getEmail());
+                }
+            } else {
+                // If sign in fails, display a message to the user.
+                if (!getCallingActivity().getClassName().equals("Register")) {
+                    Toast.makeText(MainPage.this, "Please verify your email address.",
+                            Toast.LENGTH_LONG).show();
+                }
+                mAuth.signOut();
+                Intent intent = new Intent(MainPage.this, Start.class);
+                startActivity(intent);
+            }
+
+        }
     }
 
     private void setDefaultUser() {
@@ -151,6 +183,7 @@ public class MainPage extends AppCompatActivity
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
         }
         else if(id == R.id.nav_exit){
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainPage.this,Start.class));
         }
 
@@ -160,7 +193,6 @@ public class MainPage extends AppCompatActivity
     }
 
     private void getUserInfoFromFireBase() {
-
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("users").orderByChild("email/value").equalTo(userId);
@@ -176,7 +208,6 @@ public class MainPage extends AppCompatActivity
 
                 }
 
-
             }
 
             @Override
@@ -184,9 +215,6 @@ public class MainPage extends AppCompatActivity
 
             }
         });
-
-
-
 
     }
 
@@ -290,10 +318,31 @@ public class MainPage extends AppCompatActivity
         String userName = sharedPref.getString("user", defaultString);
         Gson json = new Gson();
         this.user=json.fromJson(userName, User.class);
-        if(this.user.getDescription().getValue().equals("")){
-
-            this.user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+        //if the user is new there is no previous data
+        if (this.user != null) {
+            if (this.user.getDescription().getValue().equals("")) {
+                this.user.setDescription(new User.MyPair(getString(R.string.description_value), "public"));
+            }
         }
+    }
+
+
+    private void goToEdit(String userEmail) {
+
+
+        User u = new User();
+        u.setEmail(new User.MyPair(userEmail, "public"));
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+        DatabaseReference instanceReference = databaseReference.push();
+        u.setKey(instanceReference.getKey().toString());
+        instanceReference.setValue(u);
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(MainPage.this, EditProfile.class);
+        bundle.putParcelable("user", u);
+        bundle.putString("from", "Register");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 }

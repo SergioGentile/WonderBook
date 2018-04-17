@@ -2,14 +2,22 @@ package it.polito.mad.booksharing;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Register extends AppCompatActivity {
 
     private EditText loginEmail , loginPassword, loginConfirmPassword;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -50,73 +59,79 @@ public class Register extends AppCompatActivity {
         loginEmail = (EditText) findViewById(R.id.edtLoginName);
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
         loginConfirmPassword = (EditText)findViewById(R.id.edtLoginPassword2);
+
+        mAuth = FirebaseAuth.getInstance();
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loginEmail.setError(null);
+                loginPassword.setError(null);
 
                 clean_email = loginEmail.getText().toString().toLowerCase().replace(" ","");
-                check_email(clean_email);
+                String password = loginPassword.getText().toString();
 
-                    //Start MainPage Activity
+                boolean cancel = false;
+                View focusView = null;
 
+                // Check for a valid password, if the user entered one.
+                if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+                    loginPassword.setError(getString(R.string.error_invalid_password));
+                    focusView = loginPassword;
+                    cancel = true;
+                }
+
+                // Check for a valid email address.
+                if (TextUtils.isEmpty(clean_email)) {
+                    loginEmail.setError(getString(R.string.error_field_required));
+                    focusView = loginEmail;
+                    cancel = true;
+                } else if (!isEmailValid(clean_email)) {
+                    loginEmail.setError(getString(R.string.error_invalid_email));
+                    focusView = loginEmail;
+                    cancel = true;
+                }
+
+                if (cancel) {
+                    // There was an error; don't attempt login and focus the first
+                    // form field with an error.
+                    focusView.requestFocus();
+                } else {
+
+                    mAuth.createUserWithEmailAndPassword(clean_email, password)
+                            .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        mAuth.getCurrentUser().sendEmailVerification();
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Register.this, getString(R.string.email_verif_toast1) +clean_email+ getString(R.string.email_verif_toast2),
+                                                Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(Register.this, MainPage.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Register.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                    // ...
+                                }
+                            });
+                }
 
             }
         });
     }
 
-    private void check_email(String userId) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("users").orderByChild("email/value").equalTo(userId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Boolean flag = false;
-                    for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
-                       flag=true;
-                    }
-                    if(flag==false){
-                        goToEdit();
-                    }else{
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
+    }
 
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Register.this);
-                        alertDialog.setTitle(getString(R.string.alert_title))
-                                .setMessage(R.string.registerMessage)
-                                .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        //Nothing to do
-                                    }
-                                }).show();
-                    }
-
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-}
-
-    private void goToEdit() {
-
-
-        User u = new User();
-        u.setEmail(new User.MyPair(clean_email, "public"));
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
-        DatabaseReference instanceReference = databaseReference.push();
-        u.setKey(instanceReference.getKey().toString());
-        instanceReference.setValue(u);
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(Register.this, EditProfile.class);
-        bundle.putParcelable("user", u);
-        bundle.putString("from", "Register");
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
     }
 }

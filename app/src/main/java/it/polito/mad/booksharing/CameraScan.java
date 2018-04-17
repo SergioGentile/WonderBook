@@ -30,12 +30,15 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class CameraScan extends AppCompatActivity {
 
     private ZXingScannerView mScannerView;
-    ProgressDialog pd;
+    private ProgressDialog pd;
+    private String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_scan);
+        code = new String("");
+        //Scan code start the function that read the bar code
         scanCode();
     }
 
@@ -51,20 +54,34 @@ public class CameraScan extends AppCompatActivity {
         scanCode();
     }
 
+    @Override
+    public void onBackPressed(){
+       mScannerView.stopCamera();
+       Intent intent = new Intent();
+       setResult(RESULT_CANCELED, intent);
+       finish();
+
+    }
+
 
     public void scanCode() {
+        //Instantiate the class
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
+
+        //Set the handler that manage the result
         mScannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
             @Override
             public void handleResult(Result result) {
                 //Do anything with result here
-                String code;
                 mScannerView.stopCamera();
                 setContentView(R.layout.activity_add_book);
                 result.getText();
+                //Here i get the ISBN
                 code = result.getText();
-                //Get the response
+                //Ask to the server the JSON file that contain informations about the searched book.
+                //Add the ISBN (code) to the request
+                //Start an AsyncTask that ask for the Json
                 new DownloadJson(CameraScan.this).execute("https://www.googleapis.com/books/v1/volumes?q=isbn:" + code);
             }
         });
@@ -80,12 +97,12 @@ public class CameraScan extends AppCompatActivity {
             this.context = context;
         }
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //Before the download, start a progressDialog
             pd = new ProgressDialog(context);
-            pd.setMessage("Please wait");
+            pd.setMessage(getString(R.string.wait));
             pd.setCancelable(false);
             pd.show();
         }
@@ -93,8 +110,10 @@ public class CameraScan extends AppCompatActivity {
         @Override
         protected List<String> doInBackground(String... params) {
 
-            //First take the selfLink
-            //Get the self link
+            //First take the selfLink. Self link contains more information than the normal request.
+            //For example the publisher often is not present in the normal request.
+            //- I collect the selfLinks
+            //- I ask to google the Json file related to that self lonk
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             List<String> selfLinks = new ArrayList<>();
@@ -104,6 +123,7 @@ public class CameraScan extends AppCompatActivity {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
+                //Parse the Json
                 InputStream stream = connection.getInputStream();
 
                 reader = new BufferedReader(new InputStreamReader(stream));
@@ -116,6 +136,8 @@ public class CameraScan extends AppCompatActivity {
                 }
                 String resultJson = buffer.toString();
 
+                //Potentially could be different items, so starting to now I will manage a list of items.
+                //But for this application, can be only one item because there is only one book for one ISBN
                 JSONObject jsonObject = new JSONObject(resultJson);
                 JSONArray jArray = jsonObject.getJSONArray("items");
 
@@ -123,6 +145,7 @@ public class CameraScan extends AppCompatActivity {
                     selfLinks.add(jArray.getJSONObject(i).getString("selfLink"));
                 }
 
+                //Handle error
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (MalformedURLException e) {
@@ -145,6 +168,7 @@ public class CameraScan extends AppCompatActivity {
             connection = null;
             reader = null;
 
+            //Put all the Json file linked to the selfLink into an array called results.
             List<String> results = new ArrayList<>();
             for (String selfLink : selfLinks) {
                 try {
@@ -197,44 +221,76 @@ public class CameraScan extends AppCompatActivity {
                 pd.dismiss();
             }
 
+            //Here all the Json file have been downloaded
             Intent intent = new Intent();
-
+            if(code!=null){
+                intent.putExtra("isbn", code);
+            }
             if (results.isEmpty()) {
                 setResult(RESULT_CANCELED, intent);
             } else {
-                setResult(RESULT_OK, intent);
+
+                //Collect all information downloaded from the Json file.
+                //If some information miss, put "" in the book object so that the user will have the opportunity to fill it.
                 List<Book> books = new ArrayList<>();
+                setResult(RESULT_OK, intent);
                 for(String result : results) {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         JSONObject volumeInfo = jsonObject.getJSONObject("volumeInfo");
-                        String title = volumeInfo.getString("title");
+
+                        String title = "";
+                        if(volumeInfo.has("title")){
+                            title =  volumeInfo.getString("title");
+                        }
+
                         String subtitle = "";
                         if(volumeInfo.has("subtitle")){
                             subtitle =  volumeInfo.getString("subtitle");
                         }
-                        JSONArray authors = volumeInfo.getJSONArray("authors");
+
                         String author = "";
-                        for (int j = 0; j < authors.length(); j++) {
-                            author += authors.getString(j) + " ";
+                        if(volumeInfo.has("authors")){
+                            JSONArray authors = volumeInfo.getJSONArray("authors");
+                            for (int j = 0; j < authors.length(); j++) {
+                                author += authors.getString(j) + " ";
+                            }
                         }
-                        String date = volumeInfo.getString("publishedDate");
-                        String publisher = volumeInfo.getString("publisher");
-                        JSONObject imageLink = volumeInfo.getJSONObject("imageLinks");
-                        String urlStr = imageLink.getString("thumbnail");
+
+                        String date = "";
+                        if(volumeInfo.has("publishedDate")){
+                            date =  volumeInfo.getString("publishedDate");
+                        }
+
+                        String publisher = "";
+                        if(volumeInfo.has("publisher")){
+                            publisher =  volumeInfo.getString("publisher");
+                        }
+
+
+                        String urlStr = "";
+                        if(volumeInfo.has("imageLinks")){
+                            JSONObject imageLink = volumeInfo.getJSONObject("imageLinks");
+                            if(imageLink.has("thumbnail")){
+                               urlStr = imageLink.getString("thumbnail");
+                            }
+                        }
+
 
                         //Take isbn
                         String isbn10 = null, isbn13 = null;
-                        JSONArray ibans = volumeInfo.getJSONArray("industryIdentifiers");
-                        if (ibans.getJSONObject(0).getString("type").equals("ISBN_10")) {
-                            isbn10 = ibans.getJSONObject(0).getString("identifier");
-                        } else if (ibans.getJSONObject(0).getString("type").equals("ISBN_13")) {
-                            isbn13 = ibans.getJSONObject(0).getString("identifier");
-                        }
-                        if (ibans.getJSONObject(1).getString("type").equals("ISBN_10")) {
-                            isbn10 = ibans.getJSONObject(1).getString("identifier");
-                        } else if (ibans.getJSONObject(1).getString("type").equals("ISBN_13")) {
-                            isbn13 = ibans.getJSONObject(1).getString("identifier");
+                        if(volumeInfo.has("industryIdentifiers")){
+                            JSONArray ibans = volumeInfo.getJSONArray("industryIdentifiers");
+                            if (ibans.getJSONObject(0).getString("type").equals("ISBN_10")) {
+                                isbn10 = ibans.getJSONObject(0).getString("identifier");
+                            } else if (ibans.getJSONObject(0).getString("type").equals("ISBN_13")) {
+                                isbn13 = ibans.getJSONObject(0).getString("identifier");
+                            }
+                            if (ibans.getJSONObject(1).getString("type").equals("ISBN_10")) {
+                                isbn10 = ibans.getJSONObject(1).getString("identifier");
+                            } else if (ibans.getJSONObject(1).getString("type").equals("ISBN_13")) {
+                                isbn13 = ibans.getJSONObject(1).getString("identifier");
+                            }
                         }
 
                         Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "");

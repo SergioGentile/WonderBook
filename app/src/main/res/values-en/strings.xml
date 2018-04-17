@@ -37,11 +37,11 @@
     <string name="condition_description">Describe the condition of your book here</string>
     <string name="condition">Condition</string>
     <string name="slogan">Share your library, find a world of books</string>
-    <string name="register">Sing in</string>
+    <string name="register">Sign in</string>
     <string name="login">Login</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name ="changeMail">You are changing your access credential. Are you sure?</string>
-    <string name="registerMessage">Email not avaiable!</string>
+    <string name="registerMessage">Email not available!</string>
     <string name="subtitle">Subtitle (if present)</string>
     <string name="no_book_shared_title">No books have yet been shared</string>
     <string name="no_book_shared_subtitle">Start sharing now</string>
@@ -65,5 +65,9 @@
     <string name="show_profile">Profile</string>
     <string name="show_book">Shared Book</string>
     <string name="logout">Logout</string>
+    <string name="isbn">ISBN</string>
+    <string name="wait">Please wait...</string>
+    <string name="error_reload_new_book">Attention: there was a problem while loading the new settings</string>
+    <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
 
 </resources>

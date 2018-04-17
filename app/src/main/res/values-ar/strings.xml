@@ -65,4 +65,7 @@
     <string name="no">لا</string>
     <string name="ask_to_delete_book">انتباه: هل أنت متأكد من حذف هذا الكتاب؟</string>
     <string name="updating">تحديث...</string>
+    <string name="isbn">ISBN</string>
+    <string name="error_reload_new_book">تحذير: حدثت مشكلة في تحميل الإعدادات الجديدة.</string>
+    <string name="wrong_isbn">انتباه: يجب أن يكون ISBN 13 أو 10 أحرف</string>
 </resources>

@@ -97,7 +97,6 @@
                         android:layout_marginLeft="@dimen/margin_left"
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim"
                         >
 
@@ -110,6 +109,7 @@
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
+                            android:textColor="@android:color/black"
                             android:backgroundTint="@color/my_box"
                             />
 
@@ -125,7 +125,6 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:layout_marginBottom="@dimen/bottom_inside_box"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim"
                         >
 
@@ -136,6 +135,7 @@
                             android:hint="password"
                             android:textColor="@android:color/black"
                             android:singleLine="true"
+                            android:textColor="@android:color/black"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
                             android:backgroundTint="@color/my_box"/>
@@ -151,7 +151,6 @@
                         android:layout_marginLeft="@dimen/margin_left"
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim"
                         >
 
@@ -163,6 +162,7 @@
                             android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:hint="confirm password"
                             android:singleLine="true"
+                            android:textColor="@android:color/black"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
                             android:backgroundTint="@color/my_box"/>

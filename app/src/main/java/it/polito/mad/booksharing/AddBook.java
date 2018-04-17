@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.Scroller;
@@ -48,6 +50,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -59,10 +62,10 @@ public class AddBook extends Activity {
 
     private String photoName;
     private ImageButton btnDone, btnDelete;
-    private ImageView btnScan;
-    private EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription, tvSubtitle;
+    private LinearLayout btnScan;
+    private EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription, tvSubtitle, tvISBN;
     private ImageView myImageBook;
-    private String urlMyImageBook, isbn10, isbn13;
+    private String urlMyImageBook;
     final static int SCAN_CODE = 2, IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
     private Uri imageCameraUri;
     private String imageCameraPath;
@@ -75,15 +78,35 @@ public class AddBook extends Activity {
     private String uploadDate;
     private User user;
     private ScrollView sv;
+    ProgressDialog pd;
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState); // the UI component values are saved here.
-        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getNumStars()));
+        super.onSaveInstanceState(outState);
+        //Save the book that the user is writing.
+        //It's useful if the user rotate the screen
+        String isbn10 = new String(tvISBN.getText().toString());
+        String isbn13 = new String("");
+        if(tvISBN.getText().toString().length()==13){
+            isbn13 = tvISBN.getText().toString();
+        }
+        else if(book!=null && book.getIsbn13()!=null){
+            isbn13 = book.getIsbn13();
+        }
+        if(tvISBN.getText().toString().length()==10){
+            isbn10 = tvISBN.getText().toString();
+        }
+        else if(book!=null &&  book.getIsbn10()!=null){
+            isbn10 = book.getIsbn10();
+        }
+        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()));
         if (uploadDate != null) {
             bookToSave.setDate(uploadDate);
         }
+        //Put the book in the outState
         outState.putParcelable("book", bookToSave);
+        //Save also the path of the image, that isnt present on the book object
         outState.putString("path", pathMyImageBook);
     }
 
@@ -92,10 +115,21 @@ public class AddBook extends Activity {
         super.onRestoreInstanceState(inState);
         book = inState.getParcelable("book");
 
+        //Take the book stored before.
+        //Set again all the lable
         tvTitle.setText(book.getTitle());
         tvSubtitle.setText(book.getSubtitle());
         tvAuthor.setText(book.getAuthor());
         tvYear.setText(book.getYear());
+
+        String isbn = new String("");
+        if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+            isbn = book.getIsbn13();
+        }
+        else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+            isbn = book.getIsbn10();
+        }
+        tvISBN.setText(isbn);
         tvDescription.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         tvProduction.setText(book.getPublisher());
@@ -104,13 +138,15 @@ public class AddBook extends Activity {
         pathMyImageBook = inState.getString("path");
         uploadDate = book.getDate();
 
+        //If the image change (so the path isn't empty) load again the image path
         if (!pathMyImageBook.isEmpty()) {
+            //Decode the image stored as a JPEG file
             BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inJustDecodeBounds = true;
             opt.inSampleSize = calculateInSampleSize(opt, 512, 512);
             opt.inJustDecodeBounds = false;
             Bitmap img = BitmapFactory.decodeFile(pathMyImageBook, opt);
-            if (img != null){
+            if (img != null) {
                 myImageBook.setImageBitmap(img);
                 myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
             }
@@ -123,23 +159,32 @@ public class AddBook extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
-        btnScan = (ImageView) findViewById(R.id.btnScan);
+        btnScan = (LinearLayout) findViewById(R.id.btnScan);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnDelete = (ImageButton) findViewById(R.id.btnDelete);
         tvAuthor = (EditText) findViewById(R.id.tvAuthor);
         tvTitle = (EditText) findViewById(R.id.tvTitle);
+        tvISBN = (EditText) findViewById(R.id.tvISBN);
         tvSubtitle = (EditText) findViewById(R.id.tvSubtitle);
         tvProduction = (EditText) findViewById(R.id.tvProduction);
         tvDescription = (EditText) findViewById(R.id.tvDescription);
-        sv = (ScrollView)findViewById(R.id.scrollAb);
+        sv = (ScrollView) findViewById(R.id.scrollAb);
+        tvYear = (EditText) findViewById(R.id.tvYear);
+        myImageBook = (ImageView) findViewById(R.id.myImageBook);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        urlImageBook = "";
+        urlMyImageBook = "";
 
+        //This part is useful when the description field over the max number of lines.
+        //If the user scroll the description field, the scrollerView is blocked, and with the same principle
+        //when the user scroll the scrollView the description field is blocked.
         tvDescription.setMovementMethod(new ScrollingMovementMethod());
         sv.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(tvDescription.getLineCount() >= tvDescription.getMaxLines()){
+                if (tvDescription.getLineCount() >= tvDescription.getMaxLines()) {
                     tvDescription.getParent().requestDisallowInterceptTouchEvent(false);
                 }
 
@@ -152,36 +197,33 @@ public class AddBook extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(tvDescription.getLineCount() >= tvDescription.getMaxLines()) {
+                if (tvDescription.getLineCount() >= tvDescription.getMaxLines()) {
                     tvDescription.getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 return false;
             }
         });
 
-
-        tvYear = (EditText) findViewById(R.id.tvYear);
-        myImageBook = (ImageView) findViewById(R.id.myImageBook);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        urlImageBook = "";
-        urlMyImageBook = "";
-
+        //Get the user
         user = getIntent().getExtras().getParcelable("user");
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             pathMyImageBook = savedInstanceState.getString("path", "");
-        }
-        else{
+        } else {
             pathMyImageBook = "";
         }
 
+        //Edit show me if the user compile the form for the first time or modify some book that already exist.
         edit = getIntent().getBooleanExtra("edit", false);
 
+        //Avoid focus on the first field
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         if (!edit) {
+            //If the book doesn't exist yet, avoid the possibility to delete it.
             btnDelete.setVisibility(View.GONE);
         } else {
-            //I'm in edit mode. I must get the book and the key to refer to firebase
+            //I'm in edit mode. I must get the book and the key to refer to firebase because
+            //the book already exist.
             btnDelete.setVisibility(View.VISIBLE);
             key = getIntent().getExtras().getString("key");
             book = getIntent().getParcelableExtra("book");
@@ -190,14 +232,25 @@ public class AddBook extends Activity {
             uploadDate = book.getDate();
             tvTitle.setText(book.getTitle());
             tvSubtitle.setText(book.getSubtitle());
+
+            String isbn = new String("");
+            if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+                isbn = book.getIsbn13();
+            }
+            else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+                isbn = book.getIsbn10();
+            }
+            tvISBN.setText(isbn);
             tvAuthor.setText(book.getAuthor());
             tvYear.setText(book.getYear());
             tvDescription.setText(book.getDescription());
             ratingBar.setRating(new Float(book.getRating()));
             tvProduction.setText(book.getPublisher());
-            if(pathMyImageBook.isEmpty()){
-                Picasso.with(AddBook.this).load(urlMyImageBook).noFade().placeholder( R.drawable.progress_animation )
-                        .error(R.drawable.ic_error_outline_black_24dp).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(myImageBook, new com.squareup.picasso.Callback() {
+
+            //If the user dosen't change the image(path is empty) load the old one present into the database.
+            if (pathMyImageBook.isEmpty()) {
+                Picasso.with(AddBook.this).load(urlMyImageBook).noFade().placeholder(R.drawable.progress_animation)
+                        .error(R.drawable.ic_error_outline_black_24dp).into(myImageBook, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         myImageBook.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -212,12 +265,11 @@ public class AddBook extends Activity {
         }
 
 
-
-
-        btnDelete.setOnClickListener(new View.OnClickListener()
-        {
+        btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Ask to the user if he is sure to delete the book.
+                //If yes, i delete all.
                 CharSequence chooses[] = new CharSequence[]{getString(R.string.yes), getString(R.string.no)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
                 builder.setTitle(getString(R.string.ask_to_delete_book));
@@ -226,13 +278,18 @@ public class AddBook extends Activity {
                     public void onClick(DialogInterface dialog, int choose) {
                         if (choose == 0) {
                             //User is sure, i must delete all
-                            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
-                            storageReference.delete();
+                            try {
+                                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
+                                storageReference.delete();
+                            } catch (Exception e) {
+                                Log.w("AddBook", "Impossible to delete the file");
+                            }
                             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                             DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
                             databaseReference.removeValue();
                             Intent intent = new Intent();
                             setResult(RESULT_OK, intent);
+                            //Notify to the showBookFull activity that the book was deleted, so do not show it again
                             intent.putExtra("cancelled", true);
                             finish();
 
@@ -244,34 +301,61 @@ public class AddBook extends Activity {
             }
         });
 
-        btnScan.setOnClickListener(new View.OnClickListener()
-        {
+        btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Start the new activity
+                //Start the activity to fill all the editText
                 Intent intent = new Intent(AddBook.this, CameraScan.class);
                 startActivityForResult(intent, SCAN_CODE);
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener()
-        {
+        //All it's done
+        btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
-                    if (edit) {
-                        reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
+                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvISBN.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
+                    if (tvISBN.getText().toString().length() == 13 || tvISBN.getText().toString().length() == 10) {
+                        if (edit) {
+                            //if we are in the edit mode, reload the information
+                            String isbn10 = new String("");
+                            String isbn13 = new String("");
+                            if(tvISBN.getText().toString().length()==13){
+                                isbn13 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn13()!=null){
+                                isbn13 = book.getIsbn13();
+                            }
+                            if(tvISBN.getText().toString().length()==10){
+                                isbn10 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn10()!=null){
+                                isbn10 = book.getIsbn10();
+                            }
+                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                        } else {
+                            //Otherwise it's the first time
+                            String isbn10 = new String("");
+                            String isbn13 = new String("");
+                            if(tvISBN.getText().toString().length()==13){
+                                isbn13 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn13()!=null){
+                                isbn13 = book.getIsbn13();
+                            }
+                            if(tvISBN.getText().toString().length()==10){
+                                isbn10 = tvISBN.getText().toString();
+                            }
+                            else if(book.getIsbn10()!=null){
+                                isbn10 = book.getIsbn10();
+                            }
+                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                        }
                     } else {
-                        uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(),tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                        Toast.makeText(AddBook.this, getString(R.string.wrong_isbn), Toast.LENGTH_SHORT).show();
                     }
 
-                    Intent intent = new Intent();
-                    intent.putExtra("modified", true);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), book.getIsbn10(), book.getIsbn13(), Float.toString(ratingBar.getRating())));
-                    intent.putExtras(bundle);
-                    setResult(RESULT_OK, intent);
-                    finish();
+
                 } else {
                     Toast.makeText(AddBook.this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
                 }
@@ -292,9 +376,18 @@ public class AddBook extends Activity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == SCAN_CODE) {
+            //Flush all the field
+            tvISBN.setText("");
+            tvTitle.setText("");
+            tvSubtitle.setText("");
+            tvAuthor.setText("");
+            tvYear.setText("");
+            urlImageBook = "";
+            tvProduction.setText("");
+
             if (resultCode == RESULT_OK) {
                 List<Book> books = intent.getParcelableArrayListExtra("books");
-                //Only one book for one isbn.
+                //Only one book for one isbn. So if the result is RESULT_OK, by sure there is a book on the list
                 book = books.get(0);
                 String title = book.getTitle();
                 String subtitle = book.getSubtitle();
@@ -302,27 +395,26 @@ public class AddBook extends Activity {
                 String year = book.getYear();
                 String urlImage = book.getUrlImage();
                 String publisher = book.getPublisher();
-                isbn10 = book.getIsbn10();
-                isbn13 = book.getIsbn13();
-                if (title != null) {
-                    tvTitle.setText(title);
+                String isbn = new String("");
+                if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+                    isbn = book.getIsbn13();
                 }
-                if(subtitle!=null){
-                    tvSubtitle.setText(subtitle);
+                else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+                    isbn = book.getIsbn10();
                 }
-                if (author != null) {
-                    tvAuthor.setText(author);
-                }
-                if (year != null) {
-                    tvYear.setText(year);
-                }
-                if (urlImage != null) {
-                    urlImageBook = urlImage;
-                }
-                if (publisher != null) {
-                    tvProduction.setText(publisher);
-                }
+                tvISBN.setText(isbn);
+                tvTitle.setText(title);
+                tvSubtitle.setText(subtitle);
+                tvAuthor.setText(author);
+                tvYear.setText(year);
+                urlImageBook = urlImage;
+                tvProduction.setText(publisher);
+
             } else {
+                //Here check for only the isbn. So fill the field ISBN on the view even if i didn't find the book online
+                if (intent.getStringExtra("isbn") != null) {
+                    tvISBN.setText(intent.getExtras().getString("isbn"));
+                }
                 Toast.makeText(AddBook.this, getString(R.string.fill_not_possible), Toast.LENGTH_SHORT).show();
             }
         }
@@ -405,25 +497,152 @@ public class AddBook extends Activity {
         return directory.getAbsolutePath();
     }
 
+
+    //Re-Load an existing book, for example because the user change something such as the title, author and so on
     public void reloadDatabase(Book book) {
+        //Instatiate the book as final so that it can be used in the anonymous methods.
         final Book bookToUpload = book;
+        //Set the progress bar (stop it when the upload end)
+        pd = new ProgressDialog(AddBook.this);
+        pd.setMessage(getString(R.string.wait));
+        pd.setCancelable(false);
+        pd.show();
         //Replace with the real upload date
         bookToUpload.setDate(uploadDate);
-        //Replace the image file
-        if (!pathMyImageBook.isEmpty()) {
+        //Replace the image file.
 
+        if (!pathMyImageBook.isEmpty()) {
+            //If pathMyImageBook isn't empty, it means that the image was changed by the user.
+            //So reload it again and delete the previous one (if the upload of the new one will be successful).
             Uri file = Uri.fromFile(new File(pathMyImageBook));
-            StorageReference riversRef = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
-            riversRef.putFile(file);
+            StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("imagesMyBooks/" + photoName);
+            UploadTask uploadTask = riversRef.putFile(file);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    //If it's not possible
+                    //Replace the content of the database
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+                    databaseReference.setValue(bookToUpload);
+
+                    Intent intent = new Intent();
+                    intent.putExtra("modified", true);
+                    Bundle bundle = new Bundle();
+                    String isbn10 = new String("");
+                    String isbn13 = new String("");
+                    if(tvISBN.getText().toString().length()==13){
+                        isbn13 = tvISBN.getText().toString();
+                    }
+                    else {
+                        isbn13 = bookToUpload.getIsbn13();
+                    }
+                    if(tvISBN.getText().toString().length()==10){
+                        isbn10 = tvISBN.getText().toString();
+                    }
+                    else{
+                        isbn10 = bookToUpload.getIsbn10();
+                    }
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                    intent.putExtras(bundle);
+                    setResult(RESULT_CANCELED, intent);
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
+
+                    finish();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    //Replace the content of the database
+                    Log.d("URL: ", bookToUpload.getUrlMyImage());
+                    try {
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookToUpload.getUrlMyImage());
+                        storageReference.delete();
+                    } catch (Exception e) {
+                        Log.w("AddBook", "Impossible to delete the file");
+                    }
+
+
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    urlMyImageBook = downloadUrl.toString();
+                    bookToUpload.setUrlMyImage(urlMyImageBook);
+
+                    //Put the book into the intent
+                    Intent intent = new Intent();
+                    intent.putExtra("modified", true);
+                    Bundle bundle = new Bundle();
+                    String isbn10 = new String("");
+                    String isbn13 = new String("");
+                    if(tvISBN.getText().toString().length()==13){
+                        isbn13 = tvISBN.getText().toString();
+                    }
+                    else {
+                        isbn13 = bookToUpload.getIsbn13();
+                    }
+                    if(tvISBN.getText().toString().length()==10){
+                        isbn10 = tvISBN.getText().toString();
+                    }
+                    else{
+                        isbn10 = bookToUpload.getIsbn10();
+                    }
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
+                    //Upload with the new settings
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+                    databaseReference.setValue(bookToUpload);
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                    }
+                    finish();
+                }
+            });
+
+
+        } else {
+            //Replace the content of the database, the image doesn't change.
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+            databaseReference.setValue(bookToUpload);
+
+            Intent intent = new Intent();
+            intent.putExtra("modified", true);
+            Bundle bundle = new Bundle();
+            String isbn10 = new String("");
+            String isbn13 = new String("");
+            if(tvISBN.getText().toString().length()==13){
+                isbn13 = tvISBN.getText().toString();
+            }
+            else if(book.getIsbn13()!=null){
+                isbn13 = book.getIsbn13();
+            }
+            if(tvISBN.getText().toString().length()==10){
+                isbn10 = tvISBN.getText().toString();
+            }
+            else if(book.getIsbn10()!=null){
+                isbn10 = book.getIsbn10();
+            }
+            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
+            if (pd.isShowing()) {
+                pd.dismiss();
+            }
+            finish();
         }
-        //Replace the content of the database
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
-        databaseReference.setValue(bookToUpload);
+
     }
 
     public void uploadDatabase(Book book) {
         final Book bookToUpload = book;
+        pd = new ProgressDialog(AddBook.this);
+        pd.setMessage(getString(R.string.wait));
+        pd.setCancelable(false);
+        pd.show();
         //Upload the image
         Uri file = Uri.fromFile(new File(pathMyImageBook));
         //Create a storage reference from our app
@@ -435,23 +654,32 @@ public class AddBook extends Activity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
+                if (pd.isShowing()) {
+                    pd.dismiss();
+                }
+                Intent intent = new Intent();
+                setResult(RESULT_CANCELED, intent);
+                finish();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                //Get the url of the image uploaded before, and store the new book
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 urlMyImageBook = downloadUrl.toString();
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference databaseReference = firebaseDatabase.getReference("books");
                 bookToUpload.setUrlMyImage(urlMyImageBook);
-                if (bookToUpload.getUrlImage().isEmpty()) {
-                    bookToUpload.setUrlImage(urlMyImageBook);
-                }
                 DatabaseReference instanceReference = databaseReference.push();
+
                 instanceReference.setValue(bookToUpload);
+                if (pd.isShowing()) {
+                    pd.dismiss();
+                }
+                finish();
             }
         });
+
     }
 
     //Calculate the parameter used for reduce the dimension and the resolution of the image
