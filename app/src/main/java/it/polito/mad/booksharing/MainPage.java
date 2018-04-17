@@ -59,9 +59,7 @@ public class MainPage extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
-        userId= getIntent().getStringExtra("userMail");
 
-        checkLogin();
 
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -90,13 +88,19 @@ public class MainPage extends AppCompatActivity
         navView = navigationView.getHeaderView(0);
         setDefaultUser();
 
-        getUserInfoFromFireBase();
+
 
 
     }
 
     private void checkLogin() {
 
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Start Login Activity if logged in
@@ -119,11 +123,8 @@ public class MainPage extends AppCompatActivity
             Intent intent = new Intent(MainPage.this, Start.class);
             startActivity(intent);
         }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+        getUserInfoFromFireBase();
         // Check if user is signed in (non-null) and update UI accordingly.
 
     }
@@ -188,6 +189,7 @@ public class MainPage extends AppCompatActivity
         }
         else if(id == R.id.nav_exit){
             FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(MainPage.this,Start.class));
         }
 
@@ -199,28 +201,30 @@ public class MainPage extends AppCompatActivity
     private void getUserInfoFromFireBase() {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference child = reference.child("users").child(currentUser.getUid());
-        child.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if(currentUser!=null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference child = reference.child("users").child(currentUser.getUid());
+            child.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()) {
+                    if (dataSnapshot.exists()) {
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
-                    
 
-                }else{
-                    goToEdit(userId);
+
+                    } else {
+                        goToEdit();
+                    }
+
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                }
+            });
+        }
 
     }
 
@@ -334,13 +338,14 @@ public class MainPage extends AppCompatActivity
     }
 
 
-    private void goToEdit(String userEmail) {
+    private void goToEdit() {
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         User u = new User();
-        u.setEmail(new User.MyPair(userEmail, "public"));
+        u.setEmail(new User.MyPair(currentUser.getEmail(), "public"));
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users");
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         u.setKey(currentUser.getUid());
         DatabaseReference instanceReference = databaseReference.child(u.getKey());
         instanceReference.setValue(u);
