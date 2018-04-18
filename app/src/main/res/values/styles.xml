@@ -41,7 +41,6 @@
         <item name="colorControlActivated">@color/my_box</item>
         <item name="colorControlNormal">@color/my_box</item>
         <item name="android:textColorHint">@color/colorSecondaryText</item>
-        <item name="android:editTextColor">@android:color/black</item>
 
     </style>
 </resources>

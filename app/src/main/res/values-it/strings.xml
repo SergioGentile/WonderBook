@@ -39,7 +39,7 @@
     <string name="login">Accedi</string>
     <string name="register">Registrati</string>
     <string name="confirm">conferma password</string>
-    <string name="slogan">Condividi la tua libreria, scoprirai un modo di libri</string>
+    <string name="slogan">Condividi la tua libreria, scopri un modo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
     <string name ="changeMail">Stai cambiando le tua mail. Ricordati di verificare il tuo indirizzo mail</string>
     <string name="email_verif_toast1">Abbiamo inviato una email a </string>

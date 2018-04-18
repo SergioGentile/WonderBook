@@ -362,9 +362,15 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="@string/mail"
+                                        android:textColor="@color/colorTertiaryText"
                                         android:inputType="textEmailAddress|textNoSuggestions"
                                         android:singleLine="true"
-                                        android:textSize="@dimen/tv_dim" />
+                                        android:textSize="@dimen/tv_dim"
+                                        android:clickable="false"
+                                        android:cursorVisible="false"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="false"
+                                        />
                                 </android.support.design.widget.TextInputLayout>
 
                                 <Switch
