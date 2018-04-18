@@ -292,6 +292,7 @@ public class ShowProfile extends AppCompatActivity
 
                 Bundle result= data.getExtras();
                 getUserInfoFromSharedPref();
+                setUser();
                 setUserInfoNavBar();
             }
         }

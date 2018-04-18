@@ -39,6 +39,10 @@ public class EditCredential extends AppCompatActivity {
     private String fromActivity;
     private String clean_mail;
 
+    static final int NO_CHANGE = 1;
+    static final int PASS_WEAK = 2;
+    static final int CHANGES = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +66,8 @@ public class EditCredential extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                if (fromActivity.equals("Edit") && checkForm(edtPassword.getText().toString())) {
+                int res = checkForm(edtPassword.getText().toString());
+                if (fromActivity.equals("Edit") && res==CHANGES) {
 
                     LayoutInflater inflater=EditCredential.this.getLayoutInflater();
                     //this is what I did to added the layout to the alert dialog
@@ -103,13 +108,15 @@ public class EditCredential extends AppCompatActivity {
                     dialog.show();
 
 
-                }else{
+                }else if(res==NO_CHANGE){
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putString("mail", edtMail.getText().toString());
                     intent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, intent);
                     finish();
+                }else{
+                    return;
                 }
 
             }
@@ -188,16 +195,16 @@ public class EditCredential extends AppCompatActivity {
 
     }
 
-    private boolean checkForm(String pwd){
+    private int checkForm(String pwd){
         if (!pwd.equals("") && pwd.length()<6) {
-            edtPassword.setError(getString(R.string.error_invalid_password));
-            return false;
+            edtPassword.setError(getString(R.string.error_invalid_password),null);
+            return PASS_WEAK;
         }
         else if(pwd.equals("") && edtMail.getText().toString().equals(user.getEmail().getValue()))
         {
-            return false;
+            return NO_CHANGE;
         }
-        return true;
+        return CHANGES;
     }
 
 }
