@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,6 +39,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -359,31 +364,6 @@ public class EditProfile extends AppCompatActivity {
                                 }
                             }).show();
                 }
-                else if(!initialMail.equals(user.getEmail().getValue())){
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
-                    alertDialog.setTitle(getString(R.string.alert_title));
-                    alertDialog.setMessage(getString((R.string.changeMail)));
-                    alertDialog.setPositiveButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    setUserInfo();
-                                    Intent intent = new Intent();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable("user", user);
-                                    intent.putExtras(bundle);
-                                    setResult(Activity.RESULT_OK, intent);
-                                    finish();
-                                }
-                            });
-                    alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //Nothing to do
-                                }
-                            });
-                    alertDialog.show();
-                }
                 else {
                     //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
                     setUserInfo();
@@ -418,6 +398,22 @@ public class EditProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        String alertMessage = user.checkInfo(EditProfile.this);
+
+        if (alertMessage != null) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfile.this);
+            alertDialog.setTitle(getString(R.string.alert_title))
+                    .setMessage(alertMessage)
+                    .setNeutralButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Nothing to do
+                        }
+                    }).show();
+            return;
+        }
+
         //If the back button will be presses, it means that
         //the user will want to cancel all changes made so far.
         super.onBackPressed();
@@ -529,8 +525,10 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
-                String imagePath=saveToInternalStorageOriginalImage(rotateImg);
-                saveOnFireBaseOriginalImage(imagePath);
+                String imagePath = saveToInternalStorage(rotateImg);
+                saveonFirebase(imagePath);
+                String imagePathOriginal=saveToInternalStorageOriginalImage(rotateImg);
+                saveOnFireBaseOriginalImage(imagePathOriginal);
 
             } else if (requestCode == IMAGE_CAMERA) {
 
@@ -549,8 +547,10 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap rotateImg = rotateBitmap(getOrientation(filePath), img);
                 profileImg.setImageBitmap(rotateImg);
                 profileBitmap = rotateImg;
-                String imagePath=saveToInternalStorageOriginalImage(rotateImg);
-                saveOnFireBaseOriginalImage(imagePath);
+                String imagePath = saveToInternalStorage(rotateImg);
+                saveonFirebase(imagePath);
+                String imagePathOriginal=saveToInternalStorageOriginalImage(rotateImg);
+                saveOnFireBaseOriginalImage(imagePathOriginal);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
             }
             else if(requestCode == IMAGE_CROP) {
@@ -563,7 +563,10 @@ public class EditProfile extends AppCompatActivity {
             else if(requestCode == MODIFY_CREDENTIALS){
                 Bundle result= data.getExtras();
                 String mail = result.getString("mail");
-                //Need to refresh shared pref and database
+                User firstUser = getIntent().getParcelableExtra("user");
+                firstUser.setEmail(new User.MyPair(mail,firstUser.getEmail().getStatus()));
+                setSharedPrefUserInfo(firstUser);
+                user.setEmail(new User.MyPair(mail,user.getEmail().getStatus()));
                 edtMail.setText(mail);
 
             }
@@ -656,7 +659,6 @@ public class EditProfile extends AppCompatActivity {
             String imagePath =saveToInternalStorage(profileBitmap);
             saveonFirebase(imagePath);
         }
-
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
         dbref.child("users").child(user.getKey()).setValue(user);

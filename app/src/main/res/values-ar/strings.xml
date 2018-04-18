@@ -49,4 +49,24 @@
     <string name="logout">خروج</string>
     <string name="registerMessage">Email not avaiable!</string>
     <string name="subtitle">العنوان الفرعي (إن وجد)</string>
+    <string name="no_book_shared_title">لم يتم بعد مشاركة أي كتب</string>
+    <string name="no_book_shared_subtitle">على الفور بدء المشاركة</string>
+    <string name="shared_by">مشتركة من قبل</string>
+    <string name="publisher_point">الناشر:</string>
+    <string name="state_point">دولة</string>
+    <string name="available">متاح</string>
+    <string name="unavailable">غير متوفرة</string>
+    <string name="available_by_point">المتاحة من:</string>
+    <string name="edit">تحرير</string>
+    <string name="show_my_shared_book">عرض كتبي المشتركة</string>
+    <string name="fill_all_fields">تحذير: يجب ملء تعبئة جميع الحقول</string>
+    <string name="fill_not_possible">تحذير: لم يكن من الممكن ملء الحقول مسبقًا</string>
+    <string name="yes">نعم فعلا</string>
+    <string name="no">لا</string>
+    <string name="ask_to_delete_book">انتباه: هل أنت متأكد من حذف هذا الكتاب؟</string>
+    <string name="updating">تحديث...</string>
+    <string name="isbn">ISBN</string>
+    <string name="error_reload_new_book">تحذير: حدثت مشكلة في تحميل الإعدادات الجديدة.</string>
+    <string name="wrong_isbn">انتباه: يجب أن يكون ISBN 13 أو 10 أحرف</string>
+    <string name="editpwd">Please insert current password</string>
 </resources>

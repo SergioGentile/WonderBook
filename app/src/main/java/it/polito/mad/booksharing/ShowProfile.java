@@ -55,6 +55,7 @@ public class ShowProfile extends AppCompatActivity
     private ImageButton btnModify;
     private Toolbar toolbar;
     private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
+
     private User user;
     private LinearLayout llParent, llPhone, llMail, llDescription;
     private CircleImageView circleImageView;
@@ -69,7 +70,6 @@ public class ShowProfile extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_show_profile);
-
 
         //Take all the references to the fields
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -136,6 +136,8 @@ public class ShowProfile extends AppCompatActivity
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(1).setChecked(true);
+        getUserInfoFromSharedPref();
+        setUser();
     }
 
     private void zoomImage() {
@@ -287,14 +289,16 @@ public class ShowProfile extends AppCompatActivity
         //The activity return an user that contains all the modification done
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
+
                 Bundle result= data.getExtras();
                 getUserInfoFromSharedPref();
+                setUserInfoNavBar();
             }
         }
     }
 
     //Take all the user information from User object and fill the screen with that information
-    private void setUser(User user){
+    private void setUser(){
 
         //Text information
         tvName.setText(user.getName().getValue() + " " +  user.getSurname().getValue());
@@ -357,7 +361,8 @@ public class ShowProfile extends AppCompatActivity
 
             user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
         }
-        setUser(user);
+
+        setUser();
 
     }
 
@@ -376,6 +381,8 @@ public class ShowProfile extends AppCompatActivity
             startActivity(new Intent(ShowProfile.this,MainPage.class));
         }
         else if(id == R.id.nav_exit){
+            FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(ShowProfile.this,Start.class));
         }
 
@@ -411,16 +418,16 @@ public class ShowProfile extends AppCompatActivity
     }
 
     private void setUserInfoNavBar() {
-        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
-        tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
         Bitmap image = null;
 
         if (this.user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
-            this.profileImage.setImageBitmap(image);
+            barprofileImage.setImageBitmap(image);
         }
     }
 }

@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,6 +52,8 @@ public class ShowAllMyBook extends AppCompatActivity
     private Toolbar toolbar;
     private TextView tvName;
     private CircleImageView profileImage;
+    private SwipeRefreshLayout srl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +61,15 @@ public class ShowAllMyBook extends AppCompatActivity
         setContentView(R.layout.activity_show_all_my_book);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
+        //This class manage the exhibition of all the book owned by the user.
+
+        srl = (SwipeRefreshLayout) findViewById(R.id.srl);
+
         animation = (ImageView) findViewById(R.id.progressAnimation);
         animation.setVisibility(View.VISIBLE);
         llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
+        lv = (ListView) findViewById(R.id.lv);
         llEmpty.setVisibility(View.GONE);
-        lv = (ListView)findViewById(R.id.lv);
         data = new ArrayList<>();
         keys = new ArrayList<>();
         user = getIntent().getExtras().getParcelable("user");
@@ -77,19 +86,53 @@ public class ShowAllMyBook extends AppCompatActivity
 
         navView = navigationView.getHeaderView(0);
         setUserInfoNavBar();
+
+        //Manage the gesure to swipe down the screen.
+        //It refresh the list.
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(ShowAllMyBook.this, getString(R.string.updating), Toast.LENGTH_SHORT).show();
+                srl.setRefreshing(true);
+                lv.setVisibility(View.GONE);
+                llEmpty.setVisibility(View.GONE);
+                showAllMyBooks(user.getKey());
+            }
+        });
+
     }
 
-    private void showAllMyBooks(String keyOwner){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animation.setVisibility(View.VISIBLE);
+        lv.setVisibility(View.GONE);
+        llEmpty.setVisibility(View.GONE);
+        showAllMyBooks(user.getKey());
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(2).setChecked(true);
+    }
+
+    private void showAllMyBooks(String keyOwner) {
+
+        //This list contains the code of different colors.
+        //It's useful to show the card of the ListView with different colors.
         final List<String> colors = new ArrayList<>();
         colors.add(new String("#00897B"));
         colors.add(new String("#3F51B5"));
         colors.add(new String("#C62828"));
         colors.add(new String("#512DA8"));
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+
+        //Query for all the book owned by the user
         Query query = reference.child("books").orderByChild("owner").equalTo(keyOwner);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                data.clear();
+                keys.clear();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot bookSnap : dataSnapshot.getChildren()) {
                         Book book = bookSnap.getValue(Book.class);
@@ -98,15 +141,17 @@ public class ShowAllMyBook extends AppCompatActivity
                     }
                 }
 
-
                 animation.setVisibility(View.GONE);
-                if(data.isEmpty()){
+                if (data.isEmpty()) {
                     llEmpty.setVisibility(View.VISIBLE);
-                }
-                else{
+                    lv.setVisibility(View.GONE);
+                } else {
+                    lv.setVisibility(View.VISIBLE);
                     llEmpty.setVisibility(View.GONE);
                 }
+                srl.setRefreshing(false);
 
+                //The adapter fill the card.
                 lv.setAdapter(new BaseAdapter() {
                     @Override
                     public int getCount() {
@@ -125,7 +170,7 @@ public class ShowAllMyBook extends AppCompatActivity
 
                     @Override
                     public View getView(final int position, View convertView, ViewGroup parent) {
-                        if(convertView==null){
+                        if (convertView == null) {
                             convertView = getLayoutInflater().inflate(R.layout.adapter_show_all_my_book, parent, false);
                         }
 
@@ -133,7 +178,6 @@ public class ShowAllMyBook extends AppCompatActivity
                         TextView title = (TextView) convertView.findViewById(R.id.title_adapter);
                         TextView author = (TextView) convertView.findViewById(R.id.author_adapter);
                         TextView publication = (TextView) convertView.findViewById(R.id.publication_adapter);
-                        // TextView owner = (TextView) convertView.findViewById(R.id.owner_adapter);
                         final ImageView imageBook = (ImageView) convertView.findViewById(R.id.image_adapter);
                         imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         Book book = data.get(position);
@@ -142,27 +186,50 @@ public class ShowAllMyBook extends AppCompatActivity
                         publication.setText(book.getPublisher() + ", " + book.getYear());
                         //owner.setText(book.getOwner());
 
-                        Picasso.with(ShowAllMyBook.this)
-                                .load(book.getUrlImage()).noFade()
-                                .placeholder( R.drawable.progress_animation )
-                                .into(imageBook, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
-                                    }
+                        //If an official image of the book exist, fill the card with it, otherwise fill the image view
+                        //With the image taken by me (the image that show the conditions of the book)
+                       if(!book.getUrlImage().isEmpty()){
+                           Picasso.with(ShowAllMyBook.this)
+                                   .load(book.getUrlImage()).noFade()
+                                   .placeholder(R.drawable.progress_animation)
+                                   .error(R.drawable.ic_error_outline_black_24dp)
+                                   .into(imageBook, new com.squareup.picasso.Callback() {
+                                       @Override
+                                       public void onSuccess() {
+                                           imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                                       }
 
-                                    @Override
-                                    public void onError() {
+                                       @Override
+                                       public void onError() {
+                                           imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                       }
+                                   });
+                       }
+                       else{
+                           Picasso.with(ShowAllMyBook.this)
+                                   .load(book.getUrlMyImage()).noFade()
+                                   .placeholder(R.drawable.progress_animation)
+                                   .error(R.drawable.ic_error_outline_black_24dp)
+                                   .into(imageBook, new com.squareup.picasso.Callback() {
+                                       @Override
+                                       public void onSuccess() {
+                                           imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                                       }
 
-                                    }
-                                });
+                                       @Override
+                                       public void onError() {
+                                           imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                       }
+                                   });
+                       }
 
 
                         //Here to show all the book
                         CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv);
-                        cv.setCardBackgroundColor(Color.parseColor(colors.get(position%colors.size())));
+                        cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
                         TextView tvEdit = (TextView) convertView.findViewById(R.id.editMyBook);
 
+                        //edit the book
                         tvEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -173,11 +240,10 @@ public class ShowAllMyBook extends AppCompatActivity
                                 intent.putExtras(bundle);
                                 intent.putExtra("key", keys.get(position));
                                 startActivity(intent);
-                                finish();
                             }
                         });
 
-
+                        //Show all the information about the book.
                         cv.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -238,10 +304,5 @@ public class ShowAllMyBook extends AppCompatActivity
         }
 
     }
-    @Override
-    public void onResume(){
-        super.onResume();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(2).setChecked(true);
-    }
+
 }

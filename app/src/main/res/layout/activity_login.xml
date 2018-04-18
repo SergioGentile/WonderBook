@@ -1,5 +1,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,14 +18,18 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/LoginContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
 
         <LinearLayout
@@ -97,7 +102,6 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:layout_marginTop="@dimen/top_inside_box"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim">
 
                         <EditText
@@ -109,6 +113,7 @@
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
                             android:backgroundTint="@color/my_box"
+                            android:textColor="@android:color/black"
                             android:nextFocusDown="@id/edtLoginPassword"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -123,7 +128,6 @@
                         android:layout_marginLeft="@dimen/margin_left"
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
-                        android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim">
 
                         <EditText
@@ -160,8 +164,6 @@
                 android:layout_marginTop="30dp"/>
         </LinearLayout>
 
-
     </LinearLayout>
-
 
 </android.support.constraint.ConstraintLayout>

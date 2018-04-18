@@ -61,6 +61,7 @@
                     android:orientation="vertical">
 
                     <android.support.v7.widget.CardView
+                        android:elevation="@dimen/elevation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -134,7 +135,7 @@
                                             android:hint="@string/name"
                                             android:nextFocusDown="@id/edtSurname"
                                             android:singleLine="true"
-                                            android:inputType="textMultiLine|textNoSuggestions"
+                                            android:inputType="textNoSuggestions"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
@@ -151,7 +152,7 @@
                                             android:hint="@string/surname"
                                             android:nextFocusDown="@id/edtCity"
                                             android:singleLine="true"
-                                            android:inputType="textMultiLine|textNoSuggestions"
+                                            android:inputType="textNoSuggestions"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
@@ -181,7 +182,7 @@
                                         android:hint="@string/city"
                                         android:nextFocusDown="@id/edtCap"
                                         android:singleLine="true"
-                                        android:inputType="textMultiLine|textNoSuggestions"
+                                        android:inputType="textNoSuggestions"
                                         android:textSize="@dimen/tv_dim" />
                                 </android.support.design.widget.TextInputLayout>
 
@@ -209,6 +210,7 @@
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
+                        android:elevation="@dimen/elevation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -240,7 +242,7 @@
                                 android:layout_marginRight="@dimen/margin_right"
                                 android:text="@string/privacy_description"
                                 android:textColor="@android:color/darker_gray"
-                                android:textSize="12dp" />
+                                android:textSize="@dimen/subtitle_box_size" />
 
 
                             <LinearLayout
@@ -378,6 +380,7 @@
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
+                        android:elevation="@dimen/elevation"
                         android:background="@color/windowBackground"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

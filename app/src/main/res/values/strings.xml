@@ -41,10 +41,12 @@
     <string name="title_activity_start">Start</string>
     <string name="slogan">Share your library, find a world of books</string>
     <string name="title_activity_sign_in">Sign In</string>
-    <string name="register">Sing in</string>
+    <string name="register">Sign in</string>
     <string name="login">Login</string>
+    <string name="confirm">confirm password</string>
     <string name="subtitle">Subtitle (if present)</string>
     <string name="title_activity_login">Login</string>
+    <string name="updating">Updating...</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -55,21 +57,49 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_auth_failed">Authentication failed.</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_test">Test</string>
+    <string name="email_verif_toast1">An email has been sent to </string>
+    <string name="email_verif_toast2">, click on the link to verify your account.</string>
+    <string name="email_not_verif">Please, verify your email address.</string>
+    <string name="resend_email">Resend verification email</string>
+
 
     <!-- String nav bar -->
     <string name="home">Home</string>
     <string name="show_profile">Profile</string>
     <string name="show_book">Shared Book</string>
     <string name="logout">Logout</string>
-    <string name="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="changeMail">You are changing your email.Please remember to verify your e-mail</string>
     <string name="registerMessage">Email not avaiable!</string>
+
     <string name="edit">Edit</string>
     <string name="title_activity_edit_credential">EditCredential</string>
     <string name="password">Password</string>
+
+    <string name="no_book_shared_title">No books have yet been shared</string>
+    <string name="no_book_shared_subtitle">Start sharing now</string>
+    <string name="shared_by">Shared by</string>
+    <string name="publisher_point">Publisher:</string>
+    <string name="state_point">State:</string>
+    <string name="available">available</string>
+    <string name="unavailable">unavailable</string>
+    <string name="available_by_point">Available from:</string>
+    <string name="show_my_shared_book">Show my shared books</string>
+    <string name="fill_all_fields">Attention: all fields must be fill in</string>
+    <string name="fill_not_possible">Attention: it wasn\'t possible to pre-fill all the fields</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ask_to_delete_book">Attention: are you sure to delete this book?</string>
+    <string name="isbn">ISBN</string>
+    <string name="wait">Please wait...</string>
+    <string name="error_reload_new_book">Attention: there was a problem while loading the new settings</string>
+    <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
+    <string name="editpwd">Please insert current password</string>
+    <string name="mail_not_valid">The email is not in a valid format</string>
 
 </resources>

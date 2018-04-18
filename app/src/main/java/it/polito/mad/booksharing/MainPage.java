@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,12 +51,15 @@ public class MainPage extends AppCompatActivity
     private CircleImageView profileImage;
     private View navView;
     private String userId;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
 
-        userId= getIntent().getStringExtra("userMail");
+
 
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -80,10 +84,59 @@ public class MainPage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-       // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
+        // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
+        setDefaultUser();
+
+
+
+
+    }
+
+    private void checkLogin() {
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        //Start Login Activity if logged in
+        if (currentUser != null) {
+            if (!currentUser.isEmailVerified()){
+                // If sign in fails, display a message to the user.
+                if (getCallingActivity() != null) {
+                    if (!getCallingActivity().getClassName().equals("Register")) {
+                        Toast.makeText(MainPage.this, "Please verify your email address.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+                mAuth.signOut();
+                Intent intent = new Intent(MainPage.this, Start.class);
+                startActivity(intent);
+            }
+
+        }else{
+            mAuth.signOut();
+            Intent intent = new Intent(MainPage.this, Start.class);
+            startActivity(intent);
+        }
 
         getUserInfoFromFireBase();
+        // Check if user is signed in (non-null) and update UI accordingly.
+
+    }
+
+    private void setDefaultUser() {
+        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
+        tvName.setText("");
+        profileImage.setImageResource(R.drawable.profile);
+
     }
 
     @Override
@@ -99,7 +152,7 @@ public class MainPage extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.edit_credential, menu);
+        //getMenuInflater().inflate(R.menu., menu);
         return true;
     }
 
@@ -129,12 +182,14 @@ public class MainPage extends AppCompatActivity
             startActivity(new Intent(MainPage.this, ShowProfile.class));
 
         } else if (id == R.id.nav_show_shared_book) {
-           //Start the intent
+            //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
         }
         else if(id == R.id.nav_exit){
+            FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(MainPage.this,Start.class));
         }
 
@@ -145,32 +200,31 @@ public class MainPage extends AppCompatActivity
 
     private void getUserInfoFromFireBase() {
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!=null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference child = reference.child("users").child(currentUser.getUid());
+            child.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child("users").orderByChild("email/value").equalTo(userId);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot!=null) {
-                    for (DataSnapshot dataSnap : dataSnapshot.getChildren()) {
-                        saveUserInfoInSharedPref(dataSnap.getValue(User.class));
+                    if (dataSnapshot.exists()) {
+                        saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
+
+
+                    } else {
+                        goToEdit();
                     }
 
                 }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
+                }
+            });
+        }
 
     }
 
@@ -178,8 +232,6 @@ public class MainPage extends AppCompatActivity
 
 
 
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
         StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture.jpg");
@@ -251,23 +303,24 @@ public class MainPage extends AppCompatActivity
         navView.getBackground().setAlpha(80);
 
         profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
-        tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-        Bitmap image = null;
+        if(user!=null) {
+            tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
 
-        if (this.user.getImagePath() != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath());
-            this.profileImage.setImageBitmap(image);
+            Bitmap image = null;
+
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                this.profileImage.setImageBitmap(image);
+            }
         }
-
     }
-     @Override
+    @Override
     public void onResume() {
-         super.onResume();
-         NavigationView navigationView = findViewById(R.id.nav_view);
-         navigationView.getMenu().getItem(0).setChecked(true);
-         getUserFromSharedPreference();
-         setUserInfoNavBar();
-     }
+        super.onResume();
+        getUserFromSharedPreference();
+
+        setUserInfoNavBar();
+    }
 
     private void getUserFromSharedPreference() {
 
@@ -276,12 +329,33 @@ public class MainPage extends AppCompatActivity
         String userName = sharedPref.getString("user", defaultString);
         Gson json = new Gson();
         this.user=json.fromJson(userName, User.class);
-        if(this.user.getDescription().getValue().equals("")){
-
-            this.user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+        //if the user is new there is no previous data
+        if (this.user != null) {
+            if (this.user.getDescription().getValue().equals("")) {
+                this.user.setDescription(new User.MyPair(getString(R.string.description_value), "public"));
+            }
         }
     }
 
-}
 
+    private void goToEdit() {
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        User u = new User();
+        u.setEmail(new User.MyPair(currentUser.getEmail(), "public"));
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+
+        u.setKey(currentUser.getUid());
+        DatabaseReference instanceReference = databaseReference.child(u.getKey());
+        instanceReference.setValue(u);
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(MainPage.this, EditProfile.class);
+        bundle.putParcelable("user", u);
+        bundle.putString("from", "Register");
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+}
 

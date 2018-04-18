@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="mail_not_valid" type="id">email not valid</item>
+</resources>

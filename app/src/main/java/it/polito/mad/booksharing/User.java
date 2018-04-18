@@ -157,8 +157,8 @@ public class User implements Parcelable{
     //Used to serialize the object
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.surname.getValue()+"/t"+this.surname.getStatus());
         dest.writeString(this.name.getValue()+"/t"+this.name.getStatus());
+        dest.writeString(this.surname.getValue()+"/t"+this.surname.getStatus());
         dest.writeString(this.phone.getValue()+"/t"+this.phone.getStatus());
         dest.writeString(this.email.getValue()+"/t"+this.email.getStatus());
         dest.writeString(this.description.getValue() + "/t" + this.description.getStatus());
@@ -327,6 +327,19 @@ public class User implements Parcelable{
         this.key = key;
     }
 
+    public boolean checkMailFormat(String mail) {
+
+        Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcherMail = emailPatter.matcher(mail);
+        boolean findMail = matcherMail.find();
+        if(mail.equals(myDefault) || !findMail){
+
+            return false;
+        }
+
+        return true;
+    }
+
 
     public static class MyPair{
 
@@ -364,6 +377,8 @@ public class User implements Parcelable{
         public void setValue(String value) {
             this.value = value;
         }
+
+
     }
 
 }
