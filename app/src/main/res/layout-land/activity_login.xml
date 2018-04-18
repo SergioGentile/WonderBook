@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:backgroundTint="@color/my_box"
-                            android:hint="password"
+                            android:hint="@string/password"
                             android:inputType="textNoSuggestions|textPassword"
                             android:singleLine="true"
                             android:textSize="@dimen/tv_dim" />

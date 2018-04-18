@@ -118,5 +118,6 @@ public class Register extends AppCompatActivity {
         bundle.putString("from", "Register");
         intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 }

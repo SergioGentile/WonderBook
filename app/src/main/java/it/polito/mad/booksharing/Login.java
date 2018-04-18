@@ -109,6 +109,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 bundle.putString("userMail", clean_email);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
             }
         });
         /*

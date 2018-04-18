@@ -67,6 +67,11 @@
             android:name=".Register"
             android:label="@string/title_activity_register"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".EditCredential"
+            android:label="@string/title_activity_edit_credential"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

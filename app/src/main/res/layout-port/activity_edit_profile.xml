@@ -13,26 +13,31 @@
         <android.support.v7.widget.ActionBarContainer
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:theme="@style/ThemeToolbar"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/textColorPrimary"
-                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary" />
+                android:background="@color/colorPrimary">
+                <ImageButton
+                    android:id="@+id/btnDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:layout_marginRight="@dimen/margin_left"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/padding"
+                    android:src="@drawable/ic_check_black_24dp" />
+            </android.support.v7.widget.Toolbar>
 
-            <ImageButton
-                android:id="@+id/btnDone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center"
-                android:layout_marginRight="@dimen/margin_left"
-                android:background="@android:color/transparent"
-                android:padding="@dimen/padding"
-                android:src="@drawable/ic_check_black_24dp" />
         </android.support.v7.widget.ActionBarContainer>
+
+
+
+
 
         <View
             android:layout_width="match_parent"

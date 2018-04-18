@@ -9,13 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
@@ -29,8 +26,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -41,18 +38,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,9 +66,11 @@ public class EditProfile extends AppCompatActivity {
     private File photoStorage;
     private String initialMail;
     private String fromActivity;
+    private Toolbar toolbar;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
+    private static final int MODIFY_CREDENTIALS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +95,9 @@ public class EditProfile extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get all the references to the component
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         edtName = (EditText) findViewById(R.id.edtName);
         edtSurname = (EditText) findViewById(R.id.edtSurname);
         edtCity = (EditText) findViewById(R.id.edtCity);
@@ -557,12 +553,19 @@ public class EditProfile extends AppCompatActivity {
                 saveOnFireBaseOriginalImage(imagePath);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
             }
-            if (requestCode == IMAGE_CROP) {
+            else if(requestCode == IMAGE_CROP) {
                 //Case when the image was cropped.
                 //I take the new image and set it as user image
                 Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
+            }
+            else if(requestCode == MODIFY_CREDENTIALS){
+                Bundle result= data.getExtras();
+                String mail = result.getString("mail");
+                //Need to refresh shared pref and database
+                edtMail.setText(mail);
+
             }
         }
 
@@ -867,4 +870,35 @@ public class EditProfile extends AppCompatActivity {
         return null;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.edit_credential, menu);
+        return true;
+    }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(EditProfile.this, EditCredential.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            bundle.putString("from","Edit");
+            intent.putExtras(bundle);
+
+            //The costant MODIFY_PROFILE is useful when onActivityResult will be called.
+            //In this way we can understand that the activity that finish will be associate with that constant
+            //(See later)
+            startActivityForResult(intent, MODIFY_CREDENTIALS);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

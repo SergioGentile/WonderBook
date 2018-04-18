@@ -69,4 +69,7 @@
     <string name="changeMail">You are changing your access credential. Are you sure?</string>
     <string name="registerMessage">Email not avaiable!</string>
     <string name="edit">Edit</string>
+    <string name="title_activity_edit_credential">EditCredential</string>
+    <string name="password">Password</string>
+
 </resources>
