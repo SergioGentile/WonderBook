@@ -106,6 +106,14 @@
     <string name="mail_not_valid">The email is not in a valid format</string>
     <string name="resend_mail">"A new verification email has been sent to "</string>
     <string name="login_psw_error">Passwords mismatch</string>
+    <string name="confirm_mail_msg">It has been sent a confirmation mail. Please verify it and then make login.</string>
+    <string name="tap_here_to_resend">Tap here to send again</string>
+    <string name="email_private">Make your mail visible</string>
+    <string name="update_pwd">Password update complete!</string>
+    <string name="update_pwd_fail">Password update failed!</string>
+    <string name="no_change">This is already your email!</string>
+    <string name="weak_pwd">The password is too short</string>
+    <string name="account_setting">account settings</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
