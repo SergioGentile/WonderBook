@@ -69,4 +69,6 @@
     <string name="error_reload_new_book">تحذير: حدثت مشكلة في تحميل الإعدادات الجديدة.</string>
     <string name="wrong_isbn">انتباه: يجب أن يكون ISBN 13 أو 10 أحرف</string>
     <string name="editpwd">Please insert current password</string>
+    <string name="confirm_mail_msg">یک ایمیل تایید فرستاده شد قبل از ورود به آن را بررسی کنید</string>
+    <string name="tap_here_to_resend">برای ارسال مجدد اینجا را کلیک کنید</string>
 </resources>

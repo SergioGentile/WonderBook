@@ -71,4 +71,7 @@
     <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
     <string name="editpwd">Please insert current password</string>
 
+    <string name="confirm_mail_msg">It has been sent a confirmation mail. Please verify it and then make login.</string>
+    <string name="tap_here_to_resend">Tap here to send again</string>
+
 </resources>

@@ -36,9 +36,10 @@ public class Start extends AppCompatActivity {
                 //Start Login Activity
                 Intent intent = new Intent(Start.this, Login.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("from","Start");
+                bundle.putString("from", "Start");
                 intent.putExtras(bundle);
                 startActivity(intent);
+
             }
         });
 
@@ -59,11 +60,19 @@ public class Start extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Start Login Activity if logged in
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.isEmailVerified()) {
             Intent intent = new Intent(Start.this, MainPage.class);
             startActivity(intent);
             finish();
         }
+        else if (currentUser != null && !currentUser.isEmailVerified()) {
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent(Start.this, Login.class);
+            bundle.putString("from", "Start_Email_Not_Verified");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 
 }

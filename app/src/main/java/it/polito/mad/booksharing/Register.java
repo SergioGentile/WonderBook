@@ -143,7 +143,8 @@ public class Register extends AppCompatActivity {
 
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 5;
+
+        return password.length() > 6;
     }
 
     private boolean isEmailValid(String email) {

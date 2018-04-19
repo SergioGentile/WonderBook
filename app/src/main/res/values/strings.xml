@@ -103,5 +103,7 @@
     <string name="mail_not_valid">The email is not in a valid format</string>
     <string name="resend_mail">A new verification email has been sent to</string>
     <string name="login_psw_error">Passwords mismatch</string>
+    <string name="confirm_mail_msg">It has been sent a confirmation mail. Please verify it and then make login.</string>
+    <string name="tap_here_to_resend">Tap here to send again</string>
 
 </resources>

@@ -4,37 +4,39 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.media.Image;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity {
+public class ShowBookFull extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -46,11 +48,13 @@ public class ShowBookFull extends AppCompatActivity {
     private ScrollView sv;
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
+    private Toolbar toolbar;
+    private View navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_book_full);
+        setContentView(R.layout.activity_show_my_book_full);
 
         title = (TextView) findViewById(R.id.shTitle);
         subtitle = (TextView) findViewById(R.id.shSubtitle);
@@ -61,6 +65,9 @@ public class ShowBookFull extends AppCompatActivity {
         /*description.setScroller(new Scroller(ShowBookFull.this));
         description.setMaxLines(5);
         description.setVerticalScrollBarEnabled(true);*/
+
+        toolbar = (Toolbar) findViewById(R.id.toolbarShowProfile);
+        setSupportActionBar(toolbar);
 
         //This part is useful when the description field over the max number of lines.
         //If the user scroll the description field, the scrollerView is blocked, and with the same principle
@@ -178,8 +185,23 @@ public class ShowBookFull extends AppCompatActivity {
                 zoomImage();
             }
         });
+
+        createNavBar();
     }
 
+    private void createNavBar() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        navView = navigationView.getHeaderView(0);
+        setUserInfoNavBar();
+    }
 
 
     private void zoomImage() {
@@ -406,6 +428,53 @@ public class ShowBookFull extends AppCompatActivity {
         }
         else if(RESULT_CANCELED == resultCode){
             Toast.makeText(ShowBookFull.this, getString(R.string.error_reload_new_book), Toast.LENGTH_SHORT);
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if(id == R.id.nav_home){
+            //Start Home
+            startActivity(new Intent(ShowBookFull.this, MainPage.class));
+        }
+        else if (id == R.id.nav_profile) {
+            // Handle the camera action
+            startActivity(new Intent(ShowBookFull.this, ShowProfile.class));
+
+        } else if (id == R.id.nav_show_shared_book) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowBookFull.this, ShowAllMyBook.class).putExtras(bundle));
+        }
+        else if(id == R.id.nav_exit){
+            FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(ShowBookFull.this,Start.class));
+            finish();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    private void setUserInfoNavBar() {
+        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+        Bitmap image = null;
+
+        if (this.user.getImagePath() != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath());
+            barprofileImage.setImageBitmap(image);
         }
     }
 }
