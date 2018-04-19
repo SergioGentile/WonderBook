@@ -102,7 +102,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         login_message = (TextView) findViewById(R.id.login_message);
 
         String fromActivity = getIntent().getExtras().getString("from");
-        if (fromActivity.equals("Edit") || fromActivity.equals("Start_Email_Not_Verified")) {
+        if (fromActivity.equals("Edit")) {
 
             //The text became clickable only if we ae in the registration process
             FirebaseAuth.getInstance().getCurrentUser().reload();
