@@ -67,11 +67,11 @@
                 android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
-                    android:elevation="@dimen/elevation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left"
-                    android:layout_marginRight="@dimen/margin_right">
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:elevation="@dimen/elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -121,11 +121,11 @@
                             android:layout_marginTop="@dimen/top_inside_box">
 
                             <EditText
-                                android:inputType="text"
                                 android:id="@+id/tvTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/title"
+                                android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
                         </android.support.design.widget.TextInputLayout>
@@ -138,11 +138,11 @@
                             android:layout_marginTop="@dimen/top_inside_box">
 
                             <EditText
-                                android:inputType="text"
                                 android:id="@+id/tvSubtitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/subtitle"
+                                android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
                         </android.support.design.widget.TextInputLayout>
@@ -155,11 +155,11 @@
                             android:layout_marginTop="@dimen/top_inside_box">
 
                             <EditText
-                                android:inputType="text"
                                 android:id="@+id/tvAuthor"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/author"
+                                android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
                         </android.support.design.widget.TextInputLayout>
@@ -181,11 +181,11 @@
                                 android:layout_weight="0.5">
 
                                 <EditText
-                                    android:inputType="text"
                                     android:id="@+id/tvProduction"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="@string/publisher"
+                                    android:inputType="text"
                                     android:singleLine="true"
                                     android:textSize="@dimen/tv_dim" />
                             </android.support.design.widget.TextInputLayout>
@@ -195,31 +195,32 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/margin_right"
                                 android:layout_weight="0.5">
+
                                 <EditText
-                                    android:inputType="number"
                                     android:id="@+id/tvYear"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="@string/year"
+                                    android:inputType="number"
                                     android:singleLine="true"
                                     android:textSize="@dimen/tv_dim" />
                             </android.support.design.widget.TextInputLayout>
                         </LinearLayout>
 
                         <android.support.design.widget.TextInputLayout
-                            android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
                             android:layout_marginTop="@dimen/top_inside_box">
 
                             <EditText
-                                android:inputType="text"
                                 android:id="@+id/tvISBN"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/isbn"
+                                android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
                         </android.support.design.widget.TextInputLayout>
@@ -228,12 +229,72 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    android:elevation="@dimen/elevation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/bottom_inside_box"
                     android:layout_marginLeft="@dimen/margin_left"
                     android:layout_marginRight="@dimen/margin_right"
-                    android:layout_marginTop="@dimen/margin_top">
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:elevation="@dimen/elevation">
+
+                    <LinearLayout
+                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:text="@string/state"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/title_box_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/state_description"
+                            android:textColor="@color/colorSecondaryText"
+                            android:textSize="@dimen/subtitle_box_size" />
+
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/tvAvailable"
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:textColor="@android:color/holo_green_dark"
+                                android:textSize="@dimen/tv_dim"
+                                android:text="@string/available"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <Switch
+                                android:id="@+id/swAvailable"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/bottom_inside_box"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:elevation="@dimen/elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -310,9 +371,9 @@
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
                                     android:layout_marginRight="@dimen/margin_right"
                                     android:hint="@string/description"
+                                    android:inputType="textMultiLine|text"
                                     android:maxLines="5"
                                     android:scrollbars="vertical"
-                                    android:inputType="textMultiLine|text"
                                     android:singleLine="false"
                                     android:textSize="@dimen/tv_dim" />
                             </LinearLayout>

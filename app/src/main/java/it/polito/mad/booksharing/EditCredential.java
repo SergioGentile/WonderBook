@@ -77,7 +77,7 @@ public class EditCredential extends AppCompatActivity {
                             .setTitle(getString(R.string.alert_title))
                             .setMessage(getString(R.string.editpwd))
                             .setView(layout)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
@@ -93,7 +93,7 @@ public class EditCredential extends AppCompatActivity {
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(EditCredential.this, "Authentication failed.",
+                                                Toast.makeText(EditCredential.this, getString(R.string.authentication_failed),
                                                         Toast.LENGTH_SHORT).show();
                                             }
                                         });
@@ -103,7 +103,7 @@ public class EditCredential extends AppCompatActivity {
                                     }
                                 }
                             })
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(getString(R.string.cancel), null)
                             .create();
                     dialog.show();
 
@@ -151,13 +151,13 @@ public class EditCredential extends AppCompatActivity {
             FirebaseAuth.getInstance().getCurrentUser().updatePassword(edtPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(EditCredential.this, "Password cambiata a "+FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                    Toast.makeText(EditCredential.this,  getString(R.string.password_change_to)+FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                             Toast.LENGTH_LONG).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(EditCredential.this, "Password non cambiata",
+                    Toast.makeText(EditCredential.this, getString(R.string.password_not_changed),
                             Toast.LENGTH_LONG).show();
                     Log.d("updatePswFail",e.getMessage());
                 }
@@ -183,7 +183,7 @@ public class EditCredential extends AppCompatActivity {
                             dbref.child("users").child(user.getKey()).child("email/value").setValue(clean_mail);
                             finish();
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     return;

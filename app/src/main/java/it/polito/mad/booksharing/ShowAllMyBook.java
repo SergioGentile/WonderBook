@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,19 +41,19 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowAllMyBook extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView lv;
     private List<Book> data;
     private List<String> keys;
     private User user;
     private LinearLayout llEmpty;
-    private ImageView animation;
+    private ProgressBar progressAnimation;
     private View navView;
     private Toolbar toolbar;
     private TextView tvName;
-    private CircleImageView profileImage;
+    private CircleImageView
+            profileImage;
     private SwipeRefreshLayout srl;
 
 
@@ -64,9 +66,8 @@ public class ShowAllMyBook extends AppCompatActivity
         //This class manage the exhibition of all the book owned by the user.
 
         srl = (SwipeRefreshLayout) findViewById(R.id.srl);
-
-        animation = (ImageView) findViewById(R.id.progressAnimation);
-        animation.setVisibility(View.VISIBLE);
+        progressAnimation = (ProgressBar) findViewById(R.id.progressAnimation);
+        progressAnimation.setVisibility(View.VISIBLE);
         llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
         lv = (ListView) findViewById(R.id.lv);
         llEmpty.setVisibility(View.GONE);
@@ -100,12 +101,24 @@ public class ShowAllMyBook extends AppCompatActivity
             }
         });
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                startActivity(new Intent(ShowAllMyBook.this, AddBook.class).putExtras(bundle));
+                finish();
+            }
+        });
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        animation.setVisibility(View.VISIBLE);
+        progressAnimation.setVisibility(View.VISIBLE);
         lv.setVisibility(View.GONE);
         llEmpty.setVisibility(View.GONE);
         showAllMyBooks(user.getKey());
@@ -141,7 +154,7 @@ public class ShowAllMyBook extends AppCompatActivity
                     }
                 }
 
-                animation.setVisibility(View.GONE);
+                progressAnimation.setVisibility(View.GONE);
                 if (data.isEmpty()) {
                     llEmpty.setVisibility(View.VISIBLE);
                     lv.setVisibility(View.GONE);
@@ -284,9 +297,9 @@ public class ShowAllMyBook extends AppCompatActivity
             startActivity(new Intent(ShowAllMyBook.this,Start.class));
         }
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        finish();
         return true;
     }
 

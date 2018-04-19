@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
@@ -20,6 +22,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
+import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -35,8 +39,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class ShowBookFull extends AppCompatActivity {
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -48,6 +51,18 @@ public class ShowBookFull extends AppCompatActivity
     private ScrollView sv;
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
+    private LinearLayout llIn, llOut;
+    private ScrollView cv;
+
+    private Matrix matrix = new Matrix();
+    Matrix savedMatrix = new Matrix();
+    static final int NONE = 0;
+    static final int DRAG = 1;
+    static final int ZOOM = 2;
+    private int mode;
+    private PointF start = new PointF();
+    private PointF mid = new PointF();
+    private float oldDist;
     private Toolbar toolbar;
     private View navView;
 
@@ -179,6 +194,9 @@ public class ShowBookFull extends AppCompatActivity
             }
         });
 
+        llIn = (LinearLayout) findViewById(R.id.container_bookfull);
+        llOut = (LinearLayout)findViewById(R.id.llOut);
+        cv = (ScrollView) findViewById(R.id.scrollSh);
         imageMyBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,6 +205,15 @@ public class ShowBookFull extends AppCompatActivity
         });
 
         createNavBar();
+
+
+        llOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llIn.setVisibility(View.GONE);
+                cv.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void createNavBar() {
@@ -202,16 +229,100 @@ public class ShowBookFull extends AppCompatActivity
         navView = navigationView.getHeaderView(0);
         setUserInfoNavBar();
     }
+    private void dumpEvent(MotionEvent event) {
+        String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
+                "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
+        StringBuilder sb = new StringBuilder();
+        int action = event.getAction();
+        int actionCode = action & MotionEvent.ACTION_MASK;
+        sb.append("event ACTION_").append(names[actionCode]);
+        if (actionCode == MotionEvent.ACTION_POINTER_DOWN
+                || actionCode == MotionEvent.ACTION_POINTER_UP) {
+            sb.append("(pid ").append(
+                    action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
+            sb.append(")");
+        }
+        sb.append("[");
+        for (int i = 0; i < event.getPointerCount(); i++) {
+            sb.append("#").append(i);
+            sb.append("(pid ").append(event.getPointerId(i));
+            sb.append(")=").append((int) event.getX(i));
+            sb.append(",").append((int) event.getY(i));
+            if (i + 1 < event.getPointerCount())
+                sb.append(";");
+        }
+        sb.append("]");
+    }
+
+    /** Determine the space between the first two fingers */
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return new Float(Math.sqrt(x * x + y * y));
+    }
+
+    /** Calculate the mid point of the first two fingers */
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
+    }
 
 
     private void zoomImage() {
-
         //Take the reference of the field
         expandedImage = (ImageView) findViewById(R.id.expanded_image_bookfull);
-
         BitmapDrawable drawable = (BitmapDrawable) imageMyBook.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
         expandedImage.setImageBitmap(bitmap);
+
+
+        expandedImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ImageView view = (ImageView) v;
+                dumpEvent(event);
+
+                // Handle touch events here...
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        savedMatrix.set(matrix);
+                        start.set(event.getX(), event.getY());
+                        mode = DRAG;
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        oldDist = spacing(event);
+                        if (oldDist > 10f) {
+                            savedMatrix.set(matrix);
+                            midPoint(mid, event);
+                            mode = ZOOM;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        mode = NONE;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (mode == DRAG) {
+                            // ...
+                            matrix.set(savedMatrix);
+                            matrix.postTranslate(event.getX() - start.x, event.getY()
+                                    - start.y);
+                        } else if (mode == ZOOM) {
+                            float newDist = spacing(event);
+                            if (newDist > 10f) {
+                                matrix.set(savedMatrix);
+                                float scale = newDist / oldDist;
+                                matrix.postScale(scale, scale, mid.x, mid.y);
+                            }
+                        }
+                        break;
+                }
+
+                view.setImageMatrix(matrix);
+                return true;
+            }
+        });
 
         //Structure I need to perform the zoom
 
@@ -256,10 +367,9 @@ public class ShowBookFull extends AppCompatActivity
         // Hide the thumbnail and show the zoomed-in view. When the animation
         // begins, it will position the zoomed-in view in the place of the
         // thumbnail.
-
-        ScrollView cv = findViewById(R.id.scrollSh);
         cv.setVisibility(View.GONE);
-          expandedImage.setVisibility(View.VISIBLE);
+        llIn.setVisibility(View.VISIBLE);
+        expandedImage.setVisibility(View.VISIBLE);
 
 
         // Set the pivot point for SCALE_X and SCALE_Y transformations
@@ -329,7 +439,7 @@ public class ShowBookFull extends AppCompatActivity
 
                         imageMyBook.setImageDrawable(expandedImage.getDrawable());
                         expandedImage.setVisibility(View.INVISIBLE);
-                        ScrollView cv = findViewById(R.id.scrollSh);
+                        llIn.setVisibility(View.GONE);
                         cv.setVisibility(View.VISIBLE);
                         mCurrentAnimator = null;
                     }
@@ -338,7 +448,7 @@ public class ShowBookFull extends AppCompatActivity
                     public void onAnimationCancel(Animator animation) {
                         imageMyBook.setImageDrawable(expandedImage.getDrawable());
                         expandedImage.setVisibility(View.INVISIBLE);
-                        ScrollView cv = findViewById(R.id.scrollSh);
+                        llIn.setVisibility(View.GONE);
                         cv.setVisibility(View.VISIBLE);
                         mCurrentAnimator = null;
                     }

@@ -93,7 +93,6 @@ public class MainPage extends AppCompatActivity
 
     }
 
-
     @Override
     public void onStart() {
         super.onStart();

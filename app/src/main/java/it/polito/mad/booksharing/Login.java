@@ -5,10 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.UnicodeSet;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -20,12 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -45,8 +38,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -59,7 +50,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private EditText loginEmail, loginPassword;
     private ProgressBar progress;
     private LinearLayout container;
-    private TextView login_message;
+    private TextView sendMailText;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -99,46 +90,29 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
         progress = (ProgressBar) findViewById(R.id.login_progress);
         container = (LinearLayout) findViewById(R.id.LoginContainer);
-        login_message = (TextView) findViewById(R.id.login_message);
+
+        sendMailText = (TextView) findViewById(R.id.resendEmail);
 
         String fromActivity = getIntent().getExtras().getString("from");
-        if (fromActivity.equals("Edit") || fromActivity.equals("Start_Email_Not_Verified")) {
+        if (fromActivity.equals("Edit")) {
 
-            //The text became clickable only if we ae in the registration process
+
             FirebaseAuth.getInstance().getCurrentUser().reload();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (checkUserCredential(user)) {
                 startMain(user.getEmail());
             }
-
-            String message = getString(R.string.confirm_mail_msg);
-
-            String sendMail = getString(R.string.tap_here_to_resend);
-            
-            Spannable spannable = new SpannableString(message + '\n' +sendMail);
-
-            int colorAccent = ResourcesCompat.getColor(getResources(),R.color.colorAccent,null);
-
-            //Change color to string send mail
-            spannable.setSpan(new ForegroundColorSpan(colorAccent),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-
-            //Underline String send Mail
-            spannable.setSpan(new UnderlineSpan(),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_COMPOSING);
-
-            login_message.setText(spannable);
-
-            login_message.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-                    Toast.makeText(Login.this,
-                            getString(R.string.resend_mail) + " " + FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                            Toast.LENGTH_LONG).show();
-                }
-            });
         }
+
+        sendMailText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                Toast.makeText(Login.this,
+                        R.string.resend_mail + " " + mAuth.getCurrentUser().getEmail(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,7 +235,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                         startMain(clean_email);
                                     }
                                     else{
-                                        Toast.makeText(Login.this, "Please verify your email address.",
+                                        sendMailText.setVisibility(View.VISIBLE);
+                                        Toast.makeText(Login.this, getString(R.string.email_not_verif),
                                                 Toast.LENGTH_LONG).show();
                                         showProgress(false);
                                         mAuth.signOut();
@@ -270,7 +245,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                 } else {
                                     // If sign in fails, display a message to the user.
 
-                                    Toast.makeText(Login.this, "Authentication failed.",
+                                    Toast.makeText(Login.this, getString(R.string.authentication_failed),
                                             Toast.LENGTH_SHORT).show();
                                     showProgress(false);
                                 }
@@ -285,20 +260,26 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     private boolean checkUserCredential(FirebaseUser currentUser) {
 
-        if (currentUser != null && currentUser.isEmailVerified()) {
+        if (currentUser != null && !currentUser.isEmailVerified()) {
+            // If sign in fails, display a message to the user.
+            sendMailText.setVisibility(View.VISIBLE);
+            Toast.makeText(Login.this, getString(R.string.email_not_verif),
+                    Toast.LENGTH_LONG).show();
+        } else if (currentUser != null && currentUser.isEmailVerified()) {
             return true;
         }
+
         return false;
     }
 
     private boolean isEmailValid(String email) {
-        Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcherMail = emailPatter.matcher(email);
-        return  matcherMail.find();
+        //TODO: Replace this with your own logic
+        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 6;
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
     }
 
     private void startMain(String userEmail) {
