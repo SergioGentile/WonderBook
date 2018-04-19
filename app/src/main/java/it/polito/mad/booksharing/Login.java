@@ -3,6 +3,7 @@ package it.polito.mad.booksharing;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -93,12 +94,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         sendMailText = (TextView) findViewById(R.id.resendEmail);
 
+
         String fromActivity = getIntent().getExtras().getString("from");
         if (fromActivity.equals("Edit")) {
 
-
-            FirebaseAuth.getInstance().getCurrentUser().reload();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
             if (checkUserCredential(user)) {
                 startMain(user.getEmail());
             }
@@ -117,7 +118,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                    FirebaseAuth.getInstance().getCurrentUser().reload();
+                }
                 attemptLogin();
 
             }
@@ -217,7 +220,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             // perform the user login attempt.
             FirebaseUser user=null;
             if(mAuth.getCurrentUser()!=null) {
-                mAuth.getCurrentUser().reload();
+
                 user = mAuth.getCurrentUser();
             }
             if (checkUserCredential(user)) {
@@ -285,6 +288,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private void startMain(String userEmail) {
         //Start MainPage Activity
         Intent intent = new Intent(Login.this, MainPage.class);
+        setResult(Activity.RESULT_OK, intent);
         startActivity(intent);
         finish();
     }

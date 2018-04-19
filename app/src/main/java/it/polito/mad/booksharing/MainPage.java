@@ -261,6 +261,15 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
+        String alertMessage = this.user.checkInfo(getApplicationContext());
+        if (alertMessage != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("from","Register");
+            Intent intent = new Intent(MainPage.this,EditProfile.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+        }
         setUserInfoNavBar();
 
     }

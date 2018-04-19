@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,6 +36,8 @@ public class Register extends AppCompatActivity {
 
     private EditText loginEmail , loginPassword, loginConfirmPassword;
     private FirebaseAuth mAuth;
+    private ProgressBar progress;
+    private LinearLayout container;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -64,6 +68,9 @@ public class Register extends AppCompatActivity {
         loginEmail = (EditText) findViewById(R.id.edtLoginName);
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
         loginConfirmPassword = (EditText)findViewById(R.id.edtLoginPassword2);
+
+        progress = (ProgressBar) findViewById(R.id.register_progress);
+        container = (LinearLayout) findViewById(R.id.RegisterContainer);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -107,6 +114,7 @@ public class Register extends AppCompatActivity {
                     focusView.requestFocus();
                 } else {
 
+                    showProgress(true);
                     mAuth.createUserWithEmailAndPassword(clean_email, password)
                             .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -117,6 +125,7 @@ public class Register extends AppCompatActivity {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(Register.this, getString(R.string.email_verif_toast1) +" "+clean_email+ getString(R.string.email_verif_toast2),
                                                 Toast.LENGTH_SHORT).show();
+
                                         goToEdit();
                                     } else {
                                         //TODO switch case su errori
@@ -124,6 +133,7 @@ public class Register extends AppCompatActivity {
                                         Toast.makeText(Register.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
+                                    showProgress(false);
                                     // ...
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -132,6 +142,7 @@ public class Register extends AppCompatActivity {
                             //TODO mettere switch case possibili errori
                             Toast.makeText(Register.this, "Authentication failed. Please check your internet connection",
                                     Toast.LENGTH_SHORT).show();
+                            showProgress(false);
 
                         }
                     });
@@ -169,8 +180,14 @@ public class Register extends AppCompatActivity {
         bundle.putParcelable("user", u);
         bundle.putString("from", "Register");
         intent.putExtras(bundle);
+        showProgress(false);
         startActivity(intent);
         finish();
+    }
+
+    private void showProgress(final boolean show) {
+        progress.setVisibility(show ? View.VISIBLE : View.GONE);
+        container.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
 }
