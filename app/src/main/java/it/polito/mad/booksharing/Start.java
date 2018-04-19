@@ -35,6 +35,9 @@ public class Start extends AppCompatActivity {
             public void onClick(View v) {
                 //Start Login Activity
                 Intent intent = new Intent(Start.this, Login.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("from","Start");
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -43,7 +46,7 @@ public class Start extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Start Login Activity
+                //Start Register Activity
                 Intent intent = new Intent(Start.this, Register.class);
                 startActivity(intent);
             }
@@ -57,12 +60,7 @@ public class Start extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Start Login Activity if logged in
         if (currentUser != null) {
-            String mail = currentUser.getEmail();
-            Bundle bundle = new Bundle();
-            bundle.putString("userMail",mail);
-
             Intent intent = new Intent(Start.this, MainPage.class);
-            intent.putExtras(bundle);
             startActivity(intent);
             finish();
         }

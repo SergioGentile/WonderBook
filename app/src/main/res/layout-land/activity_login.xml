@@ -156,8 +156,8 @@
                 android:layout_margin="@dimen/activity_vertical_margin"
                 android:text="@string/resend_email"
                 android:layout_gravity="center|start"
-                android:textSize="15dp"
-                android:visibility="invisible"
+                android:textSize="17sp"
+                android:visibility="gone"
                 android:textColor="@color/colorPrimaryDark"/>
 
             <Button

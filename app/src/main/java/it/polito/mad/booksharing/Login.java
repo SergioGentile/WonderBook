@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,9 +47,10 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     private Button button;
-    private EditText loginEmail , loginPassword;
+    private EditText loginEmail, loginPassword;
     private ProgressBar progress;
     private LinearLayout container;
+    private TextView sendMailText;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -77,7 +79,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword.setText(inState.getString("pass"));
     }
 
-    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +90,29 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
         progress = (ProgressBar) findViewById(R.id.login_progress);
         container = (LinearLayout) findViewById(R.id.LoginContainer);
-        mAuth = FirebaseAuth.getInstance();
 
+        sendMailText = (TextView) findViewById(R.id.resendEmail);
+
+        String fromActivity = getIntent().getExtras().getString("from");
+        if (fromActivity.equals("Edit")) {
+
+
+            FirebaseAuth.getInstance().getCurrentUser().reload();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (checkUserCredential(user)) {
+                startMain(user.getEmail());
+            }
+        }
+
+            sendMailText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                    Toast.makeText(Login.this,
+                            R.string.resend_mail + " " + mAuth.getCurrentUser().getEmail(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +127,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     @Override
     public void onStart() {
         super.onStart();
+
         showProgress(false);
     }
 
@@ -155,6 +179,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      */
     private void attemptLogin() {
         // Reset errors.
+        mAuth = FirebaseAuth.getInstance();
         loginEmail.setError(null);
         loginPassword.setError(null);
 
@@ -190,18 +215,33 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            FirebaseUser user = mAuth.getCurrentUser();
-            if (user != null) {
+            FirebaseUser user=null;
+            if(mAuth.getCurrentUser()!=null) {
+                mAuth.getCurrentUser().reload();
+                user = mAuth.getCurrentUser();
+            }
+            if (checkUserCredential(user)) {
                 startMain(user.getEmail());
-            } else {
+            } else if (user == null) {
                 showProgress(true);
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
-                                    startMain(clean_email);
+                                    if(mAuth.getCurrentUser().isEmailVerified()){
+
+                                        String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
+                                        startMain(clean_email);
+                                    }
+                                    else{
+                                        sendMailText.setVisibility(View.VISIBLE);
+                                        Toast.makeText(Login.this, "Please verify your email address.",
+                                                Toast.LENGTH_LONG).show();
+                                        showProgress(false);
+                                        mAuth.signOut();
+                                    }
+
                                 } else {
                                     // If sign in fails, display a message to the user.
 
@@ -210,13 +250,26 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                     showProgress(false);
                                 }
 
-
-                                // ...
-
                             }
                         });
+
             }
+
         }
+    }
+
+    private boolean checkUserCredential(FirebaseUser currentUser) {
+
+        if (currentUser != null && !currentUser.isEmailVerified()) {
+            // If sign in fails, display a message to the user.
+            sendMailText.setVisibility(View.VISIBLE);
+            Toast.makeText(Login.this, "Please verify your email address.",
+                    Toast.LENGTH_LONG).show();
+        } else if (currentUser != null && currentUser.isEmailVerified()) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isEmailValid(String email) {
@@ -229,14 +282,11 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         return password.length() > 4;
     }
 
-    private void startMain(String userEmail){
+    private void startMain(String userEmail) {
         //Start MainPage Activity
         Intent intent = new Intent(Login.this, MainPage.class);
-        Bundle bundle = new Bundle();
-
-        bundle.putString("userMail", userEmail);
-        intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -288,7 +338,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {

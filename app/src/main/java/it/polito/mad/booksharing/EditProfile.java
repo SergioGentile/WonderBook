@@ -69,7 +69,6 @@ public class EditProfile extends AppCompatActivity {
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
-    private String initialMail;
     private String fromActivity;
     private Toolbar toolbar;
 
@@ -91,7 +90,7 @@ public class EditProfile extends AppCompatActivity {
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(EditProfile.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA},
+                        Manifest.permission.CAMERA},
                 1);
 
 
@@ -121,18 +120,17 @@ public class EditProfile extends AppCompatActivity {
         lockPhone = (ImageView) findViewById(R.id.lockPhine);
         lockMail = (ImageView) findViewById(R.id.lockMail);
 
-        //Get the user object stored in the SharedPreferences in order to initialize all the fields
-     //   getUserInfoFromShared();
-
-        user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
+        user = getIntent().getParcelableExtra("user");
 
+
+        if(fromActivity.equals("Register")){
+
+        }
         //Set all the fields of the user in edtName, edtSurname...
 
-        initialMail = user.getEmail().getValue();
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
-
         setUser(user);
 
         //catch the ACTION_DOWN event on the user image.
@@ -363,8 +361,7 @@ public class EditProfile extends AppCompatActivity {
                                     //Nothing to do
                                 }
                             }).show();
-                }
-                else {
+                } else {
                     //Otherwise put the new status of the user in a bundle, and return it to the activity show profile
                     setUserInfo();
                     Intent intent = new Intent();
@@ -373,14 +370,16 @@ public class EditProfile extends AppCompatActivity {
                     intent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, intent);
 
-                    if(fromActivity.equals("Register")){
+                    if (fromActivity.equals("Register")) {
 
-                        Intent intent2 = new Intent(EditProfile.this, MainPage.class);
+                        bundle.putString("from", "Edit");
+                        Intent intent2 = new Intent(EditProfile.this, Login.class);
                         intent2.putExtras(bundle);
                         startActivity(intent2);
-                    }else{
-                        finish();
                     }
+
+                    finish();
+
 
                 }
             }
@@ -421,11 +420,11 @@ public class EditProfile extends AppCompatActivity {
         //the two original image profile
         if (originalBitmapCrop != null) {
 
-            String imagePath =saveToInternalStorageOriginalImage(originalBitmapCrop);
+            String imagePath = saveToInternalStorageOriginalImage(originalBitmapCrop);
             saveOnFireBaseOriginalImage(imagePath);
         }
         if (originalBitmapNormal != null) {
-            String imagePath =saveToInternalStorage(originalBitmapNormal);
+            String imagePath = saveToInternalStorage(originalBitmapNormal);
             saveonFirebase(imagePath);
 
         }
@@ -435,10 +434,10 @@ public class EditProfile extends AppCompatActivity {
         if (user.getImagePath().equals("")) {
             //On the first access the default image is copied in the internal storage in order to perform the crop operation
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
-            String imagePathUser =saveToInternalStorage(image);
+            String imagePathUser = saveToInternalStorage(image);
             saveonFirebase(imagePathUser);
             user.setImagePath(imagePathUser);
-            String imagePathOrigin =saveToInternalStorageOriginalImage(image);
+            String imagePathOrigin = saveToInternalStorageOriginalImage(image);
             saveOnFireBaseOriginalImage(imagePathOrigin);
 
         }
@@ -527,7 +526,7 @@ public class EditProfile extends AppCompatActivity {
                 profileBitmap = rotateImg;
                 String imagePath = saveToInternalStorage(rotateImg);
                 saveonFirebase(imagePath);
-                String imagePathOriginal=saveToInternalStorageOriginalImage(rotateImg);
+                String imagePathOriginal = saveToInternalStorageOriginalImage(rotateImg);
                 saveOnFireBaseOriginalImage(imagePathOriginal);
 
             } else if (requestCode == IMAGE_CAMERA) {
@@ -549,24 +548,22 @@ public class EditProfile extends AppCompatActivity {
                 profileBitmap = rotateImg;
                 String imagePath = saveToInternalStorage(rotateImg);
                 saveonFirebase(imagePath);
-                String imagePathOriginal=saveToInternalStorageOriginalImage(rotateImg);
+                String imagePathOriginal = saveToInternalStorageOriginalImage(rotateImg);
                 saveOnFireBaseOriginalImage(imagePathOriginal);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
-            }
-            else if(requestCode == IMAGE_CROP) {
+            } else if (requestCode == IMAGE_CROP) {
                 //Case when the image was cropped.
                 //I take the new image and set it as user image
                 Bitmap bitmap = BitmapFactory.decodeFile(user.getImagePath());
                 profileImg.setImageBitmap(bitmap);
                 profileBitmap = bitmap;
-            }
-            else if(requestCode == MODIFY_CREDENTIALS){
-                Bundle result= data.getExtras();
+            } else if (requestCode == MODIFY_CREDENTIALS) {
+                Bundle result = data.getExtras();
                 String mail = result.getString("mail");
                 User firstUser = getIntent().getParcelableExtra("user");
-                firstUser.setEmail(new User.MyPair(mail,firstUser.getEmail().getStatus()));
+                firstUser.setEmail(new User.MyPair(mail, firstUser.getEmail().getStatus()));
                 setSharedPrefUserInfo(firstUser);
-                user.setEmail(new User.MyPair(mail,user.getEmail().getStatus()));
+                user.setEmail(new User.MyPair(mail, user.getEmail().getStatus()));
                 edtMail.setText(mail);
 
             }
@@ -656,7 +653,7 @@ public class EditProfile extends AppCompatActivity {
 
         if (profileBitmap != null) {
             //If I'm here the user has changed the image so I need to save it inside the Internal Storage
-            String imagePath =saveToInternalStorage(profileBitmap);
+            String imagePath = saveToInternalStorage(profileBitmap);
             saveonFirebase(imagePath);
         }
 
@@ -666,7 +663,7 @@ public class EditProfile extends AppCompatActivity {
         setSharedPrefUserInfo(user);
     }
 
-    private void setSharedPrefUserInfo(User u){
+    private void setSharedPrefUserInfo(User u) {
         //I Create a new json object in order to store all the information contained inside my user object.
         //Then I save it inside the SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
@@ -679,11 +676,12 @@ public class EditProfile extends AppCompatActivity {
 
 
     }
+
     private void saveonFirebase(String imagePath) {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getKey()+"/picture.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture.jpg");
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -706,7 +704,7 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" +user.getKey()+"/picture_Original.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original.jpg");
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -725,18 +723,16 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-
-
     private void getUserInfoFromShared() {
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         String defaultString = "";
         String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)){
-            user= new User();
+        if (userName.equals(defaultString)) {
+            user = new User();
             return;
         }
         Gson json = new Gson();
-        user=json.fromJson(userName, User.class);
+        user = json.fromJson(userName, User.class);
 
     }
 
@@ -751,7 +747,7 @@ public class EditProfile extends AppCompatActivity {
         if (!directory.exists()) {
             directory.mkdir();
         }
-        String imagePath=null;
+        String imagePath = null;
         //Create of the destination path
         File mypath = new File(directory, User.profileImgName);
 
@@ -807,6 +803,7 @@ public class EditProfile extends AppCompatActivity {
         }
         return image;
     }
+
     //This method will load the original bitmap saved inside the Internal Storage of the application
     private Bitmap loadImageFromStorageOriginal() {
         Bitmap image = null;
@@ -880,8 +877,6 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -891,7 +886,7 @@ public class EditProfile extends AppCompatActivity {
             Intent intent = new Intent(EditProfile.this, EditCredential.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
-            bundle.putString("from","Edit");
+            bundle.putString("from", "Edit");
             intent.putExtras(bundle);
 
             //The costant MODIFY_PROFILE is useful when onActivityResult will be called.

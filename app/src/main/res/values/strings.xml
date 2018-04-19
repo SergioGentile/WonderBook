@@ -101,5 +101,7 @@
     <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
     <string name="editpwd">Please insert current password</string>
     <string name="mail_not_valid">The email is not in a valid format</string>
+    <string name="resend_mail">A new verification email has been sent to</string>
+    <string name="login_psw_error">Passwords mismatch</string>
 
 </resources>

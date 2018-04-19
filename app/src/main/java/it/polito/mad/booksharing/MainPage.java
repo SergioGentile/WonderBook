@@ -93,36 +93,10 @@ public class MainPage extends AppCompatActivity
 
     }
 
-    private void checkLogin() {
-
-
-    }
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        //Start Login Activity if logged in
-        if (currentUser != null) {
-            if (!currentUser.isEmailVerified()){
-                // If sign in fails, display a message to the user.
-                if (getCallingActivity() != null) {
-                    if (!getCallingActivity().getClassName().equals("Register")) {
-                        Toast.makeText(MainPage.this, "Please verify your email address.",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-                mAuth.signOut();
-                Intent intent = new Intent(MainPage.this, Start.class);
-                startActivity(intent);
-            }
-
-        }else{
-            mAuth.signOut();
-            Intent intent = new Intent(MainPage.this, Start.class);
-            startActivity(intent);
-        }
 
         getUserInfoFromFireBase();
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -191,6 +165,7 @@ public class MainPage extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(MainPage.this,Start.class));
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -211,10 +186,6 @@ public class MainPage extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
-
-
-                    } else {
-                        goToEdit();
                     }
 
                 }
@@ -229,10 +200,6 @@ public class MainPage extends AppCompatActivity
     }
 
     private void getImageInfoFromFireBase() {
-
-
-
-
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
         StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture.jpg");
 
@@ -338,24 +305,6 @@ public class MainPage extends AppCompatActivity
     }
 
 
-    private void goToEdit() {
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        User u = new User();
-        u.setEmail(new User.MyPair(currentUser.getEmail(), "public"));
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
-
-        u.setKey(currentUser.getUid());
-        DatabaseReference instanceReference = databaseReference.child(u.getKey());
-        instanceReference.setValue(u);
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(MainPage.this, EditProfile.class);
-        bundle.putParcelable("user", u);
-        bundle.putString("from", "Register");
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
 
 }
 
