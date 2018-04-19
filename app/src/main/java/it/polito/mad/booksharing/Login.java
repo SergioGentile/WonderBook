@@ -121,7 +121,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             //Change color to string send mail
             spannable.setSpan(new ForegroundColorSpan(colorAccent),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    (message + '\n' + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
             //Underline String send Mail
             spannable.setSpan(new UnderlineSpan(),message.length(),
