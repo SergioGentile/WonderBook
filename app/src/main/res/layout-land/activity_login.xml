@@ -65,6 +65,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/login_message"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/margin_left"
@@ -149,16 +150,6 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/resendEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:text="@string/resend_email"
-                android:layout_gravity="center|start"
-                android:textSize="17sp"
-                android:visibility="gone"
-                android:textColor="@color/colorPrimaryDark"/>
 
             <Button
                 android:id="@+id/LoginButton"

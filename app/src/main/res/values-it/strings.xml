@@ -75,4 +75,7 @@
     <string name="error_reload_new_book">Attenzione: si è riscontrata una problematica nel caricamento delle nuove impostazioni</string>
     <string name="wrong_isbn">Attenzione: l\'ISBN deve essere lungo 13 o 10 caratteri</string>
     <string name="editpwd">Please insert current password</string>
+    <string name="confirm_mail_msg">E\' stata mandata una mail di conferma. Verificala prima di accedere</string>
+    <string name="tap_here_to_resend">Premi qui per inviare di nuovo</string>
+
 </resources>
