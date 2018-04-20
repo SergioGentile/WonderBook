@@ -40,7 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class ShowBookFull extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -52,8 +52,6 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
     private ScrollView sv;
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
-    private LinearLayout llIn, llOut;
-    private ScrollView cv;
 
     private Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
@@ -95,7 +93,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(description.getLineCount() >= description.getMaxLines()){
+                if (description.getLineCount() >= description.getMaxLines()) {
                     description.getParent().requestDisallowInterceptTouchEvent(false);
                 }
 
@@ -109,7 +107,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(description.getLineCount() >= description.getMaxLines()) {
+                if (description.getLineCount() >= description.getMaxLines()) {
                     description.getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 return false;
@@ -147,11 +145,10 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         publishDate.setText(book.getDate());
-        if(book.isAvailable()){
+        if (book.isAvailable()) {
             available.setText(getString(R.string.available_upper));
             available.setTextColor(getColor(R.color.available));
-        }
-        else{
+        } else {
             available.setText(getString(R.string.unavailable_upper));
             available.setTextColor(getColor(R.color.unavailable));
         }
@@ -164,6 +161,12 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             @Override
             public void onSuccess() {
                 imageMyBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageMyBook.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zoomImage();
+                    }
+                });
             }
 
             @Override
@@ -172,7 +175,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        if(book.getUrlImage()==null || book.getUrlImage().isEmpty()){
+        if (book.getUrlImage() == null || book.getUrlImage().isEmpty()) {
             imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
@@ -186,8 +189,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
             });
-        }
-        else{
+        } else {
             Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().into(imageBook);
         }
 
@@ -205,26 +207,8 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        llIn = (LinearLayout) findViewById(R.id.container_bookfull);
-        llOut = (LinearLayout)findViewById(R.id.llOut);
-        cv = (ScrollView) findViewById(R.id.scrollSh);
-        imageMyBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomImage();
-            }
-        });
-
         createNavBar();
 
-
-        llOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                llIn.setVisibility(View.GONE);
-                cv.setVisibility(View.VISIBLE);
-            }
-        });
     }
 
     private void createNavBar() {
@@ -240,100 +224,16 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         navView = navigationView.getHeaderView(0);
         setUserInfoNavBar();
     }
-    private void dumpEvent(MotionEvent event) {
-        String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
-                "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
-        StringBuilder sb = new StringBuilder();
-        int action = event.getAction();
-        int actionCode = action & MotionEvent.ACTION_MASK;
-        sb.append("event ACTION_").append(names[actionCode]);
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN
-                || actionCode == MotionEvent.ACTION_POINTER_UP) {
-            sb.append("(pid ").append(
-                    action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-            sb.append(")");
-        }
-        sb.append("[");
-        for (int i = 0; i < event.getPointerCount(); i++) {
-            sb.append("#").append(i);
-            sb.append("(pid ").append(event.getPointerId(i));
-            sb.append(")=").append((int) event.getX(i));
-            sb.append(",").append((int) event.getY(i));
-            if (i + 1 < event.getPointerCount())
-                sb.append(";");
-        }
-        sb.append("]");
-    }
-
-    /** Determine the space between the first two fingers */
-    private float spacing(MotionEvent event) {
-        float x = event.getX(0) - event.getX(1);
-        float y = event.getY(0) - event.getY(1);
-        return new Float(Math.sqrt(x * x + y * y));
-    }
-
-    /** Calculate the mid point of the first two fingers */
-    private void midPoint(PointF point, MotionEvent event) {
-        float x = event.getX(0) + event.getX(1);
-        float y = event.getY(0) + event.getY(1);
-        point.set(x / 2, y / 2);
-    }
 
 
     private void zoomImage() {
+
         //Take the reference of the field
         expandedImage = (ImageView) findViewById(R.id.expanded_image_bookfull);
+
         BitmapDrawable drawable = (BitmapDrawable) imageMyBook.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
         expandedImage.setImageBitmap(bitmap);
-
-
-        expandedImage.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ImageView view = (ImageView) v;
-                dumpEvent(event);
-
-                // Handle touch events here...
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        savedMatrix.set(matrix);
-                        start.set(event.getX(), event.getY());
-                        mode = DRAG;
-                        break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        oldDist = spacing(event);
-                        if (oldDist > 10f) {
-                            savedMatrix.set(matrix);
-                            midPoint(mid, event);
-                            mode = ZOOM;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_POINTER_UP:
-                        mode = NONE;
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (mode == DRAG) {
-                            // ...
-                            matrix.set(savedMatrix);
-                            matrix.postTranslate(event.getX() - start.x, event.getY()
-                                    - start.y);
-                        } else if (mode == ZOOM) {
-                            float newDist = spacing(event);
-                            if (newDist > 10f) {
-                                matrix.set(savedMatrix);
-                                float scale = newDist / oldDist;
-                                matrix.postScale(scale, scale, mid.x, mid.y);
-                            }
-                        }
-                        break;
-                }
-
-                view.setImageMatrix(matrix);
-                return true;
-            }
-        });
 
         //Structure I need to perform the zoom
 
@@ -378,8 +278,9 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         // Hide the thumbnail and show the zoomed-in view. When the animation
         // begins, it will position the zoomed-in view in the place of the
         // thumbnail.
+
+        ScrollView cv = findViewById(R.id.scrollSh);
         cv.setVisibility(View.GONE);
-        llIn.setVisibility(View.VISIBLE);
         expandedImage.setVisibility(View.VISIBLE);
 
 
@@ -416,8 +317,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         });
         set.start();
         mCurrentAnimator = set;
-
-        // Upon clicking the zoomed-in image, it should zoom back down
+// Upon clicking the zoomed-in image, it should zoom back down
         // to the original bounds and show the thumbnail instead of
         // the expanded image.
         final float startScaleFinal = startScale;
@@ -435,7 +335,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                         .ofFloat(expandedImage, View.X, startBounds.left))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
-                                        View.Y,startBounds.top))
+                                        View.Y, startBounds.top))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
                                         View.SCALE_X, startScaleFinal))
@@ -450,7 +350,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
 
                         imageMyBook.setImageDrawable(expandedImage.getDrawable());
                         expandedImage.setVisibility(View.INVISIBLE);
-                        llIn.setVisibility(View.GONE);
+                        ScrollView cv = findViewById(R.id.scrollSh);
                         cv.setVisibility(View.VISIBLE);
                         mCurrentAnimator = null;
                     }
@@ -459,7 +359,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                     public void onAnimationCancel(Animator animation) {
                         imageMyBook.setImageDrawable(expandedImage.getDrawable());
                         expandedImage.setVisibility(View.INVISIBLE);
-                        llIn.setVisibility(View.GONE);
+                        ScrollView cv = findViewById(R.id.scrollSh);
                         cv.setVisibility(View.VISIBLE);
                         mCurrentAnimator = null;
                     }
@@ -470,6 +370,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         });
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -498,11 +399,10 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                 publisher.setText(bookModified.getPublisher() + ", " + bookModified.getYear());
                 description.setText(bookModified.getDescription());
                 ratingBar.setRating(new Float(bookModified.getRating()));
-                if(bookModified.isAvailable()){
+                if (bookModified.isAvailable()) {
                     available.setText(getString(R.string.available_upper));
                     available.setTextColor(getColor(R.color.available));
-                }
-                else{
+                } else {
                     available.setText(getString(R.string.unavailable_upper));
                     available.setTextColor(getColor(R.color.unavailable));
                 }
@@ -529,6 +429,12 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onSuccess() {
                         imageMyBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                        imageMyBook.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                zoomImage();
+                            }
+                        });
                     }
 
                     @Override
@@ -537,7 +443,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                     }
                 });
 
-                if(book.getUrlImage().isEmpty()){
+                if (book.getUrlImage().isEmpty()) {
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                             .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
@@ -555,8 +461,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
 
 
             }
-        }
-        else if(RESULT_CANCELED == resultCode){
+        } else if (RESULT_CANCELED == resultCode) {
             Toast.makeText(ShowBookFull.this, getString(R.string.error_reload_new_book), Toast.LENGTH_SHORT);
         }
     }
@@ -567,11 +472,10 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id == R.id.nav_home){
+        if (id == R.id.nav_home) {
             //Start Home
             startActivity(new Intent(ShowBookFull.this, MainPage.class));
-        }
-        else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile) {
             // Handle the camera action
             startActivity(new Intent(ShowBookFull.this, ShowProfile.class));
 
@@ -580,11 +484,10 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowBookFull.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_exit){
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowBookFull.this,Start.class));
+            startActivity(new Intent(ShowBookFull.this, Start.class));
             finish();
         }
 
@@ -592,8 +495,6 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
 
     private void setUserInfoNavBar() {

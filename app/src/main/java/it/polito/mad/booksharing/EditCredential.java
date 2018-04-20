@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -47,6 +49,7 @@ public class EditCredential extends AppCompatActivity {
     private String email_status;
     private ProgressBar progress;
     private LinearLayout container;
+    private ImageView emailLock;
 
 
     @Override
@@ -66,12 +69,19 @@ public class EditCredential extends AppCompatActivity {
         swMail = (Switch) findViewById(R.id.email_switch);
         progress = (ProgressBar) findViewById(R.id.editCred_progress);
         container = (LinearLayout) findViewById(R.id.editCredContainer);
+        emailLock = (ImageView) findViewById(R.id.lockEmail);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
+
         //Need to set PasswordField
 
-        if(user.getEmail().getStatus().equals("private")){
+        if(user.getEmail().getStatus().equals("private")) {
             swMail.setChecked(false);
+            emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_outline_black_24dp));
+        }
+        else{
+            swMail.setChecked(true);
+            emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
         }
 
         btnPwd.setOnClickListener(new View.OnClickListener() {
@@ -115,8 +125,11 @@ public class EditCredential extends AppCompatActivity {
                 //In both cases, change also the state of the lock.
                 if (swMail.isChecked()) {
                     email_status="public";
+                    emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
+
                 } else {
                     email_status="private";
+                    emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_outline_black_24dp));
                 }
 
 

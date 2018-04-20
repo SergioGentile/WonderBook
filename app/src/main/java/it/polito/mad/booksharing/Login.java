@@ -304,7 +304,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     private boolean checkUserCredential(FirebaseUser currentUser) {
 
-        if (currentUser != null && currentUser.isEmailVerified()) {
+       if (currentUser != null && currentUser.isEmailVerified()) {
             return true;
         }else if(currentUser!=null && !currentUser.isEmailVerified()){
             Toast.makeText(Login.this, getString(R.string.please_verify_email),Toast.LENGTH_SHORT).show();
