@@ -48,7 +48,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".ShowBookFull" />
+        <activity android:name=".ShowBookFull"  android:screenOrientation="portrait"/>
         <activity
             android:name=".Start"
             android:label="@string/app_name"
