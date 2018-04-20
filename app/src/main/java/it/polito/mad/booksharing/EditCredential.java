@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -43,6 +45,8 @@ public class EditCredential extends AppCompatActivity {
     private String clean_mail;
     private Switch swMail;
     private String email_status;
+    private ProgressBar progress;
+    private LinearLayout container;
 
 
     @Override
@@ -60,6 +64,8 @@ public class EditCredential extends AppCompatActivity {
         edtMail = (EditText) findViewById(R.id.changeMail);
         edtPassword = (EditText) findViewById(R.id.changePwd);
         swMail = (Switch) findViewById(R.id.email_switch);
+        progress = (ProgressBar) findViewById(R.id.editCred_progress);
+        container = (LinearLayout) findViewById(R.id.editCredContainer);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
         //Need to set PasswordField
@@ -77,6 +83,7 @@ public class EditCredential extends AppCompatActivity {
                 if(pwd.length()>5){
 
                     tryUpdatePwd();
+
                 }else{
                     edtPassword.setError(getString(R.string.weak_pwd),null);
                 }
@@ -95,12 +102,14 @@ public class EditCredential extends AppCompatActivity {
                     user.setEmail(new User.MyPair(user.getEmail().getValue(),email_status));
                     returnToEdit(true);
                 }
+                showProgress(false);
             }
         });
 
         swMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Verify the status of the field.
                 //If it's public, it will become private, otherwise will become public.
                 //In both cases, change also the state of the lock.
@@ -109,6 +118,8 @@ public class EditCredential extends AppCompatActivity {
                 } else {
                     email_status="private";
                 }
+
+
             }
         });
 
@@ -148,6 +159,7 @@ public class EditCredential extends AppCompatActivity {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
                         if(!current_pwd.isEmpty()) {
+                            showProgress(true);
                             try {
                                 AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
                                 FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -157,6 +169,7 @@ public class EditCredential extends AppCompatActivity {
                                             updateMail();
                                         } else {
                                             restoreValue();
+                                            showProgress(false);
                                         }
 
                                     }
@@ -197,26 +210,6 @@ public class EditCredential extends AppCompatActivity {
 
     private void updateMail() {
 
-        //Alert to notify the user the outcome of the operation
-
-       /* final AlertDialog alertDialog = new AlertDialog.Builder(EditCredential.this).
-                setTitle(getString(R.string.alert_title))
-                .setMessage(getString((R.string.changeMail)))
-                .setPositiveButton(getString(R.string.alert_button), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                return;
-            }
-        }).show();
-
-        keepDialog(alertDialog);
-        */
         Toast.makeText(EditCredential.this, getString(R.string.changeMail),
                 Toast.LENGTH_LONG).show();
         user.setEmail(new User.MyPair(edtMail.getText().toString(), email_status));
@@ -259,26 +252,31 @@ public class EditCredential extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
-                        try {
-                            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
-                            FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()) {
-                                        updatePassword();
+                        if(!current_pwd.isEmpty()) {
+                            showProgress(true);
+                            try {
+                                AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
+                                FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            updatePassword();
+                                        }else{
+                                            showProgress(false);
+                                        }
+
                                     }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(EditCredential.this, getString(R.string.error_auth_failed),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(EditCredential.this, getString(R.string.error_auth_failed),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 })
@@ -300,6 +298,8 @@ public class EditCredential extends AppCompatActivity {
                     Toast.makeText(EditCredential.this, getString(R.string.update_pwd),
                             Toast.LENGTH_LONG).show();
                     returnToEdit(false);
+                }else {
+                    showProgress(false);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -324,6 +324,7 @@ public class EditCredential extends AppCompatActivity {
         }
         Intent intent = new Intent();
         intent.putExtras(bundle);
+        showProgress(false);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -335,6 +336,11 @@ public class EditCredential extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.getWindow().setAttributes(lp);
 
+    }
+
+    private void showProgress(final boolean show) {
+        progress.setVisibility(show ? View.VISIBLE : View.GONE);
+        container.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
 }

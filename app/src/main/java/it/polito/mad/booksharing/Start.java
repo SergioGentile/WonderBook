@@ -66,13 +66,6 @@ public class Start extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        else if (currentUser != null && !currentUser.isEmailVerified()) {
-            Bundle bundle = new Bundle();
-            Intent intent = new Intent(Start.this, Login.class);
-            bundle.putString("from", "Start_Email_Not_Verified");
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
 
     }
 

@@ -103,10 +103,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         login_message = (TextView) findViewById(R.id.login_message);
 
         String fromActivity = getIntent().getExtras().getString("from");
-        if (fromActivity.equals("Edit") || fromActivity.equals("Start_Email_Not_Verified")) {
-
+        if (fromActivity.equals("Edit")) {
             //The text became clickable only if we ae in the registration process
-            FirebaseAuth.getInstance().getCurrentUser().reload();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (checkUserCredential(user)) {
                 startMain(user.getEmail());
@@ -208,7 +206,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      */
     private void attemptLogin() {
         // Reset errors.
-        mAuth = FirebaseAuth.getInstance();
         loginEmail.setError(null);
         loginPassword.setError(null);
 
@@ -244,6 +241,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
+            mAuth = FirebaseAuth.getInstance();
             FirebaseUser user=null;
             if(mAuth.getCurrentUser()!=null) {
                 mAuth.getCurrentUser().reload();
