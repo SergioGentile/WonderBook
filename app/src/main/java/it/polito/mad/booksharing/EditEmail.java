@@ -5,15 +5,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,17 +25,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class EditCredential extends AppCompatActivity {
+public class EditEmail extends AppCompatActivity {
 
-    Button btnEmail,btnPwd;
-    EditText edtMail, edtPassword;
+    Button btnEmail;
+    EditText edtMail;
     User user;
     private String fromActivity;
     private String clean_mail;
@@ -52,7 +46,7 @@ public class EditCredential extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_credential);
+        setContentView(R.layout.activity_edit_email);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -60,12 +54,10 @@ public class EditCredential extends AppCompatActivity {
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
         email_status=user.getEmail().getStatus();
-        btnPwd= (Button) findViewById(R.id.confirm_new_password);
         btnEmail = (Button) findViewById(R.id.confirm_new_email);
         edtMail = (EditText) findViewById(R.id.changeMail);
-        edtPassword = (EditText) findViewById(R.id.changePwd);
         swMail = (Switch) findViewById(R.id.email_switch);
-        progress = (ProgressBar) findViewById(R.id.editCred_progress);
+        progress = (ProgressBar) findViewById(R.id.editPwd_progress);
         container = (LinearLayout) findViewById(R.id.editCredContainer);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
@@ -75,22 +67,6 @@ public class EditCredential extends AppCompatActivity {
         if(user.getEmail().getStatus().equals("private")){
             swMail.setChecked(false);
         }
-
-        btnPwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String pwd = edtPassword.getText().toString();
-                //If the new password isn't too weak I try to update it else I do nothing and notify the problem to the user
-                if(pwd.length()>5){
-
-                    tryUpdatePwd();
-
-                }else{
-                    edtPassword.setError(getString(R.string.weak_pwd),null);
-                }
-            }
-        });
 
         btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,14 +106,12 @@ public class EditCredential extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState); // the UI component values are saved here.
         outState.putString("mail", edtMail.getText().toString());
-        outState.putString("pass", edtPassword.getText().toString());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
         edtMail.setText(inState.getString("mail"));
-        edtPassword.setText(inState.getString("pass"));
 
     }
 
@@ -146,11 +120,11 @@ public class EditCredential extends AppCompatActivity {
 
         //Now I need to re-authenticate the user
 
-        LayoutInflater inflater=EditCredential.this.getLayoutInflater();
+        LayoutInflater inflater=EditEmail.this.getLayoutInflater();
         //this is what I did to added the layout to the alert dialog
         final View layout=inflater.inflate(R.layout.my_alert_pwd,null);
 
-        final AlertDialog dialog = new AlertDialog.Builder(EditCredential.this)
+        final AlertDialog dialog = new AlertDialog.Builder(EditEmail.this)
                 .setTitle(getString(R.string.alert_title))
                 .setMessage(getString(R.string.editpwd))
                 .setView(layout)
@@ -180,7 +154,7 @@ public class EditCredential extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(EditCredential.this, getString(R.string.authentication_failed),
+                                        Toast.makeText(EditEmail.this, getString(R.string.authentication_failed),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -189,7 +163,7 @@ public class EditCredential extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }else{
-                            Toast.makeText(EditCredential.this,getString(R.string.error_auth_failed),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditEmail.this,getString(R.string.error_auth_failed),Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -217,7 +191,7 @@ public class EditCredential extends AppCompatActivity {
     private void updateMail() {
 
 
-        Toast.makeText(EditCredential.this, getString(R.string.changeMail),
+        Toast.makeText(EditEmail.this, getString(R.string.changeMail),
                 Toast.LENGTH_LONG).show();
         //Update of user object
         user.setEmail(new User.MyPair(edtMail.getText().toString(), email_status));
@@ -242,89 +216,6 @@ public class EditCredential extends AppCompatActivity {
         }else{
             return true;
         }
-    }
-
-    private void tryUpdatePwd() {
-
-        String pwd = edtPassword.getText().toString();
-
-        //Now I need to re-authenticate the user
-
-        LayoutInflater inflater=EditCredential.this.getLayoutInflater();
-        //this is what I did to added the layout to the alert dialog
-        final View layout=inflater.inflate(R.layout.my_alert_pwd,null);
-
-        final AlertDialog dialog = new AlertDialog.Builder(EditCredential.this)
-                .setTitle(getString(R.string.alert_title))
-                .setMessage(getString(R.string.editpwd))
-                .setView(layout)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
-                        String current_pwd = edittext.getText().toString();
-                        if(!current_pwd.isEmpty()) {
-                            showProgress(true);
-                            try {
-                                AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
-                                FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            //If the re-authetication is successful we can update the password
-                                            updatePassword();
-                                        }else{
-                                            showProgress(false);
-                                        }
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(EditCredential.this, getString(R.string.error_auth_failed),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
-
-        //Used to allow the dialog to survive an orientation change
-        keepDialog(dialog);
-
-
-    }
-
-    private void updatePassword() {
-        //update of Authenication DB
-        FirebaseAuth.getInstance().getCurrentUser().updatePassword(edtPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isComplete()) {
-                    //Reload of the current user credential
-                    FirebaseAuth.getInstance().getCurrentUser().reload();
-                    Toast.makeText(EditCredential.this, getString(R.string.update_pwd),
-                            Toast.LENGTH_LONG).show();
-                    returnToEdit(false);
-                }else {
-                    showProgress(false);
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(EditCredential.this, getString(R.string.update_pwd_fail),
-                        Toast.LENGTH_LONG).show();
-                Log.d("updatePswFail",e.getMessage());
-            }
-        });
     }
 
     private void returnToEdit(Boolean isUserMailChanged) {

@@ -1,14 +1,17 @@
 package it.polito.mad.booksharing;
 
+import android.*;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -59,7 +62,11 @@ public class MainPage extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
-
+        //Ask permission for editing photo
+        ActivityCompat.requestPermissions(MainPage.this,
+                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.CAMERA},
+                1);
 
         setContentView(R.layout.activity_main_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -306,6 +313,29 @@ public class MainPage extends AppCompatActivity
         if (this.user != null) {
             if (this.user.getDescription().getValue().equals("")) {
                 this.user.setDescription(new User.MyPair(getString(R.string.description_value), "public"));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainPage.this, R.string.permission_ext_storage_denied, Toast.LENGTH_SHORT).show();
+                }
+                return;
             }
         }
     }

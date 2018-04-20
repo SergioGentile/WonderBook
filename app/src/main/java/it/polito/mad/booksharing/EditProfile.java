@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,9 +38,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -72,6 +68,7 @@ public class EditProfile extends AppCompatActivity {
     private String fromActivity;
     private Toolbar toolbar;
     private Boolean email_change;
+
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -333,7 +330,7 @@ public class EditProfile extends AppCompatActivity {
                     intent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, intent);
 
-                    if (fromActivity.equals("Register") || email_change==true) {
+                    if (fromActivity.equals("Register")) {
 
                         bundle.putString("from", "Edit");
                         Intent intent2 = new Intent(EditProfile.this, Login.class);
@@ -835,18 +832,27 @@ public class EditProfile extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(EditProfile.this, EditCredential.class);
+        if (id == R.id.setting_mail) {
+            Intent intent = new Intent(EditProfile.this, EditEmail.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             bundle.putString("from", "Edit");
+
             intent.putExtras(bundle);
 
-            //The costant MODIFY_PROFILE is useful when onActivityResult will be called.
+            //The costant MODIFY_CREDENTIALS is useful when onActivityResult will be called.
             //In this way we can understand that the activity that finish will be associate with that constant
             //(See later)
             startActivityForResult(intent, MODIFY_CREDENTIALS);
             return true;
+        }
+        else if(id == R.id.setting_pwd){
+            Intent intent = new Intent(EditProfile.this, EditPwd.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            bundle.putString("from", "Edit");
+            intent.putExtras(bundle);
+            startActivityForResult(intent, MODIFY_CREDENTIALS);
         }
 
         return super.onOptionsItemSelected(item);

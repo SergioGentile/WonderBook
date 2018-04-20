@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="it.polito.mad.booksharing.EditCredential"
-    tools:showIn="@layout/activity_edit_credential"
+    tools:context="it.polito.mad.booksharing.EditEmail"
+    tools:showIn="@layout/activity_edit_email"
     android:background="@color/colorDivider">
 
-    <!-- EditCredential progress -->
     <ProgressBar
         android:id="@+id/editCred_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -47,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="00016dp"
-                    android:text="Change your access credentials"
+                    android:text="@string/email_settings"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
@@ -138,115 +137,30 @@
                                     android:visibility="visible"/>
                             </LinearLayout>
 
-
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:paddingLeft="16dp"
-                                android:paddingRight="16dp"
-                                android:paddingBottom="@dimen/bottom_inside_box">
-
-                                <Button
-                                    android:id="@+id/confirm_new_email"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:background="@drawable/my_rounded_button"
-                                    android:text="OK"
-                                    android:textColor="@android:color/white"/>
-                            </LinearLayout>
-
-
                         </LinearLayout>
-
-
 
                     </android.support.v7.widget.CardView>
 
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/activity_vertical_margin">
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="@dimen/bottom_inside_box"
+                    android:layout_marginTop="25dp">
 
-
-
-                    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/adapter_cv_psw"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/margin_left"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:elevation="10dp"
-                        android:orientation="vertical"
-                        app:cardBackgroundColor="@android:color/white"
-                        app:cardCornerRadius="0dp"
-                        app:cardUseCompatPadding="true"
-                        android:layout_gravity="center">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-                            <TextView
-                                android:paddingLeft="@dimen/margin_left"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Password"
-                                android:textSize="16sp"
-                                android:paddingVertical="@dimen/bottom_inside_box"/>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_marginRight="@dimen/margin_right"
-                                >
-
-                                <android.support.design.widget.TextInputLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:passwordToggleContentDescription="@string/description"
-                                    app:passwordToggleEnabled="true"
-                                    app:passwordToggleTint="@color/colorSecondaryText">
-
-                                    <android.support.design.widget.TextInputEditText
-                                        android:id="@+id/changePwd"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:hint="Change Password"
-                                        android:textSize="14sp"
-                                        android:inputType="textPassword"
-                                        android:layout_marginLeft="@dimen/margin_left"/>
-                                </android.support.design.widget.TextInputLayout>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:paddingLeft="16dp"
-                                android:paddingRight="16dp"
-                                android:paddingBottom="@dimen/bottom_inside_box">
-
-                                <Button
-                                    android:id="@+id/confirm_new_password"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:background="@drawable/my_rounded_button"
-                                    android:text="OK"
-                                    android:textColor="@android:color/white"/>
-                            </LinearLayout>
-
-                        </LinearLayout>
-                    </android.support.v7.widget.CardView>
-
+                    <Button
+                        android:id="@+id/confirm_new_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:background="@drawable/my_rounded_button"
+                        android:text="OK"
+                        android:textColor="@android:color/white"/>
                 </LinearLayout>
 
             </LinearLayout>

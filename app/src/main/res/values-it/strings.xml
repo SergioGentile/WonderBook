@@ -117,7 +117,9 @@
     <string name="update_pwd">Password modificata con successo!</string>
     <string name="update_pwd_fail">Modifica della password fallita!</string>
     <string name="weak_pwd">La password è troppo corta</string>
-    <string name="account_setting">impostazioni dell\'account</string>
+    <string name="email_settings">Impostazioni Email</string>
+    <string name="change_password">Cambia Password</string>
+    <string name="email_private">Imposta cone pubblica/privata</string>
 
 
 </resources>

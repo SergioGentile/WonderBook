@@ -118,5 +118,7 @@
     <string name="update_pwd">اكتمل تحديث كلمة المرور!</string>
     <string name="update_pwd_fail">فشل تحديث كلمة المرور!</string>
     <string name="weak_pwd">كلمة المرور قصيرة للغاية</string>
-    <string name="account_setting">إعدادات الحساب</string>
+    <string name="email_settings">تنظیمات ایمیل</string>
+    <string name="change_password">تغییر رمز عبور</string>
+    <string name="email_private">تنظیم به عنوان عمومی / خصوصی</string>
 </resources>

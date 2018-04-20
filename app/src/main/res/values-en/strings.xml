@@ -119,6 +119,7 @@
     <string name="update_pwd">Password update complete!</string>
     <string name="update_pwd_fail">Password update failed!</string>
     <string name="weak_pwd">The password is too short</string>
-    <string name="account_setting">account settings</string>
+    <string name="email_settings">Email Settings</string>
+    <string name="change_password">Change Password</string>
 
 </resources>

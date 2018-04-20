@@ -5,8 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -96,6 +98,7 @@ public class ShowProfile extends AppCompatActivity
         btnModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Put the user in a bundle and send it to the activity EditProfile
                 Intent intent = new Intent(ShowProfile.this, EditProfile.class);
                 Bundle bundle = new Bundle();
