@@ -169,7 +169,7 @@
                                     android:text="@string/state_point" />
 
                                 <TextView
-                                    android:textSize="@dimen/subtitle"
+                                    android:id="@+id/tvState"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="5dp"

@@ -16,7 +16,6 @@
             android:theme="@style/Theme.myToolbar">
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:theme="@style/ThemeToolbar"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/textColorPrimary"
                 android:layout_width="match_parent"

@@ -150,12 +150,12 @@ public class AddBook extends Activity {
 
         if(book.isAvailable()){
             swAvailable.setChecked(true);
-            tvAvailable.setTextColor(Color.GREEN);
+            tvAvailable.setTextColor(getColor(R.color.available));
             tvAvailable.setText(getString(R.string.available_upper));
         }
         else{
             swAvailable.setChecked(false);
-            tvAvailable.setTextColor(Color.RED);
+            tvAvailable.setTextColor(getColor(R.color.unavailable));
             tvAvailable.setText(getString(R.string.unavailable_upper));
         }
 
@@ -272,12 +272,12 @@ public class AddBook extends Activity {
 
             if(book.isAvailable()){
                 swAvailable.setChecked(true);
-                tvAvailable.setTextColor(Color.GREEN);
+                tvAvailable.setTextColor(getColor(R.color.available));
                 tvAvailable.setText(getString(R.string.available_upper));
             }
             else{
                 swAvailable.setChecked(false);
-                tvAvailable.setTextColor(Color.RED);
+                tvAvailable.setTextColor(getColor(R.color.unavailable));
                 tvAvailable.setText(getString(R.string.unavailable_upper));
             }
 
@@ -349,11 +349,11 @@ public class AddBook extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 swAvailable.setChecked(isChecked);
                 if(isChecked){
-                    tvAvailable.setTextColor(Color.GREEN);
+                    tvAvailable.setTextColor(getColor(R.color.available));
                     tvAvailable.setText(getString(R.string.available_upper));
                 }
                 else{
-                    tvAvailable.setTextColor(Color.RED);
+                    tvAvailable.setTextColor(getColor(R.color.unavailable));
                     tvAvailable.setText(getString(R.string.unavailable_upper));
                 }
             }
@@ -434,7 +434,7 @@ public class AddBook extends Activity {
             urlImageBook = "";
             tvProduction.setText("");
             tvAvailable.setText(getString(R.string.available_upper));
-            tvAvailable.setTextColor(Color.GREEN);
+            tvAvailable.setTextColor(getColor(R.color.available));
             swAvailable.setChecked(true);
 
             if (resultCode == RESULT_OK) {
@@ -463,11 +463,11 @@ public class AddBook extends Activity {
                 tvProduction.setText(publisher);
                 if(book.isAvailable()){
                     swAvailable.setChecked(true);
-                    tvAvailable.setTextColor(Color.GREEN);
+                    tvAvailable.setTextColor(getColor(R.color.available));
                     tvAvailable.setText(getString(R.string.available_upper));
                 }
                 else{
-                    tvAvailable.setTextColor(Color.RED);
+                    tvAvailable.setTextColor(getColor(R.color.unavailable));
                     swAvailable.setChecked(false);
                     tvAvailable.setText(getString(R.string.unavailable_upper));
                 }

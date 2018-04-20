@@ -102,4 +102,18 @@
     <string name="unavailable_upper">غير متوفر</string>
     <string name="state">دولة</string>
     <string name="state_description">أشر هنا إذا كان كتابك متاحًا أم لا</string>
+    <string name="confirm_mail_msg">لقد تم ارسال بريد تأكيد. يرجى التحقق من ذلك ومن ثم تسجيل الدخول.</string>
+    <string name="tap_here_to_resend">اضغط هنا لإرسال مرة أخرى</string>
+    <string name="please_verify_email">يرجى التحقق من عنوان البريد الإلكتروني الخاص بك.</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="change_credential">Change your access قم بتغيير بيانات اعتماد الوصول الخاصة بك</string>
+    <string name="insert_new_email">أدخل بريدًا إلكترونيًا جديدًا</string>
+    <string name="insert_new_password">أدخل كلمة مرور جديدة</string>
+    <string name="title_activity_main_page">MainPage</string>
+    <string name="title_activity_start">Start</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_edit_credential">EditCredential</string>
 </resources>

@@ -1,11 +1,11 @@
 package it.polito.mad.booksharing;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -98,17 +100,6 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
                 lv.setVisibility(View.GONE);
                 llEmpty.setVisibility(View.GONE);
                 showAllMyBooks(user.getKey());
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                startActivity(new Intent(ShowAllMyBook.this, AddBook.class).putExtras(bundle));
-                finish();
             }
         });
 
@@ -240,10 +231,10 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
                         //Here to show all the book
                         CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv);
                         cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
-                        TextView tvEdit = (TextView) convertView.findViewById(R.id.editMyBook);
+                        ImageButton btnEdit = (ImageButton) convertView.findViewById(R.id.editMyBook);
 
                         //edit the book
-                        tvEdit.setOnClickListener(new View.OnClickListener() {
+                        btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, AddBook.class).putExtra("edit", true);
@@ -297,11 +288,13 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
             startActivity(new Intent(ShowAllMyBook.this,Start.class));
         }
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        finish();
         return true;
     }
+
+
 
     private void setUserInfoNavBar(){
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);

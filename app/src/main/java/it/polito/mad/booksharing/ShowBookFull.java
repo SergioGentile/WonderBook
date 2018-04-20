@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity {
+public class ShowBookFull extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -65,6 +66,7 @@ public class ShowBookFull extends AppCompatActivity {
     private float oldDist;
     private Toolbar toolbar;
     private View navView;
+    private TextView available;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,7 @@ public class ShowBookFull extends AppCompatActivity {
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
         imageMyBook = (ImageView) findViewById(R.id.shMyImage);
         imageBook = (ImageView) findViewById(R.id.shImage);
+        available = (TextView) findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
         book = getIntent().getParcelableExtra("book");
@@ -144,6 +147,14 @@ public class ShowBookFull extends AppCompatActivity {
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         publishDate.setText(book.getDate());
+        if(book.isAvailable()){
+            available.setText(getString(R.string.available_upper));
+            available.setTextColor(getColor(R.color.available));
+        }
+        else{
+            available.setText(getString(R.string.unavailable_upper));
+            available.setTextColor(getColor(R.color.unavailable));
+        }
 
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
@@ -487,6 +498,14 @@ public class ShowBookFull extends AppCompatActivity {
                 publisher.setText(bookModified.getPublisher() + ", " + bookModified.getYear());
                 description.setText(bookModified.getDescription());
                 ratingBar.setRating(new Float(bookModified.getRating()));
+                if(bookModified.isAvailable()){
+                    available.setText(getString(R.string.available_upper));
+                    available.setTextColor(getColor(R.color.available));
+                }
+                else{
+                    available.setText(getString(R.string.unavailable_upper));
+                    available.setTextColor(getColor(R.color.unavailable));
+                }
                 Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
 
                 book.setTitle(bookModified.getTitle());
@@ -501,6 +520,7 @@ public class ShowBookFull extends AppCompatActivity {
                 book.setRating(bookModified.getRating());
                 book.setUrlImage(bookModified.getUrlImage());
                 book.setUrlMyImage(bookModified.getUrlMyImage());
+                book.setAvailable(bookModified.isAvailable());
 
                 //Set the images of the book
                 imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -572,6 +592,8 @@ public class ShowBookFull extends AppCompatActivity {
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
 
     private void setUserInfoNavBar() {

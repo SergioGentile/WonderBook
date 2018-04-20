@@ -121,5 +121,10 @@
     <string name="password_not_changed">The password has not been changed</string>
     <string name="auth_fail_internet">Authentication failed. Please check your internet connection.</string>
     <string name="change_mail_pass">Change email and password</string>
+    <string name="please_verify_email">Please verify your email address.</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="change_credential">Change your access credentials</string>
+    <string name="insert_new_email">Insert new email</string>
+    <string name="insert_new_password">Insert new password</string>
 
 </resources>

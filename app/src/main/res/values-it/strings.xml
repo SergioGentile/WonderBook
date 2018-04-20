@@ -101,4 +101,19 @@
     <string name="unavailable_upper">Non Disponibile</string>
     <string name="state">Stato</string>
     <string name="state_description">Indica se il tuo libro è disponibile</string>
+    <string name="confirm_mail_msg">E\' stata mandata una mail di conferma. Verificala prima di accedere</string>
+    <string name="tap_here_to_resend">Premi qui per inviare di nuovo</string>
+    <string name="title_activity_main_page">MainPage</string>
+    <string name="title_activity_start">Start</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_edit_credential">EditCredential</string>
+    <string name="please_verify_email">Verifica il tuo indirizzo email.</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="change_credential">Cambia le tue credenziali d\'accesso</string>
+    <string name="insert_new_email">Inserisci una nuova email</string>
+    <string name="insert_new_password">Inserisci una nuova password</string>
+
 </resources>

@@ -83,12 +83,11 @@ public class MainPage extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
         setDefaultUser();
-
-
 
 
     }
@@ -171,6 +170,8 @@ public class MainPage extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void getUserInfoFromFireBase() {
 
@@ -293,8 +294,10 @@ public class MainPage extends AppCompatActivity
     public void onResume() {
         super.onResume();
         getUserFromSharedPreference();
-
         setUserInfoNavBar();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
     }
 
     private void getUserFromSharedPreference() {

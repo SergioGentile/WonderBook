@@ -387,9 +387,9 @@ public class ShowProfile extends AppCompatActivity
             startActivity(new Intent(ShowProfile.this,Start.class));
         }
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        finish();
         return true;
     }
 

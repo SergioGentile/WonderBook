@@ -105,5 +105,17 @@
 
     <string name="confirm_mail_msg">It has been sent a confirmation mail. Please verify it and then make login.</string>
     <string name="tap_here_to_resend">Tap here to send again</string>
+    <string name="title_activity_main_page">MainPage</string>
+    <string name="title_activity_start">Start</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_edit_credential">EditCredential</string>
+    <string name="please_verify_email">Please verify your email address.</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="change_credential">Change your access credentials</string>
+    <string name="insert_new_email">Insert new email</string>
+    <string name="insert_new_password">Insert new password</string>
 
 </resources>
