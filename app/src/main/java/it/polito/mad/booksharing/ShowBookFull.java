@@ -488,11 +488,11 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(ShowBookFull.this, Start.class));
-            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        finish();
         return true;
     }
 

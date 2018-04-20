@@ -644,7 +644,7 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -667,7 +667,7 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original.jpg");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original." + User.COMPRESS_FORMAT_STR);
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails

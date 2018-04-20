@@ -198,7 +198,7 @@ public class MainPage extends AppCompatActivity
 
     private void getImageInfoFromFireBase() {
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
-        StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture.jpg");
+        StorageReference userPictureRef = riversRef.child("userImgProfile/" +user.getKey()+"/picture." + User.COMPRESS_FORMAT_STR);
 
 
 
@@ -227,7 +227,7 @@ public class MainPage extends AppCompatActivity
             }
         });
 
-        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey()+"/picture_Original.jpg");
+        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey()+"/picture_Original." + User.COMPRESS_FORMAT_STR);
 
 
         File originalPicture = new File(directory, User.profileImgNameCrop);
@@ -291,8 +291,7 @@ public class MainPage extends AppCompatActivity
     public void onResume() {
         super.onResume();
         getUserFromSharedPreference();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(0).setChecked(true);
+
         setUserInfoNavBar();
     }
 

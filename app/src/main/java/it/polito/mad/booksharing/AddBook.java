@@ -40,8 +40,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -734,19 +732,6 @@ public class AddBook extends Activity {
                 DatabaseReference databaseReference = firebaseDatabase.getReference("books");
                 bookToUpload.setUrlMyImage(urlMyImageBook);
                 DatabaseReference instanceReference = databaseReference.push();
-
-                DatabaseReference locationRef = databaseReference.child("locations");
-                GeoFire geoFire = new GeoFire(locationRef);
-                geoFire.setLocation(instanceReference.getKey(), new GeoLocation(37.7853889, -122.4056973), new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        if (error != null) {
-                            System.out.println("There was an error saving the location to GeoFire: " + error);
-                        } else {
-                            System.out.println("Location saved on server successfully!");
-                        }
-                    }
-                });
 
                 instanceReference.setValue(bookToUpload);
                 if (pd.isShowing()) {

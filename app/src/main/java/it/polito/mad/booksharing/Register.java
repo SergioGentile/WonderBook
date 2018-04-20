@@ -139,9 +139,6 @@ public class Register extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //TODO mettere switch case possibili errori
-                            Toast.makeText(Register.this, getString(R.string.auth_fail_internet),
-                                    Toast.LENGTH_SHORT).show();
                             showProgress(false);
 
                         }

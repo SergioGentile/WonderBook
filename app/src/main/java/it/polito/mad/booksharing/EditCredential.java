@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -49,7 +47,6 @@ public class EditCredential extends AppCompatActivity {
     private String email_status;
     private ProgressBar progress;
     private LinearLayout container;
-    private ImageView emailLock;
 
 
     @Override
@@ -59,6 +56,7 @@ public class EditCredential extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Set all the variable
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
         email_status=user.getEmail().getStatus();
@@ -69,19 +67,13 @@ public class EditCredential extends AppCompatActivity {
         swMail = (Switch) findViewById(R.id.email_switch);
         progress = (ProgressBar) findViewById(R.id.editCred_progress);
         container = (LinearLayout) findViewById(R.id.editCredContainer);
-        emailLock = (ImageView) findViewById(R.id.lockEmail);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
-
         //Need to set PasswordField
 
-        if(user.getEmail().getStatus().equals("private")) {
+
+        if(user.getEmail().getStatus().equals("private")){
             swMail.setChecked(false);
-            emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_outline_black_24dp));
-        }
-        else{
-            swMail.setChecked(true);
-            emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
         }
 
         btnPwd.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +81,7 @@ public class EditCredential extends AppCompatActivity {
             public void onClick(View v) {
 
                 String pwd = edtPassword.getText().toString();
-
+                //If the new password isn't too weak I try to update it else I do nothing and notify the problem to the user
                 if(pwd.length()>5){
 
                     tryUpdatePwd();
@@ -108,7 +100,7 @@ public class EditCredential extends AppCompatActivity {
                     //The mail is in a valid format
                     tryUpdateMail();
                 }else if(!email_status.equals(user.getEmail().getStatus())){
-                    //update status
+                    //update status only
                     user.setEmail(new User.MyPair(user.getEmail().getValue(),email_status));
                     returnToEdit(true);
                 }
@@ -125,11 +117,8 @@ public class EditCredential extends AppCompatActivity {
                 //In both cases, change also the state of the lock.
                 if (swMail.isChecked()) {
                     email_status="public";
-                    emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_open_black_24dp));
-
                 } else {
                     email_status="private";
-                    emailLock.setImageDrawable(getDrawable(R.drawable.ic_lock_outline_black_24dp));
                 }
 
 
@@ -171,6 +160,7 @@ public class EditCredential extends AppCompatActivity {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
                         if(!current_pwd.isEmpty()) {
+                            //I need to re-authenticate the user using the current_pwd
                             showProgress(true);
                             try {
                                 AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
@@ -178,8 +168,10 @@ public class EditCredential extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+                                            //If the user has insert the correct password I update the mail
                                             updateMail();
                                         } else {
+                                            //I undo all the changes and exit
                                             restoreValue();
                                             showProgress(false);
                                         }
@@ -204,11 +196,13 @@ public class EditCredential extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
-
+        //Used to allow the dialog to survive during an orientation change
         keepDialog(dialog);
     }
 
     private void restoreValue() {
+
+        //I restore the initial value
         if(user.getEmail().getStatus().equals("private")){
             swMail.setChecked(false);
         }else{
@@ -222,11 +216,16 @@ public class EditCredential extends AppCompatActivity {
 
     private void updateMail() {
 
+
         Toast.makeText(EditCredential.this, getString(R.string.changeMail),
                 Toast.LENGTH_LONG).show();
+        //Update of user object
         user.setEmail(new User.MyPair(edtMail.getText().toString(), email_status));
+        //Update of the Authentication DB of Firebase + send a verification email at the new email
         FirebaseAuth.getInstance().getCurrentUser().updateEmail(user.getEmail().getValue());
         FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+
+        //Update of the field mail in the user DB
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
         dbref.child("users").child(user.getKey()).child("email").setValue(user.getEmail());
         FirebaseAuth.getInstance().getCurrentUser().reload();
@@ -238,7 +237,7 @@ public class EditCredential extends AppCompatActivity {
             edtMail.setError(getString(R.string.mail_not_valid));
             return false;
         }else if(user.getEmail().getValue().equals(clean_mail)){
-
+            //No changes
             return false;
         }else{
             return true;
@@ -272,6 +271,7 @@ public class EditCredential extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+                                            //If the re-authetication is successful we can update the password
                                             updatePassword();
                                         }else{
                                             showProgress(false);
@@ -296,16 +296,19 @@ public class EditCredential extends AppCompatActivity {
                 .create();
         dialog.show();
 
+        //Used to allow the dialog to survive an orientation change
         keepDialog(dialog);
 
 
     }
 
     private void updatePassword() {
+        //update of Authenication DB
         FirebaseAuth.getInstance().getCurrentUser().updatePassword(edtPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isComplete()) {
+                    //Reload of the current user credential
                     FirebaseAuth.getInstance().getCurrentUser().reload();
                     Toast.makeText(EditCredential.this, getString(R.string.update_pwd),
                             Toast.LENGTH_LONG).show();
@@ -328,12 +331,14 @@ public class EditCredential extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         if(isUserMailChanged==true){
-            //The user has update the email
+            //The user has update the email (value || status)
             bundle.putParcelable("mail", new User.MyPair(user.getEmail()));
         }else{
             //The user has update the password
             bundle.putString("mail",null);
         }
+
+
         Intent intent = new Intent();
         intent.putExtras(bundle);
         showProgress(false);
@@ -356,7 +361,6 @@ public class EditCredential extends AppCompatActivity {
     }
 
 }
-
 
 
 

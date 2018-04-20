@@ -285,12 +285,15 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
             startActivity(new Intent(ShowAllMyBook.this,MainPage.class));
         }
         else if(id == R.id.nav_exit){
-            startActivity(new Intent(ShowAllMyBook.this,Start.class));
+            FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(ShowAllMyBook.this, Start.class));
         }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        finish();
         return true;
     }
 
