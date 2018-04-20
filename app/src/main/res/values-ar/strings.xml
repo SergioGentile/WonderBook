@@ -84,7 +84,6 @@
     <string name="prompt_password">كلمة المرور (اختياري)</string>
     <string name="action_sign_in">تسجيل الدخول أو التسجيل</string>
     <string name="action_sign_in_short">تسجيل الدخول</string>
-    <string name="error_invalid_email">عنوان البريد الإلكتروني هذا غير صالح</string>
     <string name="error_invalid_password">كلمة المرور هذه قصيرة جدًا</string>
     <string name="error_incorrect_password">كلمة المرور هذه غير صحيحة</string>
     <string name="error_field_required">هذه الخانة مطلوبه</string>
@@ -116,4 +115,8 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_test">Test</string>
     <string name="title_activity_edit_credential">EditCredential</string>
+    <string name="update_pwd">اكتمل تحديث كلمة المرور!</string>
+    <string name="update_pwd_fail">فشل تحديث كلمة المرور!</string>
+    <string name="weak_pwd">كلمة المرور قصيرة للغاية</string>
+    <string name="account_setting">إعدادات الحساب</string>
 </resources>

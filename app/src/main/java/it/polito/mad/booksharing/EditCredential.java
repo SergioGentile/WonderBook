@@ -175,7 +175,7 @@ public class EditCredential extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(EditCredential.this, "Authentication failed.",
+                                        Toast.makeText(EditCredential.this, getString(R.string.authentication_failed),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });

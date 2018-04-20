@@ -73,13 +73,12 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="login_psw_error">Passwords mismatch</string>
     <string name="resend_mail">"A new verification email has been sent to "</string>
-    <string name="mail_not_valid">The email is not in a valid format</string>
+    <string name="mail_not_valid">This email address is invalid</string>
     <string name="password">Password</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email completions</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_invalid_email">This email address is invalid</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="prompt_password">Password (optional)</string>
@@ -117,5 +116,9 @@
     <string name="change_credential">Change your access credentials</string>
     <string name="insert_new_email">Insert new email</string>
     <string name="insert_new_password">Insert new password</string>
+    <string name="update_pwd">Password update complete!</string>
+    <string name="update_pwd_fail">Password update failed!</string>
+    <string name="weak_pwd">The password is too short</string>
+    <string name="account_setting">account settings</string>
 
 </resources>

@@ -88,7 +88,7 @@ public class Register extends AppCompatActivity {
 
                 // Check for a valid password, if the user entered one.
                 if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-                    loginPassword.setError(getString(R.string.error_invalid_password));
+                    loginPassword.setError(getString(R.string.weak_pwd));
                     focusView = loginPassword;
                     cancel = true;
                 }else if (!loginPassword.getText().toString().equals(loginConfirmPassword.getText().toString())){
@@ -103,7 +103,7 @@ public class Register extends AppCompatActivity {
                     focusView = loginEmail;
                     cancel = true;
                 } else if (!isEmailValid(clean_email)) {
-                    loginEmail.setError(getString(R.string.error_invalid_email));
+                    loginEmail.setError(getString(R.string.mail_not_valid));
                     focusView = loginEmail;
                     cancel = true;
                 }
@@ -155,7 +155,7 @@ public class Register extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
 
-        return password.length() > 6;
+        return password.length() > 5;
     }
 
     private boolean isEmailValid(String email) {

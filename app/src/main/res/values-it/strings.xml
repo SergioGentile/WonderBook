@@ -76,15 +76,13 @@
     <string name="wrong_isbn">Attenzione: l\'ISBN deve essere lungo 13 o 10 caratteri</string>
     <string name="editpwd">Please insert current password</string>
     <string name="authentication_failed">Autenticazione fallita</string>
-    <string name="login_psw_error">Le password non sono uguali</string>
-    <string name="resend_mail">"Una nuova email di verifica è stata inviata a "</string>
-    <string name="mail_not_valid">L\'email non è in un formato valido</string>
+    <string name="resend_mail">Una nuova mail di verifica è stata inviata a</string>
+    <string name="mail_not_valid">L\'indirizzo email non è valido</string>
     <string name="password">Password</string>
     <string name="permission_rationale">Permetti di accedere ai tuoi contatti per completare la mail</string>
-    <string name="error_field_required">Questo campo è obbligatorio</string>
+    <string name="error_field_required">Campo obbligatorio</string>
     <string name="error_incorrect_password">La password è errata</string>
     <string name="error_invalid_password">La password è troppo breve</string>
-    <string name="error_invalid_email">L\'indirizzo email non è valido</string>
     <string name="action_sign_in_short">Accedi</string>
     <string name="action_sign_in">Accedi o Registrati</string>
     <string name="prompt_password">Password (opzionale)</string>
@@ -115,5 +113,11 @@
     <string name="change_credential">Cambia le tue credenziali d\'accesso</string>
     <string name="insert_new_email">Inserisci una nuova email</string>
     <string name="insert_new_password">Inserisci una nuova password</string>
+    <string name="login_psw_error">Password non corrispondenti</string>
+    <string name="update_pwd">Password modificata con successo!</string>
+    <string name="update_pwd_fail">Modifica della password fallita!</string>
+    <string name="weak_pwd">La password è troppo corta</string>
+    <string name="account_setting">impostazioni dell\'account</string>
+
 
 </resources>
