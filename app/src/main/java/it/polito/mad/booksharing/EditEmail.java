@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -81,6 +82,7 @@ public class EditEmail extends AppCompatActivity {
                     returnToEdit(true);
                 }
                 showProgress(false);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
         });
 
@@ -135,6 +137,7 @@ public class EditEmail extends AppCompatActivity {
                         String current_pwd = edittext.getText().toString();
                         if(!current_pwd.isEmpty()) {
                             //I need to re-authenticate the user using the current_pwd
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                             showProgress(true);
                             try {
                                 AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
@@ -147,6 +150,7 @@ public class EditEmail extends AppCompatActivity {
                                         } else {
                                             //I undo all the changes and exit
                                             restoreValue();
+                                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                             showProgress(false);
                                         }
 
@@ -233,6 +237,7 @@ public class EditEmail extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         showProgress(false);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
