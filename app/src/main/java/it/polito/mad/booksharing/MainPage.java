@@ -298,7 +298,8 @@ public class MainPage extends AppCompatActivity
     public void onResume() {
         super.onResume();
         getUserFromSharedPreference();
-
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
         setUserInfoNavBar();
     }
 
