@@ -158,6 +158,7 @@ public class EditPwd extends AppCompatActivity {
                 }
                 else {
                     showProgress(false);
+                    
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
