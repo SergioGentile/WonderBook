@@ -258,6 +258,7 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
                                 intent.putExtra("key", keys.get(position));
                                 intent.putExtras(bundle);
                                 startActivity(intent);
+                                finish();
                             }
                         });
 

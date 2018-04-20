@@ -631,6 +631,7 @@ public class AddBook extends Activity {
                     urlMyImageBook = downloadUrl.toString();
                     bookToUpload.setUrlMyImage(urlMyImageBook);
 
+
                     //Put the book into the intent
                     Intent intent = new Intent();
                     intent.putExtra("modified", true);
