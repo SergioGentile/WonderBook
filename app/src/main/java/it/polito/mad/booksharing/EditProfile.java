@@ -686,19 +686,6 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-    private void getUserInfoFromShared() {
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
-        String defaultString = "";
-        String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)) {
-            user = new User();
-            return;
-        }
-        Gson json = new Gson();
-        user = json.fromJson(userName, User.class);
-
-    }
-
 
     //This method will save a bitmap inside the Internal Storage of the application
     private String saveToInternalStorage(Bitmap bitmapImage) {

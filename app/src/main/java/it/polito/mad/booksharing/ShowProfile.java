@@ -138,6 +138,7 @@ public class ShowProfile extends AppCompatActivity
         navigationView.getMenu().getItem(1).setChecked(true);
         getUserInfoFromSharedPref();
         setUser();
+        setUserInfoNavBar();
     }
 
     private void zoomImage() {
@@ -290,7 +291,6 @@ public class ShowProfile extends AppCompatActivity
         if (requestCode == MODIFY_PROFILE) {
             if(resultCode == Activity.RESULT_OK){
 
-                Bundle result= data.getExtras();
                 getUserInfoFromSharedPref();
                 setUser();
                 setUserInfoNavBar();
@@ -385,6 +385,7 @@ public class ShowProfile extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(ShowProfile.this,Start.class));
+            finish();
         }
 
 
