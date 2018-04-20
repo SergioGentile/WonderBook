@@ -1,13 +1,20 @@
 package it.polito.mad.booksharing;
 
+import android.*;
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.UnicodeSet;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -60,6 +67,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private ProgressBar progress;
     private LinearLayout container;
     private TextView login_message;
+    private FirebaseUser user;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -100,14 +108,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         progress = (ProgressBar) findViewById(R.id.login_progress);
         container = (LinearLayout) findViewById(R.id.LoginContainer);
         login_message = (TextView) findViewById(R.id.login_message);
-
+        user = null;
+        
         String fromActivity = getIntent().getExtras().getString("from");
         if (fromActivity.equals("Edit")) {
 
             //The text became clickable only if we ae in the registration process
-            FirebaseAuth.getInstance().getCurrentUser().reload();
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (checkUserCredential(user)) {
+            if (checkUserCredential()) {
                 startMain(user.getEmail());
             }
 
@@ -125,7 +132,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             //Underline String send Mail
             spannable.setSpan(new UnderlineSpan(),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_COMPOSING);
+                    (message + '\n' + sendMail).length(),Spannable.SPAN_COMPOSING);
 
             login_message.setText(spannable);
 
@@ -143,9 +150,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //Disable autoorientation otherwise during the process the activity ma be killed
                 attemptLogin();
-
             }
         });
     }
@@ -241,12 +247,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            FirebaseUser user=null;
-            if(mAuth.getCurrentUser()!=null) {
-                mAuth.getCurrentUser().reload();
-                user = mAuth.getCurrentUser();
-            }
-            if (checkUserCredential(user)) {
+            if (checkUserCredential()) {
                 startMain(user.getEmail());
             } else if (user == null) {
                 showProgress(true);
@@ -283,9 +284,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         }
     }
 
-    private boolean checkUserCredential(FirebaseUser currentUser) {
-
+    private boolean checkUserCredential() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser != null){
+            FirebaseAuth.getInstance().getCurrentUser().reload();
+        }
         if (currentUser != null && currentUser.isEmailVerified()) {
+            user = currentUser;
             return true;
         }
         return false;
@@ -367,5 +372,4 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-
 }
