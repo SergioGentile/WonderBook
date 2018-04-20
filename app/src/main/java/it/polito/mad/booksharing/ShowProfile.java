@@ -388,7 +388,6 @@ public class ShowProfile extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(ShowProfile.this,Start.class));
-            finish();
         }
 
 
