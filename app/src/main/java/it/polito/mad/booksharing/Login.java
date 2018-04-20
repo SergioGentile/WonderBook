@@ -252,6 +252,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             if (checkUserCredential()) {
                 startMain(user.getEmail());
             } else if (user == null) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                 showProgress(true);
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -266,6 +267,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                     else{
                                         Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
+                                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                         showProgress(false);
                                         mAuth.signOut();
                                     }
@@ -275,6 +277,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
                                     Toast.makeText(Login.this, getString(R.string.authentication_failed),
                                             Toast.LENGTH_SHORT).show();
+                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                     showProgress(false);
                                 }
 

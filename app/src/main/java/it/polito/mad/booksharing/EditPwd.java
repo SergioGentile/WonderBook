@@ -3,6 +3,7 @@ package it.polito.mad.booksharing;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -103,6 +104,7 @@ public class EditPwd extends AppCompatActivity {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
                         if(!current_pwd.isEmpty() && !edtPassword.getText().toString().equals(current_pwd)) {
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                             showProgress(true);
                             try {
                                 AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail().getValue(), current_pwd);
@@ -114,6 +116,7 @@ public class EditPwd extends AppCompatActivity {
                                             updatePassword();
                                         }
                                         showProgress(false);
+                                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -121,6 +124,7 @@ public class EditPwd extends AppCompatActivity {
                                         Toast.makeText(EditPwd.this, getString(R.string.error_auth_failed),
                                                 Toast.LENGTH_SHORT).show();
                                         showProgress(false);
+                                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                     }
                                 });
 
@@ -154,11 +158,13 @@ public class EditPwd extends AppCompatActivity {
                     Toast.makeText(EditPwd.this, getString(R.string.update_pwd),
                             Toast.LENGTH_LONG).show();
                     showProgress(false);
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     finish();
                 }
                 else {
                     showProgress(false);
-                    
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
