@@ -121,4 +121,5 @@
     <string name="email_settings">تنظیمات ایمیل</string>
     <string name="change_password">تغییر رمز عبور</string>
     <string name="email_private">تنظیم به عنوان عمومی / خصوصی</string>
+    <string name="use_new_pwd">رمز عبور را غیر از موارد قبلی وارد کنید</string>
 </resources>

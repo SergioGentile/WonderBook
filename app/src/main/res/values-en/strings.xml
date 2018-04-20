@@ -121,5 +121,6 @@
     <string name="weak_pwd">The password is too short</string>
     <string name="email_settings">Email Settings</string>
     <string name="change_password">Change Password</string>
+    <string name="use_new_pwd">Please choose a new password</string>
 
 </resources>

@@ -120,6 +120,7 @@
     <string name="email_settings">Impostazioni Email</string>
     <string name="change_password">Cambia Password</string>
     <string name="email_private">Imposta cone pubblica/privata</string>
+    <string name="use_new_pwd">Inserisci una password diversa dalle precedenti</string>
 
 
 </resources>
