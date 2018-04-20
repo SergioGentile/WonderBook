@@ -15,13 +15,13 @@ import java.util.Date;
 public class Book implements Parcelable {
 
     private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle;
-
+    private boolean available;
 
     public Book() {
 
     }
 
-    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating) {
+    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available) {
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;
@@ -34,9 +34,18 @@ public class Book implements Parcelable {
         this.publisher = publisher;
         this.description = description;
         this.rating = rating;
+        this.available = available;
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.format(dateCalendar);
+    }
+
+    public Boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 
     public String getSubtitle() {
@@ -147,7 +156,9 @@ public class Book implements Parcelable {
     public Book(Parcel in) {
         String[] data = new String[13];
 
+
         in.readStringArray(data);
+        this.available = in.readByte() != 0;
         // the order needs to be the same as in writeToParcel() method
         this.title = data[0];
         this.subtitle = data[1];
@@ -184,6 +195,7 @@ public class Book implements Parcelable {
                 this.isbn13,
                 this.rating,
                 this.date});
+        dest.writeByte((byte) (available ? 1 : 0));
     }
 
     public static final Creator CREATOR = new Creator() {

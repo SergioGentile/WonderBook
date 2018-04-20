@@ -58,8 +58,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_auth_failed">Authentication failed.</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email completions</string>
     <string name="loginDescription">Insert your email and password</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_test">Test</string>
@@ -74,7 +73,7 @@
     <string name="show_profile">Profile</string>
     <string name="show_book">Shared Book</string>
     <string name="logout">Logout</string>
-    <string name="changeMail">Setting changed</string>
+    <string name="changeMail">You are changing your email.Please remember to verify your e-mail</string>
     <string name="registerMessage">Email not avaiable!</string>
 
     <string name="edit">Edit</string>
@@ -86,8 +85,12 @@
     <string name="shared_by">Shared by</string>
     <string name="publisher_point">Publisher:</string>
     <string name="state_point">State:</string>
+    <string name="state">State</string>
+    <string name="state_description">Indicate here if your book is available or not</string>
     <string name="available">available</string>
     <string name="unavailable">unavailable</string>
+    <string name="available_upper">Available</string>
+    <string name="unavailable_upper">Unavailable</string>
     <string name="available_by_point">Available from:</string>
     <string name="show_my_shared_book">Show my shared books</string>
     <string name="fill_all_fields">Attention: all fields must be fill in</string>
@@ -101,7 +104,7 @@
     <string name="wrong_isbn">Attention: ISBN must be 13 or 10 characters</string>
     <string name="editpwd">Please insert current password</string>
     <string name="mail_not_valid">The email is not in a valid format</string>
-    <string name="resend_mail">A new verification email has been sent to</string>
+    <string name="resend_mail">"A new verification email has been sent to "</string>
     <string name="login_psw_error">Passwords mismatch</string>
     <string name="confirm_mail_msg">It has been sent a confirmation mail. Please verify it and then make login.</string>
     <string name="tap_here_to_resend">Tap here to send again</string>
@@ -111,5 +114,17 @@
     <string name="no_change">This is already your email!</string>
     <string name="weak_pwd">The password is too short</string>
     <string name="account_setting">account settings</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="password_change_to">"Password change to "</string>
+    <string name="password_not_changed">The password has not been changed</string>
+    <string name="auth_fail_internet">Authentication failed. Please check your internet connection.</string>
+    <string name="change_mail_pass">Change email and password</string>
+    <string name="please_verify_email">Please verify your email address.</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="change_credential">Change your access credentials</string>
+    <string name="insert_new_email">Insert new email</string>
+    <string name="insert_new_password">Insert new password</string>
 
 </resources>

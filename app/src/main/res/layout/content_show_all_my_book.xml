@@ -49,12 +49,14 @@
                 tools:context="it.polito.mad.booksharing.ShowAllMyBook"></ListView>
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <ImageView
+        <ProgressBar
+            android:indeterminateTint="@color/colorPrimary"
+            android:backgroundTintMode="src_in"
             android:id="@+id/progressAnimation"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:src="@drawable/progress_animation" />
+            />
 
         <LinearLayout
             android:id="@+id/llEmpty"

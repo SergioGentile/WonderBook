@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.Image;
@@ -27,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.Scroller;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,6 +50,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,6 +66,8 @@ import java.util.List;
 
 public class AddBook extends Activity {
 
+    private Switch swAvailable;
+    private TextView tvAvailable;
     private String photoName;
     private ImageButton btnDone, btnDelete;
     private LinearLayout btnScan;
@@ -100,10 +108,12 @@ public class AddBook extends Activity {
         else if(book!=null &&  book.getIsbn10()!=null){
             isbn10 = book.getIsbn10();
         }
-        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()));
+        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked());
         if (uploadDate != null) {
             bookToSave.setDate(uploadDate);
         }
+        bookToSave.setAvailable(swAvailable.isChecked());
+
         //Put the book in the outState
         outState.putParcelable("book", bookToSave);
         //Save also the path of the image, that isnt present on the book object
@@ -137,6 +147,17 @@ public class AddBook extends Activity {
         urlMyImageBook = new String(book.getUrlMyImage());
         pathMyImageBook = inState.getString("path");
         uploadDate = book.getDate();
+
+        if(book.isAvailable()){
+            swAvailable.setChecked(true);
+            tvAvailable.setTextColor(getColor(R.color.available));
+            tvAvailable.setText(getString(R.string.available_upper));
+        }
+        else{
+            swAvailable.setChecked(false);
+            tvAvailable.setTextColor(getColor(R.color.unavailable));
+            tvAvailable.setText(getString(R.string.unavailable_upper));
+        }
 
         //If the image change (so the path isn't empty) load again the image path
         if (!pathMyImageBook.isEmpty()) {
@@ -172,6 +193,8 @@ public class AddBook extends Activity {
         tvYear = (EditText) findViewById(R.id.tvYear);
         myImageBook = (ImageView) findViewById(R.id.myImageBook);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        swAvailable = (Switch) findViewById(R.id.swAvailable);
+        tvAvailable = (TextView) findViewById(R.id.tvAvailable);
         urlImageBook = "";
         urlMyImageBook = "";
 
@@ -247,6 +270,17 @@ public class AddBook extends Activity {
             ratingBar.setRating(new Float(book.getRating()));
             tvProduction.setText(book.getPublisher());
 
+            if(book.isAvailable()){
+                swAvailable.setChecked(true);
+                tvAvailable.setTextColor(getColor(R.color.available));
+                tvAvailable.setText(getString(R.string.available_upper));
+            }
+            else{
+                swAvailable.setChecked(false);
+                tvAvailable.setTextColor(getColor(R.color.unavailable));
+                tvAvailable.setText(getString(R.string.unavailable_upper));
+            }
+
             //If the user dosen't change the image(path is empty) load the old one present into the database.
             if (pathMyImageBook.isEmpty()) {
                 Picasso.with(AddBook.this).load(urlMyImageBook).noFade().placeholder(R.drawable.progress_animation)
@@ -310,6 +344,21 @@ public class AddBook extends Activity {
             }
         });
 
+        swAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                swAvailable.setChecked(isChecked);
+                if(isChecked){
+                    tvAvailable.setTextColor(getColor(R.color.available));
+                    tvAvailable.setText(getString(R.string.available_upper));
+                }
+                else{
+                    tvAvailable.setTextColor(getColor(R.color.unavailable));
+                    tvAvailable.setText(getString(R.string.unavailable_upper));
+                }
+            }
+        });
+
         //All it's done
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,7 +381,7 @@ public class AddBook extends Activity {
                             else if(book.getIsbn10()!=null){
                                 isbn10 = book.getIsbn10();
                             }
-                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked()));
                         } else {
                             //Otherwise it's the first time
                             String isbn10 = new String("");
@@ -349,7 +398,7 @@ public class AddBook extends Activity {
                             else if(book.getIsbn10()!=null){
                                 isbn10 = book.getIsbn10();
                             }
-                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked()));
                         }
                     } else {
                         Toast.makeText(AddBook.this, getString(R.string.wrong_isbn), Toast.LENGTH_SHORT).show();
@@ -384,6 +433,9 @@ public class AddBook extends Activity {
             tvYear.setText("");
             urlImageBook = "";
             tvProduction.setText("");
+            tvAvailable.setText(getString(R.string.available_upper));
+            tvAvailable.setTextColor(getColor(R.color.available));
+            swAvailable.setChecked(true);
 
             if (resultCode == RESULT_OK) {
                 List<Book> books = intent.getParcelableArrayListExtra("books");
@@ -409,6 +461,16 @@ public class AddBook extends Activity {
                 tvYear.setText(year);
                 urlImageBook = urlImage;
                 tvProduction.setText(publisher);
+                if(book.isAvailable()){
+                    swAvailable.setChecked(true);
+                    tvAvailable.setTextColor(getColor(R.color.available));
+                    tvAvailable.setText(getString(R.string.available_upper));
+                }
+                else{
+                    tvAvailable.setTextColor(getColor(R.color.unavailable));
+                    swAvailable.setChecked(false);
+                    tvAvailable.setText(getString(R.string.unavailable_upper));
+                }
 
             } else {
                 //Here check for only the isbn. So fill the field ISBN on the view even if i didn't find the book online
@@ -543,13 +605,12 @@ public class AddBook extends Activity {
                     else{
                         isbn10 = bookToUpload.getIsbn10();
                     }
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked()) );
                     intent.putExtras(bundle);
                     setResult(RESULT_CANCELED, intent);
                     if (pd.isShowing()) {
                         pd.dismiss();
                     }
-
                     finish();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -557,7 +618,6 @@ public class AddBook extends Activity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     //Replace the content of the database
-                    Log.d("URL: ", bookToUpload.getUrlMyImage());
                     try {
                         StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookToUpload.getUrlMyImage());
                         storageReference.delete();
@@ -588,7 +648,7 @@ public class AddBook extends Activity {
                     else{
                         isbn10 = bookToUpload.getIsbn10();
                     }
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked()));
                     intent.putExtras(bundle);
                     setResult(RESULT_OK, intent);
                     //Upload with the new settings
@@ -626,7 +686,7 @@ public class AddBook extends Activity {
             else if(book.getIsbn10()!=null){
                 isbn10 = book.getIsbn10();
             }
-            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating())));
+            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked()));
             intent.putExtras(bundle);
             setResult(RESULT_OK, intent);
             if (pd.isShowing()) {

@@ -13,6 +13,8 @@
     <color name="textColorPrimary">@android:color/white</color>
     <color name="lock">@android:color/black</color>
     <color name="unlock">@android:color/black</color>
+    <color name="available">@android:color/holo_green_dark</color>
+    <color name="unavailable">@android:color/holo_red_dark</color>
     <color name="my_box">#448AFF</color>
 </resources>
 

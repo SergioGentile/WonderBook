@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Book Sharing"
+                android:text="@string/app_name"
                 android:textSize="25dp"
                 android:gravity="center"
                 android:textColor="@color/colorPrimaryDark"
@@ -103,7 +103,7 @@
                             android:id="@+id/edtLoginName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:hint="e-mail"
+                            android:hint="@string/mail"
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"

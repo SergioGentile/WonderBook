@@ -122,7 +122,6 @@ public class EditCredential extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override

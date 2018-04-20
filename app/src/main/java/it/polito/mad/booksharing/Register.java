@@ -130,7 +130,7 @@ public class Register extends AppCompatActivity {
                                     } else {
                                         //TODO switch case su errori
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(Register.this, "Authentication failed.",
+                                        Toast.makeText(Register.this, getString(R.string.authentication_failed),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                     showProgress(false);
@@ -140,7 +140,7 @@ public class Register extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             //TODO mettere switch case possibili errori
-                            Toast.makeText(Register.this, "Authentication failed. Please check your internet connection",
+                            Toast.makeText(Register.this, getString(R.string.auth_fail_internet),
                                     Toast.LENGTH_SHORT).show();
                             showProgress(false);
 

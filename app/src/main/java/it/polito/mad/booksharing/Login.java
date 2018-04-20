@@ -27,6 +27,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -111,33 +112,33 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             }
         }
 
-            String message = getString(R.string.confirm_mail_msg);
+        String message = getString(R.string.confirm_mail_msg);
 
-            String sendMail = getString(R.string.tap_here_to_resend);
+        String sendMail = getString(R.string.tap_here_to_resend);
 
-            Spannable spannable = new SpannableString(message + '\n' +sendMail);
+        Spannable spannable = new SpannableString(message + '\n' +sendMail);
 
-            int colorAccent = ResourcesCompat.getColor(getResources(),R.color.colorAccent,null);
+        int colorAccent = ResourcesCompat.getColor(getResources(),R.color.colorAccent,null);
 
-            //Change color to string send mail
-            spannable.setSpan(new ForegroundColorSpan(colorAccent),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        //Change color to string send mail
+        spannable.setSpan(new ForegroundColorSpan(colorAccent),message.length(),
+                (message + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-            //Underline String send Mail
-            spannable.setSpan(new UnderlineSpan(),message.length(),
-                    (message + sendMail).length(),Spannable.SPAN_COMPOSING);
+        //Underline String send Mail
+        spannable.setSpan(new UnderlineSpan(),message.length(),
+                (message + sendMail).length(),Spannable.SPAN_COMPOSING);
 
-            login_message.setText(spannable);
+        login_message.setText(spannable);
 
-            login_message.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-                    Toast.makeText(Login.this,
-                            getString(R.string.resend_mail) + " " + FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+        login_message.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                Toast.makeText(Login.this,
+                        getString(R.string.resend_mail) + " " + FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +150,23 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             }
         });
+
+        if(getIntent().getExtras().getString("from")!=null){
+            Log.d("from:", getIntent().getExtras().getString("from"));
+            if(getIntent().getExtras().getString("from").equals("Edit")){
+                login_message.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                login_message.setVisibility(View.GONE);
+            }
+        }else
+        {
+            login_message.setVisibility(View.GONE);
+        }
+
     }
+
 
     @Override
     public void onStart() {
@@ -263,7 +280,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                         startMain(clean_email);
                                     }
                                     else{
-                                        Toast.makeText(Login.this, "Please verify your email address.",
+                                        Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
                                         showProgress(false);
                                         mAuth.signOut();
@@ -272,7 +289,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                 } else {
                                     // If sign in fails, display a message to the user.
 
-                                    Toast.makeText(Login.this, "Authentication failed.",
+                                    Toast.makeText(Login.this, getString(R.string.authentication_failed),
                                             Toast.LENGTH_SHORT).show();
                                     showProgress(false);
                                 }
