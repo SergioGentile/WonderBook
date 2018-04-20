@@ -341,7 +341,7 @@ public class User implements Parcelable{
     }
 
 
-    public static class MyPair{
+    public static class MyPair implements  Parcelable{
 
         private String value;
         private String status;
@@ -360,6 +360,34 @@ public class User implements Parcelable{
             this.value = new String(name.getValue());
             this.status = new String(name.getStatus());
         }
+
+        protected MyPair(Parcel in) {
+            value = in.readString();
+            status = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(value);
+            dest.writeString(status);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<MyPair> CREATOR = new Creator<MyPair>() {
+            @Override
+            public MyPair createFromParcel(Parcel in) {
+                return new MyPair(in);
+            }
+
+            @Override
+            public MyPair[] newArray(int size) {
+                return new MyPair[size];
+            }
+        };
 
         public String getStatus() {
             return status;

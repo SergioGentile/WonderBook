@@ -60,17 +60,18 @@ import java.util.Date;
 public class EditProfile extends AppCompatActivity {
 
     //All declarations
-    private EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtMail, edtDescription;
+    private EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtDescription;
     private ImageButton btnDone, btnEditImg;
-    private ImageView profileImg, lockStreet, lockPhone, lockMail;
+    private ImageView profileImg, lockStreet, lockPhone;
     private Bitmap profileBitmap, originalBitmapNormal, originalBitmapCrop;
     private User user;
-    private Switch swPhone, swStreet, swMail;
+    private Switch swPhone, swStreet;
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
     private String fromActivity;
     private Toolbar toolbar;
+    private Boolean email_change;
 
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
@@ -108,21 +109,18 @@ public class EditProfile extends AppCompatActivity {
         edtCap = (EditText) findViewById(R.id.edtCap);
         edtStreet = (EditText) findViewById(R.id.edtStreet);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
-        edtMail = (EditText) findViewById(R.id.edtMail);
         edtDescription = (EditText) findViewById(R.id.description);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnEditImg = (ImageButton) findViewById(R.id.btnEditImg);
         profileImg = (ImageView) findViewById(R.id.profileImage);
         swPhone = (Switch) findViewById(R.id.swPhone);
         swStreet = (Switch) findViewById(R.id.swStreet);
-        swMail = (Switch) findViewById(R.id.swMail);
         lockStreet = (ImageView) findViewById(R.id.lockStreet);
         lockPhone = (ImageView) findViewById(R.id.lockPhine);
-        lockMail = (ImageView) findViewById(R.id.lockMail);
 
         fromActivity = getIntent().getStringExtra("from");
         user = getIntent().getParcelableExtra("user");
-
+        email_change = false;
 
         if(fromActivity.equals("Register")){
 
@@ -145,24 +143,6 @@ public class EditProfile extends AppCompatActivity {
                     startActivityForResult(intent, IMAGE_CROP);
                 }
 
-            }
-        });
-
-
-        //catch when the switch button related to the e-mail field is crushed
-        swMail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Verify the status of the field.
-                //If it's public, it will become private, otherwise will become public.
-                //In both cases, change also the state of the lock.
-                if (swMail.isChecked()) {
-                    user.setCheckMail("public");
-                    lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
-                } else {
-                    user.setCheckMail("private");
-                    lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
-                }
             }
         });
 
@@ -236,23 +216,6 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 user.setSurname(new User.MyPair(edtSurname.getText().toString(), user.getSurname().getStatus()));
-            }
-        });
-
-        edtMail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                user.setEmail(new User.MyPair(edtMail.getText().toString(), user.getEmail().getStatus()));
             }
         });
 
@@ -370,7 +333,7 @@ public class EditProfile extends AppCompatActivity {
                     intent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, intent);
 
-                    if (fromActivity.equals("Register")) {
+                    if (fromActivity.equals("Register") || email_change==true) {
 
                         bundle.putString("from", "Edit");
                         Intent intent2 = new Intent(EditProfile.this, Login.class);
@@ -559,12 +522,18 @@ public class EditProfile extends AppCompatActivity {
                 profileBitmap = bitmap;
             } else if (requestCode == MODIFY_CREDENTIALS) {
                 Bundle result = data.getExtras();
-                String mail = result.getString("mail");
-                User firstUser = getIntent().getParcelableExtra("user");
-                firstUser.setEmail(new User.MyPair(mail, firstUser.getEmail().getStatus()));
-                setSharedPrefUserInfo(firstUser);
-                user.setEmail(new User.MyPair(mail, user.getEmail().getStatus()));
-                edtMail.setText(mail);
+                User.MyPair mail = result.getParcelable("mail");
+                if(mail!=null) {
+                    User firstUser = getIntent().getParcelableExtra("user");
+                    if(!firstUser.getEmail().getValue().equals(mail.getValue())){
+                        email_change = true;
+                    }
+                    firstUser.setEmail(new User.MyPair(mail));
+                    setSharedPrefUserInfo(firstUser);
+                    user.setEmail(new User.MyPair(mail));
+
+
+                }
 
             }
         }
@@ -606,17 +575,11 @@ public class EditProfile extends AppCompatActivity {
         edtCap.setText(user.getCap().getValue());
         edtStreet.setText(user.getStreet().getValue());
         edtPhone.setText(user.getPhone().getValue());
-        edtMail.setText(user.getEmail().getValue());
+
         edtDescription.setText(user.getDescription().getValue());
 
         //set the correct status of the lock and switch button
-        if (user.checkMail()) {
-            swMail.setChecked(true);
-            lockMail.setImageResource(R.drawable.ic_lock_open_black_24dp);
-        } else {
-            swMail.setChecked(false);
-            lockMail.setImageResource(R.drawable.ic_lock_outline_black_24dp);
-        }
+
 
         if (user.checkPhone()) {
             lockPhone.setImageResource(R.drawable.ic_lock_open_black_24dp);
@@ -722,19 +685,6 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
-
-    private void getUserInfoFromShared() {
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
-        String defaultString = "";
-        String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)) {
-            user = new User();
-            return;
-        }
-        Gson json = new Gson();
-        user = json.fromJson(userName, User.class);
-
-    }
 
 
     //This method will save a bitmap inside the Internal Storage of the application

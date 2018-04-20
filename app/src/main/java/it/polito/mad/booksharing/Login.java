@@ -33,6 +33,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -109,7 +110,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         container = (LinearLayout) findViewById(R.id.LoginContainer);
         login_message = (TextView) findViewById(R.id.login_message);
         user = null;
-        
+
         String fromActivity = getIntent().getExtras().getString("from");
         if (fromActivity.equals("Edit")) {
 
@@ -117,6 +118,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             if (checkUserCredential()) {
                 startMain(user.getEmail());
             }
+
 
             String message = getString(R.string.confirm_mail_msg);
 
@@ -235,7 +237,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             focusView = loginEmail;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            loginEmail.setError(getString(R.string.error_invalid_email));
+            loginEmail.setError(getString(R.string.mail_not_valid));
             focusView = loginEmail;
             cancel = true;
         }
@@ -262,7 +264,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                         startMain(clean_email);
                                     }
                                     else{
-                                        Toast.makeText(Login.this, "Please verify your email address.",
+                                        Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
                                         showProgress(false);
                                         mAuth.signOut();
@@ -271,7 +273,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                 } else {
                                     // If sign in fails, display a message to the user.
 
-                                    Toast.makeText(Login.this, "Authentication failed.",
+                                    Toast.makeText(Login.this, getString(R.string.authentication_failed),
                                             Toast.LENGTH_SHORT).show();
                                     showProgress(false);
                                 }
@@ -292,6 +294,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         if (currentUser != null && currentUser.isEmailVerified()) {
             user = currentUser;
             return true;
+        }else if(currentUser!=null && !currentUser.isEmailVerified()){
+            Toast.makeText(Login.this, getString(R.string.please_verify_email),Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -303,12 +307,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 6;
+        return password.length() > 5;
     }
 
     private void startMain(String userEmail) {
         //Start MainPage Activity
         Intent intent = new Intent(Login.this, MainPage.class);
+        setResult(Activity.RESULT_OK, intent);
         startActivity(intent);
         finish();
     }

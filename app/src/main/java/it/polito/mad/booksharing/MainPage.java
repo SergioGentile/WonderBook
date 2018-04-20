@@ -89,10 +89,7 @@ public class MainPage extends AppCompatActivity
         setDefaultUser();
 
 
-
-
     }
-
 
     @Override
     public void onStart() {
@@ -261,7 +258,16 @@ public class MainPage extends AppCompatActivity
         edit.putString("user", toStore).apply();
         edit.commit();
 
-        setUserInfoNavBar();
+        String alertMessage = this.user.checkInfo(getApplicationContext());
+        if (alertMessage != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("from","Register");
+            Intent intent = new Intent(MainPage.this,EditProfile.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+        }
+
 
     }
 

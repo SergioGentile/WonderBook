@@ -250,10 +250,18 @@ public class CameraScan extends AppCompatActivity {
                         }
 
                         String author = "";
+                        boolean first = true;
                         if(volumeInfo.has("authors")){
                             JSONArray authors = volumeInfo.getJSONArray("authors");
                             for (int j = 0; j < authors.length(); j++) {
-                                author += authors.getString(j) + " ";
+                                if(first==false){
+                                    author += ", ";
+                                }
+                                else{
+                                    first = false;
+                                }
+                                author += authors.getString(j);
+
                             }
                         }
 
@@ -293,7 +301,7 @@ public class CameraScan extends AppCompatActivity {
                             }
                         }
 
-                        Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "");
+                        Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "", true);
                         books.add(book);
                     } catch (JSONException e) {
                         setResult(RESULT_CANCELED, intent);

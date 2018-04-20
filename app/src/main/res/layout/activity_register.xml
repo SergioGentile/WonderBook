@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -12,10 +13,22 @@
     android:background="@color/colorDivider"
     android:theme="@style/ThemeStart">
 
+    <!-- Register progress -->
+    <ProgressBar
+        android:id="@+id/register_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
 
     <LinearLayout
 
-        android:id="@+id/LoginContainer"
+        android:id="@+id/RegisterContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -103,7 +116,7 @@
                             android:id="@+id/edtLoginName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:hint="e-mail"
+                            android:hint="@string/mail"
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
@@ -129,7 +142,7 @@
                             android:id="@+id/edtLoginPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="password"
+                            android:hint="@string/password"
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
@@ -154,7 +167,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
-                            android:hint="confirm password"
+                            android:hint="@string/confirm_password"
                             android:singleLine="true"
                             android:textColor="@android:color/black"
                             android:inputType="textPassword|textNoSuggestions"

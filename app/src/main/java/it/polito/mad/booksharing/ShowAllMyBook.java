@@ -1,5 +1,6 @@
 package it.polito.mad.booksharing;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,12 +20,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,19 +43,19 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowAllMyBook extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView lv;
     private List<Book> data;
     private List<String> keys;
     private User user;
     private LinearLayout llEmpty;
-    private ImageView animation;
+    private ProgressBar progressAnimation;
     private View navView;
     private Toolbar toolbar;
     private TextView tvName;
-    private CircleImageView profileImage;
+    private CircleImageView
+            profileImage;
     private SwipeRefreshLayout srl;
 
 
@@ -64,9 +68,8 @@ public class ShowAllMyBook extends AppCompatActivity
         //This class manage the exhibition of all the book owned by the user.
 
         srl = (SwipeRefreshLayout) findViewById(R.id.srl);
-
-        animation = (ImageView) findViewById(R.id.progressAnimation);
-        animation.setVisibility(View.VISIBLE);
+        progressAnimation = (ProgressBar) findViewById(R.id.progressAnimation);
+        progressAnimation.setVisibility(View.VISIBLE);
         llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
         lv = (ListView) findViewById(R.id.lv);
         llEmpty.setVisibility(View.GONE);
@@ -100,12 +103,13 @@ public class ShowAllMyBook extends AppCompatActivity
             }
         });
 
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        animation.setVisibility(View.VISIBLE);
+        progressAnimation.setVisibility(View.VISIBLE);
         lv.setVisibility(View.GONE);
         llEmpty.setVisibility(View.GONE);
         showAllMyBooks(user.getKey());
@@ -141,7 +145,7 @@ public class ShowAllMyBook extends AppCompatActivity
                     }
                 }
 
-                animation.setVisibility(View.GONE);
+                progressAnimation.setVisibility(View.GONE);
                 if (data.isEmpty()) {
                     llEmpty.setVisibility(View.VISIBLE);
                     lv.setVisibility(View.GONE);
@@ -227,10 +231,10 @@ public class ShowAllMyBook extends AppCompatActivity
                         //Here to show all the book
                         CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv);
                         cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
-                        TextView tvEdit = (TextView) convertView.findViewById(R.id.editMyBook);
+                        ImageButton btnEdit = (ImageButton) convertView.findViewById(R.id.editMyBook);
 
                         //edit the book
-                        tvEdit.setOnClickListener(new View.OnClickListener() {
+                        btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, AddBook.class).putExtra("edit", true);
@@ -289,6 +293,8 @@ public class ShowAllMyBook extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void setUserInfoNavBar(){
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);

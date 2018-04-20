@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
@@ -20,11 +22,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
+import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -35,8 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class ShowBookFull extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -48,8 +52,19 @@ public class ShowBookFull extends AppCompatActivity
     private ScrollView sv;
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
+
+    private Matrix matrix = new Matrix();
+    Matrix savedMatrix = new Matrix();
+    static final int NONE = 0;
+    static final int DRAG = 1;
+    static final int ZOOM = 2;
+    private int mode;
+    private PointF start = new PointF();
+    private PointF mid = new PointF();
+    private float oldDist;
     private Toolbar toolbar;
     private View navView;
+    private TextView available;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +93,7 @@ public class ShowBookFull extends AppCompatActivity
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(description.getLineCount() >= description.getMaxLines()){
+                if (description.getLineCount() >= description.getMaxLines()) {
                     description.getParent().requestDisallowInterceptTouchEvent(false);
                 }
 
@@ -92,7 +107,7 @@ public class ShowBookFull extends AppCompatActivity
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(description.getLineCount() >= description.getMaxLines()) {
+                if (description.getLineCount() >= description.getMaxLines()) {
                     description.getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 return false;
@@ -104,6 +119,7 @@ public class ShowBookFull extends AppCompatActivity
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
         imageMyBook = (ImageView) findViewById(R.id.shMyImage);
         imageBook = (ImageView) findViewById(R.id.shImage);
+        available = (TextView) findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
         book = getIntent().getParcelableExtra("book");
@@ -129,6 +145,13 @@ public class ShowBookFull extends AppCompatActivity
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         publishDate.setText(book.getDate());
+        if (book.isAvailable()) {
+            available.setText(getString(R.string.available_upper));
+            available.setTextColor(getColor(R.color.available));
+        } else {
+            available.setText(getString(R.string.unavailable_upper));
+            available.setTextColor(getColor(R.color.unavailable));
+        }
 
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
@@ -138,6 +161,12 @@ public class ShowBookFull extends AppCompatActivity
             @Override
             public void onSuccess() {
                 imageMyBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageMyBook.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zoomImage();
+                    }
+                });
             }
 
             @Override
@@ -146,7 +175,7 @@ public class ShowBookFull extends AppCompatActivity
             }
         });
 
-        if(book.getUrlImage()==null || book.getUrlImage().isEmpty()){
+        if (book.getUrlImage() == null || book.getUrlImage().isEmpty()) {
             imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
@@ -160,8 +189,7 @@ public class ShowBookFull extends AppCompatActivity
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
             });
-        }
-        else{
+        } else {
             Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().into(imageBook);
         }
 
@@ -179,14 +207,8 @@ public class ShowBookFull extends AppCompatActivity
             }
         });
 
-        imageMyBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomImage();
-            }
-        });
-
         createNavBar();
+
     }
 
     private void createNavBar() {
@@ -259,7 +281,7 @@ public class ShowBookFull extends AppCompatActivity
 
         ScrollView cv = findViewById(R.id.scrollSh);
         cv.setVisibility(View.GONE);
-          expandedImage.setVisibility(View.VISIBLE);
+        expandedImage.setVisibility(View.VISIBLE);
 
 
         // Set the pivot point for SCALE_X and SCALE_Y transformations
@@ -295,8 +317,7 @@ public class ShowBookFull extends AppCompatActivity
         });
         set.start();
         mCurrentAnimator = set;
-
-        // Upon clicking the zoomed-in image, it should zoom back down
+// Upon clicking the zoomed-in image, it should zoom back down
         // to the original bounds and show the thumbnail instead of
         // the expanded image.
         final float startScaleFinal = startScale;
@@ -314,7 +335,7 @@ public class ShowBookFull extends AppCompatActivity
                         .ofFloat(expandedImage, View.X, startBounds.left))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
-                                        View.Y,startBounds.top))
+                                        View.Y, startBounds.top))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
                                         View.SCALE_X, startScaleFinal))
@@ -350,6 +371,7 @@ public class ShowBookFull extends AppCompatActivity
 
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -377,6 +399,13 @@ public class ShowBookFull extends AppCompatActivity
                 publisher.setText(bookModified.getPublisher() + ", " + bookModified.getYear());
                 description.setText(bookModified.getDescription());
                 ratingBar.setRating(new Float(bookModified.getRating()));
+                if (bookModified.isAvailable()) {
+                    available.setText(getString(R.string.available_upper));
+                    available.setTextColor(getColor(R.color.available));
+                } else {
+                    available.setText(getString(R.string.unavailable_upper));
+                    available.setTextColor(getColor(R.color.unavailable));
+                }
                 Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
 
                 book.setTitle(bookModified.getTitle());
@@ -391,6 +420,7 @@ public class ShowBookFull extends AppCompatActivity
                 book.setRating(bookModified.getRating());
                 book.setUrlImage(bookModified.getUrlImage());
                 book.setUrlMyImage(bookModified.getUrlMyImage());
+                book.setAvailable(bookModified.isAvailable());
 
                 //Set the images of the book
                 imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -399,6 +429,12 @@ public class ShowBookFull extends AppCompatActivity
                     @Override
                     public void onSuccess() {
                         imageMyBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                        imageMyBook.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                zoomImage();
+                            }
+                        });
                     }
 
                     @Override
@@ -407,7 +443,7 @@ public class ShowBookFull extends AppCompatActivity
                     }
                 });
 
-                if(book.getUrlImage().isEmpty()){
+                if (book.getUrlImage().isEmpty()) {
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                             .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
@@ -425,8 +461,7 @@ public class ShowBookFull extends AppCompatActivity
 
 
             }
-        }
-        else if(RESULT_CANCELED == resultCode){
+        } else if (RESULT_CANCELED == resultCode) {
             Toast.makeText(ShowBookFull.this, getString(R.string.error_reload_new_book), Toast.LENGTH_SHORT);
         }
     }
@@ -437,11 +472,10 @@ public class ShowBookFull extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id == R.id.nav_home){
+        if (id == R.id.nav_home) {
             //Start Home
             startActivity(new Intent(ShowBookFull.this, MainPage.class));
-        }
-        else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile) {
             // Handle the camera action
             startActivity(new Intent(ShowBookFull.this, ShowProfile.class));
 
@@ -450,11 +484,10 @@ public class ShowBookFull extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowBookFull.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_exit){
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowBookFull.this,Start.class));
+            startActivity(new Intent(ShowBookFull.this, Start.class));
             finish();
         }
 
