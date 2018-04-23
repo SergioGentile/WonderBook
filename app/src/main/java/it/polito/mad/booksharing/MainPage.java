@@ -45,6 +45,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.io.File;
 
@@ -61,6 +62,7 @@ public class MainPage extends AppCompatActivity
     private String userId;
     private FirebaseAuth mAuth;
     private MapView mMapView;
+    private MaterialSearchView searchView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     @Override
@@ -76,6 +78,7 @@ public class MainPage extends AppCompatActivity
                 1);
 
         setContentView(R.layout.activity_main_page);
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -110,6 +113,20 @@ public class MainPage extends AppCompatActivity
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+
+
+        searchView.closeSearch();
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
 
     }
@@ -171,7 +188,10 @@ public class MainPage extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu., menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+
+        MenuItem item = menu.findItem(R.id.searchButton);
+        searchView.setMenuItem(item);
         return true;
     }
 
@@ -183,9 +203,10 @@ public class MainPage extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       /* if (id == R.id.action_settings) {
-            return true;
-        }*/
+       if (id == R.id.searchButton) {
+           searchView.clearFocus();
+           return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

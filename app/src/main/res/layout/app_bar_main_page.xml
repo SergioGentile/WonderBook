@@ -13,17 +13,30 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.myToolbar">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:title="@string/app_name"
-            app:titleTextColor="@android:color/white"
-            app:subtitleTextColor="@color/windowBackground"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.Toolbar
+                android:theme="@style/Theme.myToolbar"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:subtitleTextColor="@color/windowBackground"
+                app:title="@string/app_name"
+                app:titleTextColor="@android:color/white">
+            </android.support.v7.widget.Toolbar>
 
-            />
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+
+        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
+
 
     <View
         android:layout_width="match_parent"
@@ -44,9 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             app:srcCompat="@drawable/ic_add_black_24dp" />
-
-
     </FrameLayout>
+
+
 
 
 </LinearLayout>
