@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,12 +14,14 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
@@ -35,8 +38,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,18 +63,41 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
 
-    private Matrix matrix = new Matrix();
-    Matrix savedMatrix = new Matrix();
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
-    private int mode;
-    private PointF start = new PointF();
-    private PointF mid = new PointF();
-    private float oldDist;
     private Toolbar toolbar;
     private View navView;
     private TextView available;
+
+    private void setBitmapFromFirebase(final CircleImageView image){
+
+        final long time_sd= System.currentTimeMillis();
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference();
+        StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            return;
+        }
+        //Create of the destination path
+        File userPicture = new File(directory, User.profileImgName.replace("profile.", "profile_samb."));
+        userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                long time_ed= System.currentTimeMillis();
+                Log.d("Time to download", time_ed - time_sd+ "");
+                Bitmap imageDown = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
+                image.setImageBitmap(imageDown);
+                long time_d= System.currentTimeMillis();
+                Log.d("Time to decode", time_d - time_ed+ "");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,9 +155,41 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         available = (TextView) findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
-        book = getIntent().getParcelableExtra("book");
-        user = getIntent().getParcelableExtra("user");
-        key = getIntent().getExtras().getString("key");
+        if(getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("book_mp")!=null){
+            book = getIntent().getExtras().getParcelable("book_mp");
+            user = getIntent().getExtras().getParcelable("user_mp");
+            btnEdit.setVisibility(View.GONE);
+            CardView cvSharedBy = (CardView) findViewById(R.id.card_shared_by);
+            cvSharedBy.setVisibility(View.VISIBLE);
+            CircleImageView imageSharedBy = (CircleImageView) findViewById(R.id.image_shared_by);
+            setBitmapFromFirebase(imageSharedBy);
+            TextView tvSharedByName = (TextView) findViewById(R.id.name_shared_by);
+            tvSharedByName.setText(user.getName().getValue() + " " + user.getSurname().getValue());
+            TextView tvSharedByLocation = (TextView) findViewById(R.id.location_shared_by);
+            String currentLocation = new String(user.getCity().getValue());
+            if(user.getStreet().getStatus().equals("public")){
+                currentLocation+=", " + user.getStreet().getValue();
+            }
+            tvSharedByLocation.setText(currentLocation);
+
+            cvSharedBy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ShowBookFull.this, ShowProfile.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user_mp", user);
+                    bundle.putParcelable("user_owner", getIntent().getExtras().getParcelable("user_owner"));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
+        }else{
+            book = getIntent().getParcelableExtra("book");
+            user = getIntent().getParcelableExtra("user");
+            key = getIntent().getExtras().getString("key");
+        }
+
         title.setText(book.getTitle());
         if (book.getSubtitle() != null) {
             if (book.getSubtitle().isEmpty()) {
@@ -502,12 +567,23 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
         navView.getBackground().setAlpha(80);
 
         CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
-        barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-        Bitmap image = null;
+        if(getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_owner")!=null){
+            User currentUser = getIntent().getExtras().getParcelable("user_owner");
+            barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+            Bitmap image = null;
+            if (currentUser.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(currentUser.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        }
+        else{
+            barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+            Bitmap image = null;
 
-        if (this.user.getImagePath() != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath());
-            barprofileImage.setImageBitmap(image);
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
         }
     }
 }

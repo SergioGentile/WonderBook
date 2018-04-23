@@ -8,10 +8,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.SearchView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,7 +30,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,8 +59,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,6 +80,18 @@ public class MainPage extends AppCompatActivity
     private MapView mMapView;
     private MaterialSearchView searchView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    //For showing book
+    LinearLayout ll_search_runtime;
+    ListView lv_search_runtime, lv_searched;
+    FirebaseDatabase firebaseDatabase;
+    ArrayList<Book> books;
+    ArrayList<String> booksQuery;
+    ArrayList<Book> booksMatch;
+    ArrayList<User> usersMatch;
+    boolean submit;
+    String fillSearchBar;
+    int searchBarItem;
+    private final static int AUTHOR = 0, TITLE = 1, NO_ITEM =2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,15 +143,32 @@ public class MainPage extends AppCompatActivity
         mMapView.getMapAsync(this);
 
 
+        //Search part
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        lv_search_runtime = (ListView) findViewById(R.id.lv_search_runtime);
+        lv_searched = (ListView) findViewById(R.id.lv_searched);
+        books = new ArrayList<>();
+        booksQuery = new ArrayList<>();
+        booksMatch = new ArrayList<>();
+        usersMatch = new ArrayList<>();
+        submit = false;
         searchView.closeSearch();
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                lv_search_runtime.setVisibility(View.GONE);
+                setAdapterSearched(query.toString());
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                if (!submit) {
+                    setAdapterRuntime(newText);
+                } else {
+                    submit = true;
+                }
                 return false;
             }
         });
@@ -424,6 +469,270 @@ public class MainPage extends AppCompatActivity
     }
 
 
+    private void setAdapterSearched(final String searchedString) {
+        final List<String> colors = new ArrayList<>();
+        colors.add(new String("#00897B"));
+        colors.add(new String("#3F51B5"));
+        colors.add(new String("#C62828"));
+        colors.add(new String("#512DA8"));
+        //qui reference
+        DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
+        Query query = null;
+        if(searchBarItem == TITLE){
+            query = databaseReferenceBooks.orderByChild("title").equalTo(searchedString);
+        }
+        else if(searchBarItem == AUTHOR){
+            query = databaseReferenceBooks.orderByChild("author").equalTo(searchedString);
+        }
+
+        if(query==null){
+            return;
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lv_searched.setAdapter(null);
+                booksMatch.clear();
+                usersMatch.clear();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        if(!issue.getValue(Book.class).getOwner().equals(user.getKey())){
+                            booksMatch.add(issue.getValue(Book.class));
+                        }
+                    }
+                }
+                for(Book bookToAdd : booksMatch){
+                    DatabaseReference databaseReferenceUsers = firebaseDatabase.getReference("users");
+                    Query queryUser = databaseReferenceUsers.child(bookToAdd.getOwner());
+                    queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
+                            usersMatch.add(dataSnapshot.getValue(User.class));
+                            if(usersMatch.size() == booksMatch.size()){
+                                lv_searched.setAdapter(new BaseAdapter() {
+                                    @Override
+                                    public int getCount() {
+                                        return booksMatch.size();
+                                    }
+
+                                    @Override
+                                    public Object getItem(int position) {
+                                        return booksMatch.get(position);
+                                    }
+
+                                    @Override
+                                    public long getItemId(int position) {
+                                        return 0;
+                                    }
+
+                                    @Override
+                                    public View getView(int position, View convertView, ViewGroup parent) {
+                                        if (convertView == null) {
+                                            convertView = getLayoutInflater().inflate(R.layout.adapter_searched_book, parent, false);
+                                        }
+                                        final Book book = booksMatch.get(position);
+                                        final User currentUser = usersMatch.get(position);
+                                        //User userOfBook = usersMatch.get(position);
+                                        ImageView imageView = (ImageView) convertView.findViewById(R.id.image_book_searched);
+                                        Picasso.with(MainPage.this).load(book.getUrlMyImage()).noFade().into(imageView);
+                                        TextView title = (TextView) convertView.findViewById(R.id.title_searched);
+                                        RatingBar rb = (RatingBar) convertView.findViewById(R.id.rating_searched);
+                                        //For setting a text view with two different colors
+                                        TextView owner = (TextView) convertView.findViewById(R.id.shared_name);
+                                        Spannable sharedBy = new SpannableString(getString(R.string.shared_by) + " ");
+                                        sharedBy.setSpan(new ForegroundColorSpan(Color.WHITE), 0, sharedBy.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                        owner.setText(sharedBy);
+                                        Spannable wordTwo = new SpannableString(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+                                        wordTwo.setSpan(new ForegroundColorSpan(Color.WHITE), 0, wordTwo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                        owner.append(wordTwo);
+                                        TextView location = (TextView) convertView.findViewById(R.id.shared_location);
+
+                                        title.setText(book.getTitle());
+                                        rb.setRating(new Float(book.getRating()));
+                                        String currentLocation = new String(currentUser.getCity().getValue());
+                                        if(currentUser.getStreet().getStatus().equals("public")){
+                                            currentLocation+=", " + currentUser.getStreet().getValue();
+                                        }
+                                        location.setText(currentLocation);
+
+                                        CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv_searched);
+                                        cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
+
+
+                                        LinearLayout llAdapter = (LinearLayout) convertView.findViewById(R.id.ll_adapter_searched_book);
+                                        llAdapter.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(MainPage.this, ShowBookFull.class);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putParcelable("book_mp", book);
+                                                bundle.putParcelable("user_mp", currentUser);
+                                                bundle.putParcelable("user_owner", user);
+                                                intent.putExtras(bundle);
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                        return convertView;
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private String concatenateFieldBook(Book book){
+        return (book.getAuthor() + " " + book.getTitle() + " " + book.getSubtitle() + " " + book.getPublisher() + " ").toLowerCase();
+    }
+
+    private void setAdapterRuntime(final String searchedString) {
+        DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
+        databaseReferenceBooks.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!submit) {
+                    lv_search_runtime.setVisibility(View.VISIBLE);
+                }
+                submit = false;
+                if (searchedString.isEmpty() || searchedString.length() < 2) {
+                    lv_search_runtime.setAdapter(null);
+                    return;
+                }
+                books.clear();
+                booksQuery.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Book book = snapshot.getValue(Book.class);
+                    if (concatenateFieldBook(book).contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey())) {
+                        //Check if there is a things with the same title
+                        if (!stringAlreadyPresent(concatenateFieldBook(book), books)) {
+                            books.add(book);
+                            booksQuery.add(searchedString.toLowerCase());
+                        }
+                    }
+                }
+
+
+                //here i have all the books with the title searched
+                lv_search_runtime.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {
+                        return books.size();
+                    }
+
+                    @Override
+                    public Object getItem(int position) {
+                        return books.get(position);
+                    }
+
+                    @Override
+                    public long getItemId(int position) {
+                        return 0;
+                    }
+
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        if (convertView == null) {
+                            convertView = getLayoutInflater().inflate(R.layout.adapter_search_bar_runtime, parent, false);
+                        }
+
+                        LinearLayout ll;
+                        TextView textView;
+                        ImageView imageView;
+                        View view;
+                        textView = (TextView) convertView.findViewById(R.id.tv_search_runtime);
+                        imageView = (ImageView) convertView.findViewById(R.id.image_search_runtime);
+                        ll = (LinearLayout) convertView.findViewById(R.id.ll_adapter_runtime);
+                        view = (View) convertView.findViewById(R.id.line_search_runtime);
+
+                        //Understand what the user search
+                        fillSearchBar = "";
+                        final int searchItem = understandSearchItem(booksQuery.get(position), books.get(position));
+                        Drawable d;
+                        switch (searchItem){
+                            case TITLE:
+                                fillSearchBar = books.get(position).getTitle();
+                                textView.setText(books.get(position).getTitle());
+                                d = getDrawable(R.drawable.ic_book_black_24dp);
+                                d.setTint(getColor(R.color.colorPrimary));
+                                d.setTintMode(PorterDuff.Mode.SRC_IN);
+                                imageView.setImageDrawable(d);
+                                break;
+                            case AUTHOR:
+                                fillSearchBar = books.get(position).getAuthor();
+                                textView.setText(books.get(position).getAuthor());
+                                d = getDrawable(R.drawable.ic_person_black_24dp);
+                                d.setTint(getColor(R.color.colorPrimary));
+                                d.setTintMode(PorterDuff.Mode.SRC_IN);
+                                imageView.setImageDrawable(d);
+                                break;
+                            case NO_ITEM:
+                                ll.setVisibility(View.GONE);
+                                imageView.setVisibility(View.GONE);
+                                textView.setVisibility(View.GONE);
+                                view.setVisibility(View.GONE);
+                                break;
+
+                        }
+
+
+                        ll.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                searchBarItem = searchItem;
+                                searchView.setQuery(fillSearchBar, true);
+                                submit = true;
+                            }
+                        });
+
+                        return convertView;
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private int understandSearchItem(String query, Book book){
+        query = query.toLowerCase();
+        if(book.getTitle().toLowerCase().contains(query) || book.getSubtitle().toLowerCase().contains(query)){
+            return TITLE;
+        }
+        else if(book.getAuthor().toLowerCase().contains(query)){
+            return AUTHOR;
+        }
+        return NO_ITEM;
+
+    }
+
+    private boolean stringAlreadyPresent(String toSearch, ArrayList<Book> books) {
+
+        for (Book book : books) {
+            if (concatenateFieldBook(book).toLowerCase().equals(toSearch.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 

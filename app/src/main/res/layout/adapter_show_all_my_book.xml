@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/image_adapter"
-            android:layout_width="@dimen/width_book"
-            android:layout_height="@dimen/height_book"
+            android:layout_width="@dimen/width_book_small"
+            android:layout_height="@dimen/height_book_small"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_right"
             android:background="@color/windowBackground"

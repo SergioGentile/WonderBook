@@ -74,7 +74,7 @@ public class ShowProfile extends AppCompatActivity
         setContentView(R.layout.activity_show_profile);
 
         //Take all the references to the fields
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         tvName = (TextView) findViewById(R.id.tvName);
         tvStreet = (TextView) findViewById(R.id.tvStreet);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
@@ -82,16 +82,20 @@ public class ShowProfile extends AppCompatActivity
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         btnModify = (ImageButton) findViewById(R.id.btnModify);
 
-        llMail = (LinearLayout)findViewById(R.id.llMail);
-        llPhone = (LinearLayout)findViewById(R.id.llPhone);
-        llParent = (LinearLayout)findViewById(R.id.llParent);
-        llDescription = (LinearLayout)findViewById(R.id.llDescription);
+        llMail = (LinearLayout) findViewById(R.id.llMail);
+        llPhone = (LinearLayout) findViewById(R.id.llPhone);
+        llParent = (LinearLayout) findViewById(R.id.llParent);
+        llDescription = (LinearLayout) findViewById(R.id.llDescription);
 
         circleImageView = (CircleImageView) findViewById(R.id.profileImage);
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        getUserInfoFromSharedPref();
+        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+            btnModify.setVisibility(View.GONE);
+        } else {
+            getUserInfoFromSharedPref();
+        }
 
 
         //Catch when the button modify it's pressed
@@ -103,7 +107,7 @@ public class ShowProfile extends AppCompatActivity
                 Intent intent = new Intent(ShowProfile.this, EditProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user", user);
-                bundle.putString("from","Show");
+                bundle.putString("from", "Show");
                 intent.putExtras(bundle);
 
                 //The costant MODIFY_PROFILE is useful when onActivityResult will be called.
@@ -131,17 +135,26 @@ public class ShowProfile extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
+
         setUserInfoNavBar();
+
+
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(1).setChecked(true);
-        getUserInfoFromSharedPref();
-        setUser();
+        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+            getUserInfoFromExtra();
+            setUser();
+        } else {
+            getUserInfoFromSharedPref();
+            setUser();
+        }
         setUserInfoNavBar();
+
     }
 
     private void zoomImage() {
@@ -150,10 +163,12 @@ public class ShowProfile extends AppCompatActivity
         expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
         //If the user image is setted I take that from the path specified inside the user object
         //else I user the default one specified inside the resources
-        if(user.getImagePath()!=null) {
+        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+            expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb.")));
+        } else if (user.getImagePath() != null) {
             expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
-        }else{
-            expandedImage.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.profile));
+        } else {
+            expandedImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.profile));
         }
 
 
@@ -255,7 +270,7 @@ public class ShowProfile extends AppCompatActivity
                         .ofFloat(expandedImage, View.X, startBounds.left))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
-                                        View.Y,startBounds.top))
+                                        View.Y, startBounds.top))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImage,
                                         View.SCALE_X, startScaleFinal))
@@ -292,7 +307,7 @@ public class ShowProfile extends AppCompatActivity
         //Here we understand that the activity that produce a result is the one associated with the constant MODIFY_PROFILE.
         //The activity return an user that contains all the modification done
         if (requestCode == MODIFY_PROFILE) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
 
                 getUserInfoFromSharedPref();
                 setUser();
@@ -302,33 +317,30 @@ public class ShowProfile extends AppCompatActivity
     }
 
     //Take all the user information from User object and fill the screen with that information
-    private void setUser(){
+    private void setUser() {
 
         //Text information
-        tvName.setText(user.getName().getValue() + " " +  user.getSurname().getValue());
+        tvName.setText(user.getName().getValue() + " " + user.getSurname().getValue());
         tvPhone.setText(user.getPhone().getValue());
         tvMail.setText(user.getEmail().getValue());
         tvDescription.setText(user.getDescription().getValue());
 
         //Show only the information that have not been made private by the user
-        if(user.checkStreet() && !user.getStreet().getValue().equals("")){
-            tvStreet.setText(user.getStreet().getValue() + " (" + user.getCity().getValue()+")");
-        }
-        else{
+        if (user.checkStreet() && !user.getStreet().getValue().equals("")) {
+            tvStreet.setText(user.getStreet().getValue() + " (" + user.getCity().getValue() + ")");
+        } else {
             tvStreet.setText(user.getCity().getValue());
         }
 
-        if (!user.checkPhone() || user.getPhone().getValue().equals("") ) {
+        if (!user.checkPhone() || user.getPhone().getValue().equals("")) {
             llPhone.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             llPhone.setVisibility(View.VISIBLE);
         }
 
-        if (!user.checkMail() || user.getEmail().getValue().equals("") ) {
+        if (!user.checkMail() || user.getEmail().getValue().equals("")) {
             llMail.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             llMail.setVisibility(View.VISIBLE);
         }
 
@@ -340,7 +352,11 @@ public class ShowProfile extends AppCompatActivity
     private void showUserPictureProfile(User user) {
         Bitmap image = null;
 
-        if (user.getImagePath() != null) {
+        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+            image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
+            circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+            circleImageView.setImageBitmap(image);
+        } else if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
             circleImageView = (CircleImageView) findViewById(R.id.profileImage);
             circleImageView.setImageBitmap(image);
@@ -350,24 +366,29 @@ public class ShowProfile extends AppCompatActivity
     //All of the user info are stored inside the SharedPrefernces as String that is
     //the serialization of a json object populated with the information about a user
 
-    protected void getUserInfoFromSharedPref(){
+    protected void getUserInfoFromSharedPref() {
 
-        SharedPreferences sharedPref = getSharedPreferences("UserInfo",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         String defaultString = "";
         String userName = sharedPref.getString("user", defaultString);
-        if (userName.equals(defaultString)){
-            user= new User();
+        if (userName.equals(defaultString)) {
+            user = new User();
             return;
         }
         Gson json = new Gson();
-        user=json.fromJson(userName, User.class);
-        if(user.getDescription().getValue().equals("")){
+        user = json.fromJson(userName, User.class);
+        if (user.getDescription().getValue().equals("")) {
 
-            user.setDescription(new User.MyPair(getString(R.string.description_value),"public"));
+            user.setDescription(new User.MyPair(getString(R.string.description_value), "public"));
         }
 
         setUser();
 
+    }
+
+    protected void getUserInfoFromExtra() {
+        user = getIntent().getExtras().getParcelable("user_mp");
+        setUser();
     }
 
     @Override
@@ -380,14 +401,12 @@ public class ShowProfile extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_home){
-            startActivity(new Intent(ShowProfile.this,MainPage.class));
-        }
-        else if(id == R.id.nav_exit){
+        } else if (id == R.id.nav_home) {
+            startActivity(new Intent(ShowProfile.this, MainPage.class));
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
-            getSharedPreferences("UserInfo",Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowProfile.this,Start.class));
+            getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(ShowProfile.this, Start.class));
         }
 
 
@@ -428,12 +447,23 @@ public class ShowProfile extends AppCompatActivity
         navView.getBackground().setAlpha(80);
 
         CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
-        barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-        Bitmap image = null;
+        if(getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_owner")!=null){
+            User currentUser = getIntent().getExtras().getParcelable("user_owner");
+            barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+            Bitmap image = null;
+            if (currentUser.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(currentUser.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        }
+        else{
+            barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+            Bitmap image = null;
 
-        if (this.user.getImagePath() != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath());
-            barprofileImage.setImageBitmap(image);
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
         }
     }
 }
