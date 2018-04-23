@@ -120,7 +120,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             }
 
 
-            String message = getString(R.string.confirm_mail_msg);
+            String message  = getString(R.string.confirm_mail_msg);
 
             String sendMail = getString(R.string.tap_here_to_resend);
             
@@ -152,7 +152,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Disable autoorientation otherwise during the process the activity ma be killed
                 attemptLogin();
             }
         });
