@@ -8,5 +8,9 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="it.polito.mad.booksharing.MainPage"
     tools:showIn="@layout/app_bar_main_page">
-    
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 </RelativeLayout>
