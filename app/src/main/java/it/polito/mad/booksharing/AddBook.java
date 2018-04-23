@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.media.Image;
 import android.net.Uri;
@@ -40,9 +42,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -705,6 +713,8 @@ public class AddBook extends Activity {
         pd.setMessage(getString(R.string.wait));
         pd.setCancelable(false);
         pd.show();
+
+
         //Upload the image
         Uri file = Uri.fromFile(new File(pathMyImageBook));
         //Create a storage reference from our app
@@ -733,6 +743,33 @@ public class AddBook extends Activity {
                 DatabaseReference databaseReference = firebaseDatabase.getReference("books");
                 bookToUpload.setUrlMyImage(urlMyImageBook);
                 DatabaseReference instanceReference = databaseReference.push();
+
+                DatabaseReference booksLocations = firebaseDatabase.getReference("locations").child("books");
+                GeoFire geoFire = new GeoFire(booksLocations);
+                Geocoder geocoder = new Geocoder(AddBook.this);
+                List<Address> addresses;
+                String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
+                try {
+                    addresses = geocoder.getFromLocationName(location, 1);
+                    if(addresses.size() > 0) {
+                        double latitude= addresses.get(0).getLatitude();
+                        double longitude= addresses.get(0).getLongitude();
+
+                        geoFire.setLocation(instanceReference.getKey(), new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
+                            @Override
+                            public void onComplete(String key, DatabaseError error) {
+                                if (error != null) {
+                                    System.err.println("There was an error saving the location to GeoFire: " + error);
+                                } else {
+                                    System.out.println("Location saved on server successfully!");
+                                }
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 instanceReference.setValue(bookToUpload);
                 if (pd.isShowing()) {
