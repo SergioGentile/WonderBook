@@ -128,4 +128,12 @@
     <string name="title_activity_edit_pwd">EditPwd</string>
     <string name="use_new_pwd">Please choose a new password</string>
 
+
+
+    <string-array name="order">
+        <item>Ordina per...</item>
+        <item>Distanza</item>
+        <item>Rating</item>
+    </string-array>
+
 </resources>

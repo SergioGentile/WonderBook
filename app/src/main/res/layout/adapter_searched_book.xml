@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/adapter_cv_searched"
-    app:cardCornerRadius="5dp"
-    app:cardUseCompatPadding="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/adapter_cv_searched"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:id="@+id/ll_adapter_searched_book"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
-            android:layout_marginBottom="@dimen/bottom_inside_box"
-            android:layout_marginLeft="@dimen/margin_left"
-            android:layout_marginTop="@dimen/top_inside_box"
-            android:layout_gravity="center"
-            android:layout_width="@dimen/width_book_small"
-            android:layout_height="@dimen/height_book_small">
-        <ImageView
-            android:id="@+id/image_book_searched"
             android:layout_width="@dimen/width_book_small"
             android:layout_height="@dimen/height_book_small"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/bottom_inside_box"
-            android:layout_marginTop="@dimen/top_inside_box"
-            android:scaleType="fitXY"
-            android:src="@drawable/libro_prova" />
+            android:layout_marginLeft="@dimen/margin_left"
+            android:layout_marginTop="@dimen/top_inside_box">
+
+            <ImageView
+                android:id="@+id/image_book_searched"
+                android:layout_width="@dimen/width_book_small"
+                android:layout_height="@dimen/height_book_small"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/bottom_inside_box"
+                android:layout_marginTop="@dimen/top_inside_box"
+                android:scaleType="fitXY"
+                android:src="@drawable/libro_prova" />
         </android.support.v7.widget.CardView>
 
         <LinearLayout
@@ -51,6 +50,14 @@
                 android:textSize="@dimen/title_box_size"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/author_searched"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brown"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/tv_dim" />
+
             <RatingBar
                 android:id="@+id/rating_searched"
                 style="?android:attr/ratingBarStyleSmall"
@@ -70,45 +77,32 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/tv_dim" />
 
-            <TextView
-                android:id="@+id/shared_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Torino, Via Galliari 30"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/tv_dim" />
-
             <LinearLayout
                 android:visibility="gone"
+                android:id="@+id/ll_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                >
 
-                <android.support.v7.widget.CardView
+
+                <TextView
+                    android:id="@+id/distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#DFDDDD"
-                    app:cardCornerRadius="4dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="3.5"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tv_dim" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="3.5 Km"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/tv_dim"
-                        android:textStyle="bold" />
-                </android.support.v7.widget.CardView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:text="dalla tua posizione" />
+                    android:text="Km dalla tua posizione"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
