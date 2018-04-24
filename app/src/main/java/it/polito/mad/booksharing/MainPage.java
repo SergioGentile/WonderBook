@@ -39,10 +39,18 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -63,6 +71,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -88,6 +97,9 @@ public class MainPage extends AppCompatActivity
     ArrayList<String> booksQuery;
     ArrayList<Book> booksMatch;
     ArrayList<User> usersMatch;
+    ArrayList<String> bookIds;
+    GoogleMap map;
+    HashMap<String, Marker> markers;
     boolean submit;
     String fillSearchBar;
     int searchBarItem;
@@ -141,6 +153,7 @@ public class MainPage extends AppCompatActivity
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+        this.markers = new HashMap<>();
 
 
         //Search part
@@ -151,6 +164,7 @@ public class MainPage extends AppCompatActivity
         booksQuery = new ArrayList<>();
         booksMatch = new ArrayList<>();
         usersMatch = new ArrayList<>();
+        bookIds = new ArrayList<>();
         submit = false;
         searchView.closeSearch();
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -207,7 +221,7 @@ public class MainPage extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        this.map = map;
     }
 
     private void setDefaultUser() {
@@ -248,9 +262,9 @@ public class MainPage extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       if (id == R.id.searchButton) {
-           searchView.clearFocus();
-           return true;
+        if (id == R.id.searchButton) {
+            searchView.clearFocus();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -495,10 +509,13 @@ public class MainPage extends AppCompatActivity
                 lv_searched.setAdapter(null);
                 booksMatch.clear();
                 usersMatch.clear();
+                bookIds.clear();
+                map.clear();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         if(!issue.getValue(Book.class).getOwner().equals(user.getKey())){
                             booksMatch.add(issue.getValue(Book.class));
+                            bookIds.add(issue.getKey());
                         }
                     }
                 }
@@ -509,7 +526,54 @@ public class MainPage extends AppCompatActivity
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             usersMatch.add(dataSnapshot.getValue(User.class));
+
                             if(usersMatch.size() == booksMatch.size()){
+                                //Daniele:
+                                //In questo punto del codice ho finito di popolare le liste userMatch e booksMatch.
+                                //In sostanza booksMatch contiene una lista di tutti i libri da mostrare nella listView e
+                                //usersMatch contiene l'utente associato a quel libro (booksMatch e usersMatch agiscono come una mappa)
+                                // Map<Book, User>
+                                //Quindi una prima opzione è ciclare qui su tutti i libri contenuti nella lista booksMatch ù
+                                //e inserire tutti i relativi marker nella mappa  (seconda opzione più in basso)
+
+                                DatabaseReference databaseReferenceLocation = firebaseDatabase.getReference("locations").child("books");
+                                GeoFire geoFire = new GeoFire(databaseReferenceLocation);
+
+                                for(int pos = 0; pos < booksMatch.size(); pos++){
+                                    geoFire.getLocation(bookIds.get(pos), new LocationCallback() {
+                                        @Override
+                                        public void onLocationResult(String key, GeoLocation location) {
+                                            if (location != null) {
+                                                System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
+                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+                                                markers.put(key, m);
+
+                                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                                for (Marker marker : markers.values()) {
+                                                    builder.include(marker.getPosition());
+                                                }
+                                                LatLngBounds bounds = builder.build();
+                                                int width = getResources().getDisplayMetrics().widthPixels;
+                                                int height = getResources().getDisplayMetrics().heightPixels;
+                                                int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
+
+                                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+                                                map.animateCamera(cu);
+
+
+                                            } else {
+                                                System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            System.err.println("There was an error getting the GeoFire location: " + databaseError);
+                                        }
+                                    });
+                                }
+
+                                //Qui si setta l'adapter della list view
                                 lv_searched.setAdapter(new BaseAdapter() {
                                     @Override
                                     public int getCount() {
@@ -531,6 +595,7 @@ public class MainPage extends AppCompatActivity
                                         if (convertView == null) {
                                             convertView = getLayoutInflater().inflate(R.layout.adapter_searched_book, parent, false);
                                         }
+                                        //Popolo l'adapter
                                         final Book book = booksMatch.get(position);
                                         final User currentUser = usersMatch.get(position);
                                         //User userOfBook = usersMatch.get(position);
@@ -561,6 +626,7 @@ public class MainPage extends AppCompatActivity
 
 
                                         LinearLayout llAdapter = (LinearLayout) convertView.findViewById(R.id.ll_adapter_searched_book);
+
                                         llAdapter.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
@@ -574,6 +640,9 @@ public class MainPage extends AppCompatActivity
                                             }
                                         });
 
+                                        //Seconda opzione: qui stai esaminando il libro in posizione "position"
+                                        //Puoi fare una query per quel libro (per trovarne la posizione) e settare il marker
+                                        //setta il marker di booksMatch.get(position) qui
                                         return convertView;
 
                                     }
@@ -735,4 +804,3 @@ public class MainPage extends AppCompatActivity
     }
 
 }
-
