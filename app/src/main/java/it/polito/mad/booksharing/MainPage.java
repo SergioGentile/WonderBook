@@ -48,6 +48,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -222,6 +223,7 @@ public class MainPage extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
+        map.setMaxZoomPreference(18);
     }
 
     private void setDefaultUser() {
@@ -540,12 +542,14 @@ public class MainPage extends AppCompatActivity
                                 GeoFire geoFire = new GeoFire(databaseReferenceLocation);
 
                                 for(int pos = 0; pos < booksMatch.size(); pos++){
+                                    final int i = pos;
                                     geoFire.getLocation(bookIds.get(pos), new LocationCallback() {
                                         @Override
                                         public void onLocationResult(String key, GeoLocation location) {
                                             if (location != null) {
                                                 System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
-                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(key));
+                                                String snippet = getString(R.string.shared_by) + " " + usersMatch.get(i).getSurname().getValue() + " " + usersMatch.get(i).getName().getValue();
+                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(booksMatch.get(i).getTitle()).snippet(snippet));
                                                 markers.put(key, m);
 
                                                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -558,6 +562,7 @@ public class MainPage extends AppCompatActivity
                                                 int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
 
                                                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+
                                                 map.animateCamera(cu);
 
 
