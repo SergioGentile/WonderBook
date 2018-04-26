@@ -128,8 +128,9 @@
     <string name="title_activity_edit_pwd">EditPwd</string>
     <string name="use_new_pwd">Please choose a new password</string>
     <string name="section_format">Hello World from section: %1$d</string>
-
-
+    <string name="tab_title">Title</string>
+    <string name="tab_author">Author</string>
+    <string name="tab_rating">Rating</string>
 
 
     <string-array name="order">

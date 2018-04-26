@@ -18,6 +18,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
@@ -126,7 +128,8 @@ public class MainPage extends AppCompatActivity
     int counter_location;
 
     double latPhone, longPhone;
-
+    private boolean tabFlag = false;
+    private TabItem titleTab,authorTab,ratingTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +147,7 @@ public class MainPage extends AppCompatActivity
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +199,7 @@ public class MainPage extends AppCompatActivity
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                tabFlag = true;
                 lv_search_runtime.setVisibility(View.GONE);
                 setAdapterSearched(query.toString());
                 return false;
@@ -212,38 +217,25 @@ public class MainPage extends AppCompatActivity
             }
         });
 
-        //Understand the position of the phone
-        final List<String> spinnerArray =  new ArrayList<>();
-        spinnerArray.add("Ordina per..");
-        spinnerArray.add("Distanza");
-        spinnerArray.add("Rating");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) findViewById(R.id.spin);
-        sItems.setAdapter(adapter);
-        sItems.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                if(spinnerArray.get(position).equals("Distanza")){
-                    setAdapter(DISTANCE);
-                }
-                else if(spinnerArray.get(position).equals("Rating")){
-                    setAdapter(RATING);
-                }
+            public void onSearchViewShown() {
+                tabFlag = false;
+                tabLayout.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
+            public void onSearchViewClosed() {
+                if (tabFlag == false){
+                    tabLayout.setVisibility(View.GONE);
+                }
 
+            }
         });
 
+        titleTab = (TabItem) findViewById(R.id.tabTitle);
+        authorTab = (TabItem) findViewById(R.id.tabAuthor);
+        ratingTab = (TabItem) findViewById(R.id.tabRating);
     }
 
 
@@ -517,6 +509,28 @@ public class MainPage extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
         setUserInfoNavBar();
 
+        if(tabFlag){
+            titleTab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            authorTab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            ratingTab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
         mMapView.onResume();
     }
 

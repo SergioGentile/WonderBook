@@ -35,6 +35,35 @@
             android:visibility="visible" />
 
         </FrameLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:tabTextColor="@color/colorTabUnselected"
+            app:tabSelectedTextColor="@android:color/white"
+            >
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_title"
+                />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_author" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_rating" />
+        </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 
     <View

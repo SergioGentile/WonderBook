@@ -123,4 +123,7 @@
     <string name="change_password">Change Password</string>
     <string name="use_new_pwd">Please choose a new password</string>
 
+    <string name="tab_title">Title</string>
+    <string name="tab_author">Author</string>
+    <string name="tab_rating">Rating</string>
 </resources>

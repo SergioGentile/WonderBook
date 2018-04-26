@@ -16,6 +16,7 @@
     <color name="available">@android:color/holo_green_dark</color>
     <color name="unavailable">@android:color/holo_red_dark</color>
     <color name="my_box">#448AFF</color>
+    <color name="colorTabUnselected">#c6c6cc</color>
 </resources>
 
 
