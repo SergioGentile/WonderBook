@@ -118,13 +118,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box">
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/title">
 
-                            <EditText
+                            <android.support.design.widget.TextInputEditText
                                 android:id="@+id/tvTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/title"
                                 android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
@@ -135,13 +135,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box">
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/subtitle">
 
-                            <EditText
+                            <android.support.design.widget.TextInputEditText
                                 android:id="@+id/tvSubtitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/subtitle"
                                 android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
@@ -152,13 +152,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box">
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/author">
 
-                            <EditText
+                            <android.support.design.widget.TextInputEditText
                                 android:id="@+id/tvAuthor"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/author"
                                 android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />
@@ -178,13 +178,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/margin_right"
-                                android:layout_weight="0.5">
+                                android:layout_weight="0.5"
+                                android:hint="@string/publisher">
 
-                                <EditText
+                                <android.support.design.widget.TextInputEditText
                                     android:id="@+id/tvProduction"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/publisher"
                                     android:inputType="text"
                                     android:singleLine="true"
                                     android:textSize="@dimen/tv_dim" />
@@ -194,13 +194,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/margin_right"
-                                android:layout_weight="0.5">
+                                android:layout_weight="0.5"
+                                android:hint="@string/year">
 
-                                <EditText
+                                <android.support.design.widget.TextInputEditText
                                     android:id="@+id/tvYear"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="@string/year"
                                     android:inputType="number"
                                     android:singleLine="true"
                                     android:textSize="@dimen/tv_dim" />
@@ -213,13 +213,13 @@
                             android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:layout_marginLeft="@dimen/margin_left"
                             android:layout_marginRight="@dimen/margin_right"
-                            android:layout_marginTop="@dimen/top_inside_box">
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/isbn">
 
-                            <EditText
+                            <android.support.design.widget.TextInputEditText
                                 android:id="@+id/tvISBN"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/isbn"
                                 android:inputType="text"
                                 android:singleLine="true"
                                 android:textSize="@dimen/tv_dim" />

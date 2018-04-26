@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,6 +70,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private LinearLayout container;
     private TextView login_message;
     private FirebaseUser user;
+    private String fromActivity;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -111,13 +113,20 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         login_message = (TextView) findViewById(R.id.login_message);
         user = null;
 
-        String fromActivity = getIntent().getExtras().getString("from");
+        fromActivity = getIntent().getExtras().getString("from");
         if (fromActivity.equals("Edit")) {
 
             //The text became clickable only if we ae in the registration process
-            if (checkUserCredential()) {
-                startMain(user.getEmail());
-            }
+            //User not null, coming from registration process
+            FirebaseAuth.getInstance().getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    user = FirebaseAuth.getInstance().getCurrentUser();
+                    if(checkUserCredential(user)){
+                        startMain(user.getEmail());
+                    }
+                }
+            });
 
 
             String message  = getString(R.string.confirm_mail_msg);
@@ -160,9 +169,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     @Override
     public void onStart() {
         super.onStart();
-
         showProgress(false);
     }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -217,8 +226,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         loginPassword.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
-        String password = loginPassword.getText().toString();
+        final String email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
+        final String password = loginPassword.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -246,58 +255,56 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            if (checkUserCredential()) {
+            //reload Firebase user
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            showProgress(true);
+            if(checkUserCredential(user)){
                 startMain(user.getEmail());
-            } else if (user == null) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-                showProgress(true);
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    if(mAuth.getCurrentUser().isEmailVerified()){
-
-                                        String clean_email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
-                                        startMain(clean_email);
+            }
+            else{
+                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+                        user = FirebaseAuth.getInstance().getCurrentUser();
+                        if(task.isSuccessful() && user.isEmailVerified()){
+                            startMain(user.getEmail());
+                        }
+                        else if (!task.isSuccessful()){
+                            Toast.makeText(Login.this, getString(R.string.authentication_failed),
+                                    Toast.LENGTH_SHORT).show();
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                            showProgress(false);
+                        }
+                        else{
+                            //reload user to check if it has verified e-mail
+                            mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if(checkUserCredential(user)){
+                                        startMain(user.getEmail());
                                     }
                                     else{
+
                                         Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
+                                        mAuth.getCurrentUser().sendEmailVerification();
                                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                         showProgress(false);
                                         mAuth.signOut();
                                     }
-
-                                } else {
-                                    // If sign in fails, display a message to the user.
-
-                                    Toast.makeText(Login.this, getString(R.string.authentication_failed),
-                                            Toast.LENGTH_SHORT).show();
-                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                                    showProgress(false);
                                 }
-
-                            }
-                        });
-
+                            });
+                        }
+                    }
+                });
             }
-
         }
     }
 
-    private boolean checkUserCredential() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser != null){
-            FirebaseAuth.getInstance().getCurrentUser().reload();
-        }
+    private boolean checkUserCredential(FirebaseUser currentUser) {
         if (currentUser != null && currentUser.isEmailVerified()) {
-            user = currentUser;
             return true;
-        }else if(currentUser!=null && !currentUser.isEmailVerified()){
-            Toast.makeText(Login.this, getString(R.string.please_verify_email),Toast.LENGTH_SHORT).show();
         }
         return false;
     }

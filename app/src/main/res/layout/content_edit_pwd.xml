@@ -74,14 +74,14 @@
                         android:layout_height="wrap_content"
                         app:passwordToggleContentDescription="@string/description"
                         app:passwordToggleEnabled="true"
-                        app:passwordToggleTint="@color/colorAccent">
+                        app:passwordToggleTint="@color/colorAccent"
+                        android:hint="@string/change_password">
 
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/changePwd"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_left"
-                            android:hint="Change Password"
                             android:inputType="textPassword"
                             android:textSize="14sp" />
                     </android.support.design.widget.TextInputLayout>

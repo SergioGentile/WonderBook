@@ -40,7 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowBookFull extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ShowBookFull extends AppCompatActivity {
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
@@ -63,7 +63,6 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
     private PointF mid = new PointF();
     private float oldDist;
     private Toolbar toolbar;
-    private View navView;
     private TextView available;
 
     @Override
@@ -206,25 +205,7 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(intent, 0);
             }
         });
-
-        createNavBar();
-
     }
-
-    private void createNavBar() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navView = navigationView.getHeaderView(0);
-        setUserInfoNavBar();
-    }
-
 
     private void zoomImage() {
 
@@ -463,51 +444,6 @@ public class ShowBookFull extends AppCompatActivity implements NavigationView.On
             }
         } else if (RESULT_CANCELED == resultCode) {
             Toast.makeText(ShowBookFull.this, getString(R.string.error_reload_new_book), Toast.LENGTH_SHORT);
-        }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            //Start Home
-            startActivity(new Intent(ShowBookFull.this, MainPage.class));
-        } else if (id == R.id.nav_profile) {
-            // Handle the camera action
-            startActivity(new Intent(ShowBookFull.this, ShowProfile.class));
-
-        } else if (id == R.id.nav_show_shared_book) {
-            //Start the intent
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("user", user);
-            startActivity(new Intent(ShowBookFull.this, ShowAllMyBook.class).putExtras(bundle));
-        } else if (id == R.id.nav_exit) {
-            FirebaseAuth.getInstance().signOut();
-            getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowBookFull.this, Start.class));
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        finish();
-        return true;
-    }
-
-
-    private void setUserInfoNavBar() {
-        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
-        navView.getBackground().setAlpha(80);
-
-        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
-        barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-        Bitmap image = null;
-
-        if (this.user.getImagePath() != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath());
-            barprofileImage.setImageBitmap(image);
         }
     }
 }

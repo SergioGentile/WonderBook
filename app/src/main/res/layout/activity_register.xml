@@ -110,13 +110,13 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
+                        android:hint="@string/mail"
                         >
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:hint="@string/mail"
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
@@ -136,13 +136,13 @@
                         android:layout_marginBottom="@dimen/bottom_inside_box"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
+                        android:hint="@string/password"
                         >
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/password"
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
@@ -160,14 +160,14 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
+                        android:hint="@string/confirm_password"
                         >
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginPassword2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
-                            android:hint="@string/confirm_password"
                             android:singleLine="true"
                             android:textColor="@android:color/black"
                             android:inputType="textPassword|textNoSuggestions"

@@ -27,21 +27,21 @@
                 app:titleTextColor="@android:color/white">
             </android.support.v7.widget.Toolbar>
 
+
         <com.miguelcatalan.materialsearchview.MaterialSearchView
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible" />
 
-
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
-
     <View
+        android:id="@+id/shadow_main_page"
         android:layout_width="match_parent"
         android:layout_height="@dimen/shadow"
-        android:background="@drawable/shadow_toolbar" />
+        android:background="@drawable/shadow_toolbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -58,8 +58,6 @@
             android:layout_margin="30dp"
             app:srcCompat="@drawable/ic_add_black_24dp" />
     </FrameLayout>
-
-
 
 
 </LinearLayout>

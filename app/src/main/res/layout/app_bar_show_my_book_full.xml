@@ -15,7 +15,6 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbarShowProfile"
             android:layout_width="match_parent"
-            app:navigationIcon="@drawable/ic_menu_black_24dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:title="@string/app_name"

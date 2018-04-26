@@ -99,7 +99,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -125,7 +125,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/tv_dim">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
