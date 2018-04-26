@@ -16,6 +16,7 @@ public class Book implements Parcelable {
 
     private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle;
     private boolean available;
+    private Double distance;
 
     public Book() {
 
@@ -207,4 +208,12 @@ public class Book implements Parcelable {
             return new Book[size];
         }
     };
+
+    public Double getDistance(){
+        return this.distance;
+    }
+
+    public void setDistance(double distance){
+        this.distance = new Double(distance);
+    }
 }

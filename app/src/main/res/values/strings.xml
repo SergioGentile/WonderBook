@@ -130,4 +130,12 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
 
+
+
+    <string-array name="order">
+        <item>Ordina per...</item>
+        <item>Distanza</item>
+        <item>Rating</item>
+    </string-array>
+
 </resources>
