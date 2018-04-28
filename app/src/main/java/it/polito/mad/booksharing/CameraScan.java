@@ -75,14 +75,22 @@ public class CameraScan extends AppCompatActivity {
             public void handleResult(Result result) {
                 //Do anything with result here
                 mScannerView.stopCamera();
-                setContentView(R.layout.activity_add_book);
                 result.getText();
                 //Here i get the ISBN
                 code = result.getText();
                 //Ask to the server the JSON file that contain informations about the searched book.
                 //Add the ISBN (code) to the request
                 //Start an AsyncTask that ask for the Json
-                new DownloadJson(CameraScan.this).execute("https://www.googleapis.com/books/v1/volumes?q=isbn:" + code);
+                if(getIntent().getBooleanExtra("only-isbn", false)){
+                    Intent intent = new Intent();
+                    intent.putExtra("isbn", code );
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                else{
+                    new DownloadJson(CameraScan.this).execute("https://www.googleapis.com/books/v1/volumes?q=isbn:" + code);
+                }
+
             }
         });
         mScannerView.startCamera();

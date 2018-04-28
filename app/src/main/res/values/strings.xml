@@ -130,11 +130,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_title">Title</string>
     <string name="tab_author">Author</string>
-    <string name="tab_rating">Rating</string>
+    <string name="tab_all">Any</string>
 
 
     <string-array name="order">
-        <item>Ordina per...</item>
+        <item>ORDINA</item>
         <item>Distanza</item>
         <item>Rating</item>
     </string-array>

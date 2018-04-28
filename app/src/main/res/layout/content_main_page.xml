@@ -20,6 +20,7 @@
             android:layout_marginRight="@dimen/margin_right">
 
             <ListView
+                android:visibility="gone"
                 android:id="@+id/lv_search_runtime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,22 +35,75 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+                <View
+                    android:id="@+id/shadow_main_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/shadow"
+                    android:background="@drawable/shadow_toolbar" />
             </FrameLayout>
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <ListView
-                android:layout_marginTop="@dimen/top_inside_box"
-                android:id="@+id/lv_searched"
+                <ListView
+                    android:id="@+id/lv_searched"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="28dp"
+                    android:divider="@null" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="@drawable/shadow_toolbar" />
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/shadow_toolbar"
+                android:rotation="180" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@null" />
+                android:background="@color/windowBackground">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="10dp"
+                    android:background="@color/windowBackground"
+                    android:text="Dist." />
 
+              <TextView
+                    android:id="@+id/dialogOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="10dp"
+                    android:background="@color/windowBackground"
+                    android:text="ORDINA" />
+            </RelativeLayout>
         </LinearLayout>
     </FrameLayout>
+
 
 </android.support.constraint.ConstraintLayout>

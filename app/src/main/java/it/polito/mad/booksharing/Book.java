@@ -23,9 +23,9 @@ public class Book implements Parcelable {
     }
 
     public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available) {
-        this.title = title;
+        this.title = title.toLowerCase();
         this.subtitle = subtitle;
-        this.author = author;
+        this.author = author.toLowerCase();
         this.year = year;
         this.urlImage = urlImage;
         this.urlMyImage = urlMyImage;
@@ -122,19 +122,19 @@ public class Book implements Parcelable {
     }
 
     public String getTitle() {
-        return title;
+        return title.toLowerCase();
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.toLowerCase();
     }
 
     public String getAuthor() {
-        return author;
+        return author.toLowerCase();
     }
 
     public void setAuthor(String author) {
-        this.author = author;
+        this.author = author.toLowerCase();
     }
 
     public String getYear() {

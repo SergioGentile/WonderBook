@@ -126,4 +126,5 @@
     <string name="tab_title">Title</string>
     <string name="tab_author">Author</string>
     <string name="tab_rating">Rating</string>
+    <string name="tab_all">Any</string>
 </resources>

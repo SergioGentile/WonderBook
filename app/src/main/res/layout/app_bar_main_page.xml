@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/windowBackground"
+    android:orientation="vertical"
     tools:context="it.polito.mad.booksharing.MainPage">
 
     <android.support.design.widget.AppBarLayout
@@ -16,41 +16,59 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <android.support.v7.widget.Toolbar
-                android:theme="@style/Theme.myToolbar"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
+                android:theme="@style/Theme.myToolbar"
                 app:subtitleTextColor="@color/windowBackground"
                 app:title="@string/app_name"
-                app:titleTextColor="@android:color/white">
-            </android.support.v7.widget.Toolbar>
+                app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
 
 
-        <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                app:searchCloseIcon="@android:color/transparent"
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
+            <ImageView
+                android:tint="@color/colorSecondaryText"
+                android:id="@+id/imgScanOnSearch"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center|right"
+                android:layout_marginRight="@dimen/margin_right"
+                android:visibility="gone"
+                android:src="@drawable/barcode" />
         </FrameLayout>
 
+
         <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:visibility="gone"
-            app:tabTextColor="@color/colorTabUnselected"
+            android:id="@+id/tabs"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+
+            app:tabMode="scrollable"
             app:tabSelectedTextColor="@android:color/white"
-            >
+            app:tabTextColor="@color/colorTabUnselected">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabAny"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_all" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_title"
-                />
+                android:text="@string/tab_title" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabAuthor"
@@ -59,18 +77,18 @@
                 android:text="@string/tab_author" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabRating"
+                android:id="@+id/tabPublisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_rating" />
+                android:text="@string/publisher" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabIsbn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/isbn" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
-
-    <View
-        android:id="@+id/shadow_main_page"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/shadow"
-        android:background="@drawable/shadow_toolbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -79,12 +97,13 @@
         <include layout="@layout/content_main_page" />
 
         <android.support.design.widget.FloatingActionButton
-            app:elevation="@dimen/elevation"
+            android:visibility="gone"
             android:id="@+id/fabAdd"
-            android:layout_gravity="bottom|end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_margin="30dp"
+            app:elevation="@dimen/elevation"
             app:srcCompat="@drawable/ic_add_black_24dp" />
     </FrameLayout>
 

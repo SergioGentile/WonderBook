@@ -89,6 +89,7 @@
             android:name=".EditPwd"
             android:label="@string/title_activity_edit_pwd"
             android:theme="@style/AppTheme" />
+        <activity android:name=".DialogOrderType"></activity>
     </application>
 
 </manifest>

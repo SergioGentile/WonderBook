@@ -125,4 +125,5 @@
     <string name="tab_title">Titolo</string>
     <string name="tab_author">Autore</string>
     <string name="tab_rating">Punteggio</string>
+    <string name="tab_all">Qualsiasi</string>
 </resources>
