@@ -96,12 +96,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainPage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener {
 
     private User user;
     private TextView tvName;
@@ -132,12 +133,12 @@ public class MainPage extends AppCompatActivity
     boolean submit;
     int searchBarItem;
     private final static int AUTHOR = 0, TITLE = 1, ANY = 2;
-    private final static int DISTANCE = 0, RATING = 1;
+    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3;
     int counter_location;
     private int tabFieldSearch;
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
-    private TextView orderDialog;
+    private TextView orderDialog, tvOrderType;
 
     double latPhone, longPhone;
     private boolean tabFlag = false;
@@ -300,26 +301,13 @@ public class MainPage extends AppCompatActivity
         });
 
         orderDialog = (TextView) findViewById(R.id.dialogOrder);
-
+        tvOrderType = (TextView) findViewById(R.id.tvOrderType);
 
         orderDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CharSequence chooses[] = new CharSequence[]{"Distance", "Rating"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
-                builder.setTitle(getString(R.string.uploadImage));
-                builder.setItems(chooses, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int activity) {
-                        if (activity == 0) {
-                            setAdapter(DISTANCE);
-                        } else if (activity == 1) {
-                            setAdapter(RATING);
-                        }
-                    }
-                });
-                builder.show();
-
+                DialogOrderType bottomSheet = new DialogOrderType();
+                bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
             }
         });
     }
@@ -476,6 +464,7 @@ public class MainPage extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
+                        setAdapterSearchedRecentAdd();
                         Geocoder geocoder = new Geocoder(MainPage.this);
                         List<Address> addresses;
                         String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -748,12 +737,137 @@ public class MainPage extends AppCompatActivity
                                                 //Qui si setta l'adapter della list view
                                                 //Sort adapter
 
-                                                Log.d("SORT", "COLLECTION BEFORE SORT");
-                                                for (Book book : booksMatch) {
-                                                    Log.d("Book ", book.getDistance() + "");
+                                                setAdapter(DISTANCE);
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            System.err.println("There was an error getting the GeoFire location: " + databaseError);
+                                        }
+                                    });
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setAdapterSearchedRecentAdd() {
+        //qui reference
+
+        DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
+        Query query = null;
+        query = databaseReferenceBooks.orderByChild("date").limitToLast(20);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lv_searched.setAdapter(null);
+                booksMatch.clear();
+                usersMatch.clear();
+                bookIds.clear();
+                map.clear();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        if (!issue.getValue(Book.class).getOwner().equals(user.getKey())) {
+                            Log.d("Libro " , issue.getValue(Book.class).getTitle());
+                            booksMatch.add(issue.getValue(Book.class));
+                            bookIds.add(issue.getKey());
+                        }
+                    }
+                }
+
+                for (Book bookToAdd : booksMatch) {
+                    DatabaseReference databaseReferenceUsers = firebaseDatabase.getReference("users");
+                    Query queryUser = databaseReferenceUsers.child(bookToAdd.getOwner());
+                    queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
+                            usersMatch.add(dataSnapshot.getValue(User.class));
+
+                            if (usersMatch.size() == booksMatch.size()) {
+
+                                //Daniele:
+                                //In questo punto del codice ho finito di popolare le liste userMatch e booksMatch.
+                                //In sostanza booksMatch contiene una lista di tutti i libri da mostrare nella listView e
+                                //usersMatch contiene l'utente associato a quel libro (booksMatch e usersMatch agiscono come una mappa)
+                                // Map<Book, User>
+                                //Quindi una prima opzione è ciclare qui su tutti i libri contenuti nella lista booksMatch ù
+                                //e inserire tutti i relativi marker nella mappa  (seconda opzione più in basso)
+
+                                DatabaseReference databaseReferenceLocation = firebaseDatabase.getReference("locations").child("books");
+                                GeoFire geoFire = new GeoFire(databaseReferenceLocation);
+
+                                counter_location = 0;
+                                for (int pos = 0; pos < booksMatch.size(); pos++) {
+                                    final int i = pos;
+                                    geoFire.getLocation(bookIds.get(pos), new LocationCallback() {
+                                        @Override
+                                        public void onLocationResult(String key, GeoLocation location) {
+                                            counter_location++;
+                                            if (location != null) {
+                                                System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
+                                                String snippet = getString(R.string.shared_by) + " " + usersMatch.get(i).getSurname().getValue() + " " + usersMatch.get(i).getName().getValue();
+                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)).title(booksMatch.get(i).getTitle()).snippet(snippet));
+                                                markers.put(key, m);
+                                                //Evaluate distance for the bok
+                                                booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
+                                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                                for (Marker marker : markers.values()) {
+                                                    builder.include(marker.getPosition());
+                                                }
+                                                LatLngBounds bounds = builder.build();
+                                                int width = getResources().getDisplayMetrics().widthPixels;
+                                                int height = getResources().getDisplayMetrics().heightPixels;
+                                                int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
+
+                                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+
+                                                map.animateCamera(cu);
+
+
+                                            } else {
+                                                booksMatch.get(i).setDistance(0);
+                                                System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                                            }
+                                            if (counter_location == booksMatch.size()) {
+                                                //Qui si setta l'adapter della list view
+                                                List<Book> tmp = new ArrayList<>();
+                                                //Take only the one near me and store in tmp
+                                                for(int i=0; i<booksMatch.size(); i++){
+                                                    if(booksMatch.get(i).getDistance()<20 && booksMatch.get(i).getDistance()!=0){
+                                                        tmp.add(booksMatch.get(i));
+                                                    }
                                                 }
 
-                                                setAdapter(DISTANCE);
+                                                Collections.sort(tmp, new Comparator<Book>() {
+
+                                                    @Override
+                                                    public int compare(Book b1, Book b2) {
+                                                        return -b1.getDate().compareTo(b2.getDate());
+                                                    }
+                                                });
+                                                booksMatch.clear();
+                                                for(int i=0; i<tmp.size() && i<5; i++){
+                                                    booksMatch.add(tmp.get(i));
+                                                }
+
+                                                setAdapter(NO_ORDER);
 
                                             }
                                         }
@@ -787,6 +901,7 @@ public class MainPage extends AppCompatActivity
     private void setAdapter(int order) {
 
         if (order == DISTANCE) {
+            tvOrderType.setText("Più vicini a te");
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
@@ -795,11 +910,25 @@ public class MainPage extends AppCompatActivity
                 }
             });
         } else if (order == RATING) {
+            tvOrderType.setText("I piu votati");
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
                 public int compare(Book b1, Book b2) {
-                    return b1.getRating().toString().compareTo(b2.getRating().toString());
+                    return -b1.getRating().toString().compareTo(b2.getRating().toString());
+                }
+            });
+        }
+        else if(NO_ORDER == order){
+            tvOrderType.setText("Le ultime uscite vicino a te");
+        }
+        else if(DATE == order){
+            tvOrderType.setText("Le ultime usicte");
+            Collections.sort(booksMatch, new Comparator<Book>() {
+
+                @Override
+                public int compare(Book b1, Book b2) {
+                    return -b1.getDate().toString().compareTo(b2.getDate().toString());
                 }
             });
         }
@@ -1078,6 +1207,20 @@ public class MainPage extends AppCompatActivity
         return false;
     }
 
+    @Override
+    public void onButtonClicked(int position) {
+
+       if(position == 0){
+          setAdapter(DISTANCE);
+
+       }
+       else if(position == 1){
+           setAdapter(RATING);
+       }
+       else if(position == 2){
+           setAdapter(DATE);
+       }
+    }
 }
 
 class ShowOnAdapter {
