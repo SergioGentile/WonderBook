@@ -58,7 +58,7 @@ public class EditEmail extends AppCompatActivity {
         btnEmail = (Button) findViewById(R.id.confirm_new_email);
         edtMail = (EditText) findViewById(R.id.changeMail);
         swMail = (Switch) findViewById(R.id.email_switch);
-        progress = (ProgressBar) findViewById(R.id.editPwd_progress);
+        progress = (ProgressBar) findViewById(R.id.editCred_progress);
         container = (LinearLayout) findViewById(R.id.editCredContainer);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
