@@ -32,7 +32,7 @@ public class Book implements Parcelable {
         this.owner = owner;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
-        this.publisher = publisher;
+        this.publisher = publisher.toLowerCase();
         this.description = description;
         this.rating = rating;
         this.available = available;
@@ -74,11 +74,11 @@ public class Book implements Parcelable {
     }
 
     public String getPublisher() {
-        return publisher;
+        return publisher.toLowerCase();
     }
 
     public void setPublisher(String publisher) {
-        this.publisher = publisher;
+        this.publisher = publisher.toLowerCase();
     }
 
     public String getDescription() {
