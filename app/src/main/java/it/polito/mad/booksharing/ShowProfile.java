@@ -402,11 +402,13 @@ public class ShowProfile extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class).putExtras(bundle));
         } else if (id == R.id.nav_home) {
-            startActivity(new Intent(ShowProfile.this, MainPage.class));
+            //Nothing to do
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowProfile.this, Start.class));
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            intent.putExtra("exit", true );
         }
 
 

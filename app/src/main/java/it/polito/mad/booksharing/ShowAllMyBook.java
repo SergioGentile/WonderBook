@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -100,6 +101,16 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
                 lv.setVisibility(View.GONE);
                 llEmpty.setVisibility(View.GONE);
                 showAllMyBooks(user.getKey());
+            }
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                startActivity(new Intent(ShowAllMyBook.this, AddBook.class).putExtras(bundle));
             }
         });
 
@@ -282,12 +293,14 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
             startActivity(new Intent(ShowAllMyBook.this, ShowProfile.class));
         }
         else if(id == R.id.nav_home){
-            startActivity(new Intent(ShowAllMyBook.this,MainPage.class));
+            //Nothing to do
         }
         else if(id == R.id.nav_exit){
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            startActivity(new Intent(ShowAllMyBook.this, Start.class));
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            intent.putExtra("exit", true );
         }
 
 
