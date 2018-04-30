@@ -406,9 +406,7 @@ public class ShowProfile extends AppCompatActivity
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            Intent intent = new Intent();
-            setResult(RESULT_OK, intent);
-            intent.putExtra("exit", true );
+            startActivity(new Intent(ShowProfile.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         }
 
 

@@ -16,6 +16,7 @@ public class Book implements Parcelable {
 
     private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle;
     private boolean available;
+    private String ownerName;
     private Double distance;
 
     public Book() {
@@ -215,5 +216,13 @@ public class Book implements Parcelable {
 
     public void setDistance(double distance){
         this.distance = new Double(distance);
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }
