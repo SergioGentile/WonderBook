@@ -476,6 +476,7 @@ public class MainPage extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(MainPage.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            
             finish();
         }
 
