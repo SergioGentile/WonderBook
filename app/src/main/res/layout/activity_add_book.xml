@@ -71,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_left"
                     android:layout_marginRight="@dimen/margin_right"
-                    android:elevation="@dimen/elevation">
+                    android:elevation="@dimen/elevation"
+                   >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -370,7 +371,6 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginRight="@dimen/margin_right"
                                     android:hint="@string/description"
                                     android:inputType="textMultiLine|text"
                                     android:maxLines="5"
@@ -380,6 +380,96 @@
                             </LinearLayout>
 
                         </RelativeLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/bottom_inside_box"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right"
+                        android:layout_marginTop="@dimen/top_inside_box"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/position"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="@dimen/title_box_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/position_description"
+                            android:textColor="@color/colorSecondaryText"
+                            android:textSize="@dimen/subtitle_box_size" />
+
+                        <LinearLayout
+                            android:weightSum="2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_weight="0.7"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+
+                                android:layout_marginRight="@dimen/margin_right"
+                                android:layout_marginTop="@dimen/top_inside_box"
+                                android:hint="@string/city">
+
+                                <android.support.design.widget.TextInputEditText
+                                    android:id="@+id/tvCity"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/tv_dim" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_weight="1.3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/top_inside_box"
+                                android:hint="@string/cap">
+
+                                <android.support.design.widget.TextInputEditText
+                                    android:id="@+id/tvCap"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/tv_dim" />
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:hint="@string/street">
+
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/tvStreet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
+
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 

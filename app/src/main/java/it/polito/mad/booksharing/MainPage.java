@@ -138,7 +138,7 @@ public class MainPage extends AppCompatActivity
     HashMap<String, Marker> markers;
     boolean submit;
     int searchBarItem;
-    private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4;
+    private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
     private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3;
     int counter_location;
     private int tabFieldSearch;
@@ -157,7 +157,7 @@ public class MainPage extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getIntent()!=null && getIntent().getExtras() !=null && getIntent().getExtras().getBoolean("exit", false)){
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getBoolean("exit", false)) {
             startActivity(new Intent(MainPage.this, Start.class));
             finish();
         }
@@ -301,6 +301,18 @@ public class MainPage extends AppCompatActivity
                     if (tabLayout.getVisibility() == View.VISIBLE) {
                         setAdapterRuntime(runTimeQuery, ISBN);
                     }
+                } else if (tab.getPosition() == 5) {
+                    imageScanOnSearch.setVisibility(View.GONE);
+                    tabFieldSearch = CITY;
+                    if (tabLayout.getVisibility() == View.VISIBLE) {
+                        setAdapterRuntime(runTimeQuery, CITY);
+                    }
+                } else if (tab.getPosition() == 6) {
+                    tabFieldSearch = OWNER;
+                    imageScanOnSearch.setVisibility(View.GONE);
+                    if (tabLayout.getVisibility() == View.VISIBLE) {
+                        setAdapterRuntime(runTimeQuery, OWNER);
+                    }
                 }
 
             }
@@ -397,13 +409,10 @@ public class MainPage extends AppCompatActivity
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
-        Log.d("PASSO", "onRestore");
         booksMatch = inState.getParcelableArrayList("booksMatch");
         firtTime = inState.getBoolean("firstTime");
         setAdapter(DISTANCE);
     }
-
-
 
 
     @Override
@@ -466,7 +475,7 @@ public class MainPage extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             // Handle the camera action
-            startActivity(new Intent(MainPage.this, ShowProfile.class) );
+            startActivity(new Intent(MainPage.this, ShowProfile.class));
         } else if (id == R.id.nav_show_shared_book) {
             //Start the intent
             Bundle bundle = new Bundle();
@@ -476,7 +485,7 @@ public class MainPage extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(MainPage.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            
+
             finish();
         }
 
@@ -499,8 +508,7 @@ public class MainPage extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
-                        Log.d("PASSO", "Set Recent");
-                        if(firtTime){
+                        if (firtTime) {
                             setAdapterSearchedRecentAdd();
                             firtTime = false;
                         }
@@ -515,7 +523,7 @@ public class MainPage extends AppCompatActivity
                                 longPhone = addresses.get(0).getLongitude();
                             }
                         } catch (Exception e) {
-                            Toast.makeText(MainPage.this, "Non è stato possibile trovare la propria posizione", Toast.LENGTH_SHORT);
+                            Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
                         }
                     }
 
@@ -700,12 +708,16 @@ public class MainPage extends AppCompatActivity
             query = databaseReferenceBooks.orderByChild("author").equalTo(searchedString);
         } else if (searchBarItem == PUBLISHER) {
             query = databaseReferenceBooks.orderByChild("publisher").equalTo(searchedString);
+        } else if (searchBarItem == OWNER) {
+            query = databaseReferenceBooks.orderByChild("ownerName").equalTo(searchedString);
         } else if (searchBarItem == ISBN) {
             if (searchedString.length() == 10) {
                 query = databaseReferenceBooks.orderByChild("isbn10").equalTo(searchedString);
             } else {
                 query = databaseReferenceBooks.orderByChild("isbn13").equalTo(searchedString);
             }
+        } else if (searchBarItem == CITY) {
+            query = databaseReferenceBooks.orderByChild("city").equalTo(searchedString);
         }
 
         if (query == null) {
@@ -728,8 +740,11 @@ public class MainPage extends AppCompatActivity
                             bookIds.add(issue.getKey());
                         }
                     }
+                } else {
+                    progressAnimation.setVisibility(View.GONE);
+                    emptyResearch.setVisibility(View.VISIBLE);
                 }
-                else{
+                if (booksMatch.isEmpty()) {
                     progressAnimation.setVisibility(View.GONE);
                     emptyResearch.setVisibility(View.VISIBLE);
                 }
@@ -743,16 +758,6 @@ public class MainPage extends AppCompatActivity
                             usersDownload.add(dataSnapshot.getValue(User.class));
                             if (usersDownload.size() == booksMatch.size()) {
 
-                                //Associate the user to the book
-                                for(Book bookToUser : booksMatch){
-                                    for(User user : usersDownload){
-                                        if(bookToUser.getOwner().equals(user.getKey())){
-                                            bookToUser.setOwnerName(user.getName().getValue()  +  " " + user.getSurname().getValue());
-                                            break;
-                                        }
-                                    }
-                                }
-
                                 DatabaseReference databaseReferenceLocation = firebaseDatabase.getReference("locations").child("books");
                                 GeoFire geoFire = new GeoFire(databaseReferenceLocation);
 
@@ -764,7 +769,6 @@ public class MainPage extends AppCompatActivity
                                         public void onLocationResult(String key, GeoLocation location) {
                                             counter_location++;
                                             if (location != null) {
-                                                Log.d("POSITION", "Found position for " + booksMatch.get(i).getTitle() + " with key " + bookIds.get(i));
                                                 String snippet = getString(R.string.shared_by) + " " + booksMatch.get(i).getOwnerName();
                                                 //return a new lat and long in order to avoid overlap
                                                 Position overlap = avoidOverlap(markers.values(), new Position(location.latitude, location.longitude));
@@ -786,8 +790,7 @@ public class MainPage extends AppCompatActivity
 
 
                                             } else {
-                                                booksMatch.get(i).setDistance(0);
-                                                Log.d("POSITION", "No position for " + booksMatch.get(i).getTitle()+ " with key " + bookIds.get(i));
+                                                booksMatch.get(i).setDistance(-1);
                                             }
                                             if (counter_location == booksMatch.size()) {
                                                 //Qui si setta l'adapter della list view
@@ -827,20 +830,20 @@ public class MainPage extends AppCompatActivity
     }
 
 
-    private Position avoidOverlap(Collection<Marker> markerList, Position p){
+    private Position avoidOverlap(Collection<Marker> markerList, Position p) {
 
         boolean found = false;
         int counter = 0; //Need to avoid deadlock
-        while(!found && counter <20){
+        while (!found && counter < 20) {
             found = true;
-            for(Marker marker : markerList){
+            for (Marker marker : markerList) {
                 counter++;
-                if(marker.getPosition().latitude == p.getLatitude() && marker.getPosition().longitude == p.getLongitude()){
+                if (marker.getPosition().latitude == p.getLatitude() && marker.getPosition().longitude == p.getLongitude()) {
                     found = false;
                     //Add a number between 0.000000/0.000100
                     double lat, longit;
-                    lat = getRandom(0, counter%5)/(double)100000;
-                    longit = getRandom(0, counter%5)/(double)10000;
+                    lat = getRandom(0, counter % 5) / (double) 100000;
+                    longit = getRandom(0, counter % 5) / (double) 10000;
                     p.setLatitude(p.getLatitude() + lat);
                     p.setLongitude(p.getLongitude() + longit);
                 }
@@ -849,9 +852,9 @@ public class MainPage extends AppCompatActivity
         return p;
     }
 
-    private int getRandom(int min, int max){
+    private int getRandom(int min, int max) {
         Random r = new Random();
-        return r.nextInt(max-min) + max;
+        return r.nextInt(max - min) + max;
     }
 
     private void setAdapterSearchedRecentAdd() {
@@ -877,6 +880,13 @@ public class MainPage extends AppCompatActivity
                             bookIds.add(issue.getKey());
                         }
                     }
+                } else {
+                    progressAnimation.setVisibility(View.GONE);
+                    emptyResearch.setVisibility(View.VISIBLE);
+                }
+                if (booksMatch.isEmpty()) {
+                    progressAnimation.setVisibility(View.GONE);
+                    emptyResearch.setVisibility(View.VISIBLE);
                 }
                 usersDownload.clear();
                 for (final Book bookToAdd : booksMatch) {
@@ -887,16 +897,6 @@ public class MainPage extends AppCompatActivity
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             usersDownload.add(dataSnapshot.getValue(User.class));
                             if (usersDownload.size() == booksMatch.size()) {
-
-                                //Associate the user to the book
-                                for(Book bookToUser : booksMatch){
-                                    for(User user : usersDownload){
-                                        if(bookToUser.getOwner().equals(user.getKey())){
-                                            bookToUser.setOwnerName(user.getName().getValue()+ "  " + user.getSurname().getValue());
-                                            break;
-                                        }
-                                    }
-                                }
 
                                 DatabaseReference databaseReferenceLocation = firebaseDatabase.getReference("locations").child("books");
                                 GeoFire geoFire = new GeoFire(databaseReferenceLocation);
@@ -914,15 +914,14 @@ public class MainPage extends AppCompatActivity
                                                 booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
                                                 sortedLocationItems.add(new SortedLocationItem(booksMatch.get(i), snippet, location.latitude, location.longitude));
                                             } else {
-                                                booksMatch.get(i).setDistance(0);
-                                                System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                                                booksMatch.get(i).setDistance(-1);
                                             }
                                             if (counter_location == booksMatch.size()) {
                                                 //Qui si setta l'adapter della list view
                                                 List<SortedLocationItem> tmp = new ArrayList<>();
                                                 //Take only the one near me and store in tmp
                                                 for (int i = 0; i < sortedLocationItems.size(); i++) {
-                                                    if (sortedLocationItems.get(i).getBook().getDistance() < 20 && sortedLocationItems.get(i).getBook().getDistance() != 0) {
+                                                    if (sortedLocationItems.get(i).getBook().getDistance() < 20 && sortedLocationItems.get(i).getBook().getDistance() >= 0) {
                                                         tmp.add(sortedLocationItems.get(i));
                                                     }
                                                 }
@@ -930,11 +929,10 @@ public class MainPage extends AppCompatActivity
                                                 Collections.sort(tmp, new Comparator<SortedLocationItem>() {
                                                     @Override
                                                     public int compare(SortedLocationItem s1, SortedLocationItem s2) {
-                                                        if(s1.getBook().getDate().compareTo(s2.getBook().getDate())!=0){
+                                                        if (s1.getBook().getDate().compareTo(s2.getBook().getDate()) != 0) {
                                                             return -s1.getBook().getDate().compareTo(s2.getBook().getDate());
-                                                        }
-                                                        else{
-                                                           return s1.getBook().getDistance().compareTo(s2.getBook().getDistance());
+                                                        } else {
+                                                            return s1.getBook().getDistance().compareTo(s2.getBook().getDistance());
                                                         }
                                                     }
                                                 });
@@ -951,7 +949,6 @@ public class MainPage extends AppCompatActivity
                                                     Position overlap = avoidOverlap(markers.values(), new Position(sortedLocationItem.getLatitude(), sortedLocationItem.getLongitude()));
                                                     Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(sortedLocationItem.getBook().getTitle()).snippet(sortedLocationItem.getSnippet()));
                                                     markers.put(key, m);
-                                                    Log.d("MARKER", "Set the marker for the book " + sortedLocationItem.getBook().getTitle() + " at " + overlap.getLatitude() + " " + overlap.getLongitude() + " with snipper " + sortedLocationItem.getSnippet());
                                                     //Evaluate distance for the bok
 
                                                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -977,7 +974,6 @@ public class MainPage extends AppCompatActivity
                                         public void onCancelled(DatabaseError databaseError) {
                                             progressAnimation.setVisibility(View.GONE);
                                             emptyResearch.setVisibility(View.VISIBLE);
-                                            System.err.println("There was an error getting the GeoFire location: " + databaseError);
                                         }
                                     });
                                 }
@@ -1007,7 +1003,7 @@ public class MainPage extends AppCompatActivity
 
 
         if (order == DISTANCE) {
-            tvOrderType.setText("Più vicini a te");
+            tvOrderType.setText(getString(R.string.closest_to_you));
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
@@ -1016,7 +1012,7 @@ public class MainPage extends AppCompatActivity
                 }
             });
         } else if (order == RATING) {
-            tvOrderType.setText("I piu votati");
+            tvOrderType.setText(getString(R.string.most_rating));
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
@@ -1025,7 +1021,7 @@ public class MainPage extends AppCompatActivity
                 }
             });
         } else if (NO_ORDER == order) {
-            tvOrderType.setText("Le ultime uscite vicino a te");
+            tvOrderType.setText(getString(R.string.latest_releases_near_you));
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
@@ -1034,7 +1030,7 @@ public class MainPage extends AppCompatActivity
                 }
             });
         } else if (DATE == order) {
-            tvOrderType.setText("Le ultime uscite");
+            tvOrderType.setText(R.string.latest_releases);
             Collections.sort(booksMatch, new Comparator<Book>() {
 
                 @Override
@@ -1048,16 +1044,12 @@ public class MainPage extends AppCompatActivity
         colors.add(new String("#3F51B5"));
         colors.add(new String("#C62828"));
         colors.add(new String("#512DA8"));
-        if(booksMatch.size()==0){
+        if (booksMatch.size() == 0) {
+            progressAnimation.setVisibility(View.GONE);
             emptyResearch.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
+            progressAnimation.setVisibility(View.GONE);
             emptyResearch.setVisibility(View.GONE);
-        }
-
-        Log.d("ADAPTER: ", "I have the list:");
-        for(Book book : booksMatch){
-            Log.d("ADAPTER: ", "Book " + book.getTitle() + " with distance " + book.getDistance());
         }
 
         lv_searched.setAdapter(new BaseAdapter() {
@@ -1094,12 +1086,10 @@ public class MainPage extends AppCompatActivity
                 TextView distance = (TextView) convertView.findViewById(R.id.distance);
                 LinearLayout ll_distance = (LinearLayout) convertView.findViewById(R.id.ll_location);
 
-                Log.d("DIST SETUP" , "Check the distance " + book.getDistance() + " for the book " + book.getTitle());
-                if (!book.getDistance().equals(0.0)) {
+                if (book.getDistance() >= 0.0) {
                     ll_distance.setVisibility(View.VISIBLE);
                     distance.setText(Double.toString(book.getDistance()));
-                }
-                else{
+                } else {
                     ll_distance.setVisibility(View.GONE);
                 }
 
@@ -1127,7 +1117,6 @@ public class MainPage extends AppCompatActivity
                                 bundle.putParcelable("book_mp", book);
                                 User currentUser = dataSnapshot.getValue(User.class);
                                 bundle.putParcelable("user_mp", currentUser);
-                                Log.d("DOWN QUERY", "Download the user " + currentUser.getName().getValue());
                                 bundle.putParcelable("user_owner", user);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
@@ -1135,15 +1124,12 @@ public class MainPage extends AppCompatActivity
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.d("User", "Attenzione: non è stato possibile mostrare il libro.");
+                                Log.d("CANCELLED", "Error " + databaseError.getMessage());
                             }
                         });
                     }
                 });
 
-                //Seconda opzione: qui stai esaminando il libro in posizione "position"
-                //Puoi fare una query per quel libro (per trovarne la posizione) e settare il marker
-                //setta il marker di booksMatch.get(position) qui
                 return convertView;
 
             }
@@ -1152,7 +1138,7 @@ public class MainPage extends AppCompatActivity
     }
 
     private String concatenateFieldBook(Book book) {
-        return (book.getAuthor() + " " + book.getTitle() + " " + book.getIsbn10() + " " + book.getIsbn13() + " " + book.getPublisher()).toLowerCase();
+        return (book.getAuthor() + " " + book.getTitle() + " " + book.getIsbn10() + " " + book.getIsbn13() + " " + book.getPublisher() + " " + book.getCity() + " " + book.getOwnerName()).toLowerCase();
     }
 
     private void setAdapterRuntime(final String searchedString, final int tabField) {
@@ -1200,6 +1186,20 @@ public class MainPage extends AppCompatActivity
                                 booksQuery.add(searchedString.toLowerCase());
                             }
                         }
+                    } else if (tabField == CITY) {
+                        if (book.getCity().toLowerCase().contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey())) {
+                            if (!stringAlreadyPresentOnBookList(book.getCity().toLowerCase(), books, CITY)) {
+                                books.add(book);
+                                booksQuery.add(searchedString.toLowerCase());
+                            }
+                        }
+                    } else if (tabField == OWNER) {
+                        if (book.getOwnerName().toLowerCase().contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey())) {
+                            if (!stringAlreadyPresentOnBookList(book.getOwner().toLowerCase(), books, OWNER)) {
+                                books.add(book);
+                                booksQuery.add(searchedString.toLowerCase());
+                            }
+                        }
                     } else if (tabField == ISBN) {
 
                         String isbn = new String("");
@@ -1242,6 +1242,12 @@ public class MainPage extends AppCompatActivity
                         case PUBLISHER:
                             itemString = books.get(i).getPublisher();
                             break;
+                        case OWNER:
+                            itemString = books.get(i).getOwnerName();
+                            break;
+                        case CITY:
+                            itemString = books.get(i).getCity();
+                            break;
                         case ISBN:
                             if (!books.get(i).getIsbn13().isEmpty()) {
                                 itemString = books.get(i).getIsbn13();
@@ -1259,6 +1265,7 @@ public class MainPage extends AppCompatActivity
                         }
                     }
                 }
+
 
                 //Reduce the size of the list
                 List<ShowOnAdapter> tmp = new ArrayList<>();
@@ -1309,11 +1316,16 @@ public class MainPage extends AppCompatActivity
                         Drawable d = null;
                         textView.setText(stringRuntime.get(position).getText());
                         if (stringRuntime.get(position).getItemType() == AUTHOR) {
+                            d = getDrawable(R.drawable.writer);
+                        }
+                        if (stringRuntime.get(position).getItemType() == OWNER) {
                             d = getDrawable(R.drawable.ic_person_black_24dp);
                         } else if (stringRuntime.get(position).getItemType() == TITLE) {
                             d = getDrawable(R.drawable.ic_book_black_24dp);
+                        } else if (stringRuntime.get(position).getItemType() == CITY) {
+                            d = getDrawable(R.drawable.ic_location_city_black_24dp);
                         } else if (stringRuntime.get(position).getItemType() == PUBLISHER) {
-                            d = getDrawable(R.drawable.ic_home_black_24dp);
+                            d = getDrawable(R.drawable.factory);
                         } else if (stringRuntime.get(position).getItemType() == ISBN) {
                             Drawable drawable = getDrawable(R.drawable.barcode);
                             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -1349,8 +1361,15 @@ public class MainPage extends AppCompatActivity
         query = query.toLowerCase();
         if (book.getTitle().toLowerCase().contains(query)) {
             return TITLE;
-        } else if (book.getAuthor().toLowerCase().contains(query)) {
+        }
+        else if (book.getAuthor().toLowerCase().contains(query)) {
             return AUTHOR;
+        }
+        else if (book.getCity().toLowerCase().contains(query)) {
+            return CITY;
+        }
+        else if (book.getOwnerName().toLowerCase().contains(query)) {
+            return OWNER;
         } else if (book.getPublisher().toLowerCase().contains(query)) {
             return PUBLISHER;
         } else if (book.getIsbn10().toLowerCase().contains(query) || book.getIsbn13().toLowerCase().contains(query)) {
@@ -1360,6 +1379,7 @@ public class MainPage extends AppCompatActivity
 
     }
 
+
     private boolean stringAlreadyPresentOnBookList(String toSearch, ArrayList<Book> books, int type) {
 
         for (Book book : books) {
@@ -1368,6 +1388,10 @@ public class MainPage extends AppCompatActivity
             } else if (book.getTitle().toLowerCase().equals(toSearch.toLowerCase()) && type == TITLE) {
                 return true;
             } else if (book.getAuthor().toLowerCase().equals(toSearch.toLowerCase()) && type == AUTHOR) {
+                return true;
+            } else if (book.getOwnerName().toLowerCase().equals(toSearch.toLowerCase()) && type == OWNER) {
+                return true;
+            } else if (book.getCity().toLowerCase().equals(toSearch.toLowerCase()) && type == CITY) {
                 return true;
             } else if (book.getPublisher().toLowerCase().equals(toSearch.toLowerCase()) && type == PUBLISHER) {
                 return true;
@@ -1433,6 +1457,7 @@ class ShowOnAdapter {
 
 
 }
+
 class Position {
     double latitude, longitude;
 

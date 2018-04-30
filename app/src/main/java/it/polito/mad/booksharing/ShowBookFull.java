@@ -66,9 +66,9 @@ public class ShowBookFull extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView available;
 
-    private void setBitmapFromFirebase(final CircleImageView image){
+    private void setBitmapFromFirebase(final CircleImageView image) {
 
-        final long time_sd= System.currentTimeMillis();
+        final long time_sd = System.currentTimeMillis();
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
         StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
 
@@ -83,12 +83,12 @@ public class ShowBookFull extends AppCompatActivity {
         userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                long time_ed= System.currentTimeMillis();
-                Log.d("Time to download", time_ed - time_sd+ "");
+                long time_ed = System.currentTimeMillis();
+                Log.d("Time to download", time_ed - time_sd + "");
                 Bitmap imageDown = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
                 image.setImageBitmap(imageDown);
-                long time_d= System.currentTimeMillis();
-                Log.d("Time to decode", time_d - time_ed+ "");
+                long time_d = System.currentTimeMillis();
+                Log.d("Time to decode", time_d - time_ed + "");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -154,7 +154,7 @@ public class ShowBookFull extends AppCompatActivity {
         available = (TextView) findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
-        if(getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("book_mp")!=null){
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("book_mp") != null) {
             book = getIntent().getExtras().getParcelable("book_mp");
             user = getIntent().getExtras().getParcelable("user_mp");
             btnEdit.setVisibility(View.GONE);
@@ -165,10 +165,8 @@ public class ShowBookFull extends AppCompatActivity {
             TextView tvSharedByName = (TextView) findViewById(R.id.name_shared_by);
             tvSharedByName.setText(user.getName().getValue() + " " + user.getSurname().getValue());
             TextView tvSharedByLocation = (TextView) findViewById(R.id.location_shared_by);
-            String currentLocation = new String(user.getCity().getValue());
-            if(user.getStreet().getStatus().equals("public")){
-                currentLocation+=", " + user.getStreet().getValue();
-            }
+            String currentLocation = book.getCity();
+            currentLocation += ", " + book.getStreet();
             tvSharedByLocation.setText(currentLocation);
 
             cvSharedBy.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +181,7 @@ public class ShowBookFull extends AppCompatActivity {
                 }
             });
 
-        }else{
+        } else {
             book = getIntent().getParcelableExtra("book");
             user = getIntent().getParcelableExtra("user");
             key = getIntent().getExtras().getString("key");
@@ -201,10 +199,6 @@ public class ShowBookFull extends AppCompatActivity {
             subtitle.setVisibility(View.GONE);
         }
         author.setText(book.getAuthor());
-        String street = "";
-        if (user.getStreet().getStatus().equals("public")) {
-            street = ", " + user.getStreet().getValue();
-        }
         publisher.setText(book.getPublisher() + ", " + book.getYear());
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
@@ -467,6 +461,10 @@ public class ShowBookFull extends AppCompatActivity {
                 book.setUrlImage(bookModified.getUrlImage());
                 book.setUrlMyImage(bookModified.getUrlMyImage());
                 book.setAvailable(bookModified.isAvailable());
+                book.setCap(bookModified.getCap());
+                book.setCity(bookModified.getCity());
+                book.setStreet(bookModified.getStreet());
+                book.setOwnerName(bookModified.getOwnerName());
 
                 //Set the images of the book
                 imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);

@@ -87,6 +87,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/isbn" />
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/city" />
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 

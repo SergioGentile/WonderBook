@@ -82,7 +82,7 @@
                     <TextView
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
-                        android:text="La ricerca non ha prodotto risultati"
+                        android:text="@string/no_results"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
@@ -125,7 +125,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_margin="10dp"
                     android:background="@color/windowBackground"
-                    android:text="Ultime uscite vicino a te" />
+                    android:text="@string/latest_releases_near_you" />
 
               <TextView
                     android:id="@+id/dialogOrder"
@@ -134,7 +134,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_margin="10dp"
                     android:background="@color/windowBackground"
-                    android:text="ORDINA" />
+                    android:text="@string/order" />
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>

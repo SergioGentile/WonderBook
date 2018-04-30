@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class Book implements Parcelable {
 
-    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle;
+    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle, city, street, cap;
     private boolean available;
     private String ownerName;
     private Double distance;
@@ -23,20 +23,24 @@ public class Book implements Parcelable {
 
     }
 
-    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available) {
-        this.title = title.toLowerCase();
+    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available, String city, String street, String cap, String ownerName) {
+        this.title = title.toLowerCase().trim();
         this.subtitle = subtitle;
-        this.author = author.toLowerCase();
+        this.author = author.toLowerCase().trim();
         this.year = year;
         this.urlImage = urlImage;
         this.urlMyImage = urlMyImage;
         this.owner = owner;
         this.isbn10 = isbn10;
         this.isbn13 = isbn13;
-        this.publisher = publisher.toLowerCase();
+        this.publisher = publisher.toLowerCase().trim();
         this.description = description;
         this.rating = rating;
         this.available = available;
+        this.city = city.toLowerCase().trim();
+        this.street = street;
+        this.cap = cap;
+        this.ownerName = ownerName.toLowerCase().trim();
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.format(dateCalendar);
@@ -75,11 +79,11 @@ public class Book implements Parcelable {
     }
 
     public String getPublisher() {
-        return publisher.toLowerCase();
+        return publisher.toLowerCase().trim();
     }
 
     public void setPublisher(String publisher) {
-        this.publisher = publisher.toLowerCase();
+        this.publisher = publisher.toLowerCase().trim();
     }
 
     public String getDescription() {
@@ -123,19 +127,19 @@ public class Book implements Parcelable {
     }
 
     public String getTitle() {
-        return title.toLowerCase();
+        return title.toLowerCase().trim();
     }
 
     public void setTitle(String title) {
-        this.title = title.toLowerCase();
+        this.title = title.toLowerCase().trim();
     }
 
     public String getAuthor() {
-        return author.toLowerCase();
+        return author.toLowerCase().trim();
     }
 
     public void setAuthor(String author) {
-        this.author = author.toLowerCase();
+        this.author = author.toLowerCase().trim();
     }
 
     public String getYear() {
@@ -156,7 +160,7 @@ public class Book implements Parcelable {
 
     // Parcelling part
     public Book(Parcel in) {
-        String[] data = new String[13];
+        String[] data = new String[17];
 
 
         in.readStringArray(data);
@@ -175,6 +179,10 @@ public class Book implements Parcelable {
         this.isbn13 = data[10];
         this.rating = data[11];
         this.date = data[12];
+        this.city = data[13];
+        this.street = data[14];
+        this.cap = data[15];
+        this.ownerName = data[16];
     }
 
     @Override
@@ -196,7 +204,7 @@ public class Book implements Parcelable {
                 this.isbn10,
                 this.isbn13,
                 this.rating,
-                this.date});
+                this.date, this.city, this.street, this.cap, this.ownerName});
         dest.writeByte((byte) (available ? 1 : 0));
     }
 
@@ -219,10 +227,43 @@ public class Book implements Parcelable {
     }
 
     public String getOwnerName() {
-        return ownerName;
+        return ownerName.toLowerCase().trim();
     }
 
     public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+        this.ownerName = ownerName.toLowerCase().trim();
+    }
+
+    public String getCity() {
+        if(city == null){
+            return "";
+        }
+        return city.toLowerCase().trim();
+    }
+
+    public void setCity(String city) {
+        this.city = city.toLowerCase().trim();
+    }
+
+    public String getStreet() {
+        if(street == null){
+            return "";
+        }
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCap() {
+        if(cap == null){
+            return "";
+        }
+        return cap;
+    }
+
+    public void setCap(String cap) {
+        this.cap = cap;
     }
 }

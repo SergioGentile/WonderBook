@@ -126,4 +126,17 @@
     <string name="tab_author">Autore</string>
     <string name="tab_rating">Punteggio</string>
     <string name="tab_all">Qualsiasi</string>
+    <string name="no_change">Questa è già la tua email!</string>
+    <string name="account_setting">impostazioni account</string>
+    <string name="position">Posizione</string>
+    <string name="position_description">Fai sapere agli altri dove si trova il libro</string>
+    <string name="user">Utente</string>
+    <string name="order">ORDINA</string>
+    <string name="no_results">La ricerca non ha prodotto risultati</string>
+    <string name="latest_releases_near_you">Le ultime uscite vicino a te</string>
+    <string name="rating">Voto</string>
+    <string name="distance">Distanza</string>
+    <string name="own_pos_not_found">Attenzione: non è stato possibile trovare la tua posizione</string>
+    <string name="closest_to_you">I più vicini a te</string>
+    <string name="most_rating">I più votati</string>
 </resources>
