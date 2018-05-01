@@ -140,4 +140,5 @@
     <string name="own_pos_not_found">Warning: it was not possible to find your position</string>
     <string name="closest_to_you">The closest to you</string>
     <string name="most_rating">The most rating</string>
+    <string name="account_setting">account settings</string>
 </resources>

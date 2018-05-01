@@ -126,4 +126,19 @@
     <string name="tab_title">عنوان</string>
     <string name="tab_author">نویسنده</string>
     <string name="tab_rating">نمره</string>
+    <string name="no_change">هذا هو بالفعل البريد الإلكتروني الخاص بك!</string>
+    <string name="account_setting">إعدادت الحساب</string>
+    <string name="tab_all">أي</string>
+    <string name="position">موضع</string>
+    <string name="position_description">دع الآخرين يعرفون أين هو الكتاب</string>
+    <string name="user">المستعمل</string>
+    <string name="order">طلب</string>
+    <string name="no_results">لم يعيد البحث أي نتائج</string>
+    <string name="latest_releases_near_you">أحدث الإصدارات بالقرب منك</string>
+    <string name="distance">مسافه: بعد</string>
+    <string name="rating">تقييم</string>
+    <string name="latest_releases">أحدث الإصدارات</string>
+    <string name="own_pos_not_found">تحذير: لم يكن من الممكن العثور على موقعك</string>
+    <string name="closest_to_you">الأقرب إليك</string>
+    <string name="most_rating">أكثر تصنيف</string>
 </resources>

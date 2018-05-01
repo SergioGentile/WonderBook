@@ -38,6 +38,7 @@
             android:layout_height="match_parent">
 
             <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:scrollbars="vertical"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/lv"
@@ -46,7 +47,7 @@
                 android:background="@color/colorDivider"
                 android:divider="@color/colorDivider"
                 android:dividerHeight="0dp"
-                tools:context="it.polito.mad.booksharing.ShowAllMyBook"></ListView>
+                tools:context="it.polito.mad.booksharing.ShowAllMyBook"/>
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <ProgressBar

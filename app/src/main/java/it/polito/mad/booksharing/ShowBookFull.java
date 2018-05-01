@@ -165,7 +165,11 @@ public class ShowBookFull extends AppCompatActivity {
             TextView tvSharedByName = (TextView) findViewById(R.id.name_shared_by);
             tvSharedByName.setText(user.getName().getValue() + " " + user.getSurname().getValue());
             TextView tvSharedByLocation = (TextView) findViewById(R.id.location_shared_by);
-            String currentLocation = book.getCity();
+            String city = book.getCity();
+            if(book.getCity().length()>=2){
+                city = book.getCity().substring(0,1).toUpperCase() + book.getCity().substring(1);
+            }
+            String currentLocation = city;
             currentLocation += ", " + book.getStreet();
             tvSharedByLocation.setText(currentLocation);
 

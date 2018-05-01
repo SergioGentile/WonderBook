@@ -854,6 +854,9 @@ public class MainPage extends AppCompatActivity
 
     private int getRandom(int min, int max) {
         Random r = new Random();
+        while(max <= min){
+            max++;
+        }
         return r.nextInt(max - min) + max;
     }
 
@@ -1321,7 +1324,7 @@ public class MainPage extends AppCompatActivity
                         if (stringRuntime.get(position).getItemType() == OWNER) {
                             d = getDrawable(R.drawable.ic_person_black_24dp);
                         } else if (stringRuntime.get(position).getItemType() == TITLE) {
-                            d = getDrawable(R.drawable.ic_book_black_24dp);
+                            d = getDrawable(R.drawable.book_open_page);
                         } else if (stringRuntime.get(position).getItemType() == CITY) {
                             d = getDrawable(R.drawable.ic_location_city_black_24dp);
                         } else if (stringRuntime.get(position).getItemType() == PUBLISHER) {
