@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -107,7 +108,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainPage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener {
 
     private boolean firtTime = true;
     private User user;
@@ -145,12 +146,14 @@ public class MainPage extends AppCompatActivity
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
     private TextView orderDialog, tvOrderType;
+    private boolean noPos;
 
     double latPhone, longPhone;
     private boolean tabFlag = false;
     private LinearLayout emptyResearch;
     private ProgressBar progressAnimation;
     private List<SortedLocationItem> sortedLocationItems;
+    LocationManager locationManager;
 
 
     @Override
@@ -513,17 +516,64 @@ public class MainPage extends AppCompatActivity
                             firtTime = false;
                         }
 
-                        Geocoder geocoder = new Geocoder(MainPage.this);
-                        List<Address> addresses;
-                        String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
-                        try {
-                            addresses = geocoder.getFromLocationName(location, 1);
-                            if (addresses.size() > 0) {
-                                latPhone = addresses.get(0).getLatitude();
-                                longPhone = addresses.get(0).getLongitude();
+                        //Here get the position and store it on latPhone and longPhone
+
+                        //*POSIZIONE*
+                        //Qua viene cercata la posizione attuale.
+                        //Bisogna gestire i permessi.
+                        //Se non si ha il permesso entra nel primo ramo dell'if e calcola la distanza libro/posizione rispetto alla posizione
+                        //che si ha sulla showProfile.
+                        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        if (ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            Geocoder geocoder = new Geocoder(MainPage.this);
+                            List<Address> addresses;
+                            String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
+                            try {
+                                addresses = geocoder.getFromLocationName(location, 1);
+                                if (addresses.size() > 0) {
+                                    latPhone = addresses.get(0).getLatitude();
+                                    longPhone = addresses.get(0).getLongitude();
+                                }
+                                else{
+                                    latPhone=-1;
+                                    longPhone=-1;
+                                }
+                            } catch (Exception e) {
+                                Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
+                                latPhone=-1;
+                                longPhone=-1;
                             }
-                        } catch (Exception e) {
-                            Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
+                        }
+                        else{
+                            try {
+                                Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+                                onLocationChanged(location);
+                            }
+                            catch (Exception e){
+                                Geocoder geocoder = new Geocoder(MainPage.this);
+                                List<Address> addresses;
+                                String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
+                                try {
+                                    addresses = geocoder.getFromLocationName(location, 1);
+                                    if (addresses.size() > 0) {
+                                        latPhone = addresses.get(0).getLatitude();
+                                        longPhone = addresses.get(0).getLongitude();
+                                        latPhone=-1;
+                                        longPhone=-1;
+                                    }
+                                } catch (Exception e1) {
+                                    latPhone=-1;
+                                    longPhone=-1;
+                                    Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
+                                }
+                            }
                         }
                     }
 
@@ -775,7 +825,13 @@ public class MainPage extends AppCompatActivity
                                                 Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(booksMatch.get(i).getTitle()).snippet(snippet));
                                                 markers.put(key, m);
                                                 //Evaluate distance for the bok
-                                                booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
+                                                if(latPhone!=-1 && longPhone!=-1){
+                                                    booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
+                                                }
+                                                else{
+                                                    booksMatch.get(i).setDistance(-1);
+                                                }
+
                                                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                                                 for (Marker marker : markers.values()) {
                                                     builder.include(marker.getPosition());
@@ -854,7 +910,7 @@ public class MainPage extends AppCompatActivity
 
     private int getRandom(int min, int max) {
         Random r = new Random();
-        while(max <= min){
+        while (max <= min) {
             max++;
         }
         return r.nextInt(max - min) + max;
@@ -914,7 +970,12 @@ public class MainPage extends AppCompatActivity
                                             counter_location++;
                                             if (location != null) {
                                                 String snippet = getString(R.string.shared_by) + " " + booksMatch.get(i).getOwnerName();
-                                                booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
+                                                if(latPhone!=-1 && longPhone!=-1){
+                                                    booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
+                                                }
+                                                else{
+                                                    booksMatch.get(i).setDistance(-1);
+                                                }
                                                 sortedLocationItems.add(new SortedLocationItem(booksMatch.get(i), snippet, location.latitude, location.longitude));
                                             } else {
                                                 booksMatch.get(i).setDistance(-1);
@@ -1364,14 +1425,11 @@ public class MainPage extends AppCompatActivity
         query = query.toLowerCase();
         if (book.getTitle().toLowerCase().contains(query)) {
             return TITLE;
-        }
-        else if (book.getAuthor().toLowerCase().contains(query)) {
+        } else if (book.getAuthor().toLowerCase().contains(query)) {
             return AUTHOR;
-        }
-        else if (book.getCity().toLowerCase().contains(query)) {
+        } else if (book.getCity().toLowerCase().contains(query)) {
             return CITY;
-        }
-        else if (book.getOwnerName().toLowerCase().contains(query)) {
+        } else if (book.getOwnerName().toLowerCase().contains(query)) {
             return OWNER;
         } else if (book.getPublisher().toLowerCase().contains(query)) {
             return PUBLISHER;
@@ -1426,6 +1484,27 @@ public class MainPage extends AppCompatActivity
         } else if (position == 2) {
             setAdapter(DATE);
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latPhone = location.getLatitude();
+        longPhone = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
 
