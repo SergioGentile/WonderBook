@@ -615,11 +615,11 @@ public class MainPage extends AppCompatActivity
                     .load(user.getUser_image_url()).noFade()
                     .placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp)
-                    .into(userImage, new com.squareup.picasso.Callback() {
+                    .into(profileImage, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
 
-                            BitmapDrawable drawable = (BitmapDrawable) userImage.getDrawable();
+                            BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
                             Bitmap bitmap = drawable.getBitmap();
                             ContextWrapper cw = new ContextWrapper(getApplicationContext());
                             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);

@@ -659,6 +659,7 @@ public class EditProfile extends AppCompatActivity {
 
                 //Get the url of the image uploaded before, and store the new book
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                savePicturePath(true,downloadUrl.toString());
                 user.setUser_image_url( downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
@@ -686,7 +687,8 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                user.setCropped_image_url( downloadUrl.toString());
+                savePicturePath(false,downloadUrl.toString());
+               user.setCropped_image_url( downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }
@@ -867,5 +869,18 @@ public class EditProfile extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void savePicturePath(Boolean isUserPicture, String path){
+
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+
+        if(isUserPicture == true) {
+
+            dbref.child("users").child(user.getKey()).child("user_image_url").setValue(path);
+        }else{
+            dbref.child("users").child(user.getKey()).child("cropped_image_url").setValue(path);
+        }
     }
 }
