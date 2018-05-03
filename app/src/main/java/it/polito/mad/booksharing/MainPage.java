@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -170,7 +171,7 @@ public class MainPage extends AppCompatActivity
         //Ask permission for editing photo
         ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.CAMERA},
+                        android.Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION},
                 1);
 
         setContentView(R.layout.activity_main_page);
