@@ -93,6 +93,9 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,6 +117,7 @@ public class MainPage extends AppCompatActivity
     private User user;
     private TextView tvName;
     private CircleImageView profileImage;
+    private ImageView userImage,userImageOriginal;
     private View navView;
     private String userId;
     private FirebaseAuth mAuth;
@@ -178,7 +182,8 @@ public class MainPage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
+        userImage = new ImageView(MainPage.this);
+        userImageOriginal = new ImageView(MainPage.this);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -487,6 +492,16 @@ public class MainPage extends AppCompatActivity
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+            if (directory.exists()) {
+                File crop_image = new File(directory, User.profileImgNameCrop);
+                crop_image.delete();
+                File user_image = new File (directory, User.profileImgName);
+                user_image.delete();
+
+            }
+
             startActivity(new Intent(MainPage.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
             finish();
@@ -511,6 +526,7 @@ public class MainPage extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
+                        setUserInfoNavBar();
                         if (firtTime) {
                             setAdapterSearchedRecentAdd();
                             firtTime = false;
@@ -590,52 +606,128 @@ public class MainPage extends AppCompatActivity
 
     private void getImageInfoFromFireBase() {
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
-        StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
+
+        if(!user.getUser_image_url().isEmpty()) {
 
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
-        //If the directory where I want to save the image does not exist I create it
-        if (!directory.exists()) {
-            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
+                    Picasso.with(MainPage.this)
+                    .load(user.getUser_image_url()).noFade()
+                    .placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.ic_error_outline_black_24dp)
+                    .into(userImage, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                            BitmapDrawable drawable = (BitmapDrawable) userImage.getDrawable();
+                            Bitmap bitmap = drawable.getBitmap();
+                            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+                            if (!directory.exists()) {
+                                directory.mkdir();
+                            }
+                            File userPicture = new File(directory, User.profileImgName);
+                            FileOutputStream outStream = null;
+                            try {
+                                outStream = new FileOutputStream(userPicture);
+                                bitmap.compress(User.COMPRESS_FORMAT_BIT, User.IMAGE_QUALITY, outStream);
+
+                                outStream.flush();
+                                outStream.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            userImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        }
+                    });
+
+
+
+
+/*
+            StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
+
+
+
+            // path to /data/data/yourapp/app_data/imageDir
+
+            //If the directory where I want to save the image does not exist I create it
+            if (!directory.exists()) {
+                Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
+
+            }
+
+            //Create of the destination path
+            File userPicture = new File(directory, User.profileImgName);
+
+            userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                    setUserInfoNavBar();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+*/
+            StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture_Original." + User.COMPRESS_FORMAT_STR);
+
+            Picasso.with(MainPage.this)
+                    .load(user.getCropped_image_url()).noFade()
+                    .placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.ic_error_outline_black_24dp)
+                    .into(userImageOriginal, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            BitmapDrawable drawable = (BitmapDrawable) userImageOriginal.getDrawable();
+                            Bitmap bitmap = drawable.getBitmap();
+                            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+                            File userPicture = new File(directory, User.profileImgNameCrop);
+                            FileOutputStream outStream = null;
+                            try {
+                                outStream = new FileOutputStream(userPicture);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                                outStream.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            userImageOriginal.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        }
+                    });
+
+         /*   File originalPicture = new File(directory, User.profileImgNameCrop);
+
+            originalPictureRef.getFile(originalPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println(e.toString());
+                }
+            });*/
 
         }
-
-        //Create of the destination path
-        File userPicture = new File(directory, User.profileImgName);
-
-        userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                setUserInfoNavBar();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-        StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture_Original." + User.COMPRESS_FORMAT_STR);
-
-
-        File originalPicture = new File(directory, User.profileImgNameCrop);
-
-        originalPictureRef.getFile(originalPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println(e.toString());
-            }
-        });
-
-
     }
 
 

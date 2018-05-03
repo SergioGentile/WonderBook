@@ -48,6 +48,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.File;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -406,6 +408,15 @@ public class ShowProfile extends AppCompatActivity
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+            if (directory.exists()) {
+                File crop_image = new File(directory, User.profileImgNameCrop);
+                crop_image.delete();
+                File user_image = new File (directory, User.profileImgName);
+                user_image.delete();
+
+            }
             startActivity(new Intent(ShowProfile.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         }
 

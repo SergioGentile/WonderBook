@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 public class User implements Parcelable{
     private MyPair name, surname, phone, email, description, city, cap, street;
     private String imagePath="";
+    private String user_image_url;
+    private String cropped_image_url;
     private String key;
     public static final int IMAGE_QUALITY = 100;
     public static final Bitmap.CompressFormat COMPRESS_FORMAT_BIT= Bitmap.CompressFormat.JPEG;
@@ -52,7 +54,7 @@ public class User implements Parcelable{
         this.street = street;
     }
 
-    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street,String imagePath,String key) {
+    public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street,String imagePath,String key,String user_image_url,String cropped_image_url) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
@@ -63,6 +65,8 @@ public class User implements Parcelable{
         this.street = street;
         this.imagePath = imagePath;
         this.key = key;
+        this.user_image_url = user_image_url;
+        this.cropped_image_url = cropped_image_url;
     }
 
     public User(User value) {
@@ -77,6 +81,8 @@ public class User implements Parcelable{
         this.street =new MyPair( value.getStreet());
         this.imagePath = new String(value.getImagePath());
         this.key = new String(value.getKey());
+        this.user_image_url = new String(value.getUser_image_url());
+        this.cropped_image_url = new String(value.getCropped_image_url());
     }
 
     //All the setter and getter of the fields
@@ -167,6 +173,8 @@ public class User implements Parcelable{
         dest.writeString(this.street.getValue()+"/t"+this.street.getStatus());
         dest.writeString(this.getImagePath());
         dest.writeString(this.getKey());
+        dest.writeString(this.getUser_image_url());
+        dest.writeString(this.getCropped_image_url());
     }
 
     public final static Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -201,6 +209,8 @@ public class User implements Parcelable{
         this.street = new MyPair(newstreet[0],newstreet[1]);
         this.imagePath = parcel.readString();
         this.key = parcel.readString();
+        this.user_image_url = parcel.readString();
+        this.cropped_image_url = parcel.readString();
     }
 
 
@@ -338,6 +348,24 @@ public class User implements Parcelable{
         }
 
         return true;
+    }
+
+
+
+    public String getUser_image_url() {
+        return user_image_url;
+    }
+
+    public void setUser_image_url(String user_image_url) {
+        this.user_image_url = user_image_url;
+    }
+
+    public String getCropped_image_url() {
+        return cropped_image_url;
+    }
+
+    public void setCropped_image_url(String cropped_image_url) {
+        this.cropped_image_url = cropped_image_url;
     }
 
 

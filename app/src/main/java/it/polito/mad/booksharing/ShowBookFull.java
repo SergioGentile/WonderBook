@@ -47,6 +47,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -69,33 +70,40 @@ public class ShowBookFull extends AppCompatActivity {
     private void setBitmapFromFirebase(final CircleImageView image) {
 
         final long time_sd = System.currentTimeMillis();
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference();
-        StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
-        if (!directory.exists()) {
-            return;
-        }
-        //Create of the destination path
-        File userPicture = new File(directory, User.profileImgName.replace("profile.", "profile_samb."));
-        userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                long time_ed = System.currentTimeMillis();
-                Log.d("Time to download", time_ed - time_sd + "");
-                Bitmap imageDown = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
-                image.setImageBitmap(imageDown);
-                long time_d = System.currentTimeMillis();
-                Log.d("Time to decode", time_d - time_ed + "");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-            }
-        });
+        Picasso.with(ShowBookFull.this)
+                .load(user.getUser_image_url()).noFade()
+                .placeholder(R.drawable.progress_animation)
+                .error(R.drawable.ic_error_outline_black_24dp)
+                .into(image, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                        long time_ed = System.currentTimeMillis();
+
+                        BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
+                        Bitmap bitmap = drawable.getBitmap();
+                        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                        File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+                        File userPicture = new File(directory, User.profileImgName.replace("profile.", "profile_samb."));
+                        FileOutputStream outStream = null;
+                        try {
+                            outStream = new FileOutputStream(userPicture);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                            outStream.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("Time to download", time_ed - time_sd + "");
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                });
     }
 
     @Override

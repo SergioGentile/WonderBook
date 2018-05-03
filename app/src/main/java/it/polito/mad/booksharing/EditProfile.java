@@ -70,6 +70,7 @@ public class EditProfile extends AppCompatActivity {
     private Boolean email_change;
 
 
+
     //This int are useful to distinguish the different activities managed on the function onActivityResult
     private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
     private static final int MODIFY_CREDENTIALS = 3;
@@ -641,7 +642,9 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date()).replace(" ", "_").replace(":", "_");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_"+currentDateTimeString+"." + User.COMPRESS_FORMAT_STR);
+
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -653,6 +656,10 @@ public class EditProfile extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                //Get the url of the image uploaded before, and store the new book
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                user.setUser_image_url( downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }
@@ -664,7 +671,9 @@ public class EditProfile extends AppCompatActivity {
 
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original." + User.COMPRESS_FORMAT_STR);
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date()).replace(" ", "_").replace(":", "_");
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original_"+currentDateTimeString+"." + User.COMPRESS_FORMAT_STR);
+
         UploadTask uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -676,6 +685,8 @@ public class EditProfile extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                user.setCropped_image_url( downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }

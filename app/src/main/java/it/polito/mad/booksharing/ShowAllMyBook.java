@@ -1,6 +1,7 @@
 package it.polito.mad.booksharing;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -298,6 +300,15 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
         else if(id == R.id.nav_exit){
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+            if (directory.exists()) {
+                File crop_image = new File(directory, User.profileImgNameCrop);
+                crop_image.delete();
+                File user_image = new File (directory, User.profileImgName);
+                user_image.delete();
+
+            }
             startActivity(new Intent(ShowAllMyBook.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         }
 
