@@ -5,47 +5,30 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
-import android.content.Intent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -93,7 +76,7 @@ public class ShowProfile extends AppCompatActivity
 
 
         //Initialize the user (must be removed an replace with data stored previously)
-        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             btnModify.setVisibility(View.GONE);
         } else {
             getUserInfoFromSharedPref();
@@ -148,7 +131,7 @@ public class ShowProfile extends AppCompatActivity
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(1).setChecked(true);
-        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             getUserInfoFromExtra();
             setUser();
         } else {
@@ -165,7 +148,7 @@ public class ShowProfile extends AppCompatActivity
         expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
         //If the user image is setted I take that from the path specified inside the user object
         //else I user the default one specified inside the resources
-        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb.")));
         } else if (user.getImagePath() != null) {
             expandedImage.setImageBitmap(BitmapFactory.decodeFile(user.getImagePath()));
@@ -354,7 +337,7 @@ public class ShowProfile extends AppCompatActivity
     private void showUserPictureProfile(User user) {
         Bitmap image = null;
 
-        if (getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_mp") != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
             circleImageView = (CircleImageView) findViewById(R.id.profileImage);
             circleImageView.setImageBitmap(image);
@@ -413,7 +396,7 @@ public class ShowProfile extends AppCompatActivity
             if (directory.exists()) {
                 File crop_image = new File(directory, User.profileImgNameCrop);
                 crop_image.delete();
-                File user_image = new File (directory, User.profileImgName);
+                File user_image = new File(directory, User.profileImgName);
                 user_image.delete();
 
             }
@@ -458,7 +441,7 @@ public class ShowProfile extends AppCompatActivity
         navView.getBackground().setAlpha(80);
 
         CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
-        if(getIntent().getExtras()!=null && getIntent().getExtras().getParcelable("user_owner")!=null){
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
             User currentUser = getIntent().getExtras().getParcelable("user_owner");
             barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
             Bitmap image = null;
@@ -466,8 +449,7 @@ public class ShowProfile extends AppCompatActivity
                 image = BitmapFactory.decodeFile(currentUser.getImagePath());
                 barprofileImage.setImageBitmap(image);
             }
-        }
-        else{
+        } else {
             barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
             Bitmap image = null;
 

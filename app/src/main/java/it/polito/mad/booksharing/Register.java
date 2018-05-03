@@ -1,16 +1,12 @@
 package it.polito.mad.booksharing;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -22,22 +18,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
 
-    private EditText loginEmail , loginPassword, loginConfirmPassword;
+    Button btnRegister;
+    private EditText loginEmail, loginPassword, loginConfirmPassword;
     private FirebaseAuth mAuth;
     private ProgressBar progress;
     private LinearLayout container;
+    private String clean_email;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -55,10 +49,6 @@ public class Register extends AppCompatActivity {
         loginConfirmPassword.setText(inState.getString("passConf"));
     }
 
-
-    Button btnRegister;
-
-    private String clean_email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +57,7 @@ public class Register extends AppCompatActivity {
         btnRegister = (Button) findViewById(R.id.buttonRegister);
         loginEmail = (EditText) findViewById(R.id.edtLoginName);
         loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
-        loginConfirmPassword = (EditText)findViewById(R.id.edtLoginPassword2);
+        loginConfirmPassword = (EditText) findViewById(R.id.edtLoginPassword2);
 
         progress = (ProgressBar) findViewById(R.id.register_progress);
         container = (LinearLayout) findViewById(R.id.RegisterContainer);
@@ -80,7 +70,7 @@ public class Register extends AppCompatActivity {
                 loginEmail.setError(null);
                 loginPassword.setError(null);
 
-                clean_email = loginEmail.getText().toString().toLowerCase().replace(" ","");
+                clean_email = loginEmail.getText().toString().toLowerCase().replace(" ", "");
                 String password = loginPassword.getText().toString();
 
                 boolean cancel = false;
@@ -91,7 +81,7 @@ public class Register extends AppCompatActivity {
                     loginPassword.setError(getString(R.string.weak_pwd));
                     focusView = loginPassword;
                     cancel = true;
-                }else if (!loginPassword.getText().toString().equals(loginConfirmPassword.getText().toString())){
+                } else if (!loginPassword.getText().toString().equals(loginConfirmPassword.getText().toString())) {
                     loginConfirmPassword.setError(getString(R.string.login_psw_error));
                     focusView = loginConfirmPassword;
                     cancel = true;
@@ -123,7 +113,7 @@ public class Register extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         mAuth.getCurrentUser().sendEmailVerification();
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(Register.this, getString(R.string.email_verif_toast1) +" "+clean_email+ getString(R.string.email_verif_toast2),
+                                        Toast.makeText(Register.this, getString(R.string.email_verif_toast1) + " " + clean_email + getString(R.string.email_verif_toast2),
                                                 Toast.LENGTH_SHORT).show();
 
                                         goToEdit();
@@ -158,7 +148,7 @@ public class Register extends AppCompatActivity {
     private boolean isEmailValid(String email) {
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcherMail = emailPatter.matcher(email);
-        return  matcherMail.find();
+        return matcherMail.find();
 
     }
 

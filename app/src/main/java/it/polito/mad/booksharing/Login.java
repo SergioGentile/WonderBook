@@ -1,42 +1,29 @@
 package it.polito.mad.booksharing;
 
-import android.*;
-import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.icu.text.UnicodeSet;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.text.Html;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -45,8 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +49,10 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    /**
+     * Id to identity READ_CONTACTS permission request.
+     */
+    private static final int REQUEST_READ_CONTACTS = 0;
     private Button button;
     private EditText loginEmail, loginPassword;
     private ProgressBar progress;
@@ -71,10 +60,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private TextView login_message;
     private FirebaseUser user;
     private String fromActivity;
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -122,32 +107,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     user = FirebaseAuth.getInstance().getCurrentUser();
-                    if(checkUserCredential(user)){
+                    if (checkUserCredential(user)) {
                         startMain(user.getEmail());
                     }
                 }
             });
 
 
-            String message  = getString(R.string.confirm_mail_msg);
+            String message = getString(R.string.confirm_mail_msg);
 
             String sendMail = getString(R.string.tap_here_to_resend);
-            
-            Spannable spannable = new SpannableString(message + '\n' +sendMail);
 
-            int colorAccent = ResourcesCompat.getColor(getResources(),R.color.colorAccent,null);
+            Spannable spannable = new SpannableString(message + '\n' + sendMail);
+
+            int colorAccent = ResourcesCompat.getColor(getResources(), R.color.colorAccent, null);
 
             //Change color to string send mail
-            spannable.setSpan(new ForegroundColorSpan(colorAccent),message.length(),
-                    (message + '\n' + sendMail).length(),Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(colorAccent), message.length(),
+                    (message + '\n' + sendMail).length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
             //Underline String send Mail
-            spannable.setSpan(new UnderlineSpan(),message.length(),
-                    (message + '\n' + sendMail).length(),Spannable.SPAN_COMPOSING);
+            spannable.setSpan(new UnderlineSpan(), message.length(),
+                    (message + '\n' + sendMail).length(), Spannable.SPAN_COMPOSING);
 
             login_message.setText(spannable);
 
-            login_message.setOnClickListener(new View.OnClickListener(){
+            login_message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
@@ -258,33 +243,29 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             //reload Firebase user
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             showProgress(true);
-            if(checkUserCredential(user)){
+            if (checkUserCredential(user)) {
                 startMain(user.getEmail());
-            }
-            else{
-                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            } else {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
                         user = FirebaseAuth.getInstance().getCurrentUser();
-                        if(task.isSuccessful() && user.isEmailVerified()){
+                        if (task.isSuccessful() && user.isEmailVerified()) {
                             startMain(user.getEmail());
-                        }
-                        else if (!task.isSuccessful()){
+                        } else if (!task.isSuccessful()) {
                             Toast.makeText(Login.this, getString(R.string.authentication_failed),
                                     Toast.LENGTH_SHORT).show();
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                             showProgress(false);
-                        }
-                        else{
+                        } else {
                             //reload user to check if it has verified e-mail
                             mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if(checkUserCredential(user)){
+                                    if (checkUserCredential(user)) {
                                         startMain(user.getEmail());
-                                    }
-                                    else{
+                                    } else {
 
                                         Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
@@ -312,7 +293,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private boolean isEmailValid(String email) {
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcherMail = emailPatter.matcher(email);
-        return  matcherMail.find();
+        return matcherMail.find();
     }
 
     private boolean isPasswordValid(String password) {

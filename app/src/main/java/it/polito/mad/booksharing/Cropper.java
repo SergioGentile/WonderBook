@@ -6,8 +6,8 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -40,8 +40,8 @@ public class Cropper extends AppCompatActivity {
 
         //Take all the references to the view
         btnDone = (TextView) findViewById(R.id.btn_done);
-        btnRotate = (ImageButton)findViewById(R.id.rotate_button);
-        cropperView = (CropperView)findViewById(R.id.imageView);
+        btnRotate = (ImageButton) findViewById(R.id.rotate_button);
+        cropperView = (CropperView) findViewById(R.id.imageView);
         cropperView.setImageBitmap(originalBitmap);
         rotation = 0;
 
@@ -50,7 +50,7 @@ public class Cropper extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Save the cropped image on the storage
-                saveImageOnInternalStorage(rotateBitmap(cropperView.getCroppedBitmap(), rotation%360));
+                saveImageOnInternalStorage(rotateBitmap(cropperView.getCroppedBitmap(), rotation % 360));
                 setResult(Activity.RESULT_OK);
                 finish();
             }
@@ -63,7 +63,7 @@ public class Cropper extends AppCompatActivity {
             public void onClick(View v) {
                 //Rotate the image
                 //newBitmap contain the new version of the image
-                cropperView.setRotation(rotation+=90);
+                cropperView.setRotation(rotation += 90);
             }
         });
 
@@ -88,7 +88,7 @@ public class Cropper extends AppCompatActivity {
 
 
     //Save the image on the storage dedicated to the application.
-    private void saveImageOnInternalStorage(Bitmap bitmap){
+    private void saveImageOnInternalStorage(Bitmap bitmap) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
         if (!directory.exists()) {

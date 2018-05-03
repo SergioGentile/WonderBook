@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.google.zxing.Result;
 
@@ -55,11 +54,11 @@ public class CameraScan extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-       mScannerView.stopCamera();
-       Intent intent = new Intent();
-       setResult(RESULT_CANCELED, intent);
-       finish();
+    public void onBackPressed() {
+        mScannerView.stopCamera();
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
 
     }
 
@@ -81,13 +80,12 @@ public class CameraScan extends AppCompatActivity {
                 //Ask to the server the JSON file that contain informations about the searched book.
                 //Add the ISBN (code) to the request
                 //Start an AsyncTask that ask for the Json
-                if(getIntent().getBooleanExtra("only-isbn", false)){
+                if (getIntent().getBooleanExtra("only-isbn", false)) {
                     Intent intent = new Intent();
-                    intent.putExtra("isbn", code );
+                    intent.putExtra("isbn", code);
                     setResult(RESULT_OK, intent);
                     finish();
-                }
-                else{
+                } else {
                     new DownloadJson(CameraScan.this).execute("https://www.googleapis.com/books/v1/volumes?q=isbn:" + code);
                 }
 
@@ -204,8 +202,7 @@ public class CameraScan extends AppCompatActivity {
 
                 {
                     e.printStackTrace();
-                } finally
-                {
+                } finally {
                     if (connection != null) {
                         connection.disconnect();
                     }
@@ -231,7 +228,7 @@ public class CameraScan extends AppCompatActivity {
 
             //Here all the Json file have been downloaded
             Intent intent = new Intent();
-            if(code!=null){
+            if (code != null) {
                 intent.putExtra("isbn", code);
             }
             if (results.isEmpty()) {
@@ -242,30 +239,29 @@ public class CameraScan extends AppCompatActivity {
                 //If some information miss, put "" in the book object so that the user will have the opportunity to fill it.
                 List<Book> books = new ArrayList<>();
                 setResult(RESULT_OK, intent);
-                for(String result : results) {
+                for (String result : results) {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         JSONObject volumeInfo = jsonObject.getJSONObject("volumeInfo");
 
                         String title = "";
-                        if(volumeInfo.has("title")){
-                            title =  volumeInfo.getString("title");
+                        if (volumeInfo.has("title")) {
+                            title = volumeInfo.getString("title");
                         }
 
                         String subtitle = "";
-                        if(volumeInfo.has("subtitle")){
-                            subtitle =  volumeInfo.getString("subtitle");
+                        if (volumeInfo.has("subtitle")) {
+                            subtitle = volumeInfo.getString("subtitle");
                         }
 
                         String author = "";
                         boolean first = true;
-                        if(volumeInfo.has("authors")){
+                        if (volumeInfo.has("authors")) {
                             JSONArray authors = volumeInfo.getJSONArray("authors");
                             for (int j = 0; j < authors.length(); j++) {
-                                if(first==false){
+                                if (first == false) {
                                     author += ", ";
-                                }
-                                else{
+                                } else {
                                     first = false;
                                 }
                                 author += authors.getString(j);
@@ -274,28 +270,28 @@ public class CameraScan extends AppCompatActivity {
                         }
 
                         String date = "";
-                        if(volumeInfo.has("publishedDate")){
-                            date =  volumeInfo.getString("publishedDate");
+                        if (volumeInfo.has("publishedDate")) {
+                            date = volumeInfo.getString("publishedDate");
                         }
 
                         String publisher = "";
-                        if(volumeInfo.has("publisher")){
-                            publisher =  volumeInfo.getString("publisher");
+                        if (volumeInfo.has("publisher")) {
+                            publisher = volumeInfo.getString("publisher");
                         }
 
 
                         String urlStr = "";
-                        if(volumeInfo.has("imageLinks")){
+                        if (volumeInfo.has("imageLinks")) {
                             JSONObject imageLink = volumeInfo.getJSONObject("imageLinks");
-                            if(imageLink.has("thumbnail")){
-                               urlStr = imageLink.getString("thumbnail");
+                            if (imageLink.has("thumbnail")) {
+                                urlStr = imageLink.getString("thumbnail");
                             }
                         }
 
 
                         //Take isbn
                         String isbn10 = null, isbn13 = null;
-                        if(volumeInfo.has("industryIdentifiers")){
+                        if (volumeInfo.has("industryIdentifiers")) {
                             JSONArray ibans = volumeInfo.getJSONArray("industryIdentifiers");
                             if (ibans.getJSONObject(0).getString("type").equals("ISBN_10")) {
                                 isbn10 = ibans.getJSONObject(0).getString("identifier");

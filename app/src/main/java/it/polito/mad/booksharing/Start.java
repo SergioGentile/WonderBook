@@ -3,20 +3,16 @@ package it.polito.mad.booksharing;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Start extends AppCompatActivity {
 
-    private static final int LOGIN =  1;
+    private static final int LOGIN = 1;
     private Button btnRegister;
     private Button btnLogin;
     private FirebaseAuth mAuth;
@@ -38,7 +34,7 @@ public class Start extends AppCompatActivity {
                 //Start Login Activity
                 Intent intent = new Intent(Start.this, Login.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("from","Start");
+                bundle.putString("from", "Start");
                 intent.putExtras(bundle);
                 startActivityForResult(intent, LOGIN);
             }
@@ -75,8 +71,8 @@ public class Start extends AppCompatActivity {
         //Here we understand that the activity that produce a result is the one associated with the constant MODIFY_PROFILE.
         //The activity return an user that contains all the modification done
         if (requestCode == LOGIN) {
-            if(resultCode == Activity.RESULT_OK){
-               finish();
+            if (resultCode == Activity.RESULT_OK) {
+                finish();
             }
         }
     }

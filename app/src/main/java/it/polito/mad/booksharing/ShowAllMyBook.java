@@ -6,22 +6,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,7 +36,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -46,7 +44,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class ShowAllMyBook extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView lv;
     private List<Book> data;
@@ -67,7 +65,7 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_all_my_book);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         //This class manage the exhibition of all the book owned by the user.
 
         srl = (SwipeRefreshLayout) findViewById(R.id.srl);
@@ -205,40 +203,39 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
 
                         //If an official image of the book exist, fill the card with it, otherwise fill the image view
                         //With the image taken by me (the image that show the conditions of the book)
-                       if(!book.getUrlImage().isEmpty()){
-                           Picasso.with(ShowAllMyBook.this)
-                                   .load(book.getUrlImage()).noFade()
-                                   .placeholder(R.drawable.progress_animation)
-                                   .error(R.drawable.ic_error_outline_black_24dp)
-                                   .into(imageBook, new com.squareup.picasso.Callback() {
-                                       @Override
-                                       public void onSuccess() {
-                                           imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
-                                       }
+                        if (!book.getUrlImage().isEmpty()) {
+                            Picasso.with(ShowAllMyBook.this)
+                                    .load(book.getUrlImage()).noFade()
+                                    .placeholder(R.drawable.progress_animation)
+                                    .error(R.drawable.ic_error_outline_black_24dp)
+                                    .into(imageBook, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                                        }
 
-                                       @Override
-                                       public void onError() {
-                                           imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                       }
-                                   });
-                       }
-                       else{
-                           Picasso.with(ShowAllMyBook.this)
-                                   .load(book.getUrlMyImage()).noFade()
-                                   .placeholder(R.drawable.progress_animation)
-                                   .error(R.drawable.ic_error_outline_black_24dp)
-                                   .into(imageBook, new com.squareup.picasso.Callback() {
-                                       @Override
-                                       public void onSuccess() {
-                                           imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
-                                       }
+                                        @Override
+                                        public void onError() {
+                                            imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                        }
+                                    });
+                        } else {
+                            Picasso.with(ShowAllMyBook.this)
+                                    .load(book.getUrlMyImage()).noFade()
+                                    .placeholder(R.drawable.progress_animation)
+                                    .error(R.drawable.ic_error_outline_black_24dp)
+                                    .into(imageBook, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                                        }
 
-                                       @Override
-                                       public void onError() {
-                                           imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                       }
-                                   });
-                       }
+                                        @Override
+                                        public void onError() {
+                                            imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                        }
+                                    });
+                        }
 
 
                         //Here to show all the book
@@ -293,11 +290,9 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
 
         if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowAllMyBook.this, ShowProfile.class));
-        }
-        else if(id == R.id.nav_home){
+        } else if (id == R.id.nav_home) {
             //Nothing to do
-        }
-        else if(id == R.id.nav_exit){
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
@@ -305,7 +300,7 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
             if (directory.exists()) {
                 File crop_image = new File(directory, User.profileImgNameCrop);
                 crop_image.delete();
-                File user_image = new File (directory, User.profileImgName);
+                File user_image = new File(directory, User.profileImgName);
                 user_image.delete();
 
             }
@@ -320,12 +315,11 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
     }
 
 
-
-    private void setUserInfoNavBar(){
+    private void setUserInfoNavBar() {
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (CircleImageView)navView.findViewById(R.id.profileImageNavBar);
+        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
         tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
         Bitmap image = null;
 

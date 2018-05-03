@@ -1,35 +1,23 @@
 package it.polito.mad.booksharing;
 
-import android.app.DialogFragment;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 public class DialogOrderType extends BottomSheetDialogFragment {
-    private BottomSheetListener mListener;
     Context context;
+    private BottomSheetListener mListener;
     private TextView tvDistance, tvRating, tvRecent, tvCity;
 
-    public DialogOrderType(){
+    public DialogOrderType() {
 
     }
 
-    public void setContext(Context context){
+    public void setContext(Context context) {
         this.context = context;
     }
 
@@ -78,10 +66,6 @@ public class DialogOrderType extends BottomSheetDialogFragment {
         return v;
     }
 
-    public interface BottomSheetListener {
-        void onButtonClicked(int position);
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -92,6 +76,10 @@ public class DialogOrderType extends BottomSheetDialogFragment {
             throw new ClassCastException(context.toString()
                     + " must implement BottomSheetListener");
         }
+    }
+
+    public interface BottomSheetListener {
+        void onButtonClicked(int position);
     }
 
 }

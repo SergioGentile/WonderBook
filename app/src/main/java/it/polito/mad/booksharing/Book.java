@@ -14,6 +14,15 @@ import java.util.Date;
 
 public class Book implements Parcelable {
 
+    public static final Creator CREATOR = new Creator() {
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
     private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle, city, street, cap;
     private boolean available;
     private String ownerName;
@@ -23,7 +32,7 @@ public class Book implements Parcelable {
 
     }
 
-    public Book(String title, String subtitle, String author, String year, String publisher, String description , String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available, String city, String street, String cap, String ownerName) {
+    public Book(String title, String subtitle, String author, String year, String publisher, String description, String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available, String city, String street, String cap, String ownerName) {
         this.title = title.toLowerCase().trim();
         this.subtitle = subtitle;
         this.author = author.toLowerCase().trim();
@@ -44,6 +53,33 @@ public class Book implements Parcelable {
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.format(dateCalendar);
+    }
+
+    // Parcelling part
+    public Book(Parcel in) {
+        String[] data = new String[17];
+
+
+        in.readStringArray(data);
+        this.available = in.readByte() != 0;
+        // the order needs to be the same as in writeToParcel() method
+        this.title = data[0];
+        this.subtitle = data[1];
+        this.author = data[2];
+        this.year = data[3];
+        this.publisher = data[4];
+        this.description = data[5];
+        this.urlImage = data[6];
+        this.urlMyImage = data[7];
+        this.owner = data[8];
+        this.isbn10 = data[9];
+        this.isbn13 = data[10];
+        this.rating = data[11];
+        this.date = data[12];
+        this.city = data[13];
+        this.street = data[14];
+        this.cap = data[15];
+        this.ownerName = data[16];
     }
 
     public Boolean isAvailable() {
@@ -158,33 +194,6 @@ public class Book implements Parcelable {
         this.urlImage = urlImage;
     }
 
-    // Parcelling part
-    public Book(Parcel in) {
-        String[] data = new String[17];
-
-
-        in.readStringArray(data);
-        this.available = in.readByte() != 0;
-        // the order needs to be the same as in writeToParcel() method
-        this.title = data[0];
-        this.subtitle = data[1];
-        this.author = data[2];
-        this.year = data[3];
-        this.publisher = data[4];
-        this.description = data[5];
-        this.urlImage = data[6];
-        this.urlMyImage = data[7];
-        this.owner = data[8];
-        this.isbn10 = data[9];
-        this.isbn13 = data[10];
-        this.rating = data[11];
-        this.date = data[12];
-        this.city = data[13];
-        this.street = data[14];
-        this.cap = data[15];
-        this.ownerName = data[16];
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -208,21 +217,11 @@ public class Book implements Parcelable {
         dest.writeByte((byte) (available ? 1 : 0));
     }
 
-    public static final Creator CREATOR = new Creator() {
-        public Book createFromParcel(Parcel in) {
-            return new Book(in);
-        }
-
-        public Book[] newArray(int size) {
-            return new Book[size];
-        }
-    };
-
-    public Double getDistance(){
+    public Double getDistance() {
         return this.distance;
     }
 
-    public void setDistance(double distance){
+    public void setDistance(double distance) {
         this.distance = new Double(distance);
     }
 
@@ -235,7 +234,7 @@ public class Book implements Parcelable {
     }
 
     public String getCity() {
-        if(city == null){
+        if (city == null) {
             return "";
         }
         return city.toLowerCase().trim();
@@ -246,7 +245,7 @@ public class Book implements Parcelable {
     }
 
     public String getStreet() {
-        if(street == null){
+        if (street == null) {
             return "";
         }
         return street;
@@ -257,7 +256,7 @@ public class Book implements Parcelable {
     }
 
     public String getCap() {
-        if(cap == null){
+        if (cap == null) {
             return "";
         }
         return cap;

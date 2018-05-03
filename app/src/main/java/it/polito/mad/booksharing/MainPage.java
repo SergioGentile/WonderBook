@@ -1,13 +1,8 @@
 package it.polito.mad.booksharing;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,36 +17,22 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabItem;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.SearchView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,20 +43,16 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -84,20 +61,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -106,7 +77,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -114,17 +84,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainPage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener {
 
-    private boolean firtTime = true;
-    private User user;
-    private TextView tvName;
-    private CircleImageView profileImage;
-    private ImageView userImage,userImageOriginal;
-    private View navView;
-    private String userId;
-    private FirebaseAuth mAuth;
-    private MapView mMapView;
-    private MaterialSearchView searchView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
+    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3, YOUR_CITY = 4;
     //For showing book
     LinearLayout ll_search_runtime;
     ListView lv_search_runtime, lv_searched;
@@ -135,7 +97,6 @@ public class MainPage extends AppCompatActivity
     //To avoid the repetition when i search something
     ArrayList<String> stringAlreadyMatched;
     ArrayList<ShowOnAdapter> stringRuntime;
-
     //to show all the result of the research
     ArrayList<Book> booksMatch;
     CopyOnWriteArrayList<User> usersDownload;
@@ -144,26 +105,32 @@ public class MainPage extends AppCompatActivity
     HashMap<String, Marker> markers;
     boolean submit;
     int searchBarItem;
-    private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
-    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3, YOUR_CITY = 4;
     int counter_location;
+    double latPhone, longPhone;
+    LocationManager locationManager;
+    private boolean firtTime = true;
+    private User user;
+    private TextView tvName;
+    private CircleImageView profileImage;
+    private ImageView userImage, userImageOriginal;
+    private View navView;
+    private String userId;
+    private FirebaseAuth mAuth;
+    private MapView mMapView;
+    private MaterialSearchView searchView;
     private int tabFieldSearch;
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
     private TextView orderDialog, tvOrderType;
-
-    double latPhone, longPhone;
     private boolean tabFlag = false;
     private LinearLayout emptyResearch;
     private ProgressBar progressAnimation;
     private List<SortedLocationItem> sortedLocationItems;
-    LocationManager locationManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         mAuth = FirebaseAuth.getInstance();
 
         //Ask permission for editing photo
@@ -173,13 +140,13 @@ public class MainPage extends AppCompatActivity
                 1);
 
         setContentView(R.layout.activity_main_page);
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        searchView = findViewById(R.id.search_view);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = findViewById(R.id.tabs);
         userImage = new ImageView(MainPage.this);
         userImageOriginal = new ImageView(MainPage.this);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -425,6 +392,7 @@ public class MainPage extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setMaxZoomPreference(18);
+        enableMyLocationIfPermitted(map);
     }
 
     private void setDefaultUser() {
@@ -444,6 +412,19 @@ public class MainPage extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void enableMyLocationIfPermitted(GoogleMap map) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        } else if (map != null) {
+            map.setMyLocationEnabled(true);
         }
     }
 
@@ -494,7 +475,7 @@ public class MainPage extends AppCompatActivity
             if (directory.exists()) {
                 File crop_image = new File(directory, User.profileImgNameCrop);
                 crop_image.delete();
-                File user_image = new File (directory, User.profileImgName);
+                File user_image = new File(directory, User.profileImgName);
                 user_image.delete();
 
             }
@@ -553,23 +534,20 @@ public class MainPage extends AppCompatActivity
                                 if (addresses.size() > 0) {
                                     latPhone = addresses.get(0).getLatitude();
                                     longPhone = addresses.get(0).getLongitude();
-                                }
-                                else{
-                                    latPhone=-1;
-                                    longPhone=-1;
+                                } else {
+                                    latPhone = -1;
+                                    longPhone = -1;
                                 }
                             } catch (Exception e) {
                                 Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
-                                latPhone=-1;
-                                longPhone=-1;
+                                latPhone = -1;
+                                longPhone = -1;
                             }
-                        }
-                        else{
+                        } else {
                             try {
                                 Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
                                 onLocationChanged(location);
-                            }
-                            catch (Exception e){
+                            } catch (Exception e) {
                                 Geocoder geocoder = new Geocoder(MainPage.this);
                                 List<Address> addresses;
                                 String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -578,12 +556,12 @@ public class MainPage extends AppCompatActivity
                                     if (addresses.size() > 0) {
                                         latPhone = addresses.get(0).getLatitude();
                                         longPhone = addresses.get(0).getLongitude();
-                                        latPhone=-1;
-                                        longPhone=-1;
+                                        latPhone = -1;
+                                        longPhone = -1;
                                     }
                                 } catch (Exception e1) {
-                                    latPhone=-1;
-                                    longPhone=-1;
+                                    latPhone = -1;
+                                    longPhone = -1;
                                     Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
                                 }
                             }
@@ -604,10 +582,10 @@ public class MainPage extends AppCompatActivity
     private void getImageInfoFromFireBase() {
         StorageReference riversRef = FirebaseStorage.getInstance().getReference();
 
-        if(!user.getUser_image_url().isEmpty()) {
+        if (!user.getUser_image_url().isEmpty()) {
 
 
-                    Picasso.with(MainPage.this)
+            Picasso.with(MainPage.this)
                     .load(user.getUser_image_url()).noFade()
                     .placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp)
@@ -633,8 +611,6 @@ public class MainPage extends AppCompatActivity
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-
 
 
                         }
@@ -699,7 +675,6 @@ public class MainPage extends AppCompatActivity
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
 
 
                         }
@@ -924,10 +899,9 @@ public class MainPage extends AppCompatActivity
                                                 markers.put(key, m);
                                                 //Evaluate distance for the bok if latPhone and longPhone are available.
 
-                                                if(latPhone!=-1 && longPhone!=-1){
+                                                if (latPhone != -1 && longPhone != -1) {
                                                     booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
-                                                }
-                                                else{
+                                                } else {
                                                     booksMatch.get(i).setDistance(-1);
                                                 }
 
@@ -940,7 +914,7 @@ public class MainPage extends AppCompatActivity
                                                 int height = getResources().getDisplayMetrics().heightPixels;
                                                 int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
 
-                                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+                                                CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
                                                 map.animateCamera(cu);
 
 
@@ -1079,10 +1053,9 @@ public class MainPage extends AppCompatActivity
                                             counter_location++;
                                             if (location != null) {
                                                 String snippet = getString(R.string.shared_by) + " " + User.capitalizeSpace(booksMatch.get(i).getOwnerName());
-                                                if(latPhone!=-1 && longPhone!=-1){
+                                                if (latPhone != -1 && longPhone != -1) {
                                                     booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
-                                                }
-                                                else{
+                                                } else {
                                                     booksMatch.get(i).setDistance(-1);
                                                 }
                                                 sortedLocationItems.add(new SortedLocationItem(booksMatch.get(i), snippet, location.latitude, location.longitude));
@@ -1139,7 +1112,7 @@ public class MainPage extends AppCompatActivity
                                                     int height = getResources().getDisplayMetrics().heightPixels;
                                                     int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
 
-                                                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+                                                    CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
 
                                                     map.animateCamera(cu);
                                                 }
@@ -1251,7 +1224,6 @@ public class MainPage extends AppCompatActivity
                 }
             });
         }*/
-
 
 
         final List<String> colors = new ArrayList<>();
@@ -1653,7 +1625,7 @@ public class MainPage extends AppCompatActivity
             setAdapter(RATING);
         } else if (position == 2) {
             setAdapter(DATE);
-        }else if (position == 3) {
+        } else if (position == 3) {
             setAdapter(YOUR_CITY);
         }
     }

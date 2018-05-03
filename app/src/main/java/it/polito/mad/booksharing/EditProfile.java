@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -22,7 +23,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -55,6 +54,9 @@ import java.util.Date;
 
 public class EditProfile extends AppCompatActivity {
 
+    //This int are useful to distinguish the different activities managed on the function onActivityResult
+    private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
+    private static final int MODIFY_CREDENTIALS = 3;
     //All declarations
     private EditText edtName, edtSurname, edtCity, edtCap, edtStreet, edtPhone, edtDescription;
     private ImageButton btnDone, btnEditImg;
@@ -69,11 +71,28 @@ public class EditProfile extends AppCompatActivity {
     private Toolbar toolbar;
     private Boolean email_change;
 
+    //Calculate the parameter used for reduce the dimension and the resolution of the image
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
 
+        if (height > reqHeight || width > reqWidth) {
 
-    //This int are useful to distinguish the different activities managed on the function onActivityResult
-    private static final int IMAGE_GALLERY = 0, IMAGE_CAMERA = 1, IMAGE_CROP = 2;
-    private static final int MODIFY_CREDENTIALS = 3;
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +139,7 @@ public class EditProfile extends AppCompatActivity {
         user = getIntent().getParcelableExtra("user");
         email_change = false;
 
-        if(fromActivity.equals("Register")){
+        if (fromActivity.equals("Register")) {
 
         }
         //Set all the fields of the user in edtName, edtSurname...
@@ -355,7 +374,6 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
-
     @Override
     public void onBackPressed() {
 
@@ -452,7 +470,6 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -521,9 +538,9 @@ public class EditProfile extends AppCompatActivity {
             } else if (requestCode == MODIFY_CREDENTIALS) {
                 Bundle result = data.getExtras();
                 User.MyPair mail = result.getParcelable("mail");
-                if(mail!=null) {
+                if (mail != null) {
                     User firstUser = getIntent().getParcelableExtra("user");
-                    if(!firstUser.getEmail().getValue().equals(mail.getValue())){
+                    if (!firstUser.getEmail().getValue().equals(mail.getValue())) {
                         email_change = true;
                     }
                     firstUser.setEmail(new User.MyPair(mail));
@@ -537,7 +554,6 @@ public class EditProfile extends AppCompatActivity {
         }
 
     }
-
 
     //Get the orientation of the image specified on the path.
     private int getOrientation(String path) {
@@ -608,7 +624,6 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
-
     protected void setUserInfo() {
 
 
@@ -643,7 +658,7 @@ public class EditProfile extends AppCompatActivity {
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date()).replace(" ", "_").replace(":", "_");
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_"+currentDateTimeString+"." + User.COMPRESS_FORMAT_STR);
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_" + currentDateTimeString + "." + User.COMPRESS_FORMAT_STR);
 
         UploadTask uploadTask = riversRef.putFile(file);
 
@@ -659,8 +674,8 @@ public class EditProfile extends AppCompatActivity {
 
                 //Get the url of the image uploaded before, and store the new book
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                savePicturePath(true,downloadUrl.toString());
-                user.setUser_image_url( downloadUrl.toString());
+                savePicturePath(true, downloadUrl.toString());
+                user.setUser_image_url(downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }
@@ -673,7 +688,7 @@ public class EditProfile extends AppCompatActivity {
         Uri file = Uri.fromFile(new File(imagePath));
         //Create a storage reference from our app
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date()).replace(" ", "_").replace(":", "_");
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original_"+currentDateTimeString+"." + User.COMPRESS_FORMAT_STR);
+        StorageReference riversRef = FirebaseStorage.getInstance().getReference().child("userImgProfile/" + user.getKey() + "/picture_Original_" + currentDateTimeString + "." + User.COMPRESS_FORMAT_STR);
 
         UploadTask uploadTask = riversRef.putFile(file);
 
@@ -687,15 +702,13 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                savePicturePath(false,downloadUrl.toString());
-               user.setCropped_image_url( downloadUrl.toString());
+                savePicturePath(false, downloadUrl.toString());
+                user.setCropped_image_url(downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }
         });
     }
-
-
 
     //This method will save a bitmap inside the Internal Storage of the application
     private String saveToInternalStorage(Bitmap bitmapImage) {
@@ -726,7 +739,6 @@ public class EditProfile extends AppCompatActivity {
         }
         return imagePath;
     }
-
 
     // In order to allow the user to modify the way in witch the image is cropped I need to save also
     //the original image
@@ -796,29 +808,6 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
-    //Calculate the parameter used for reduce the dimension and the resolution of the image
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
     //Rotate the bitmap source of the orientation specified as parameter
     private Bitmap rotateBitmap(int orientation, Bitmap source) {
         Matrix matrix = new Matrix();
@@ -832,11 +821,11 @@ public class EditProfile extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(!fromActivity.equals("Register")){
+        if (!fromActivity.equals("Register")) {
             getMenuInflater().inflate(R.menu.edit_credential, menu);
             return true;
         }
-        return  false;
+        return false;
     }
 
 
@@ -858,8 +847,7 @@ public class EditProfile extends AppCompatActivity {
             //(See later)
             startActivityForResult(intent, MODIFY_CREDENTIALS);
             return true;
-        }
-        else if(id == R.id.setting_pwd){
+        } else if (id == R.id.setting_pwd) {
             Intent intent = new Intent(EditProfile.this, EditPwd.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
@@ -872,14 +860,14 @@ public class EditProfile extends AppCompatActivity {
     }
 
 
-    private void savePicturePath(Boolean isUserPicture, String path){
+    private void savePicturePath(Boolean isUserPicture, String path) {
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
 
-        if(isUserPicture == true) {
+        if (isUserPicture == true) {
 
             dbref.child("users").child(user.getKey()).child("user_image_url").setValue(path);
-        }else{
+        } else {
             dbref.child("users").child(user.getKey()).child("cropped_image_url").setValue(path);
         }
     }

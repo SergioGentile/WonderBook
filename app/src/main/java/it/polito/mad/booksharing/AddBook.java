@@ -9,27 +9,23 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AlertDialogLayout;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,53 +33,43 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 
 public class AddBook extends Activity {
 
+    final static int SCAN_CODE = 2, IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
+    ProgressDialog pd;
     private Switch swAvailable;
     private TextView tvAvailable;
     private String photoName;
     private ImageButton btnDone, btnDelete;
     private LinearLayout btnScan;
-    private EditText tvTitle, tvAuthor, tvYear, tvProduction, tvDescription, tvSubtitle, tvISBN, tvCity, tvStreet, tvCap;
+    private TextInputEditText tvTitle, tvAuthor, tvYear, tvProduction, tvSubtitle, tvISBN, tvCity, tvStreet, tvCap;
+    private EditText tvDescription;
     private ImageView myImageBook;
     private String urlMyImageBook;
-    final static int SCAN_CODE = 2, IMAGE_GALLERY = 0, IMAGE_CAMERA = 1;
     private Uri imageCameraUri;
     private String imageCameraPath;
     private File photoStorage;
@@ -95,26 +81,45 @@ public class AddBook extends Activity {
     private String uploadDate;
     private User user;
     private ScrollView sv;
-    ProgressDialog pd;
 
+    //Calculate the parameter used for reduce the dimension and the resolution of the image
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the book that the user is writing.
         //It's useful if the user rotate the screen
-        String isbn10 = new String(tvISBN.getText().toString());
-        String isbn13 = new String("");
-        if(tvISBN.getText().toString().length()==13){
+        String isbn10 = tvISBN.getText().toString();
+        String isbn13 = "";
+        if (tvISBN.getText().toString().length() == 13) {
             isbn13 = tvISBN.getText().toString();
-        }
-        else if(book!=null && book.getIsbn13()!=null){
+        } else if (book != null && book.getIsbn13() != null) {
             isbn13 = book.getIsbn13();
         }
-        if(tvISBN.getText().toString().length()==10){
+        if (tvISBN.getText().toString().length() == 10) {
             isbn10 = tvISBN.getText().toString();
-        }
-        else if(book!=null &&  book.getIsbn10()!=null){
+        } else if (book != null && book.getIsbn10() != null) {
             isbn10 = book.getIsbn10();
         }
         Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue());
@@ -145,28 +150,26 @@ public class AddBook extends Activity {
         tvCity.setText(book.getCity());
         tvCap.setText(book.getCap());
 
-        String isbn = new String("");
-        if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+        String isbn = "";
+        if (book.getIsbn13() != null && !book.getIsbn13().isEmpty()) {
             isbn = book.getIsbn13();
-        }
-        else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+        } else if (book.getIsbn10() != null && !book.getIsbn10().isEmpty()) {
             isbn = book.getIsbn10();
         }
         tvISBN.setText(isbn);
         tvDescription.setText(book.getDescription());
-        ratingBar.setRating(new Float(book.getRating()));
+        ratingBar.setRating(Float.valueOf(book.getRating()));
         tvProduction.setText(book.getPublisher());
-        urlImageBook = new String(book.getUrlImage());
-        urlMyImageBook = new String(book.getUrlMyImage());
+        urlImageBook = book.getUrlImage();
+        urlMyImageBook = book.getUrlMyImage();
         pathMyImageBook = inState.getString("path");
         uploadDate = book.getDate();
 
-        if(book.isAvailable()){
+        if (book.isAvailable()) {
             swAvailable.setChecked(true);
             tvAvailable.setTextColor(getColor(R.color.available));
             tvAvailable.setText(getString(R.string.available_upper));
-        }
-        else{
+        } else {
             swAvailable.setChecked(false);
             tvAvailable.setTextColor(getColor(R.color.unavailable));
             tvAvailable.setText(getString(R.string.unavailable_upper));
@@ -187,7 +190,6 @@ public class AddBook extends Activity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,21 +197,21 @@ public class AddBook extends Activity {
         btnScan = (LinearLayout) findViewById(R.id.btnScan);
         btnDone = (ImageButton) findViewById(R.id.btnDone);
         btnDelete = (ImageButton) findViewById(R.id.btnDelete);
-        tvAuthor = (EditText) findViewById(R.id.tvAuthor);
-        tvTitle = (EditText) findViewById(R.id.tvTitle);
-        tvISBN = (EditText) findViewById(R.id.tvISBN);
-        tvSubtitle = (EditText) findViewById(R.id.tvSubtitle);
-        tvProduction = (EditText) findViewById(R.id.tvProduction);
-        tvDescription = (EditText) findViewById(R.id.tvDescription);
+        tvAuthor = findViewById(R.id.tvAuthor);
+        tvTitle = findViewById(R.id.tvTitle);
+        tvISBN = findViewById(R.id.tvISBN);
+        tvSubtitle = findViewById(R.id.tvSubtitle);
+        tvProduction = findViewById(R.id.tvProduction);
+        tvDescription = findViewById(R.id.tvDescription);
         sv = (ScrollView) findViewById(R.id.scrollAb);
-        tvYear = (EditText) findViewById(R.id.tvYear);
+        tvYear = findViewById(R.id.tvYear);
         myImageBook = (ImageView) findViewById(R.id.myImageBook);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         swAvailable = (Switch) findViewById(R.id.swAvailable);
         tvAvailable = (TextView) findViewById(R.id.tvAvailable);
-        tvCap = (EditText) findViewById(R.id.tvCap);
-        tvCity = (EditText) findViewById(R.id.tvCity);
-        tvStreet = (EditText) findViewById(R.id.tvStreet);
+        tvCap = findViewById(R.id.tvCap);
+        tvCity = findViewById(R.id.tvCity);
+        tvStreet = findViewById(R.id.tvStreet);
         urlImageBook = "";
         urlMyImageBook = "";
 
@@ -275,10 +277,9 @@ public class AddBook extends Activity {
             tvCap.setText(book.getCap());
 
             String isbn = new String("");
-            if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+            if (book.getIsbn13() != null && !book.getIsbn13().isEmpty()) {
                 isbn = book.getIsbn13();
-            }
-            else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+            } else if (book.getIsbn10() != null && !book.getIsbn10().isEmpty()) {
                 isbn = book.getIsbn10();
             }
             tvISBN.setText(isbn);
@@ -288,12 +289,11 @@ public class AddBook extends Activity {
             ratingBar.setRating(new Float(book.getRating()));
             tvProduction.setText(book.getPublisher());
 
-            if(book.isAvailable()){
+            if (book.isAvailable()) {
                 swAvailable.setChecked(true);
                 tvAvailable.setTextColor(getColor(R.color.available));
                 tvAvailable.setText(getString(R.string.available_upper));
-            }
-            else{
+            } else {
                 swAvailable.setChecked(false);
                 tvAvailable.setTextColor(getColor(R.color.unavailable));
                 tvAvailable.setText(getString(R.string.unavailable_upper));
@@ -366,11 +366,10 @@ public class AddBook extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 swAvailable.setChecked(isChecked);
-                if(isChecked){
+                if (isChecked) {
                     tvAvailable.setTextColor(getColor(R.color.available));
                     tvAvailable.setText(getString(R.string.available_upper));
-                }
-                else{
+                } else {
                     tvAvailable.setTextColor(getColor(R.color.unavailable));
                     tvAvailable.setText(getString(R.string.unavailable_upper));
                 }
@@ -381,42 +380,38 @@ public class AddBook extends Activity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvISBN.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && !tvStreet.getText().toString().isEmpty()  && !tvCap.getText().toString().isEmpty() &&  !tvCity.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
+                if (!tvAuthor.getText().toString().isEmpty() && !tvTitle.getText().toString().isEmpty() && !tvISBN.getText().toString().isEmpty() && !tvYear.getText().toString().isEmpty() && !tvDescription.getText().toString().isEmpty() && !tvProduction.getText().toString().isEmpty() && !tvStreet.getText().toString().isEmpty() && !tvCap.getText().toString().isEmpty() && !tvCity.getText().toString().isEmpty() && (!pathMyImageBook.isEmpty() || edit)) {
                     if (tvISBN.getText().toString().length() == 13 || tvISBN.getText().toString().length() == 10) {
                         if (edit) {
                             //if we are in the edit mode, reload the information
                             String isbn10 = new String("");
                             String isbn13 = new String("");
-                            if(tvISBN.getText().toString().length()==13){
+                            if (tvISBN.getText().toString().length() == 13) {
                                 isbn13 = tvISBN.getText().toString();
-                            }
-                            else if(book.getIsbn13()!=null){
+                            } else if (book.getIsbn13() != null) {
                                 isbn13 = book.getIsbn13();
                             }
-                            if(tvISBN.getText().toString().length()==10){
+                            if (tvISBN.getText().toString().length() == 10) {
                                 isbn10 = tvISBN.getText().toString();
-                            }
-                            else if(book.getIsbn10()!=null){
+                            } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
                             }
-                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked() , tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
                         } else {
                             //Otherwise it's the first time
                             String isbn10 = new String("");
                             String isbn13 = new String("");
-                            if(tvISBN.getText().toString().length()==13){
+                            if (tvISBN.getText().toString().length() == 13) {
                                 isbn13 = tvISBN.getText().toString();
-                            }
-                            else if(book.getIsbn13()!=null){
+                            } else if (book.getIsbn13() != null) {
                                 isbn13 = book.getIsbn13();
                             }
-                            if(tvISBN.getText().toString().length()==10){
+                            if (tvISBN.getText().toString().length() == 10) {
                                 isbn10 = tvISBN.getText().toString();
-                            }
-                            else if(book.getIsbn10()!=null){
+                            } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
                             }
-                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(),  tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
                         }
                     } else {
                         Toast.makeText(AddBook.this, getString(R.string.wrong_isbn), Toast.LENGTH_SHORT).show();
@@ -439,12 +434,11 @@ public class AddBook extends Activity {
             }
         });
 
-        if(book!=null && !book.getStreet().isEmpty() && !book.getCity().isEmpty() && !book.getCap().isEmpty()){
+        if (book != null && !book.getStreet().isEmpty() && !book.getCity().isEmpty() && !book.getCap().isEmpty()) {
             tvStreet.setText(book.getStreet());
             tvCap.setText(book.getCap());
             tvCity.setText(book.getCity());
-        }
-        else{
+        } else {
             tvStreet.setText(user.getStreet().getValue());
             tvCap.setText(user.getCap().getValue());
             tvCity.setText(user.getCity().getValue());
@@ -476,10 +470,9 @@ public class AddBook extends Activity {
                 String urlImage = book.getUrlImage();
                 String publisher = book.getPublisher();
                 String isbn = new String("");
-                if(book.getIsbn13()!=null && !book.getIsbn13().isEmpty()){
+                if (book.getIsbn13() != null && !book.getIsbn13().isEmpty()) {
                     isbn = book.getIsbn13();
-                }
-                else if(book.getIsbn10()!=null && !book.getIsbn10().isEmpty()){
+                } else if (book.getIsbn10() != null && !book.getIsbn10().isEmpty()) {
                     isbn = book.getIsbn10();
                 }
                 tvISBN.setText(isbn);
@@ -489,12 +482,11 @@ public class AddBook extends Activity {
                 tvYear.setText(year);
                 urlImageBook = urlImage;
                 tvProduction.setText(publisher);
-                if(book.isAvailable()){
+                if (book.isAvailable()) {
                     swAvailable.setChecked(true);
                     tvAvailable.setTextColor(getColor(R.color.available));
                     tvAvailable.setText(getString(R.string.available_upper));
-                }
-                else{
+                } else {
                     tvAvailable.setTextColor(getColor(R.color.unavailable));
                     swAvailable.setChecked(false);
                     tvAvailable.setText(getString(R.string.unavailable_upper));
@@ -587,7 +579,6 @@ public class AddBook extends Activity {
         return directory.getAbsolutePath();
     }
 
-
     //Re-Load an existing book, for example because the user change something such as the title, author and so on
     public void reloadDatabase(Book book) {
         //Instatiate the book as final so that it can be used in the anonymous methods.
@@ -622,19 +613,17 @@ public class AddBook extends Activity {
                     Bundle bundle = new Bundle();
                     String isbn10 = new String("");
                     String isbn13 = new String("");
-                    if(tvISBN.getText().toString().length()==13){
+                    if (tvISBN.getText().toString().length() == 13) {
                         isbn13 = tvISBN.getText().toString();
-                    }
-                    else {
+                    } else {
                         isbn13 = bookToUpload.getIsbn13();
                     }
-                    if(tvISBN.getText().toString().length()==10){
+                    if (tvISBN.getText().toString().length() == 10) {
                         isbn10 = tvISBN.getText().toString();
-                    }
-                    else{
+                    } else {
                         isbn10 = bookToUpload.getIsbn10();
                     }
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()) );
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
                     intent.putExtras(bundle);
                     setResult(RESULT_CANCELED, intent);
                     if (pd.isShowing()) {
@@ -666,16 +655,14 @@ public class AddBook extends Activity {
                     Bundle bundle = new Bundle();
                     String isbn10 = new String("");
                     String isbn13 = new String("");
-                    if(tvISBN.getText().toString().length()==13){
+                    if (tvISBN.getText().toString().length() == 13) {
                         isbn13 = tvISBN.getText().toString();
-                    }
-                    else {
+                    } else {
                         isbn13 = bookToUpload.getIsbn13();
                     }
-                    if(tvISBN.getText().toString().length()==10){
+                    if (tvISBN.getText().toString().length() == 10) {
                         isbn10 = tvISBN.getText().toString();
-                    }
-                    else{
+                    } else {
                         isbn10 = bookToUpload.getIsbn10();
                     }
                     bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
@@ -708,16 +695,14 @@ public class AddBook extends Activity {
             Bundle bundle = new Bundle();
             String isbn10 = new String("");
             String isbn13 = new String("");
-            if(tvISBN.getText().toString().length()==13){
+            if (tvISBN.getText().toString().length() == 13) {
                 isbn13 = tvISBN.getText().toString();
-            }
-            else if(book.getIsbn13()!=null){
+            } else if (book.getIsbn13() != null) {
                 isbn13 = book.getIsbn13();
             }
-            if(tvISBN.getText().toString().length()==10){
+            if (tvISBN.getText().toString().length() == 10) {
                 isbn10 = tvISBN.getText().toString();
-            }
-            else if(book.getIsbn10()!=null){
+            } else if (book.getIsbn10() != null) {
                 isbn10 = book.getIsbn10();
             }
             bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
@@ -782,18 +767,18 @@ public class AddBook extends Activity {
 
     }
 
-    private void uploadLocation(DatabaseReference instanceReference){
+    private void uploadLocation(DatabaseReference instanceReference) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference booksLocations = firebaseDatabase.getReference("locations").child("books");
         GeoFire geoFire = new GeoFire(booksLocations);
         Geocoder geocoder = new Geocoder(AddBook.this);
         List<Address> addresses;
-        String location = tvStreet.getText().toString() + " " + tvCap.getText().toString() + " " +tvCity.getText().toString();
+        String location = tvStreet.getText().toString() + " " + tvCap.getText().toString() + " " + tvCity.getText().toString();
         try {
             addresses = geocoder.getFromLocationName(location, 1);
-            if(addresses.size() > 0) {
-                double latitude= addresses.get(0).getLatitude();
-                double longitude= addresses.get(0).getLongitude();
+            if (addresses.size() > 0) {
+                double latitude = addresses.get(0).getLatitude();
+                double longitude = addresses.get(0).getLongitude();
                 Log.d("POSITION LAT/LONG", latitude + " " + longitude);
                 geoFire.setLocation(instanceReference.getKey(), new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
                     @Override
@@ -809,29 +794,6 @@ public class AddBook extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    //Calculate the parameter used for reduce the dimension and the resolution of the image
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
     }
 
     private void openGallery() {

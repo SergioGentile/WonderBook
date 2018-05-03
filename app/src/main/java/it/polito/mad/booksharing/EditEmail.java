@@ -11,7 +11,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -43,6 +42,14 @@ public class EditEmail extends AppCompatActivity {
     private ProgressBar progress;
     private LinearLayout container;
 
+    private static void keepDialog(Dialog dialog) {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +61,7 @@ public class EditEmail extends AppCompatActivity {
         //Set all the variable
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
-        email_status=user.getEmail().getStatus();
+        email_status = user.getEmail().getStatus();
         btnEmail = (Button) findViewById(R.id.confirm_new_email);
         edtMail = (EditText) findViewById(R.id.changeMail);
         swMail = (Switch) findViewById(R.id.email_switch);
@@ -65,20 +72,20 @@ public class EditEmail extends AppCompatActivity {
         //Need to set PasswordField
 
 
-        if(user.getEmail().getStatus().equals("private")){
+        if (user.getEmail().getStatus().equals("private")) {
             swMail.setChecked(false);
         }
 
         btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clean_mail = edtMail.getText().toString().toLowerCase().replace(" ","");
-                if(checkMailFormat()){
+                clean_mail = edtMail.getText().toString().toLowerCase().replace(" ", "");
+                if (checkMailFormat()) {
                     //The mail is in a valid format
                     tryUpdateMail();
-                }else if(!email_status.equals(user.getEmail().getStatus())){
+                } else if (!email_status.equals(user.getEmail().getStatus())) {
                     //update status only
-                    user.setEmail(new User.MyPair(user.getEmail().getValue(),email_status));
+                    user.setEmail(new User.MyPair(user.getEmail().getValue(), email_status));
                     returnToEdit(true);
                 }
                 showProgress(false);
@@ -94,9 +101,9 @@ public class EditEmail extends AppCompatActivity {
                 //If it's public, it will become private, otherwise will become public.
                 //In both cases, change also the state of the lock.
                 if (swMail.isChecked()) {
-                    email_status="public";
+                    email_status = "public";
                 } else {
-                    email_status="private";
+                    email_status = "private";
                 }
 
 
@@ -117,14 +124,13 @@ public class EditEmail extends AppCompatActivity {
 
     }
 
-
     private void tryUpdateMail() {
 
         //Now I need to re-authenticate the user
 
-        LayoutInflater inflater=EditEmail.this.getLayoutInflater();
+        LayoutInflater inflater = EditEmail.this.getLayoutInflater();
         //this is what I did to added the layout to the alert dialog
-        final View layout=inflater.inflate(R.layout.my_alert_pwd,null);
+        final View layout = inflater.inflate(R.layout.my_alert_pwd, null);
 
         final AlertDialog dialog = new AlertDialog.Builder(EditEmail.this)
                 .setTitle(getString(R.string.alert_title))
@@ -135,7 +141,7 @@ public class EditEmail extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
-                        if(!current_pwd.isEmpty()) {
+                        if (!current_pwd.isEmpty()) {
                             //I need to re-authenticate the user using the current_pwd
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                             showProgress(true);
@@ -166,8 +172,8 @@ public class EditEmail extends AppCompatActivity {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
-                        }else{
-                            Toast.makeText(EditEmail.this,getString(R.string.error_auth_failed),Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditEmail.this, getString(R.string.error_auth_failed), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -181,9 +187,9 @@ public class EditEmail extends AppCompatActivity {
     private void restoreValue() {
 
         //I restore the initial value
-        if(user.getEmail().getStatus().equals("private")){
+        if (user.getEmail().getStatus().equals("private")) {
             swMail.setChecked(false);
-        }else{
+        } else {
             swMail.setChecked(true);
         }
 
@@ -214,10 +220,10 @@ public class EditEmail extends AppCompatActivity {
         if (clean_mail.isEmpty() || !user.checkMailFormat(clean_mail)) {
             edtMail.setError(getString(R.string.mail_not_valid));
             return false;
-        }else if(user.getEmail().getValue().equals(clean_mail)){
+        } else if (user.getEmail().getValue().equals(clean_mail)) {
             //No changes
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -225,12 +231,12 @@ public class EditEmail extends AppCompatActivity {
     private void returnToEdit(Boolean isUserMailChanged) {
 
         Bundle bundle = new Bundle();
-        if(isUserMailChanged==true){
+        if (isUserMailChanged == true) {
             //The user has update the email (value || status)
             bundle.putParcelable("mail", new User.MyPair(user.getEmail()));
-        }else{
+        } else {
             //The user has update the password
-            bundle.putString("mail",null);
+            bundle.putString("mail", null);
         }
 
 
@@ -240,15 +246,6 @@ public class EditEmail extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setResult(Activity.RESULT_OK, intent);
         finish();
-    }
-
-    private static void keepDialog(Dialog dialog){
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.getWindow().setAttributes(lp);
-
     }
 
     private void showProgress(final boolean show) {

@@ -1,13 +1,9 @@
 package it.polito.mad.booksharing;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +34,15 @@ public class EditPwd extends AppCompatActivity {
     private ProgressBar progress;
     private LinearLayout container;
 
+    private static void keepDialog(AlertDialog dialog) {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +53,11 @@ public class EditPwd extends AppCompatActivity {
         //Set all the variable
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
-        btnPwd= (Button) findViewById(R.id.confirm_new_password);
+        btnPwd = (Button) findViewById(R.id.confirm_new_password);
         edtPassword = (EditText) findViewById(R.id.changePwd);
         progress = (ProgressBar) findViewById(R.id.editPwd_progress);
         container = (LinearLayout) findViewById(R.id.edtPwdContainer);
-        
+
 
         btnPwd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,12 +65,12 @@ public class EditPwd extends AppCompatActivity {
 
                 String pwd = edtPassword.getText().toString();
                 //If the new password isn't too weak I try to update it else I do nothing and notify the problem to the user
-                if(pwd.length()>5){
+                if (pwd.length() > 5) {
 
                     tryUpdatePwd();
 
-                }else{
-                    edtPassword.setError(getString(R.string.weak_pwd),null);
+                } else {
+                    edtPassword.setError(getString(R.string.weak_pwd), null);
                 }
             }
         });
@@ -90,9 +95,9 @@ public class EditPwd extends AppCompatActivity {
 
         //Now I need to re-authenticate the user
 
-        LayoutInflater inflater=EditPwd.this.getLayoutInflater();
+        LayoutInflater inflater = EditPwd.this.getLayoutInflater();
         //this is what I did to added the layout to the alert dialog
-        final View layout=inflater.inflate(R.layout.my_alert_pwd,null);
+        final View layout = inflater.inflate(R.layout.my_alert_pwd, null);
 
         final AlertDialog dialog = new AlertDialog.Builder(EditPwd.this)
                 .setTitle(getString(R.string.alert_title))
@@ -103,7 +108,7 @@ public class EditPwd extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
-                        if(!current_pwd.isEmpty() && !edtPassword.getText().toString().equals(current_pwd)) {
+                        if (!current_pwd.isEmpty() && !edtPassword.getText().toString().equals(current_pwd)) {
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                             showProgress(true);
                             try {
@@ -131,8 +136,7 @@ public class EditPwd extends AppCompatActivity {
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
-                        }
-                        else if(current_pwd.equals(edtPassword.getText().toString())){
+                        } else if (current_pwd.equals(edtPassword.getText().toString())) {
                             Toast.makeText(EditPwd.this, getString(R.string.use_new_pwd),
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -152,7 +156,7 @@ public class EditPwd extends AppCompatActivity {
         FirebaseAuth.getInstance().getCurrentUser().updatePassword(edtPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isComplete()) {
+                if (task.isComplete()) {
                     //Reload of the current user credential
                     FirebaseAuth.getInstance().getCurrentUser().reload();
                     Toast.makeText(EditPwd.this, getString(R.string.update_pwd),
@@ -160,8 +164,7 @@ public class EditPwd extends AppCompatActivity {
                     showProgress(false);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     finish();
-                }
-                else {
+                } else {
                     showProgress(false);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
@@ -172,18 +175,9 @@ public class EditPwd extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(EditPwd.this, getString(R.string.update_pwd_fail),
                         Toast.LENGTH_LONG).show();
-                Log.d("updatePswFail",e.getMessage());
+                Log.d("updatePswFail", e.getMessage());
             }
         });
-    }
-
-    private static void keepDialog(AlertDialog dialog){
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.getWindow().setAttributes(lp);
-
     }
 
     private void showProgress(final boolean show) {
