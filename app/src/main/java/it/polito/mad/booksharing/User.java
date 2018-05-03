@@ -29,6 +29,26 @@ public class User implements Parcelable{
     public static final String imageDir = "imageDir";
 
 
+    public static String capitalizeSpace(String s){
+        char[] sToConv = s.toCharArray();
+        if(s.length()>=1){
+            sToConv[0] = Character.toUpperCase(s.charAt(0));
+        }
+        for(int i=1; i<s.length(); i++){
+            if(Character.isWhitespace(sToConv[i-1]) || sToConv[i-1] == '\''){
+                sToConv[i] = Character.toUpperCase(s.charAt(i));
+            }
+        }
+        return String.valueOf(sToConv);
+    }
+    public static String capitalizeFirst(String s){
+        char[] sToConv = s.toCharArray();
+        if(s.length()>=1){
+            sToConv[0] = Character.toUpperCase(s.charAt(0));
+        }
+        return String.valueOf(sToConv);
+    }
+
     private static String myDefault="";
     public User(){
 
@@ -433,7 +453,6 @@ public class User implements Parcelable{
         public void setValue(String value) {
             this.value = value;
         }
-
 
     }
 

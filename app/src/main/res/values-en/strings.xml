@@ -141,4 +141,6 @@
     <string name="closest_to_you">The closest to you</string>
     <string name="most_rating">The most rating</string>
     <string name="account_setting">account settings</string>
+    <string name="km_from_you">Km from you</string>
+    <string name="in_your_city">In your city</string>
 </resources>

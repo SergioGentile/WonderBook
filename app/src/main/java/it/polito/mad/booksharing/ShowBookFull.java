@@ -199,7 +199,7 @@ public class ShowBookFull extends AppCompatActivity {
             key = getIntent().getExtras().getString("key");
         }
 
-        title.setText(book.getTitle());
+        title.setText(User.capitalizeFirst(book.getTitle()));
         if (book.getSubtitle() != null) {
             if (book.getSubtitle().isEmpty()) {
                 subtitle.setVisibility(View.GONE);
@@ -210,8 +210,8 @@ public class ShowBookFull extends AppCompatActivity {
         } else {
             subtitle.setVisibility(View.GONE);
         }
-        author.setText(book.getAuthor());
-        publisher.setText(book.getPublisher() + ", " + book.getYear());
+        author.setText(User.capitalizeSpace(book.getAuthor()));
+        publisher.setText(User.capitalizeFirst(book.getPublisher() + ", " + book.getYear()));
         description.setText(book.getDescription());
         ratingBar.setRating(new Float(book.getRating()));
         publishDate.setText(book.getDate());
@@ -434,7 +434,7 @@ public class ShowBookFull extends AppCompatActivity {
             }
             if (data.getExtras().getBoolean("modified", false)) {
                 Book bookModified = data.getExtras().getParcelable("book");
-                title.setText(bookModified.getTitle());
+                title.setText(User.capitalizeFirst(bookModified.getTitle()));
                 if (bookModified.getSubtitle() != null) {
                     if (bookModified.getSubtitle().isEmpty()) {
                         subtitle.setVisibility(View.GONE);
@@ -447,8 +447,8 @@ public class ShowBookFull extends AppCompatActivity {
                 } else {
                     subtitle.setVisibility(View.GONE);
                 }
-                author.setText(bookModified.getAuthor());
-                publisher.setText(bookModified.getPublisher() + ", " + bookModified.getYear());
+                author.setText(User.capitalizeSpace(bookModified.getAuthor()));
+                publisher.setText(User.capitalizeFirst(bookModified.getPublisher() + ", " + bookModified.getYear()));
                 description.setText(bookModified.getDescription());
                 ratingBar.setRating(new Float(bookModified.getRating()));
                 if (bookModified.isAvailable()) {

@@ -198,9 +198,9 @@ public class ShowAllMyBook extends AppCompatActivity  implements NavigationView.
                         final ImageView imageBook = (ImageView) convertView.findViewById(R.id.image_adapter);
                         imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         Book book = data.get(position);
-                        title.setText(book.getTitle());
-                        author.setText(book.getAuthor());
-                        publication.setText(book.getPublisher() + ", " + book.getYear());
+                        title.setText(User.capitalizeFirst(book.getTitle()));
+                        author.setText(User.capitalizeSpace(book.getAuthor()));
+                        publication.setText(User.capitalizeFirst(book.getPublisher() + ", " + book.getYear()));
                         //owner.setText(book.getOwner());
 
                         //If an official image of the book exist, fill the card with it, otherwise fill the image view

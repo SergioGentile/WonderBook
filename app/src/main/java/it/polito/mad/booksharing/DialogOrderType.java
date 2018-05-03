@@ -23,7 +23,7 @@ import org.w3c.dom.Text;
 public class DialogOrderType extends BottomSheetDialogFragment {
     private BottomSheetListener mListener;
     Context context;
-    private TextView tvDistance, tvRating, tvRecent;
+    private TextView tvDistance, tvRating, tvRecent, tvCity;
 
     public DialogOrderType(){
 
@@ -42,6 +42,7 @@ public class DialogOrderType extends BottomSheetDialogFragment {
         tvDistance = (TextView) v.findViewById(R.id.distance);
         tvRating = (TextView) v.findViewById(R.id.rating);
         tvRecent = (TextView) v.findViewById(R.id.recent);
+        tvCity = (TextView) v.findViewById(R.id.myCity);
 
         tvDistance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +64,13 @@ public class DialogOrderType extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 mListener.onButtonClicked(2);
+                dismiss();
+            }
+        });
+        tvCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onButtonClicked(3);
                 dismiss();
             }
         });

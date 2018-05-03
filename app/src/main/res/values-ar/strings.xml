@@ -141,4 +141,6 @@
     <string name="own_pos_not_found">تحذير: لم يكن من الممكن العثور على موقعك</string>
     <string name="closest_to_you">الأقرب إليك</string>
     <string name="most_rating">أكثر تصنيف</string>
+    <string name="km_from_you">كم منك</string>
+    <string name="in_your_city">في مدينتك</string>
 </resources>

@@ -151,5 +151,7 @@
     <string name="own_pos_not_found">Warning: it was not possible to find your position</string>
     <string name="closest_to_you">The closest to you</string>
     <string name="most_rating">The most rating</string>
+    <string name="km_from_you">Km from you</string>
+    <string name="in_your_city">In your city</string>
 
 </resources>

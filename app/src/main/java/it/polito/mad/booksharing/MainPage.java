@@ -145,13 +145,12 @@ public class MainPage extends AppCompatActivity
     boolean submit;
     int searchBarItem;
     private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
-    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3;
+    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3, YOUR_CITY = 4;
     int counter_location;
     private int tabFieldSearch;
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
     private TextView orderDialog, tvOrderType;
-    private boolean noPos;
 
     double latPhone, longPhone;
     private boolean tabFlag = false;
@@ -164,12 +163,7 @@ public class MainPage extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getBoolean("exit", false)) {
-            startActivity(new Intent(MainPage.this, Start.class));
-            finish();
-        }
-
+        
         mAuth = FirebaseAuth.getInstance();
 
         //Ask permission for editing photo
@@ -352,6 +346,7 @@ public class MainPage extends AppCompatActivity
         });
     }
 
+    //evaluate the distance between two point (latitude, longitude) in KM
     private double distanceLocation(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1))
@@ -392,6 +387,7 @@ public class MainPage extends AppCompatActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        //Take the ISBN of the camera scan in order to facility the search operation
         if (requestCode == 0 && resultCode == AppCompatActivity.RESULT_OK) {
             searchView.setQuery(intent.getStringExtra("isbn"), false);
         }
@@ -401,7 +397,6 @@ public class MainPage extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("PASSO", "onSave");
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
         if (mapViewBundle == null) {
             mapViewBundle = new Bundle();
@@ -410,6 +405,7 @@ public class MainPage extends AppCompatActivity
 
         mMapView.onSaveInstanceState(mapViewBundle);
 
+        //Save the list of the listView
         outState.putParcelableArrayList("booksMatch", booksMatch);
         outState.putBoolean("firstTime", firtTime);
     }
@@ -418,6 +414,7 @@ public class MainPage extends AppCompatActivity
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
         super.onRestoreInstanceState(inState);
+        //Restore the list of the listView
         booksMatch = inState.getParcelableArrayList("booksMatch");
         firtTime = inState.getBoolean("firstTime");
         setAdapter(DISTANCE);
@@ -454,7 +451,6 @@ public class MainPage extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-
         MenuItem item = menu.findItem(R.id.searchButton);
         searchView.setMenuItem(item);
         return true;
@@ -839,11 +835,14 @@ public class MainPage extends AppCompatActivity
     }
 
 
+    //Set the listView of the search result
+    //searchedString is the string that the user query.
     private void setAdapterSearched(final String searchedString) {
         //qui reference
         emptyResearch.setVisibility(View.GONE);
         progressAnimation.setVisibility(View.VISIBLE);
         DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
+        //Depends on the query type, I perform a different query
         Query query = null;
         if (searchBarItem == TITLE) {
             query = databaseReferenceBooks.orderByChild("title").equalTo(searchedString);
@@ -869,13 +868,17 @@ public class MainPage extends AppCompatActivity
             return;
         }
 
+        //Ask the result to firebase and wait
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Reset all the list
                 lv_searched.setAdapter(null);
                 booksMatch.clear();
                 bookIds.clear();
                 map.clear();
+                //Unmarshall al the book and put it into the list booksMatch.
+                //Save the id into bookIds and avoid the one of the user that is using the application
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         if (!issue.getValue(Book.class).getOwner().equals(user.getKey())) {
@@ -892,6 +895,7 @@ public class MainPage extends AppCompatActivity
                     emptyResearch.setVisibility(View.VISIBLE);
                 }
                 usersDownload.clear();
+                //Download all the users that are owner of the book
                 for (Book bookToAdd : booksMatch) {
                     DatabaseReference databaseReferenceUsers = firebaseDatabase.getReference("users");
                     Query queryUser = databaseReferenceUsers.child(bookToAdd.getOwner());
@@ -899,6 +903,7 @@ public class MainPage extends AppCompatActivity
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
                             usersDownload.add(dataSnapshot.getValue(User.class));
+                            //when all the user are been downloaded, start downloading the position of the books
                             if (usersDownload.size() == booksMatch.size()) {
 
                                 DatabaseReference databaseReferenceLocation = firebaseDatabase.getReference("locations").child("books");
@@ -912,12 +917,13 @@ public class MainPage extends AppCompatActivity
                                         public void onLocationResult(String key, GeoLocation location) {
                                             counter_location++;
                                             if (location != null) {
-                                                String snippet = getString(R.string.shared_by) + " " + booksMatch.get(i).getOwnerName();
-                                                //return a new lat and long in order to avoid overlap
+                                                String snippet = getString(R.string.shared_by) + " " + User.capitalizeSpace(booksMatch.get(i).getOwnerName());
+                                                //return a new lat and long in order to avoid overlap. The new lat/long is near the previous one and it is choose in a random way
                                                 Position overlap = avoidOverlap(markers.values(), new Position(location.latitude, location.longitude));
-                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(booksMatch.get(i).getTitle()).snippet(snippet));
+                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(User.capitalizeFirst(booksMatch.get(i).getTitle())).snippet(snippet));
                                                 markers.put(key, m);
-                                                //Evaluate distance for the bok
+                                                //Evaluate distance for the bok if latPhone and longPhone are available.
+
                                                 if(latPhone!=-1 && longPhone!=-1){
                                                     booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
                                                 }
@@ -979,6 +985,8 @@ public class MainPage extends AppCompatActivity
     }
 
 
+    //This function return a position near p but not the same.
+    //In particoular check if the same position exist in the list markerList and add a random number to lat and longit.
     private Position avoidOverlap(Collection<Marker> markerList, Position p) {
 
         boolean found = false;
@@ -1001,6 +1009,7 @@ public class MainPage extends AppCompatActivity
         return p;
     }
 
+    //Get a random number between max and min
     private int getRandom(int min, int max) {
         Random r = new Random();
         while (max <= min) {
@@ -1009,22 +1018,26 @@ public class MainPage extends AppCompatActivity
         return r.nextInt(max - min) + max;
     }
 
+    //This adapter is the same of setAdapterSearched, but in this case return all the near books (with respect the current position)
+    //recently added
     private void setAdapterSearchedRecentAdd() {
         //qui reference
         emptyResearch.setVisibility(View.GONE);
         progressAnimation.setVisibility(View.VISIBLE);
         DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
         Query query = null;
+        //query only the latest books
         query = databaseReferenceBooks.orderByChild("date").limitToLast(20);
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Clear all the list
                 lv_searched.setAdapter(null);
                 booksMatch.clear();
                 bookIds.clear();
                 markers.clear();
                 map.clear();
+
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         if (!issue.getValue(Book.class).getOwner().equals(user.getKey())) {
@@ -1041,12 +1054,15 @@ public class MainPage extends AppCompatActivity
                     emptyResearch.setVisibility(View.VISIBLE);
                 }
                 usersDownload.clear();
+                //Unmarshall al the book and put it into the list booksMatch.
+                //Save the id into bookIds and avoid the one of the user that is using the application
                 for (final Book bookToAdd : booksMatch) {
                     DatabaseReference databaseReferenceUsers = firebaseDatabase.getReference("users");
                     Query queryUser = databaseReferenceUsers.child(bookToAdd.getOwner());
                     queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
+                            //Download all the users that are owner of the book
                             usersDownload.add(dataSnapshot.getValue(User.class));
                             if (usersDownload.size() == booksMatch.size()) {
 
@@ -1062,7 +1078,7 @@ public class MainPage extends AppCompatActivity
                                         public void onLocationResult(String key, GeoLocation location) {
                                             counter_location++;
                                             if (location != null) {
-                                                String snippet = getString(R.string.shared_by) + " " + booksMatch.get(i).getOwnerName();
+                                                String snippet = getString(R.string.shared_by) + " " + User.capitalizeSpace(booksMatch.get(i).getOwnerName());
                                                 if(latPhone!=-1 && longPhone!=-1){
                                                     booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
                                                 }
@@ -1074,15 +1090,19 @@ public class MainPage extends AppCompatActivity
                                                 booksMatch.get(i).setDistance(-1);
                                             }
                                             if (counter_location == booksMatch.size()) {
-                                                //Qui si setta l'adapter della list view
+                                                //Here i fill all the list, so i have:
+                                                //-the list of user
+                                                //-the list of book of each user
+                                                //-the position of each book
+                                                //Store all in SortedLocationItem. This class allow to sort all the three list in the same way.
                                                 List<SortedLocationItem> tmp = new ArrayList<>();
-                                                //Take only the one near me and store in tmp
                                                 for (int i = 0; i < sortedLocationItems.size(); i++) {
                                                     if (sortedLocationItems.get(i).getBook().getDistance() < 20 && sortedLocationItems.get(i).getBook().getDistance() >= 0) {
                                                         tmp.add(sortedLocationItems.get(i));
                                                     }
                                                 }
 
+                                                //Sort all the books with respect the date and, if the date is the same, with respect to the distance
                                                 Collections.sort(tmp, new Comparator<SortedLocationItem>() {
                                                     @Override
                                                     public int compare(SortedLocationItem s1, SortedLocationItem s2) {
@@ -1095,17 +1115,19 @@ public class MainPage extends AppCompatActivity
                                                 });
                                                 sortedLocationItems.clear();
                                                 booksMatch.clear();
-                                                for (int i = 0; i < tmp.size() && i < 5; i++) {
+                                                //Take only the first ten (i decide to show only the first ten recently updated book )
+                                                for (int i = 0; i < tmp.size() && i < 8; i++) {
                                                     sortedLocationItems.add(tmp.get(i));
                                                     booksMatch.add(tmp.get(i).getBook());
                                                 }
 
-                                                //Set the right marker
+                                                //Set the right marker on the map for the selected books.
                                                 markers.clear();
                                                 for (SortedLocationItem sortedLocationItem : sortedLocationItems) {
                                                     Position overlap = avoidOverlap(markers.values(), new Position(sortedLocationItem.getLatitude(), sortedLocationItem.getLongitude()));
-                                                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(sortedLocationItem.getBook().getTitle()).snippet(sortedLocationItem.getSnippet()));
+                                                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(User.capitalizeFirst(sortedLocationItem.getBook().getTitle())).snippet(sortedLocationItem.getSnippet()));
                                                     markers.put(key, m);
+
                                                     //Evaluate distance for the bok
 
                                                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -1158,7 +1180,8 @@ public class MainPage extends AppCompatActivity
 
     private void setAdapter(int order) {
 
-
+        //Set the adapter.
+        //before to fill all the list view, i sort it in the specified order.
         if (order == DISTANCE) {
             tvOrderType.setText(getString(R.string.closest_to_you));
             Collections.sort(booksMatch, new Comparator<Book>() {
@@ -1196,6 +1219,41 @@ public class MainPage extends AppCompatActivity
                 }
             });
         }
+        /*else if (YOUR_CITY == order) {
+            tvOrderType.setText(R.string.in_your_city);
+            //Choose only the book in our city
+            List<Book> tmp = new ArrayList<>();
+            for(int i=0; i<bookIds.size(); i++) {
+                Geocoder geocoder = new Geocoder(MainPage.this);
+                List<Address> addresses;
+                try {
+                    addresses = geocoder.getFromLocation(markers.get(bookIds.get(i)).getPosition().latitude, markers.get(bookIds.get(i)).getPosition().longitude, 1);
+                    Log.d("The locality is: " , addresses.get(0).getLocality());
+                    if (addresses.size() > 0) {
+                        if (addresses.get(0).getLocality().toLowerCase().equals(user.getCity().getValue().toLowerCase())) {
+                            tmp.add(booksMatch.get(i));
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+
+            booksMatch.clear();
+            for(Book book : tmp){
+                booksMatch.add(book);
+            }
+            Collections.sort(booksMatch, new Comparator<Book>() {
+
+                @Override
+                public int compare(Book b1, Book b2) {
+                    return b1.getDistance().compareTo(b2.getDistance());
+                }
+            });
+        }*/
+
+
+
         final List<String> colors = new ArrayList<>();
         colors.add(new String("#00897B"));
         colors.add(new String("#3F51B5"));
@@ -1209,6 +1267,7 @@ public class MainPage extends AppCompatActivity
             emptyResearch.setVisibility(View.GONE);
         }
 
+        //Set the adapter
         lv_searched.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
@@ -1230,6 +1289,7 @@ public class MainPage extends AppCompatActivity
                 if (convertView == null) {
                     convertView = getLayoutInflater().inflate(R.layout.adapter_searched_book, parent, false);
                 }
+                //fill all the layout
                 final Book book = booksMatch.get(position);
                 ImageView imageView = (ImageView) convertView.findViewById(R.id.image_book_searched);
                 Picasso.with(MainPage.this).load(book.getUrlMyImage()).noFade().into(imageView);
@@ -1238,11 +1298,13 @@ public class MainPage extends AppCompatActivity
                 RatingBar rb = (RatingBar) convertView.findViewById(R.id.rating_searched);
                 //For setting a text view with two different colors
                 TextView owner = (TextView) convertView.findViewById(R.id.shared_name);
-                owner.setText(getString(R.string.shared_by) + " " + book.getOwnerName());
+                owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
 
                 TextView distance = (TextView) convertView.findViewById(R.id.distance);
                 LinearLayout ll_distance = (LinearLayout) convertView.findViewById(R.id.ll_location);
 
+                //If the position is not available for some reason (because no permission, because the city wrote by the user is wrong)
+                //i hide the evaluation of the distance
                 if (book.getDistance() >= 0.0) {
                     ll_distance.setVisibility(View.VISIBLE);
                     distance.setText(Double.toString(book.getDistance()));
@@ -1251,8 +1313,8 @@ public class MainPage extends AppCompatActivity
                 }
 
 
-                title.setText(book.getTitle());
-                author.setText(book.getAuthor());
+                title.setText(User.capitalizeFirst(book.getTitle()));
+                author.setText(User.capitalizeSpace(book.getAuthor()));
                 rb.setRating(new Float(book.getRating()));
 
                 CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv_searched);
@@ -1261,6 +1323,7 @@ public class MainPage extends AppCompatActivity
 
                 LinearLayout llAdapter = (LinearLayout) convertView.findViewById(R.id.ll_adapter_searched_book);
 
+                //If the item is clicked, i show the book
                 llAdapter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1281,7 +1344,6 @@ public class MainPage extends AppCompatActivity
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.d("CANCELLED", "Error " + databaseError.getMessage());
                             }
                         });
                     }
@@ -1294,11 +1356,15 @@ public class MainPage extends AppCompatActivity
 
     }
 
+    //Concatenate all the field of a book
     private String concatenateFieldBook(Book book) {
         return (book.getAuthor() + " " + book.getTitle() + " " + book.getIsbn10() + " " + book.getIsbn13() + " " + book.getPublisher() + " " + book.getCity() + " " + book.getOwnerName()).toLowerCase();
     }
 
+    //Starting from the query string, this function understand what kind of element is searched and show all the possible choices
+    //in a list view under the search bar
     private void setAdapterRuntime(final String searchedString, final int tabField) {
+        //Query for all the book on the database
         DatabaseReference databaseReferenceBooks = firebaseDatabase.getReference("books");
         databaseReferenceBooks.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1314,7 +1380,11 @@ public class MainPage extends AppCompatActivity
                 books.clear();
                 booksQuery.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //For each book downloaded, understand if it match with the string searched or not
                     Book book = snapshot.getValue(Book.class);
+                    //depends on the filter applied (no one, title, author ecc...), i will try to find a new match depends on it
+                    //i use the list booksQuery and books in order to avoid that the same book is show more than one time on the list
+                    //So i keep track of all the book showed before
                     if (tabField == ANY) {
                         if (concatenateFieldBook(book).contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey())) {
                             if (!stringAlreadyPresentOnBookList(concatenateFieldBook(book), books, ANY)) {
@@ -1380,6 +1450,10 @@ public class MainPage extends AppCompatActivity
                 stringAlreadyMatched.clear();
                 stringRuntime.clear();
 
+                //finally, i have in books all the possible match
+                //i store in searchItem the kind of item that i'm searching.
+                //If a filter is applied, searchItem will be equal to the filter, instead the function understandSearchItem
+                //will understand the kind of item from itself, and it will suggest the user in the choice
                 for (int i = 0; i < books.size(); i++) {
                     //Understand the tipology of the item
                     int searchItem;
@@ -1424,7 +1498,7 @@ public class MainPage extends AppCompatActivity
                 }
 
 
-                //Reduce the size of the list
+                //Reduce the size of the list (i decide to show only 4 possible books  )
                 List<ShowOnAdapter> tmp = new ArrayList<>();
                 for (int i = 0; i < 4 && i < stringRuntime.size(); i++) {
                     tmp.add(stringRuntime.get(i));
@@ -1435,8 +1509,7 @@ public class MainPage extends AppCompatActivity
                 }
 
 
-                //here i have all the books with the title searched
-                //lv_search_runtime.setEmptyView(findViewById(R.id.empty_view));
+                //So here i have in stringRuntime 4 possible match. Now I'm ready to set the adapter
                 lv_search_runtime.setAdapter(new BaseAdapter() {
 
                     @Override
@@ -1469,7 +1542,7 @@ public class MainPage extends AppCompatActivity
                         ll = (LinearLayout) convertView.findViewById(R.id.ll_adapter_runtime);
                         view = (View) convertView.findViewById(R.id.line_search_runtime);
 
-                        //Understand what the user search
+                        //Depends on what the user search, I set a different image
                         Drawable d = null;
                         textView.setText(stringRuntime.get(position).getText());
                         if (stringRuntime.get(position).getItemType() == AUTHOR) {
@@ -1514,6 +1587,7 @@ public class MainPage extends AppCompatActivity
         });
     }
 
+    //This function understand what kind of item is searching the user
     private int understandSearchItem(String query, Book book) {
         query = query.toLowerCase();
         if (book.getTitle().toLowerCase().contains(query)) {
@@ -1534,6 +1608,7 @@ public class MainPage extends AppCompatActivity
     }
 
 
+    //check if the string is already present on the list books
     private boolean stringAlreadyPresentOnBookList(String toSearch, ArrayList<Book> books, int type) {
 
         for (Book book : books) {
@@ -1558,6 +1633,7 @@ public class MainPage extends AppCompatActivity
         return false;
     }
 
+    //Check if the string is already present on a list of strings
     private boolean stringAlreadyPresentOnStringList(String toSearch, ArrayList<String> strings) {
         for (String string : strings) {
             if (string.toLowerCase().equals(toSearch.toLowerCase())) {
@@ -1567,6 +1643,7 @@ public class MainPage extends AppCompatActivity
         return false;
     }
 
+    //when the user click the dialog, choose a new order
     @Override
     public void onButtonClicked(int position) {
 
@@ -1576,6 +1653,8 @@ public class MainPage extends AppCompatActivity
             setAdapter(RATING);
         } else if (position == 2) {
             setAdapter(DATE);
+        }else if (position == 3) {
+            setAdapter(YOUR_CITY);
         }
     }
 
@@ -1633,6 +1712,7 @@ class ShowOnAdapter {
 
 }
 
+//This class incapsulate different things in order to help me in the sort operation
 class Position {
     double latitude, longitude;
 
@@ -1661,6 +1741,8 @@ class Position {
     }
 }
 
+
+//This class incapsulate different things in order to help me in the sort operation
 class SortedLocationItem {
     Book book;
     String snippet;
