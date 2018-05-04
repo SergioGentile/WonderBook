@@ -60,6 +60,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private TextView login_message;
     private FirebaseUser user;
     private String fromActivity;
+    private Spannable spannable;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -68,6 +69,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     // UI references.
     private View mProgressView;
     private View mLoginFormView;
+    private TextView resend_mail;
 
 
     @Override
@@ -96,7 +98,37 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         progress = (ProgressBar) findViewById(R.id.login_progress);
         container = (LinearLayout) findViewById(R.id.LoginContainer);
         login_message = (TextView) findViewById(R.id.login_message);
+        resend_mail = (TextView) findViewById(R.id.resend_mail);
         user = null;
+
+
+        String message = getString(R.string.confirm_mail_msg);
+
+        String sendMail = getString(R.string.tap_here_to_resend);
+
+        spannable = new SpannableString(message + '\n' + sendMail);
+
+        int colorAccent = ResourcesCompat.getColor(getResources(), R.color.colorAccent, null);
+
+        //Change color to string send mail
+        spannable.setSpan(new ForegroundColorSpan(colorAccent), message.length(),
+                (message + '\n' + sendMail).length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+        //Underline String send Mail
+        spannable.setSpan(new UnderlineSpan(), message.length(),
+                (message + '\n' + sendMail).length(), Spannable.SPAN_COMPOSING);
+
+        resend_mail.setText(spannable);
+
+        resend_mail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                Toast.makeText(Login.this,
+                        getString(R.string.resend_mail) + " " + FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
         fromActivity = getIntent().getExtras().getString("from");
         if (fromActivity.equals("Edit")) {
@@ -113,34 +145,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 }
             });
 
-
-            String message = getString(R.string.confirm_mail_msg);
-
-            String sendMail = getString(R.string.tap_here_to_resend);
-
-            Spannable spannable = new SpannableString(message + '\n' + sendMail);
-
-            int colorAccent = ResourcesCompat.getColor(getResources(), R.color.colorAccent, null);
-
-            //Change color to string send mail
-            spannable.setSpan(new ForegroundColorSpan(colorAccent), message.length(),
-                    (message + '\n' + sendMail).length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-
-            //Underline String send Mail
-            spannable.setSpan(new UnderlineSpan(), message.length(),
-                    (message + '\n' + sendMail).length(), Spannable.SPAN_COMPOSING);
-
-            login_message.setText(spannable);
-
-            login_message.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-                    Toast.makeText(Login.this,
-                            getString(R.string.resend_mail) + " " + FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+            login_message.setVisibility(View.GONE);
+            resend_mail.setVisibility(View.VISIBLE);
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -269,10 +275,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
                                         Toast.makeText(Login.this, getString(R.string.please_verify_email),
                                                 Toast.LENGTH_LONG).show();
-                                        mAuth.getCurrentUser().sendEmailVerification();
+                                        login_message.setVisibility(View.GONE);
+                                        resend_mail.setVisibility(View.VISIBLE);
                                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                         showProgress(false);
-                                        mAuth.signOut();
                                     }
                                 }
                             });
