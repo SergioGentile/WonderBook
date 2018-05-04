@@ -606,11 +606,10 @@ public class MainPage extends AppCompatActivity
     }
 
     private void getImageInfoFromFireBase() {
-        StorageReference riversRef = FirebaseStorage.getInstance().getReference();
 
         if (!user.getUser_image_url().isEmpty()) {
 
-
+            //Download the user picture and save it inside the local storage
             Picasso.with(MainPage.this)
                     .load(user.getUser_image_url()).noFade()
                     .placeholder(R.drawable.progress_animation)
@@ -648,38 +647,7 @@ public class MainPage extends AppCompatActivity
                     });
 
 
-
-
-/*
-            StorageReference userPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture." + User.COMPRESS_FORMAT_STR);
-
-
-
-            // path to /data/data/yourapp/app_data/imageDir
-
-            //If the directory where I want to save the image does not exist I create it
-            if (!directory.exists()) {
-                Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.profile);
-
-            }
-
-            //Create of the destination path
-            File userPicture = new File(directory, User.profileImgName);
-
-            userPictureRef.getFile(userPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                    setUserInfoNavBar();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
-*/
-            StorageReference originalPictureRef = riversRef.child("userImgProfile/" + user.getKey() + "/picture_Original." + User.COMPRESS_FORMAT_STR);
+            //Download the original user picture and save in inside the local storage
 
             Picasso.with(MainPage.this)
                     .load(user.getCropped_image_url()).noFade()
@@ -710,20 +678,6 @@ public class MainPage extends AppCompatActivity
                             userImageOriginal.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         }
                     });
-
-         /*   File originalPicture = new File(directory, User.profileImgNameCrop);
-
-            originalPictureRef.getFile(originalPicture).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    System.out.println(e.toString());
-                }
-            });*/
 
         }
     }

@@ -65,7 +65,7 @@ public class ShowBookFull extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                         long time_ed = System.currentTimeMillis();
-
+                        //Download publisher picture and save it inside the local storage
                         BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
                         Bitmap bitmap = drawable.getBitmap();
                         ContextWrapper cw = new ContextWrapper(getApplicationContext());

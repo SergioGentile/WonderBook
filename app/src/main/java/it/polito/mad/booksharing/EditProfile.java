@@ -672,8 +672,9 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                //Get the url of the image uploaded before, and store the new book
+                //Get the url of the image uploaded before, and store the new picture
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                //save the new picture Uri on the DB
                 savePicturePath(true, downloadUrl.toString());
                 user.setUser_image_url(downloadUrl.toString());
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
@@ -701,6 +702,7 @@ public class EditProfile extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //save the new picture Uri on the DB
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 savePicturePath(false, downloadUrl.toString());
                 user.setCropped_image_url(downloadUrl.toString());
