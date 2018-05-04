@@ -28,8 +28,8 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/bottom_inside_box"
                 android:layout_marginTop="@dimen/top_inside_box"
-                android:scaleType="fitXY"
-                android:src="@drawable/libro_prova" />
+                android:scaleType="centerInside"
+                android:src="@drawable/progress_animation" />
         </android.support.v7.widget.CardView>
 
         <LinearLayout

@@ -1,8 +1,13 @@
 package it.polito.mad.booksharing;
 
+import android.*;
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +22,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -32,7 +38,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -43,16 +54,20 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -61,14 +76,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -77,6 +98,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -84,6 +106,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainPage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener {
 
+    private boolean firtTime = true;
+    private User user;
+    private TextView tvName;
+    private CircleImageView profileImage;
+    private ImageView userImage,userImageOriginal;
+    private View navView;
+    private String userId;
+    private FirebaseAuth mAuth;
+    private MapView mMapView;
+    private MaterialSearchView searchView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
     private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3, YOUR_CITY = 4;
@@ -97,6 +129,7 @@ public class MainPage extends AppCompatActivity
     //To avoid the repetition when i search something
     ArrayList<String> stringAlreadyMatched;
     ArrayList<ShowOnAdapter> stringRuntime;
+
     //to show all the result of the research
     ArrayList<Book> booksMatch;
     CopyOnWriteArrayList<User> usersDownload;
@@ -106,31 +139,24 @@ public class MainPage extends AppCompatActivity
     boolean submit;
     int searchBarItem;
     int counter_location;
-    double latPhone, longPhone;
-    LocationManager locationManager;
-    private boolean firtTime = true;
-    private User user;
-    private TextView tvName;
-    private CircleImageView profileImage;
-    private ImageView userImage, userImageOriginal;
-    private View navView;
-    private String userId;
-    private FirebaseAuth mAuth;
-    private MapView mMapView;
-    private MaterialSearchView searchView;
     private int tabFieldSearch;
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
     private TextView orderDialog, tvOrderType;
+    private ImageView imageView;
+
+    double latPhone, longPhone;
     private boolean tabFlag = false;
     private LinearLayout emptyResearch;
     private ProgressBar progressAnimation;
     private List<SortedLocationItem> sortedLocationItems;
+    LocationManager locationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         mAuth = FirebaseAuth.getInstance();
 
         //Ask permission for editing photo
@@ -1227,10 +1253,12 @@ public class MainPage extends AppCompatActivity
 
 
         final List<String> colors = new ArrayList<>();
-        colors.add(new String("#00897B"));
         colors.add(new String("#3F51B5"));
-        colors.add(new String("#C62828"));
-        colors.add(new String("#512DA8"));
+        colors.add(new String("#8E24AA"));
+        colors.add(new String("#00897B"));
+        colors.add(new String("#ffc2185b"));
+
+
         if (booksMatch.size() == 0) {
             progressAnimation.setVisibility(View.GONE);
             emptyResearch.setVisibility(View.VISIBLE);
@@ -1263,8 +1291,20 @@ public class MainPage extends AppCompatActivity
                 }
                 //fill all the layout
                 final Book book = booksMatch.get(position);
-                ImageView imageView = (ImageView) convertView.findViewById(R.id.image_book_searched);
-                Picasso.with(MainPage.this).load(book.getUrlMyImage()).noFade().into(imageView);
+                imageView = (ImageView) convertView.findViewById(R.id.image_book_searched);
+                Picasso.with(MainPage.this).load(book.getUrlMyImage())
+                        .error(R.drawable.ic_error_outline_black_24dp).noFade().into(imageView, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    }
+
+                    @Override
+                    public void onError() {
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    }
+                });
+
                 TextView title = (TextView) convertView.findViewById(R.id.title_searched);
                 TextView author = (TextView) convertView.findViewById(R.id.author_searched);
                 RatingBar rb = (RatingBar) convertView.findViewById(R.id.rating_searched);
