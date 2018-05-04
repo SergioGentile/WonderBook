@@ -143,4 +143,5 @@
     <string name="account_setting">account settings</string>
     <string name="km_from_you">Km from you</string>
     <string name="in_your_city">In your city</string>
+    <string name="enable_position_performances">Please turn on GPS to exploit the best experience</string>
 </resources>

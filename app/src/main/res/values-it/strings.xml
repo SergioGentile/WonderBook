@@ -142,4 +142,5 @@
     <string name="latest_releases">Le ultime uscite</string>
     <string name="km_from_you">Km da te</string>
     <string name="in_your_city">Nella tua città</string>
+    <string name="enable_position_performances">Attenzione: attiva il GPS per usufruire di un utilizzo migliore</string>
 </resources>

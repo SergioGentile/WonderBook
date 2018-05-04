@@ -133,10 +133,9 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         //This list contains the code of different colors.
         //It's useful to show the card of the ListView with different colors.
         final List<String> colors = new ArrayList<>();
-        colors.add(new String("#3F51B5"));
-        colors.add(new String("#8E24AA"));
-        colors.add(new String("#00897B"));
-        colors.add(new String("#ffc2185b"));
+        colors.add(new String("#7E57C2"));
+        colors.add(new String("#009688"));
+        colors.add(new String("#5C6BC0"));
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference = firebaseDatabase.getReference();

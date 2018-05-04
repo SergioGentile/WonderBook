@@ -34,6 +34,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -337,6 +338,7 @@ public class MainPage extends AppCompatActivity
                 bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
             }
         });
+
     }
 
     //evaluate the distance between two point (latitude, longitude) in KM
@@ -543,8 +545,10 @@ public class MainPage extends AppCompatActivity
                         //Bisogna gestire i permessi.
                         //Se non si ha il permesso entra nel primo ramo dell'if e calcola la distanza libro/posizione rispetto alla posizione
                         //che si ha sulla showProfile.
+                        Log.d("Search location for:", user.getName().getValue());
                         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         if (ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            Log.d("Permission dis-enabled:", user.getName().getValue());
                             // TODO: Consider calling
                             //    ActivityCompat#requestPermissions
                             // here to request the missing permissions, and then overriding
@@ -570,10 +574,41 @@ public class MainPage extends AppCompatActivity
                                 longPhone = -1;
                             }
                         } else {
+                            Log.d("Permission enabled:", user.getName().getValue());
                             try {
-                                Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-                                onLocationChanged(location);
+
+                                if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)){
+                                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, MainPage.this);
+                                    Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+                                    onLocationChanged(location);
+                                    Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
+                                }
+                                else if(locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)){
+                                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainPage.this);
+                                    Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                                    onLocationChanged(location);
+                                    Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
+                                }
+                                else{
+                                    Log.d("pos","Take permission from edit prof");
+                                    Geocoder geocoder = new Geocoder(MainPage.this);
+                                    List<Address> addresses;
+                                    String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
+                                    try {
+                                        addresses = geocoder.getFromLocationName(location, 1);
+                                        if (addresses.size() > 0) {
+                                            latPhone = addresses.get(0).getLatitude();
+                                            longPhone = addresses.get(0).getLongitude();
+                                        }
+                                    } catch (Exception e1) {
+                                        latPhone = -1;
+                                        longPhone = -1;
+                                        Toast.makeText(MainPage.this, getString(R.string.own_pos_not_found), Toast.LENGTH_SHORT);
+                                    }
+                                }
                             } catch (Exception e) {
+                                Log.d("Exc","Exception catch");
+                                e.printStackTrace();
                                 Geocoder geocoder = new Geocoder(MainPage.this);
                                 List<Address> addresses;
                                 String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -582,8 +617,6 @@ public class MainPage extends AppCompatActivity
                                     if (addresses.size() > 0) {
                                         latPhone = addresses.get(0).getLatitude();
                                         longPhone = addresses.get(0).getLongitude();
-                                        latPhone = -1;
-                                        longPhone = -1;
                                     }
                                 } catch (Exception e1) {
                                     latPhone = -1;
@@ -1207,10 +1240,9 @@ public class MainPage extends AppCompatActivity
 
 
         final List<String> colors = new ArrayList<>();
-        colors.add(new String("#3F51B5"));
-        colors.add(new String("#8E24AA"));
-        colors.add(new String("#00897B"));
-        colors.add(new String("#ffc2185b"));
+        colors.add(new String("#42A5F5"));
+        colors.add(new String("#009688"));
+        colors.add(new String("#5C6BC0"));
 
 
         if (booksMatch.size() == 0) {
