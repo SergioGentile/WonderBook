@@ -154,5 +154,6 @@
     <string name="km_from_you">Km from you</string>
     <string name="in_your_city">In your city</string>
     <string name="enable_position_performances">Please turn on GPS to exploit the best experience</string>
+    <string name="title_activity_chat">Chat</string>
 
 </resources>

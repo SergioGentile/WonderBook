@@ -39,7 +39,7 @@ public class ShowBookFull extends AppCompatActivity {
 
     private TextView title, subtitle, author, publisher, description, publishDate;
     private ImageView imageBook, imageMyBook;
-    private ImageButton btnEdit;
+    private ImageButton btnEdit, btnContact;
     private RatingBar ratingBar;
     private Book book;
     private User user;
@@ -139,6 +139,7 @@ public class ShowBookFull extends AppCompatActivity {
         publishDate = (TextView) findViewById(R.id.publishDate);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         btnEdit = (ImageButton) findViewById(R.id.btnEdit);
+        btnContact = (ImageButton) findViewById(R.id.contact_user);
         imageMyBook = (ImageView) findViewById(R.id.shMyImage);
         imageBook = (ImageView) findViewById(R.id.shImage);
         available = (TextView) findViewById(R.id.tvState);
@@ -256,6 +257,14 @@ public class ShowBookFull extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.putExtra("key", key);
                 startActivityForResult(intent, 0);
+            }
+        });
+
+        btnContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ShowBookFull.this, Chat.class);
+                startActivity(intent);
             }
         });
     }
