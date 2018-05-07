@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -33,12 +34,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatPage extends AppCompatActivity {
 
@@ -47,7 +51,9 @@ public class ChatPage extends AppCompatActivity {
     private String chatKey;
     private FirebaseListAdapter<ChatMessage> adapter;
     private FloatingActionButton fab;
-    private String lastDate;
+    private CircleImageView profileImage;
+    private TextView tvName;
+    private ImageButton backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +65,21 @@ public class ChatPage extends AppCompatActivity {
         receiver = getIntent().getExtras().getParcelable("receiver");
         chatKey = getIntent().getStringExtra("key_chat");
 
-        Log.d("Chat " + chatKey, "Send from:" + sender.getName().getValue() + ", rec by:" + receiver.getName().getValue());
+        tvName = (TextView) findViewById(R.id.toolbarName);
+        tvName.setText(receiver.getName().getValue() + " " + receiver.getSurname().getValue());
 
+        profileImage = (CircleImageView) findViewById(R.id.toolbarPhoto);
+        Picasso.with(ChatPage.this).load(receiver.getUser_image_url()).into(profileImage);
+
+        backButton = (ImageButton) findViewById(R.id.chatToolbarBack);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        //Log.d("Chat " + chatKey, "Send from:" + sender.getName().getValue() + ", rec by:" + receiver.getName().getValue());
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +105,7 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
+        isReadUpdate();
         displayChatMessage();
 
 
@@ -97,7 +117,6 @@ public class ChatPage extends AppCompatActivity {
 
     private void displayChatMessage(){
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message);
-        lastDate = new String("");
 
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.item_message, FirebaseDatabase.getInstance().getReference("chats").child(chatKey).orderByPriority()) {
             @Override
@@ -166,13 +185,15 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.addChildEventListener(new ChildEventListener(){
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("change:" , "captured");
+                if(isRunning){
+                    Log.d("change:" , "enter on isrunning");
+                    isReadUpdate();
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if(isRunning){
-                    isReadUpdate();
-                }
             }
 
             @Override
@@ -238,7 +259,7 @@ public class ChatPage extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isRunning = true;
-        isReadUpdate();
+
 
     }
 
@@ -258,6 +279,7 @@ public class ChatPage extends AppCompatActivity {
                     ChatMessage cm = message.getValue(ChatMessage.class);
                     if(!cm.isStatus_read() && !cm.getSender().equals(sender.getKey())){
                         //update status read
+                        Log.d("UP", "Update the status for " + message.getKey());
                         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                         DatabaseReference databaseReference =  firebaseDatabase.getReference("chats").child(chatKey).child(message.getKey());
                         cm.setStatus_read(true);

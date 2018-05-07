@@ -29,6 +29,7 @@
                 android:orientation="horizontal"
                 >
                 <ImageButton
+                    android:padding="@dimen/padding"
                     android:id="@+id/chatToolbarBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -47,24 +48,14 @@
                     android:src="@drawable/profile"/>
 
                 <TextView
-                    android:id="@+id/chatToolbarName"
+                    android:id="@+id/toolbarName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:layout_marginRight="@dimen/appbar_padding_top"
                     />
-
-                <TextView
-                    android:id="@+id/chatToolbarSurname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/surname"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"/>
             </LinearLayout>
 
         </android.support.v7.widget.Toolbar>

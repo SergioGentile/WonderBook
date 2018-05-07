@@ -54,8 +54,6 @@ public class ShowMessageThread extends AppCompatActivity {
                 CircleImageView profileImage;
                 TextView name, lastMessage;
 
-
-
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
