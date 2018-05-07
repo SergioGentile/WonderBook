@@ -63,6 +63,20 @@ public class User implements Parcelable {
         this.street = street;
     }
 
+    public User(String name, String surname, String imageUrl, String key){
+        this.name = new User.MyPair(name, "public");
+        this.surname = new User.MyPair(surname, "public");
+        this.user_image_url = imageUrl;
+        this.key = key;
+
+        phone = new MyPair();
+        email = new MyPair();
+        description = new MyPair();
+        city = new MyPair();
+        cap = new MyPair();
+        street = new MyPair();
+    }
+
     public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street, String imagePath, String key, String user_image_url, String cropped_image_url) {
         this.name = name;
         this.surname = surname;

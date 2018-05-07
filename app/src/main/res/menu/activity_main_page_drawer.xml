@@ -20,6 +20,13 @@
             android:id="@+id/nav_show_shared_book"
             android:icon="@drawable/ic_menu_share"
             android:title="@string/show_book" />
+
+        <item
+            android:iconTint="@color/colorAccent"
+            android:id="@+id/nav_show_chat"
+            android:icon="@drawable/ic_message_black_24dp"
+            android:title="@string/show_chat" />
+
         <item
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_exit"
