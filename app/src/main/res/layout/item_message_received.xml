@@ -30,4 +30,6 @@
         android:layout_marginLeft="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_message_body" />
 
+
+
 </android.support.constraint.ConstraintLayout>

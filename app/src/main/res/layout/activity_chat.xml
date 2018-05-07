@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<RelativeLayout
+
+    android:id="@+id/chat_container"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/chat_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -63,52 +72,63 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <include layout="@layout/content_chat" />
 
 
-    <!-- A horizontal line between the chatbox and RecyclerView -->
-    <View
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="#dfdfdf"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        <include layout="@layout/content_chat"/>
 
-    <LinearLayout
-        android:id="@+id/layout_chatbox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:minHeight="48dp"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_chatbox"
-            android:hint="Enter message"
-            android:background="@android:color/transparent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:id="@+id/chat_input_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"/>
+            android:layout_marginTop="@dimen/margin_top"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            >
+        <!-- A horizontal line between the chatbox and RecyclerView -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/colorPrimaryDark" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabAdd"
-            app:fabSize="mini"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layout_chatbox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="4dp"
-            app:elevation="@dimen/elevation"
-            app:srcCompat="@drawable/ic_send_white_24dp" />
+            android:background="#ffffff"
+            android:minHeight="48dp"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edittext_chatbox"
+                android:layout_width="310dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Enter message"
+                android:maxLines="3" />
 
-</android.support.constraint.ConstraintLayout>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="4dp"
+                app:elevation="@dimen/elevation"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_send_white_24dp" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+</RelativeLayout>
+</LinearLayout>
+
