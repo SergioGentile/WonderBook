@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -51,15 +53,57 @@ public class ShowMessageThread extends AppCompatActivity {
             protected void populateView(View v, final Peer peer, int position) {
                 //Get references to the views of list_item.xml
 
-                CircleImageView profileImage;
-                TextView name, lastMessage;
+                final CircleImageView profileImage;
+                final TextView name, lastMessage;
+                final ReceiverInformation receiverInformation;
 
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
-                final ReceiverInformation peerInformation = peer.getReceiverInformation();
+                receiverInformation = peer.getReceiverInformation();
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).into(profileImage);
-                name.setText(peerInformation.getName() + " " + peerInformation.getSurname());
+                name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
+                //Update receiver information if necessary
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(receiverInformation.getKey());
+                //Take the user and compare it with the current one
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String nameUpdate, surnameUpdate;
+                        boolean somethingChange = false;
+                        nameUpdate = receiverInformation.getName();
+                        surnameUpdate = receiverInformation.getSurname();
+                        User receiverUpdate = dataSnapshot.getValue(User.class);
+                        //compare the name
+                        if(!receiverUpdate.getName().getValue().toLowerCase().equals(receiverInformation.getName().toLowerCase())){
+                            nameUpdate = receiverUpdate.getName().getValue();
+                            somethingChange = true;
+                        }
+                        //compare the surname
+                        if(!receiverUpdate.getSurname().getValue().toLowerCase().equals(receiverInformation.getSurname().toLowerCase())){
+                            surnameUpdate = receiverUpdate.getName().getValue();
+                            somethingChange = true;
+                        }
+                        //compare the image path
+                        if(!receiverUpdate.getUser_image_url().toLowerCase().equals(receiverInformation.getPathImage().toLowerCase())){
+                            Picasso.with(ShowMessageThread.this).load(receiverUpdate.getUser_image_url()).into(profileImage);
+                            somethingChange = true;
+                        }
+                        name.setText(nameUpdate + " " + surnameUpdate);
+                        //if something change, update the db.
+                        FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peer.getKeyChat()).child("receiverInformation");
+                        if(somethingChange){
+                            databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(),receiverUpdate.getKey()));
+                        }
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
                 LinearLayout ll = (LinearLayout) v.findViewById(R.id.adapter_message_thread);
                 if(peer.getLastMessage().isEmpty()){
@@ -83,7 +127,7 @@ public class ShowMessageThread extends AppCompatActivity {
                         Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("sender", user);
-                        bundle.putParcelable("receiver", new User(peerInformation.getName(), peerInformation.getSurname(), peerInformation.getPathImage(), peerInformation.getKey()));
+                        bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
                         intent.putExtra("key_chat", peer.getKeyChat());
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -96,4 +140,10 @@ public class ShowMessageThread extends AppCompatActivity {
 
         listOfMessage.setAdapter(adapter);
     }
+
+    //Update user chat
+    private void updateReceiver(){
+
+    }
+
 }

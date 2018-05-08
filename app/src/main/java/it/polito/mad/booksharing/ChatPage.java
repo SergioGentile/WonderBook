@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.support.constraint.ConstraintLayout;
@@ -166,8 +167,10 @@ public class ChatPage extends AppCompatActivity {
                        d = getDrawable(R.drawable.check_double);
                    }
                    else{
-                       d = getDrawable(R.drawable.ic_check_black_24dp);
+                        d = getDrawable(R.drawable.ic_check_blue_24dp);
                    }
+                    d.setTint(getColor(R.color.colorPrimary));
+                    d.setTintMode(PorterDuff.Mode.SRC_IN);
                    read.setImageDrawable(d);
                 }
                 else{
