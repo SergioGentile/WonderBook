@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorDivider"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,7 +38,6 @@
             android:layout_below="@id/toolbarLayout"/>
 
         <ListView
-
             android:layout_below="@id/shadow_chat_thread"
             android:id="@+id/list_of_message_thread"
             android:divider="@null"
