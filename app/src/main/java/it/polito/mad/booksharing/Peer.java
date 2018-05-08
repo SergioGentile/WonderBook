@@ -4,58 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Peer{
-    private List<PeerInformation> peer;
-    private String keyChat, lastMessage;
+    private ReceiverInformation receiverInformation;
+    private String keyChat, lastMessage, lastTimestamp;
     private String date;
 
-    public Peer(User user1, User user2, String keyChat) {
-        peer = new ArrayList<>();
-        peer.add(new PeerInformation(user1.getName().getValue(), user1.getSurname().getValue(), user1.getUser_image_url(), user1.getKey()));
-        peer.add(new PeerInformation(user2.getName().getValue(), user2.getSurname().getValue(), user2.getUser_image_url(), user2.getKey()));
+    public Peer(User receiver, String keyChat) {
+        receiverInformation = new ReceiverInformation(receiver.getName().getValue(), receiver.getSurname().getValue(), receiver.getUser_image_url(), receiver.getKey());
         this.keyChat = keyChat;
         this.lastMessage = "";
+        this.lastTimestamp = "";
     }
 
     public Peer() {
     }
 
-    public Peer(List<PeerInformation> peer) {
-        this.peer = peer;
+    public Peer(ReceiverInformation receiverInformation) {
+        this.receiverInformation = receiverInformation;
     }
 
-    public List<PeerInformation> getPeer() {
-        return peer;
+    public ReceiverInformation getReceiverInformation() {
+        return receiverInformation;
     }
 
-    public void setPeer(List<PeerInformation> peer) {
-        this.peer = peer;
+    public void setPeer(ReceiverInformation receiverInformation) {
+        this.receiverInformation = receiverInformation;
     }
 
-    public boolean contains(String key){
-        for(PeerInformation peerInformation : peer){
-            if(peerInformation.getKey().equals(key)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public PeerInformation getPeerInformationSender(String key){
-        for(PeerInformation peerInformation : peer){
-            if(peerInformation.getKey().equals(key)){
-                return peerInformation;
-            }
-        }
-        return null;
-    }
-    public PeerInformation getPeerInformationReceiver(String key){
-        for(PeerInformation peerInformation : peer){
-            if(!peerInformation.getKey().equals(key)){
-                return peerInformation;
-            }
-        }
-        return null;
-    }
 
     public String getKeyChat() {
         return keyChat;
@@ -76,17 +50,17 @@ class Peer{
 
 }
 
-class PeerInformation{
+class ReceiverInformation{
     private String name, surname, pathImage, key;
 
-    public PeerInformation(String name, String surname, String pathImage, String key) {
+    public ReceiverInformation(String name, String surname, String pathImage, String key) {
         this.name = name;
         this.surname = surname;
         this.pathImage = pathImage;
         this.key = key;
     }
 
-    public PeerInformation() {
+    public ReceiverInformation() {
     }
 
     public String getName() {

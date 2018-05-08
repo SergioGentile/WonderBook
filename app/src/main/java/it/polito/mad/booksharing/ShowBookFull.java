@@ -122,10 +122,12 @@ public class ShowBookFull extends AppCompatActivity {
             public void onClick(View v) {
                 //Start activity for chat
                 //Check if a chat between me and the other user exist
-                final User user1 = getIntent().getExtras().getParcelable("user_owner");
-                final User user2 = getIntent().getExtras().getParcelable("user_mp");
+                final User sender = getIntent().getExtras().getParcelable("user_owner");
+                final User receiver = getIntent().getExtras().getParcelable("user_mp");
+                //User1: the owner of the phone (sender)
+                //User2: the owner of the book (receiver)
                 final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user1.getKey()).child("chats");
+                final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats");
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,25 +138,25 @@ public class ShowBookFull extends AppCompatActivity {
                             boolean found = false;
                             for(DataSnapshot dataPeer : dataSnapshot.getChildren()){
                                 Peer peer = dataPeer.getValue(Peer.class);
-                                if(peer.contains(user1.getKey()) && peer.contains(user2.getKey())){
+                                if(peer.getReceiverInformation().getKey().equals(receiver.getKey())){
                                     //Chat already exist
                                     found = true;
                                     keyChat = dataPeer.getKey();
                                 }
                             }
                             if(!found){
-                                keyChat = createInstanceOfChat(user1, user2);
+                                keyChat = createInstanceOfChat(sender, receiver);
                             }
                         }
                         else{
-                            keyChat = createInstanceOfChat(user1, user2);
+                            keyChat = createInstanceOfChat(sender, receiver);
                         }
 
                         //Here i have a chat with key keyChat
                         Intent intent = new Intent(ShowBookFull.this, ChatPage.class);
                         Bundle bundle = new Bundle();
-                        bundle.putParcelable("sender", user1);
-                        bundle.putParcelable("receiver", user2);
+                        bundle.putParcelable("sender", sender);
+                        bundle.putParcelable("receiver", receiver);
                         intent.putExtra("key_chat", keyChat);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -323,21 +325,18 @@ public class ShowBookFull extends AppCompatActivity {
         });
     }
 
-    private String createInstanceOfChat(User user1, User user2){
+    private String createInstanceOfChat(User sender, User receiver){
         //Create chat list
         //For the user1
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user1.getKey()).child("chats");
-        Log.d("CU", "Not exist. push for " + user1.getKey());
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats");
         DatabaseReference instanceReference1 = databaseReference.push();
         String key = instanceReference1.getKey();
-        Log.d("User:", "Own:" + user1.getName().getValue() + ", mp:" + user2.getName().getValue());
-        instanceReference1.setValue(new Peer(user1, user2, key));
+        instanceReference1.setValue(new Peer(receiver, key));
 
-        //For the user2
-        Log.d("New chat for ", user2.getKey());
-        DatabaseReference instanceReference2 = firebaseDatabase.getReference("users").child(user2.getKey()).child("chats").child(key);
-        instanceReference2.setValue(new Peer(user1, user2, key));
+        //For the receiver: i put the sender
+        DatabaseReference instanceReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(key);
+        instanceReference2.setValue(new Peer(sender, key));
 
         return key;
     }

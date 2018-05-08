@@ -93,10 +93,12 @@ public class ChatPage extends AppCompatActivity {
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
                     databaseReference1.child("lastMessage").setValue(input.getText().toString());
+                    databaseReference1.child("lastTimestamp").setValue(new Date().getTime());
                     databaseReference1.setPriority(-1*new Date().getTime());
 
                     DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(chatKey);
                     databaseReference2.child("lastMessage").setValue(input.getText().toString());
+                    databaseReference2.child("lastTimestamp").setValue(new Date().getTime());
                     databaseReference2.setPriority(-1*new Date().getTime());
                     input.setText("");
 
