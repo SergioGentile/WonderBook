@@ -87,8 +87,13 @@ public class ChatPage extends AppCompatActivity {
             public void onClick(View v) {
                 TextInputEditText input = (TextInputEditText)findViewById(R.id.input);
                 if(!input.getText().toString().isEmpty()){
+
+                    //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey);
+                    //La riga successiva setta il messaggio nel server.
+                    //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
+                    //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
                     databaseReference.push().setValue(new ChatMessage(sender.getKey(), input.getText().toString()));
 
                     //Set the last message
