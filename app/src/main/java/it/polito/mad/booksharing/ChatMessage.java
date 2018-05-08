@@ -7,15 +7,16 @@ import java.util.Date;
  */
 
 public class ChatMessage {
-    private String sender, message;
+    private String sender, message, receiver;
     private long time;
     boolean status_read;
 
-    public ChatMessage(String sender, String message) {
+    public ChatMessage(String sender, String receiver ,String message) {
         this.sender = sender;
         this.message = message;
         this.status_read = false;
         this.time = new Date().getTime();
+        this.receiver = receiver;
     }
 
     public ChatMessage(){
@@ -52,5 +53,13 @@ public class ChatMessage {
 
     public void setStatus_read(boolean status_read) {
         this.status_read = status_read;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 }

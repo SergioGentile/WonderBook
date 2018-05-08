@@ -94,7 +94,7 @@ public class ChatPage extends AppCompatActivity {
                     //La riga successiva setta il messaggio nel server.
                     //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
                     //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
-                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), input.getText().toString()));
+                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), receiver.getKey(),input.getText().toString()));
 
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);

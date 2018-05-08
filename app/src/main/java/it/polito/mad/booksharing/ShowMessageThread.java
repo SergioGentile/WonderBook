@@ -93,6 +93,8 @@ public class ShowMessageThread extends AppCompatActivity {
                         name.setText(nameUpdate + " " + surnameUpdate);
                         //if something change, update the db.
                         FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
+                        Log.d("User key" , user.getKey());
+                        Log.d("Peer key", peer.getKeyChat());
                         DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peer.getKeyChat()).child("receiverInformation");
                         if(somethingChange){
                             databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(),receiverUpdate.getKey()));
