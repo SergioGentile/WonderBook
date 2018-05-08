@@ -57,8 +57,8 @@ public class ShowMessageThread extends AppCompatActivity {
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
-                final PeerInformation peerInformation = peer.getPeerInformationReceiver(user.getKey());
-                Picasso.with(ShowMessageThread.this).load(peer.getPeerInformationReceiver(user.getKey()).getPathImage()).into(profileImage);
+                final ReceiverInformation peerInformation = peer.getReceiverInformation();
+                Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).into(profileImage);
                 name.setText(peerInformation.getName() + " " + peerInformation.getSurname());
 
                 LinearLayout ll = (LinearLayout) v.findViewById(R.id.adapter_message_thread);
