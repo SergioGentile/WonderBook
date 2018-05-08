@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.support.constraint.ConstraintLayout;
@@ -86,9 +87,14 @@ public class ChatPage extends AppCompatActivity {
             public void onClick(View v) {
                 TextInputEditText input = (TextInputEditText)findViewById(R.id.input);
                 if(!input.getText().toString().isEmpty()){
+
+                    //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey);
-                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), input.getText().toString()));
+                    //La riga successiva setta il messaggio nel server.
+                    //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
+                    //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
+                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), receiver.getKey(),input.getText().toString()));
 
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
@@ -166,8 +172,10 @@ public class ChatPage extends AppCompatActivity {
                        d = getDrawable(R.drawable.check_double);
                    }
                    else{
-                       d = getDrawable(R.drawable.ic_check_black_24dp);
+                        d = getDrawable(R.drawable.ic_check_blue_24dp);
                    }
+                    d.setTint(getColor(R.color.colorPrimary));
+                    d.setTintMode(PorterDuff.Mode.SRC_IN);
                    read.setImageDrawable(d);
                 }
                 else{

@@ -5,14 +5,14 @@ import java.util.List;
 
 class Peer{
     private ReceiverInformation receiverInformation;
-    private String keyChat, lastMessage, lastTimestamp;
+    private String keyChat, lastMessage;
     private String date;
+    private Long lastTimestamp;
 
     public Peer(User receiver, String keyChat) {
         receiverInformation = new ReceiverInformation(receiver.getName().getValue(), receiver.getSurname().getValue(), receiver.getUser_image_url(), receiver.getKey());
         this.keyChat = keyChat;
         this.lastMessage = "";
-        this.lastTimestamp = "";
     }
 
     public Peer() {
@@ -26,7 +26,7 @@ class Peer{
         return receiverInformation;
     }
 
-    public void setPeer(ReceiverInformation receiverInformation) {
+    public void setReceiverInformation(ReceiverInformation receiverInformation) {
         this.receiverInformation = receiverInformation;
     }
 
@@ -47,7 +47,21 @@ class Peer{
         this.lastMessage = lastMessage;
     }
 
+    public Long getLastTimestamp() {
+        return lastTimestamp;
+    }
 
+    public void setLastTimestamp(Long lastTimestamp) {
+        this.lastTimestamp = lastTimestamp;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }
 
 class ReceiverInformation{
@@ -94,4 +108,6 @@ class ReceiverInformation{
     public void setKey(String key) {
         this.key = key;
     }
+
+
 }
