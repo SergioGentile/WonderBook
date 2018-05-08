@@ -91,6 +91,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         String title = sender.getName().getValue() + " " + sender.getSurname().getValue();
 
+        //FLAG_UPDATE_CURRENT necessary otherwise the extras are lost
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -109,18 +110,16 @@ public class NotificationService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "BookSharing",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        if(notificationManager != null){
+        if (notificationManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "BookSharing",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
             notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-        }
-        else{
-            Log.d("NOTIFICATION_MANAGER","Notification Manager Null Pointer");
+        } else {
+            Log.d("NOTIFICATION_MANAGER", "Notification Manager Null Pointer");
         }
     }
 
