@@ -339,6 +339,8 @@ public class MainPage extends AppCompatActivity
             }
         });
 
+
+        NotificationIDService.sendRegistrationToServer();
     }
 
     //evaluate the distance between two point (latitude, longitude) in KM
