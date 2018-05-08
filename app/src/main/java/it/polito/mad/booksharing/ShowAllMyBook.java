@@ -289,9 +289,14 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
         if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowAllMyBook.this, ShowProfile.class));
-        } else if (id == R.id.nav_home) {
-            //Nothing to do
-        } else if (id == R.id.nav_exit) {
+        }
+        else if(id == R.id.nav_show_chat){
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowAllMyBook.this, ShowMessageThread.class).putExtras(bundle));
+        }
+        else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
