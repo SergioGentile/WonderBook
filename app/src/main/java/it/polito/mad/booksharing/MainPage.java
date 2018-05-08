@@ -351,10 +351,8 @@ public class MainPage extends AppCompatActivity
                 * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
+        dist = dist * 60 * 1.1515; //*1.609344
 
-        double i = 348842;
-        double i2 = i / 60000;
         return (double) Math.round(Math.abs(dist) * 100) / (double) 100;
     }
 
@@ -495,6 +493,12 @@ public class MainPage extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
+        }
+        else if (id == R.id.nav_show_chat) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(MainPage.this, ShowMessageThread.class).putExtras(bundle));
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
@@ -1315,8 +1319,8 @@ public class MainPage extends AppCompatActivity
                 author.setText(User.capitalizeSpace(book.getAuthor()));
                 rb.setRating(new Float(book.getRating()));
 
-                CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv_searched);
-                cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
+               /*CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv_searched);
+                cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));*/
 
 
                 LinearLayout llAdapter = (LinearLayout) convertView.findViewById(R.id.ll_adapter_searched_book);

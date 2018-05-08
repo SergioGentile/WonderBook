@@ -418,7 +418,6 @@ public class EditProfile extends AppCompatActivity {
             user.setImagePath(imagePathUser);
             String imagePathOrigin = saveToInternalStorageOriginalImage(image);
             saveOnFireBaseOriginalImage(imagePathOrigin);
-
         }
 
     }

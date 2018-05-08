@@ -131,6 +131,7 @@
     <string name="tab_title">Title</string>
     <string name="tab_author">Author</string>
     <string name="tab_all">Any</string>
+    <string name="show_chat">Messages</string>
 
 
     <string-array name="order">

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -28,10 +29,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,6 +55,7 @@ public class ShowBookFull extends AppCompatActivity {
     private ScrollView sv;
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
+    private ImageButton contactUser;
 
     private Toolbar toolbar;
     private TextView available;
@@ -105,6 +114,60 @@ public class ShowBookFull extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbarShowProfile);
         setSupportActionBar(toolbar);
+
+        contactUser = (ImageButton) findViewById(R.id.contact_user);
+
+        contactUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Start activity for chat
+                //Check if a chat between me and the other user exist
+                final User user1 = getIntent().getExtras().getParcelable("user_owner");
+                final User user2 = getIntent().getExtras().getParcelable("user_mp");
+                final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user1.getKey()).child("chats");
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String keyChat = null;
+                        if(dataSnapshot.exists()){
+                            //Chat list already exist
+                            //Find previous chat between peer
+                            boolean found = false;
+                            for(DataSnapshot dataPeer : dataSnapshot.getChildren()){
+                                Peer peer = dataPeer.getValue(Peer.class);
+                                if(peer.contains(user1.getKey()) && peer.contains(user2.getKey())){
+                                    //Chat already exist
+                                    found = true;
+                                    keyChat = dataPeer.getKey();
+                                }
+                            }
+                            if(!found){
+                                keyChat = createInstanceOfChat(user1, user2);
+                            }
+                        }
+                        else{
+                            keyChat = createInstanceOfChat(user1, user2);
+                        }
+
+                        //Here i have a chat with key keyChat
+                        Intent intent = new Intent(ShowBookFull.this, ChatPage.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("sender", user1);
+                        bundle.putParcelable("receiver", user2);
+                        intent.putExtra("key_chat", keyChat);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
 
         //This part is useful when the description field over the max number of lines.
         //If the user scroll the description field, the scrollerView is blocked, and with the same principle
@@ -267,6 +330,25 @@ public class ShowBookFull extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private String createInstanceOfChat(User user1, User user2){
+        //Create chat list
+        //For the user1
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user1.getKey()).child("chats");
+        Log.d("CU", "Not exist. push for " + user1.getKey());
+        DatabaseReference instanceReference1 = databaseReference.push();
+        String key = instanceReference1.getKey();
+        Log.d("User:", "Own:" + user1.getName().getValue() + ", mp:" + user2.getName().getValue());
+        instanceReference1.setValue(new Peer(user1, user2, key));
+
+        //For the user2
+        Log.d("New chat for ", user2.getKey());
+        DatabaseReference instanceReference2 = firebaseDatabase.getReference("users").child(user2.getKey()).child("chats").child(key);
+        instanceReference2.setValue(new Peer(user1, user2, key));
+
+        return key;
     }
 
     private void zoomImage() {

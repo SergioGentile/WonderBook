@@ -96,10 +96,9 @@
             android:label="@string/title_activity_edit_pwd"
             android:theme="@style/AppTheme" />
         <activity android:name=".DialogOrderType" />
-        <activity
-            android:name=".Chat"
-            android:label="@string/title_activity_chat"
-            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".Chat" />
+        <activity android:name=".ChatPage" />
+        <activity android:name=".ShowMessageThread"></activity>
     </application>
 
 </manifest>
