@@ -325,13 +325,7 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-        btnContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ShowBookFull.this, Chat.class);
-                startActivity(intent);
-            }
-        });
+
     }
 
     private String createInstanceOfChat(User sender, User receiver){

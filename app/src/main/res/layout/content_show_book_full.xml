@@ -127,6 +127,9 @@
                             android:layout_marginLeft="@dimen/margin_left"
                             android:src="@drawable/profile" />
 
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content">
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -155,18 +158,24 @@
                                 android:text="Torino, via Galliari 30"
                                 android:textColor="@color/colorSecondaryText" />
                         </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center|right">
+                           <ImageButton
+                               android:tintMode="src_in"
+                               android:tint="@color/colorPrimary"
+                               android:backgroundTint="@android:color/transparent"
+                               android:id="@+id/contact_user"
+                               android:padding="@dimen/padding"
+                               android:layout_gravity="center|right"
+                               android:src="@drawable/ic_message_black_24dp"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content" />
+                        </LinearLayout>
                     </LinearLayout>
-                    <ImageButton
-                        android:tintMode="src_in"
-                        android:tint="@color/colorPrimary"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:backgroundTint="@android:color/transparent"
-                        android:id="@+id/contact_user"
-                        android:padding="@dimen/padding"
-                        android:layout_gravity="center|right"
-                        android:src="@drawable/ic_message_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    </LinearLayout>
+
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView

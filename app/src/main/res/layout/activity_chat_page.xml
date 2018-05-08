@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorDivider">
 
     <RelativeLayout
         android:id="@+id/chat_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:background="@color/colorDivider"
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/chat_toolbar"
@@ -20,7 +22,6 @@
             android:theme="@style/Theme.myToolbar"
             app:subtitleTextColor="@color/windowBackground"
             app:contentInsetLeft="0dp"
-            app:contentInsetStart="5dp"
             app:titleTextColor="@android:color/white">
 
             <LinearLayout
@@ -29,7 +30,7 @@
                 android:orientation="horizontal"
                 >
                 <ImageButton
-                    android:padding="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
                     android:id="@+id/chatToolbarBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -43,90 +44,88 @@
                     android:layout_height="wrap_content"
                     android:visibility="visible"
                     android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_gravity="left"
                     android:src="@drawable/profile"/>
 
                 <TextView
                     android:id="@+id/toolbarName"
+                    android:paddingLeft="@dimen/padding"
+                    android:text="Alessia Carosella"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:layout_marginRight="@dimen/appbar_padding_top"
+                    android:textSize="@dimen/title"
                     />
             </LinearLayout>
 
+
         </android.support.v7.widget.Toolbar>
 
+        <View
+            android:id="@+id/shadow_chat_page"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow"
+            android:background="@drawable/shadow_toolbar"
+            android:layout_below="@id/chat_toolbar"/>
 
-
-        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            tools:context="it.polito.mad.booksharing.ChatPage"
-
+        <ListView
             android:id="@+id/list_of_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/chat_input_container"
-            android:layout_below="@+id/chat_toolbar"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_chatbox"
+            android:layout_below="@+id/shadow_chat_page"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"/>
+            android:transcriptMode="alwaysScroll"
+            tools:context="it.polito.mad.booksharing.ChatPage" />
 
 
         <LinearLayout
-            android:id="@+id/chat_input_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_top"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            >
-            <!-- A horizontal line between the chatbox and RecyclerView -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="0dp"
-                android:background="@color/colorPrimaryDark" />
-
-            <LinearLayout
                 android:id="@+id/layout_chatbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffffff"
                 android:minHeight="48dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                >
+
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/input"
                     android:layout_width="310dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginRight="13dp"
+                    android:padding="13dp"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/tv_dim"
                     android:hint="Enter message"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/my_box"
                     android:maxLines="3" />
+
+
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="4dp"
-                    app:elevation="@dimen/elevation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="4dp"
                     app:fabSize="mini"
                     app:srcCompat="@drawable/ic_send_black_24dp" />
 
             </LinearLayout>
 
-        </LinearLayout>
-
     </RelativeLayout>
+
+
 </LinearLayout>
 

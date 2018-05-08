@@ -7,6 +7,7 @@
     <color name="white">#FFFFFF</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
+    <color name="chat_rec">#E0E0E0</color>
     <color name="colorTertiaryText">#BDBDBD</color>
     <color name="colorDivider">#EEEEEE</color>
     <color name="windowBackground">@android:color/white</color>
