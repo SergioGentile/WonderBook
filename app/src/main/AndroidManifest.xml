@@ -95,9 +95,8 @@
             android:name=".EditPwd"
             android:label="@string/title_activity_edit_pwd"
             android:theme="@style/AppTheme" />
-        <activity android:name=".DialogOrderType" />
         <activity android:name=".ChatPage" />
-        <activity android:name=".ShowMessageThread"></activity>
+        <activity android:name=".ShowMessageThread"/>
 
         <service
             android:name=".NotificationService">
