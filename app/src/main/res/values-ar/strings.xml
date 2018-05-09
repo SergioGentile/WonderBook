@@ -143,4 +143,7 @@
     <string name="most_rating">أكثر تصنيف</string>
     <string name="km_from_you">كم منك</string>
     <string name="in_your_city">في مدينتك</string>
+    <string name="last_seen">وصول الماضي</string>
+    <string name="of">ال</string>
+    <string name="show_chat">المشاركات</string>
 </resources>

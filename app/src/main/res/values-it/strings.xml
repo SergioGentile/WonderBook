@@ -143,4 +143,7 @@
     <string name="km_from_you">Km da te</string>
     <string name="in_your_city">Nella tua città</string>
     <string name="enable_position_performances">Attenzione: attiva il GPS per usufruire di un utilizzo migliore</string>
+    <string name="last_seen">Ultimo accesso:</string>
+    <string name="of">del</string>
+    <string name="show_chat">Messaggi</string>
 </resources>
