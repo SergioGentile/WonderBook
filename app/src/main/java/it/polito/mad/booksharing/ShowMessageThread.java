@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -102,6 +103,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshots) {
+                          notification.setVisibility(View.GONE);
                             int counter_notification = 0;
                             for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
                                 ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
