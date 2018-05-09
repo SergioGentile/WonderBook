@@ -4,6 +4,8 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -50,6 +52,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private ListAdapter adapter;
     private User user;
+    private View navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-     /*   DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -66,9 +69,11 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-*/
-        user = getIntent().getExtras().getParcelable("user");
 
+        navView = navigationView.getHeaderView(0);
+
+        user = getIntent().getExtras().getParcelable("user");
+        setUserInfoNavBar();
         showAllChat();
 
     }
@@ -252,6 +257,31 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         drawer.closeDrawer(GravityCompat.START);
         finish();
         return true;
+    }
+
+
+    private void setUserInfoNavBar() {
+        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
+            User currentUser = getIntent().getExtras().getParcelable("user_owner");
+            barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+            Bitmap image = null;
+            if (currentUser.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(currentUser.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        } else {
+            barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+            Bitmap image = null;
+
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        }
     }
 
 }
