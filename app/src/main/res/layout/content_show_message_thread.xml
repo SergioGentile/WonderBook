@@ -29,6 +29,19 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="Messages" />
 
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/tv_nav_drawer_notification"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="-25dp"
+                android:background="@drawable/round_notification"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@android:color/white"
+                android:textSize="8sp"
+                android:visibility="visible"/>
+
         </android.support.design.widget.AppBarLayout>
 
         <View

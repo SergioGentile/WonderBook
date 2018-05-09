@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context="it.polito.mad.booksharing.MainPage">
 
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,8 +25,13 @@
                 android:background="@color/colorPrimary"
                 android:theme="@style/Theme.myToolbar"
                 app:subtitleTextColor="@color/windowBackground"
+                app:navigationIcon="@drawable/ic_menu_black_24dp"
                 app:title="@string/app_name"
-                app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
+                app:titleTextColor="@android:color/white">
+
+            </android.support.v7.widget.Toolbar>
+
+
 
 
             <com.miguelcatalan.materialsearchview.MaterialSearchView
@@ -44,6 +50,21 @@
                 android:layout_marginRight="@dimen/margin_right"
                 android:visibility="gone"
                 android:src="@drawable/barcode" />
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/tv_nav_drawer_notification"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/round_notification"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@android:color/white"
+                android:textSize="8sp"
+                android:visibility="visible"/>
+
+
         </FrameLayout>
 
 

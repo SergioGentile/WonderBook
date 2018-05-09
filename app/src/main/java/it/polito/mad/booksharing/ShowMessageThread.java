@@ -6,16 +6,20 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +57,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private ListAdapter adapter;
     private User user;
     private View navView;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,22 +66,51 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
+
+
+        setNotification(12);
 
         user = getIntent().getExtras().getParcelable("user");
         setUserInfoNavBar();
         showAllChat();
 
     }
+
+    private void setNotification(Integer notificaction_count) {
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        if(notificaction_count!=0) {
+            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        }else{
+            toolbarNotification.setVisibility(View.GONE);
+        }
+    }
+
 
     private void showAllChat(){
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message_thread);

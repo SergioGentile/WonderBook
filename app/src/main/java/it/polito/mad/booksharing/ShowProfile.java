@@ -13,14 +13,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -50,6 +53,7 @@ public class ShowProfile extends AppCompatActivity
     private View navView;
     private Animator mCurrentAnimator;
     private CircleImageView profileImage;
+    private  NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class ShowProfile extends AppCompatActivity
         llDescription = (LinearLayout) findViewById(R.id.llDescription);
 
         circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+
 
 
         //Initialize the user (must be removed an replace with data stored previously)
@@ -116,14 +121,38 @@ public class ShowProfile extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
 
+        setNotification(12);
+
         setUserInfoNavBar();
 
 
+    }
+
+    private void setNotification(Integer notificaction_count) {
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        if(notificaction_count!=0) {
+            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        }else{
+            toolbarNotification.setVisibility(View.GONE);
+        }
     }
 
     @Override
