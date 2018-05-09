@@ -326,6 +326,11 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowAllMyBook.this, ShowProfile.class));
         }
+        else if(id == R.id.nav_show_shared_book){
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
         else if(id == R.id.nav_show_chat){
             //Start the intent
             Bundle bundle = new Bundle();

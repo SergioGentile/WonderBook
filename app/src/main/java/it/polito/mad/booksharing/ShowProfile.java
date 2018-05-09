@@ -422,6 +422,11 @@ public class ShowProfile extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowProfile.this, ShowMessageThread.class).putExtras(bundle));
         }
+        else if(id == R.id.nav_profile){
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
         else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();

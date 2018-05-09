@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -58,6 +59,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private User user;
     private View navView;
     private NavigationView navigationView;
+    private FirebaseDatabase firebaseDatabaseAccess;
+    private DatabaseReference databaseReferenceAccess;
+    boolean updateStatusOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +88,15 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         setNotification(12);
 
         user = getIntent().getExtras().getParcelable("user");
+
+        firebaseDatabaseAccess = FirebaseDatabase.getInstance();
+        databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
+
         setUserInfoNavBar();
         showAllChat();
 
     }
+
 
     private void setNotification(Integer notificaction_count) {
 
@@ -243,17 +252,17 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     @Override
                     public void onClick(View v) {
                         //Here i have a chat with key keyChat
+                        updateStatusOnline = false;
                         Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("sender", user);
                         bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
                         intent.putExtra("key_chat", peer.getKeyChat());
                         intent.putExtras(bundle);
+                        intent.putExtra("fromShowMessageThread", true);
                         startActivity(intent);
                     }
                 });
-
-                //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(peer.getPeerInformationReceiver(user.getKey()).getKey()).child("chats");
             }
         };
 
@@ -265,10 +274,22 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_profile) {
+        if (id == R.id.nav_show_shared_book) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMessageThread.this, ShowAllMyBook.class).putExtras(bundle));
+        }
+        else if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowMessageThread.this, ShowProfile.class));
 
-        } else if (id == R.id.nav_home) {
+        }
+        if(id == R.id.nav_show_chat){
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        else if (id == R.id.nav_home) {
             startActivity(new Intent(ShowMessageThread.this, MainPage.class));
 
         } else if (id == R.id.nav_exit) {
@@ -289,6 +310,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        String time = new Date().getTime() + "";
+        databaseReferenceAccess.setValue(time);
+        databaseReferenceAccess.onDisconnect().setValue(time);
         finish();
         return true;
     }
@@ -318,4 +342,62 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateStatusOnline = true;
+        String time = new Date().getTime() + "";
+        databaseReferenceAccess.setValue("online");
+        databaseReferenceAccess.onDisconnect().setValue(time);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        String time = new Date().getTime() + "";
+        databaseReferenceAccess.setValue(time);
+        databaseReferenceAccess.onDisconnect().setValue(time);
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        String time = new Date().getTime() + "";
+        if(updateStatusOnline) {
+            databaseReferenceAccess.setValue(time);
+        }
+        databaseReferenceAccess.onDisconnect().setValue(time);
+        Log.d("OnStop:", "On stop is called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String time = new Date().getTime() + "";
+        if(updateStatusOnline){
+            databaseReferenceAccess.setValue(time);
+        }
+        databaseReferenceAccess.onDisconnect().setValue(time);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String time = new Date().getTime() + "";
+        databaseReferenceAccess.setValue("online");
+        databaseReferenceAccess.onDisconnect().setValue(time);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("status",updateStatusOnline);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        updateStatusOnline = savedInstanceState.getBoolean("status", true);
+    }
 }
