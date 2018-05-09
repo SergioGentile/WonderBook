@@ -376,7 +376,7 @@ public class ChatPage extends AppCompatActivity {
                             tvStatus.setText( getString(R.string.last_seen) + " " + DateFormat.format("HH:mm", new Long(status)));
                         }
                         else{
-                            tvStatus.setText(getString(R.string.last_seen) + " " + DateFormat.format("HH:mm", new Long(status) )  + " " + getString(R.string.of) + " " + DateFormat.format("dd/MM/yyyy", new Date().getTime()) );
+                            tvStatus.setText(getString(R.string.last_seen) + " " + DateFormat.format("HH:mm", new Long(status) )  + " " + getString(R.string.of) + " " + DateFormat.format("dd/MM/yyyy", new Long(status)) );
                         }
 
 

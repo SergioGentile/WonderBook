@@ -1,4 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_adapter_my_book"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/image_adapter"
+        android:layout_width="@dimen/width_book_small"
+        android:layout_height="@dimen/height_book_small"
+        android:layout_marginTop="@dimen/margin_top"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginBottom="@dimen/bottom_inside_box"
+        android:background="@color/windowBackground"
+        android:scaleType="centerInside"
+        android:src="@drawable/progress_animation" />
+
+    <LinearLayout
+        android:layout_marginBottom="@dimen/bottom_inside_box"
+        android:layout_toRightOf="@id/image_adapter"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginRight="@dimen/margin_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_adapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Il Codice da Vinci"
+            android:textSize="@dimen/title_box_size" />
+
+        <TextView
+            android:id="@+id/author_adapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dan Brow"
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="@dimen/subtitle" />
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+            android:text="Mondadori"
+            android:id="@+id/publication_adapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/top_inside_box"
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="@dimen/subtitle" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <ImageButton
+        android:visibility="gone"
+        android:id="@+id/editMyBook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:padding="@dimen/padding"
+        android:layout_marginRight="@dimen/margin_right"
+        android:layout_marginBottom="@dimen/bottom_inside_box"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_mode_edit_black_24dp"
+        />
+
+
+</LinearLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/adapter_cv"
@@ -76,7 +159,7 @@
         android:src="@drawable/ic_mode_edit_black_24dp"
         />
 
-</android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>-->
 
     <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

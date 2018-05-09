@@ -78,24 +78,29 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <View
-            android:id="@+id/shadow_chat_page"
+        <FrameLayout
+            android:layout_above="@+id/layout_chatbox"
+            android:layout_below="@id/chat_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/shadow"
-            android:background="@drawable/shadow_toolbar"
-            android:layout_below="@id/chat_toolbar"/>
+            android:layout_height="match_parent">
 
         <ListView
             android:id="@+id/list_of_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/layout_chatbox"
-            android:layout_below="@+id/shadow_chat_page"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll"
             tools:context="it.polito.mad.booksharing.ChatPage" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/shadow"
+                android:background="@drawable/shadow_toolbar"
+               />
+        </FrameLayout>
 
 
         <LinearLayout

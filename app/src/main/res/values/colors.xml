@@ -9,7 +9,7 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="chat_rec">#E0E0E0</color>
     <color name="colorTertiaryText">#BDBDBD</color>
-    <color name="colorDivider">#EEEEEE</color>
+    <color name="colorDivider">#F5F5F5</color>
     <color name="windowBackground">@android:color/white</color>
     <color name="textColorPrimary">@android:color/white</color>
     <color name="lock">@android:color/black</color>

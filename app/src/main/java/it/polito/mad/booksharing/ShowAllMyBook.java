@@ -268,8 +268,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
 
                         //Here to show all the book
-                        CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv);
-                        cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));
+                        LinearLayout ll_my_book = (LinearLayout) convertView.findViewById(R.id.ll_adapter_my_book);
                         ImageButton btnEdit = (ImageButton) convertView.findViewById(R.id.editMyBook);
 
                         //edit the book
@@ -287,7 +286,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
                         });
 
                         //Show all the information about the book.
-                        cv.setOnClickListener(new View.OnClickListener() {
+                        ll_my_book.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(ShowAllMyBook.this, ShowBookFull.class);
