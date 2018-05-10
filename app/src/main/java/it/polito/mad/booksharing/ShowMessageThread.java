@@ -93,7 +93,19 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
 
         setUserInfoNavBar();
-        showAllChat();
+
+        DatabaseReference databaseReferenceThreads = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("chats");
+        databaseReferenceThreads.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                showAllChat();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -123,7 +135,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private void showAllChat(){
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message_thread);
-
+        listOfMessage.setAdapter(null);
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
             protected void populateView(final View v, final Peer peer, int position) {
