@@ -62,6 +62,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private FirebaseDatabase firebaseDatabaseAccess;
     private DatabaseReference databaseReferenceAccess;
     boolean updateStatusOnline;
+    private List<String> updateMessageThreadOld;
+    private List<String> updateMessageThreadNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -93,23 +94,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
 
         setUserInfoNavBar();
-
-        DatabaseReference databaseReferenceThreads = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("chats");
-        databaseReferenceThreads.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                showAllChat();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        showAllChat();
 
     }
-
-
     private void setNotification(Integer notificaction_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
@@ -135,7 +122,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private void showAllChat(){
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message_thread);
-        listOfMessage.setAdapter(null);
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
             protected void populateView(final View v, final Peer peer, int position) {
@@ -144,13 +130,12 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 final CircleImageView profileImage;
                 final TextView name, lastMessage, lastTimestamp;
                 final ReceiverInformation receiverInformation;
-                final TextView notification;
 
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
                 lastTimestamp = v.findViewById(R.id.text_time);
-                notification = (TextView) v.findViewById(R.id.notification);
+
                 receiverInformation = peer.getReceiverInformation();
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
@@ -158,7 +143,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 //Count the message not read
                 /***** UPDATE THIS PART WITH NOTIFICATION CLOUD SERVICE****/
 
-                FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
+               /* FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
                 DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
                 databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -184,7 +169,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                });*/
 
                  /*************/
 
@@ -245,7 +230,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     lastMessage.setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
                     lastTimestamp.setVisibility(View.GONE);
-                    notification.setVisibility(View.GONE);
                     line.setVisibility(View.GONE);
                     ll.setVisibility(View.GONE);
                     ll1.setVisibility(View.GONE);
@@ -253,6 +237,19 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     centerContainer.setVisibility(View.GONE);
                     container.setVisibility(View.GONE);
                     return;
+                }
+                else{
+                    profileImage.setVisibility(View.VISIBLE);
+                    name.setVisibility(View.VISIBLE);
+                    lastMessage.setVisibility(View.VISIBLE);
+                    v.setVisibility(View.VISIBLE);
+                    lastTimestamp.setVisibility(View.VISIBLE);
+                    line.setVisibility(View.VISIBLE);
+                    ll.setVisibility(View.VISIBLE);
+                    ll1.setVisibility(View.VISIBLE);
+                    ll2.setVisibility(View.VISIBLE);
+                    centerContainer.setVisibility(View.VISIBLE);
+                    container.setVisibility(View.VISIBLE);
                 }
 
 

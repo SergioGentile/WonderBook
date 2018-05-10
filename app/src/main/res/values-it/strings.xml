@@ -146,4 +146,6 @@
     <string name="last_seen">Ultimo accesso:</string>
     <string name="of">del</string>
     <string name="show_chat">Messaggi</string>
+    <string name="message_to_delete">messaggio da eliminare</string>
+    <string name="messages_to_delete">messaggi da eliminare</string>
 </resources>

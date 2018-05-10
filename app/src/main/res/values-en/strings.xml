@@ -147,4 +147,6 @@
     <string name="last_seen">Last seen:</string>
     <string name="of">of</string>
     <string name="show_chat">Messages</string>
+    <string name="message_to_delete">message to delete</string>
+    <string name="messages_to_delete">messages to delete</string>
 </resources>

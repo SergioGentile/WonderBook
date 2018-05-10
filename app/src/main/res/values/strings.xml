@@ -125,7 +125,7 @@
     <string name="insert_new_password">Insert new password</string>
     <string name="email_settings">Email Settings</string>
     <string name="change_password">Change Password</string>
-    <string name="title_activity_edit_pwd">EditPwd</string>
+    <string name="title_activity_edit_pwd" translatable="false">EditPwd</string>
     <string name="use_new_pwd">Please choose a new password</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_title">Title</string>
@@ -159,5 +159,7 @@
     <string name="change_credential">Change your access credentials</string>
     <string name="last_seen">Last seen:</string>
     <string name="of">of</string>
+    <string name="message_to_delete">message to delete</string>
+    <string name="messages_to_delete">messages to delete</string>
 
 </resources>
