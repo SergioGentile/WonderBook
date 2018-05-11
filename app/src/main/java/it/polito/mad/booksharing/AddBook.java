@@ -391,7 +391,7 @@ public class AddBook extends Activity {
                             } else if (book.getIsbn13() != null) {
                                 isbn13 = book.getIsbn13();
                             }
-                            if (tvISBN.getText().toString().length() == 10) {
+                            else if (tvISBN.getText().toString().length() == 10) {
                                 isbn10 = tvISBN.getText().toString();
                             } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
