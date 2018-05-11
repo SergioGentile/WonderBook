@@ -27,7 +27,7 @@
                 android:background="?attr/colorPrimary"
                 app:navigationIcon="@drawable/ic_menu_black_24dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="Messages" />
+                app:title="@string/show_chat" />
 
             <TextView
                 android:layout_width="15dp"
