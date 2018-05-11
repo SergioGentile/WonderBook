@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorDivider"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    android:orientation="horizontal"
+    tools:context="it.polito.mad.booksharing.ShowMessageThread">
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/toolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:navigationIcon="@drawable/ic_menu_black_24dp"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="Messages" />
+
+            <TextView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:id="@+id/tv_nav_drawer_notification"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="-25dp"
+                android:background="@drawable/round_notification"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@android:color/white"
+                android:textSize="8sp"
+                android:visibility="visible"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <View
+            android:id="@+id/shadow_chat_thread"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow"
+            android:background="@drawable/shadow_toolbar"
+            android:layout_below="@id/toolbarLayout"/>
+
+        <ListView
+            android:layout_below="@id/shadow_chat_thread"
+            android:id="@+id/list_of_message_thread"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+
+    </RelativeLayout>
+</LinearLayout>

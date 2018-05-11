@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -29,12 +30,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,6 +99,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -152,6 +157,7 @@ public class MainPage extends AppCompatActivity
     private ProgressBar progressAnimation;
     private List<SortedLocationItem> sortedLocationItems;
     LocationManager locationManager;
+    private NavigationView navigationView;
 
 
     @Override
@@ -179,11 +185,16 @@ public class MainPage extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
+
+
+        setNotification(12);
+
+
         setDefaultUser();
 
         Bundle mapViewBundle = null;
@@ -358,6 +369,7 @@ public class MainPage extends AppCompatActivity
         return (double) Math.round(Math.abs(dist) * 100) / (double) 100;
     }
 
+
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
@@ -380,6 +392,29 @@ public class MainPage extends AppCompatActivity
         super.onStop();
         mMapView.onStop();
     }
+
+    private void setNotification(Integer notificaction_count) {
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        if(notificaction_count!=0) {
+            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        }else{
+            toolbarNotification.setVisibility(View.GONE);
+        }
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //Take the ISBN of the camera scan in order to facility the search operation
@@ -460,8 +495,10 @@ public class MainPage extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
+
         MenuItem item = menu.findItem(R.id.searchButton);
-        searchView.setMenuItem(item);
+
+                searchView.setMenuItem(item);
         return true;
     }
 

@@ -630,12 +630,15 @@ public class EditProfile extends AppCompatActivity {
             //If I'm here the user has changed the image so I need to save it inside the Internal Storage
             String imagePath = saveToInternalStorage(profileBitmap);
             saveonFirebase(imagePath);
+            return;
         }
 
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
         dbref.child("users").child(user.getKey()).setValue(user);
 
         setSharedPrefUserInfo(user);
+
+
     }
 
     private void setSharedPrefUserInfo(User u) {
@@ -676,6 +679,10 @@ public class EditProfile extends AppCompatActivity {
                 //save the new picture Uri on the DB
                 savePicturePath(true, downloadUrl.toString());
                 user.setUser_image_url(downloadUrl.toString());
+                DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+                dbref.child("users").child(user.getKey()).setValue(user);
+
+                setSharedPrefUserInfo(user);
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 
             }

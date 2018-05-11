@@ -53,8 +53,12 @@ public class ChatPage extends AppCompatActivity {
     private FirebaseListAdapter<ChatMessage> adapter;
     private FloatingActionButton fab;
     private CircleImageView profileImage;
-    private TextView tvName;
+    private TextView tvName, tvStatus;
     private ImageButton backButton;
+
+    private FirebaseDatabase firebaseDatabaseAccess;
+    private DatabaseReference databaseReferenceAccess;
+    private boolean backPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class ChatPage extends AppCompatActivity {
         sender = getIntent().getExtras().getParcelable("sender");
         receiver = getIntent().getExtras().getParcelable("receiver");
         chatKey = getIntent().getStringExtra("key_chat");
+
+        setStatus();
 
         tvName = (TextView) findViewById(R.id.toolbarName);
         tvName.setText(receiver.getName().getValue() + " " + receiver.getSurname().getValue());
@@ -85,8 +91,8 @@ public class ChatPage extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextInputEditText input = (TextInputEditText)findViewById(R.id.input);
-                if(!input.getText().toString().isEmpty()){
+                TextInputEditText input = (TextInputEditText) findViewById(R.id.input);
+                if (!input.getText().toString().isEmpty()) {
 
                     //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -94,18 +100,18 @@ public class ChatPage extends AppCompatActivity {
                     //La riga successiva setta il messaggio nel server.
                     //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
                     //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
-                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), input.getText().toString()));
+                    databaseReference.push().setValue(new ChatMessage(sender.getKey(), receiver.getKey(), input.getText().toString()));
 
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
                     databaseReference1.child("lastMessage").setValue(input.getText().toString());
                     databaseReference1.child("lastTimestamp").setValue(new Date().getTime());
-                    databaseReference1.setPriority(-1*new Date().getTime());
+                    databaseReference1.setPriority(-1 * new Date().getTime());
 
                     DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(chatKey);
                     databaseReference2.child("lastMessage").setValue(input.getText().toString());
                     databaseReference2.child("lastTimestamp").setValue(new Date().getTime());
-                    databaseReference2.setPriority(-1*new Date().getTime());
+                    databaseReference2.setPriority(-1 * new Date().getTime());
                     input.setText("");
 
                 }
@@ -113,17 +119,20 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
+        firebaseDatabaseAccess = FirebaseDatabase.getInstance();
+        databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(sender.getKey()).child("status");
+
         isReadUpdate();
         displayChatMessage();
 
 
     }
 
-    private String getDate(long timestamp){
+    private String getDate(long timestamp) {
         return DateFormat.format("dd/MM/yyyy", timestamp).toString();
     }
 
-    private void displayChatMessage(){
+    private void displayChatMessage() {
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message);
 
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.item_message, FirebaseDatabase.getInstance().getReference("chats").child(chatKey).orderByPriority()) {
@@ -146,39 +155,34 @@ public class ChatPage extends AppCompatActivity {
                     tvDate.setVisibility(View.GONE);
                 }*/
                 TextView tvDate = (TextView) v.findViewById(R.id.date);
-                if(position == 0){
+                if (position == 0) {
                     tvDate.setVisibility(View.VISIBLE);
                     tvDate.setText(getDate(adapter.getItem(0).getTime()));
-                }
-                else if(!getDate(adapter.getItem(position).getTime()).equals(getDate(adapter.getItem(position-1).getTime()))){
+                } else if (!getDate(adapter.getItem(position).getTime()).equals(getDate(adapter.getItem(position - 1).getTime()))) {
                     tvDate.setVisibility(View.VISIBLE);
                     tvDate.setText(getDate(adapter.getItem(position).getTime()));
-                }
-                else
-                {
+                } else {
                     tvDate.setVisibility(View.GONE);
                 }
 
-                if(sender.getKey().equals(model.getSender())){
+                if (sender.getKey().equals(model.getSender())) {
                     //Case sender
-                   // read.setVisibility(View.VISIBLE);
+                    // read.setVisibility(View.VISIBLE);
                     messageText = (TextView) v.findViewById(R.id.text_message_body_send);
                     messageTime = (TextView) v.findViewById(R.id.text_message_time_send);
                     read = (ImageView) v.findViewById(R.id.message_read);
                     clRec.setVisibility(View.GONE);
                     clSend.setVisibility(View.VISIBLE);
 
-                    if(model.isStatus_read()){
-                       d = getDrawable(R.drawable.check_double);
-                   }
-                   else{
+                    if (model.isStatus_read()) {
+                        d = getDrawable(R.drawable.check_double);
+                    } else {
                         d = getDrawable(R.drawable.ic_check_blue_24dp);
-                   }
+                    }
                     d.setTint(getColor(R.color.colorPrimary));
                     d.setTintMode(PorterDuff.Mode.SRC_IN);
-                   read.setImageDrawable(d);
-                }
-                else{
+                    read.setImageDrawable(d);
+                } else {
                     messageText = (TextView) v.findViewById(R.id.text_message_body_rec);
                     messageTime = (TextView) v.findViewById(R.id.text_message_time_rec);
                     clSend.setVisibility(View.GONE);
@@ -192,12 +196,12 @@ public class ChatPage extends AppCompatActivity {
         listOfMessage.setAdapter(adapter);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("chats").child(chatKey);
-        databaseReference.addChildEventListener(new ChildEventListener(){
+        databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("change:" , "captured");
-                if(isRunning){
-                    Log.d("change:" , "enter on isrunning");
+                Log.d("change:", "captured");
+                if (isRunning) {
+                    Log.d("change:", "enter on isrunning");
                     isReadUpdate();
                 }
             }
@@ -224,7 +228,7 @@ public class ChatPage extends AppCompatActivity {
 
     }
 
-    private void setNotification(ChatMessage cm){
+    private void setNotification(ChatMessage cm) {
 
 
         NotificationCompat.Builder mBuilder =
@@ -265,37 +269,119 @@ public class ChatPage extends AppCompatActivity {
         return -1;
     }*/
 
+    private void isReadUpdate() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot message : dataSnapshot.getChildren()) {
+                    ChatMessage cm = message.getValue(ChatMessage.class);
+                    if (!cm.isStatus_read() && !cm.getSender().equals(sender.getKey())) {
+                        //update status read
+                        Log.d("UP", "Update the status for " + message.getKey());
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(message.getKey());
+                        cm.setStatus_read(true);
+                        databaseReference.setValue(cm);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
         isRunning = true;
+        String time = new Date().getTime() + "";
+        databaseReferenceAccess.setValue("online");
+        databaseReferenceAccess.onDisconnect().setValue(time);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        String time = new Date().getTime()+"";
+        isRunning = false;
+        backPressed = true;
+        if(!getIntent().getBooleanExtra("fromShowMessageThread", false)){
+            databaseReferenceAccess.setValue(time);
+        }
+        databaseReferenceAccess.onDisconnect().setValue(time);
+        finish();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        String time = new Date().getTime()+"";
+        isRunning = false;
+        if(!backPressed){
+            databaseReferenceAccess.setValue(time);
+        }
+        databaseReferenceAccess.onDisconnect().setValue(time);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         isRunning = false;
+        String time = new Date().getTime() + "";
+        if (!backPressed) {
+            databaseReferenceAccess.setValue(time);
+        }
+        databaseReferenceAccess.onDisconnect().setValue(time);
     }
 
-    private void isReadUpdate(){
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isRunning", isRunning);
+        outState.putBoolean("backPressed", backPressed);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isRunning = savedInstanceState.getBoolean("isRunning");
+        backPressed = savedInstanceState.getBoolean("backPressed");
+    }
+
+
+    private void setStatus(){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference =  firebaseDatabase.getReference("chats").child(chatKey);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(receiver.getKey()).child("status");
+        tvStatus = (TextView) findViewById(R.id.status);
+        tvStatus.setVisibility(View.GONE);
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot message : dataSnapshot.getChildren()){
-                    ChatMessage cm = message.getValue(ChatMessage.class);
-                    if(!cm.isStatus_read() && !cm.getSender().equals(sender.getKey())){
-                        //update status read
-                        Log.d("UP", "Update the status for " + message.getKey());
-                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference =  firebaseDatabase.getReference("chats").child(chatKey).child(message.getKey());
-                        cm.setStatus_read(true);
-                        databaseReference.setValue(cm);
+                if(dataSnapshot.exists()){
+                    //Here the status exist
+                    String status = dataSnapshot.getValue(String.class);
+                    if(status.toLowerCase().equals("online")){
+                        tvStatus.setText("Online");
+                    }
+                    else{
+                        if(DateFormat.format("dd:MM:yyyy", new Long(status)  ).equals(DateFormat.format("dd:MM:yyyy", new Date().getTime() )) ){
+                            tvStatus.setText( getString(R.string.last_seen) + " " + DateFormat.format("HH:mm", new Long(status)));
+                        }
+                        else{
+                            tvStatus.setText(getString(R.string.last_seen) + " " + DateFormat.format("HH:mm", new Long(status) )  + " " + getString(R.string.of) + " " + DateFormat.format("dd/MM/yyyy", new Date().getTime()) );
+                        }
+
 
                     }
+                    tvStatus.setVisibility(View.VISIBLE);
                 }
             }
 
