@@ -24,6 +24,7 @@
                 android:background="@color/colorPrimary"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/textColorPrimary">
+
                 <ImageButton
                     android:id="@+id/btnDone"
                     android:layout_width="wrap_content"
@@ -37,346 +38,351 @@
 
         </android.support.v7.widget.ActionBarContainer>
 
-        <View
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/shadow"
-            android:background="@drawable/shadow_toolbar" />
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/distance_box"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.CardView
-                android:elevation="@dimen/elevation"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_left"
-                android:background="@color/windowBackground">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profileImage"
-                        android:layout_width="@dimen/land_photo"
-                        android:layout_height="@dimen/land_photo"
-                        android:layout_marginLeft="@dimen/margin_left"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:src="@drawable/profile" />
-
-                    <ImageButton
-                        android:id="@+id/btnEditImg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/profileImage"
-                        android:layout_alignRight="@+id/profileImage"
-                        android:layout_marginRight="12dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/ic_photo_camera_black_24dp" />
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/distance_box">
+                android:layout_marginBottom="@dimen/distance_box"
+                android:orientation="horizontal">
 
-                <ScrollView
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:background="@color/windowBackground"
+                    android:elevation="@dimen/elevation">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileImage"
+                            android:layout_width="@dimen/land_photo"
+                            android:layout_height="@dimen/land_photo"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:src="@drawable/profile" />
+
+                        <ImageButton
+                            android:id="@+id/btnEditImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/profileImage"
+                            android:layout_alignRight="@+id/profileImage"
+                            android:layout_marginRight="12dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_photo_camera_black_24dp" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/distance_box">
 
-                    <LinearLayout
+                    <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
-                        <android.support.v7.widget.CardView
-                            android:elevation="@dimen/elevation"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:background="@color/windowBackground"
-                            android:gravity="center"
+                            android:layout_marginRight="@dimen/margin_right"
                             android:orientation="vertical">
 
-                            <LinearLayout
+                            <android.support.v7.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/margin_left"
-                                android:layout_marginRight="@dimen/margin_right"
+                                android:layout_gravity="center_vertical"
+                                android:background="@color/windowBackground"
+                                android:elevation="@dimen/elevation"
+                                android:gravity="center"
                                 android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:layout_marginTop="@dimen/top_inside_box"
-                                    android:text="@string/personal_information"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="@dimen/title_box_size" />
-
-                                <android.support.design.widget.TextInputLayout
-                                    android:id="@+id/inputName"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/name">
-
-                                    <android.support.design.widget.TextInputEditText
-                                        android:id="@+id/edtName"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/bottom_inside_box"
-                                        android:nextFocusDown="@id/edtSurname"
-                                        android:singleLine="true"
-                                        android:textSize="@dimen/tv_dim" />
-                                </android.support.design.widget.TextInputLayout>
-
-                                <android.support.design.widget.TextInputLayout
-                                    android:id="@+id/inputSurname"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/surname">
-
-                                    <android.support.design.widget.TextInputEditText
-                                        android:id="@+id/edtSurname"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/bottom_inside_box"
-                                        android:nextFocusDown="@id/edtCity"
-                                        android:singleLine="true"
-                                        android:textSize="@dimen/tv_dim" />
-                                </android.support.design.widget.TextInputLayout>
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/margin_left"
+                                    android:layout_marginRight="@dimen/margin_right"
+                                    android:orientation="vertical">
 
-                                    <android.support.design.widget.TextInputLayout
-                                        android:id="@+id/inputCity"
+                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0.7"
-                                        android:hint="@string/city">
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:layout_marginTop="@dimen/top_inside_box"
+                                        android:text="@string/personal_information"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="@dimen/title_box_size" />
+
+                                    <android.support.design.widget.TextInputLayout
+                                        android:id="@+id/inputName"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/name">
 
                                         <android.support.design.widget.TextInputEditText
-                                            android:id="@+id/edtCity"
+                                            android:id="@+id/edtName"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginRight="10dp"
-                                            android:nextFocusDown="@id/edtCap"
+                                            android:layout_marginBottom="@dimen/bottom_inside_box"
+                                            android:nextFocusDown="@id/edtSurname"
                                             android:singleLine="true"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
 
                                     <android.support.design.widget.TextInputLayout
-                                        android:id="@+id/inputCap"
+                                        android:id="@+id/inputSurname"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.3"
-                                        android:hint="@string/cap">
+                                        android:hint="@string/surname">
 
                                         <android.support.design.widget.TextInputEditText
-                                            android:id="@+id/edtCap"
+                                            android:id="@+id/edtSurname"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginLeft="10dp"
-                                            android:inputType="number"
-                                            android:nextFocusDown="@id/edtStreet"
+                                            android:layout_marginBottom="@dimen/bottom_inside_box"
+                                            android:nextFocusDown="@id/edtCity"
                                             android:singleLine="true"
                                             android:textSize="@dimen/tv_dim" />
                                     </android.support.design.widget.TextInputLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+
+                                        <android.support.design.widget.TextInputLayout
+                                            android:id="@+id/inputCity"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="0.7"
+                                            android:hint="@string/city">
+
+                                            <android.support.design.widget.TextInputEditText
+                                                android:id="@+id/edtCity"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginRight="10dp"
+                                                android:nextFocusDown="@id/edtCap"
+                                                android:singleLine="true"
+                                                android:textSize="@dimen/tv_dim" />
+                                        </android.support.design.widget.TextInputLayout>
+
+                                        <android.support.design.widget.TextInputLayout
+                                            android:id="@+id/inputCap"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1.3"
+                                            android:hint="@string/cap">
+
+                                            <android.support.design.widget.TextInputEditText
+                                                android:id="@+id/edtCap"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="10dp"
+                                                android:inputType="number"
+                                                android:nextFocusDown="@id/edtStreet"
+                                                android:singleLine="true"
+                                                android:textSize="@dimen/tv_dim" />
+                                        </android.support.design.widget.TextInputLayout>
+                                    </LinearLayout>
                                 </LinearLayout>
-                            </LinearLayout>
-                        </android.support.v7.widget.CardView>
+                            </android.support.v7.widget.CardView>
 
-                        <android.support.v7.widget.CardView
-                            android:elevation="@dimen/elevation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/distance_box">
-
-                            <LinearLayout
+                            <android.support.v7.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/windowBackground"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:layout_marginTop="@dimen/top_inside_box"
-                                    android:text="@string/privacy"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="@dimen/title_box_size" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:text="@string/privacy_description"
-                                    android:textColor="@android:color/darker_gray"
-                                    android:textSize="12dp" />
-
+                                android:layout_marginTop="@dimen/distance_box"
+                                android:elevation="@dimen/elevation">
 
                                 <LinearLayout
-                                    android:id="@+id/layoutStreet"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:background="@color/windowBackground"
+                                    android:orientation="vertical">
 
-                                    <ImageView
-                                        android:id="@+id/lockStreet"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:src="@drawable/ic_lock_outline_black_24dp" />
-
-                                    <android.support.design.widget.TextInputLayout
-                                        android:id="@+id/inputStreet"
+                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="@dimen/margin_left"
-                                        android:layout_weight="0.5"
-                                        android:hint="@string/street">
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:layout_marginTop="@dimen/top_inside_box"
+                                        android:text="@string/privacy"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="@dimen/title_box_size" />
 
-                                        <android.support.design.widget.TextInputEditText
-                                            android:id="@+id/edtStreet"
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:text="@string/privacy_description"
+                                        android:textColor="@android:color/darker_gray"
+                                        android:textSize="12dp" />
+
+
+                                    <LinearLayout
+                                        android:id="@+id/layoutStreet"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+
+                                        <ImageView
+                                            android:id="@+id/lockStreet"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/ic_lock_outline_black_24dp" />
+
+                                        <android.support.design.widget.TextInputLayout
+                                            android:id="@+id/inputStreet"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/margin_left"
+                                            android:layout_weight="0.5"
+                                            android:hint="@string/street">
+
+                                            <android.support.design.widget.TextInputEditText
+                                                android:id="@+id/edtStreet"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_gravity="center"
+                                                android:inputType="text"
+                                                android:nextFocusDown="@id/edtPhone"
+                                                android:singleLine="true"
+                                                android:textSize="@dimen/tv_dim" />
+                                        </android.support.design.widget.TextInputLayout>
+
+
+                                        <Switch
+                                            android:id="@+id/swStreet"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
-                                            android:inputType="text"
-                                            android:nextFocusDown="@id/edtPhone"
-                                            android:singleLine="true"
-                                            android:textSize="@dimen/tv_dim" />
-                                    </android.support.design.widget.TextInputLayout>
+                                            android:layout_weight="1.5"
+                                            android:checked="true" />
+                                    </LinearLayout>
 
-
-                                    <Switch
-                                        android:id="@+id/swStreet"
+                                    <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_weight="1.5"
-                                        android:checked="true" />
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+
+                                        <ImageView
+                                            android:id="@+id/lockPhine"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/ic_lock_outline_black_24dp" />
+
+
+                                        <android.support.design.widget.TextInputLayout
+                                            android:id="@+id/inputPhone"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/margin_left"
+                                            android:layout_weight="0.5"
+                                            android:hint="@string/phone">
+
+                                            <android.support.design.widget.TextInputEditText
+                                                android:id="@+id/edtPhone"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:inputType="phone"
+                                                android:singleLine="true"
+                                                android:textSize="@dimen/tv_dim" />
+                                        </android.support.design.widget.TextInputLayout>
+
+
+                                        <Switch
+                                            android:id="@+id/swPhone"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1.5"
+                                            android:checked="true" />
+                                    </LinearLayout>
+
+
                                 </LinearLayout>
+                            </android.support.v7.widget.CardView>
+
+                            <android.support.v7.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/distance_box"
+                                android:elevation="@dimen/elevation">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:layout_marginBottom="@dimen/distance_box"
 
-                                    <ImageView
-                                        android:id="@+id/lockPhine"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:src="@drawable/ic_lock_outline_black_24dp" />
+                                    android:background="@color/windowBackground"
+                                    android:orientation="vertical">
 
-
-                                    <android.support.design.widget.TextInputLayout
-                                        android:id="@+id/inputPhone"
+                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="@dimen/margin_left"
-                                        android:layout_weight="0.5"
-                                        android:hint="@string/phone">
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:layout_marginTop="@dimen/top_inside_box"
+                                        android:text="@string/description"
+                                        android:textColor="@android:color/black"
+                                        android:textSize="@dimen/title_box_size" />
 
-                                        <android.support.design.widget.TextInputEditText
-                                            android:id="@+id/edtPhone"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:inputType="phone"
-                                            android:singleLine="true"
-                                            android:textSize="@dimen/tv_dim" />
-                                    </android.support.design.widget.TextInputLayout>
-
-
-                                    <Switch
-                                        android:id="@+id/swPhone"
+                                    <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:layout_weight="1.5"
-                                        android:checked="true" />
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:text="@string/description_description"
+                                        android:textColor="@android:color/darker_gray"
+                                        android:textSize="12dp" />
+
+                                    <EditText
+                                        android:id="@+id/description"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:inputType="text|textMultiLine"
+                                        android:textSize="@dimen/tv_dim" />
                                 </LinearLayout>
+                            </android.support.v7.widget.CardView>
+                        </LinearLayout>
+                    </ScrollView>
+                </RelativeLayout>
+            </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/shadow"
+                android:background="@drawable/shadow_toolbar" />
+        </FrameLayout>
 
-                            </LinearLayout>
-                        </android.support.v7.widget.CardView>
-
-                        <android.support.v7.widget.CardView
-                            android:elevation="@dimen/elevation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/distance_box">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/distance_box"
-
-                                android:background="@color/windowBackground"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:layout_marginTop="@dimen/top_inside_box"
-                                    android:text="@string/description"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="@dimen/title_box_size" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:text="@string/description_description"
-                                    android:textColor="@android:color/darker_gray"
-                                    android:textSize="12dp" />
-
-                                <EditText
-                                    android:id="@+id/description"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginLeft="@dimen/margin_left"
-                                    android:layout_marginRight="@dimen/margin_right"
-                                    android:inputType="text|textMultiLine"
-                                    android:textSize="@dimen/tv_dim" />
-
-                            </LinearLayout>
-                        </android.support.v7.widget.CardView>
-                    </LinearLayout>
-                </ScrollView>
-            </RelativeLayout>
-
-        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -633,13 +633,29 @@ public class EditProfile extends AppCompatActivity {
             return;
         }
 
-        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-        dbref.child("users").child(user.getKey()).setValue(user);
+        updateUser(user);
 
         setSharedPrefUserInfo(user);
 
-
     }
+
+    private void updateUser(User userToUpdate){
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(userToUpdate.getKey());
+        dbref.child("cap").setValue(userToUpdate.getCap());
+        dbref.child("city").setValue(userToUpdate.getCity());
+        dbref.child("cropped_image_url").setValue(userToUpdate.getCropped_image_url());
+        dbref.child("description").setValue(userToUpdate.getDescription());
+        dbref.child("email").setValue(userToUpdate.getEmail());
+        dbref.child("imagePath").setValue(userToUpdate.getImagePath());
+        dbref.child("key").setValue(userToUpdate.getKey());
+        dbref.child("name").setValue(userToUpdate.getName());
+        dbref.child("phone").setValue(userToUpdate.getPhone());
+        dbref.child("street").setValue(userToUpdate.getStreet());
+        dbref.child("surname").setValue(userToUpdate.getSurname());
+        dbref.child("user_image_url").setValue(userToUpdate.getUser_image_url());
+    }
+
+
 
     private void setSharedPrefUserInfo(User u) {
         //I Create a new json object in order to store all the information contained inside my user object.
@@ -679,8 +695,8 @@ public class EditProfile extends AppCompatActivity {
                 //save the new picture Uri on the DB
                 savePicturePath(true, downloadUrl.toString());
                 user.setUser_image_url(downloadUrl.toString());
-                DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-                dbref.child("users").child(user.getKey()).setValue(user);
+
+                updateUser(user);
 
                 setSharedPrefUserInfo(user);
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.

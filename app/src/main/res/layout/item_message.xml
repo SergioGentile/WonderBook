@@ -1,6 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin_chat"
+        android:gravity="center"
+        android:text="5 Maggio"
+        android:textColor="@color/colorSecondaryText"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:background="?android:attr/activatedBackgroundIndicator"
+            android:id="@+id/received_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_message_body_rec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin_chat"
+                android:background="@drawable/rounded_rectangle_received"
+                android:maxWidth="240dp"
+                android:padding="@dimen/text_padding_chat"
+                android:text="hi man, how are you?"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_gravity="bottom"
+                android:id="@+id/text_message_time_rec"
+                android:text="11:40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginBottom="4dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:background="?android:attr/activatedBackgroundIndicator"
+            android:id="@+id/send_container"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="6dp"
+                android:id="@+id/message_read"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+               android:src="@drawable/check_double"/>
+
+            <TextView
+                android:layout_marginBottom="4dp"
+                android:layout_gravity="bottom"
+                android:id="@+id/text_message_time_send"
+                android:text="11:40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_marginRight="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/text_message_body_send"
+                app:layout_constraintRight_toLeftOf="@+id/text_message_body_send" />
+
+            <TextView
+                android:id="@+id/text_message_body_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin_chat"
+                android:background="@drawable/rounded_rectangle_sent"
+                android:maxWidth="240dp"
+                android:padding="@dimen/text_padding_chat"
+                android:text="hi man, how are you?"
+                android:textColor="@android:color/white" />
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+</LinearLayout><!--<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -17,6 +113,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_below="@+id/date"
+        android:background="?android:attr/activatedBackgroundIndicator"
         android:id="@+id/received_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,10 +146,12 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_below="@+id/date"
+        android:background="?android:attr/activatedBackgroundIndicator"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/send_container"
+        android:paddingBottom="@dimen/text_padding_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -90,4 +189,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</RelativeLayout>
+</RelativeLayout>-->

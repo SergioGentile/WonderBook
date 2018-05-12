@@ -66,6 +66,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private DatabaseReference databaseReferenceAccess;
     boolean updateStatusOnline;
     private MyBroadcastReceiver mMessageReceiver;
+    private List<String> updateMessageThreadOld;
+    private List<String> updateMessageThreadNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -132,7 +133,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private void showAllChat(){
         final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message_thread);
-
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
             protected void populateView(final View v, final Peer peer, int position) {
@@ -250,6 +250,19 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     centerContainer.setVisibility(View.GONE);
                     container.setVisibility(View.GONE);
                     return;
+                }
+                else{
+                    profileImage.setVisibility(View.VISIBLE);
+                    name.setVisibility(View.VISIBLE);
+                    lastMessage.setVisibility(View.VISIBLE);
+                    v.setVisibility(View.VISIBLE);
+                    lastTimestamp.setVisibility(View.VISIBLE);
+                    line.setVisibility(View.VISIBLE);
+                    ll.setVisibility(View.VISIBLE);
+                    ll1.setVisibility(View.VISIBLE);
+                    ll2.setVisibility(View.VISIBLE);
+                    centerContainer.setVisibility(View.VISIBLE);
+                    container.setVisibility(View.VISIBLE);
                 }
 
 

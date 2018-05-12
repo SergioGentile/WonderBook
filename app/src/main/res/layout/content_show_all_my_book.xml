@@ -22,12 +22,6 @@
             app:titleTextColor="@color/textColorPrimary" />
     </android.support.v7.widget.ActionBarContainer>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@drawable/shadow_toolbar" />
-
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -93,5 +87,9 @@
                 android:textSize="@dimen/tv_dim" />
 
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/shadow_toolbar" />
     </FrameLayout>
 </LinearLayout>

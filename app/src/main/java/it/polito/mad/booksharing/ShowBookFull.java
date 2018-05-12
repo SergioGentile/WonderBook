@@ -117,6 +117,7 @@ public class ShowBookFull extends AppCompatActivity {
 
         contactUser = (ImageButton) findViewById(R.id.contact_user);
 
+
         contactUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,11 +211,11 @@ public class ShowBookFull extends AppCompatActivity {
         available = (TextView) findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
+        CardView cvSharedBy = (CardView) findViewById(R.id.card_shared_by);
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("book_mp") != null) {
             book = getIntent().getExtras().getParcelable("book_mp");
             user = getIntent().getExtras().getParcelable("user_mp");
             btnEdit.setVisibility(View.GONE);
-            CardView cvSharedBy = (CardView) findViewById(R.id.card_shared_by);
             cvSharedBy.setVisibility(View.VISIBLE);
             CircleImageView imageSharedBy = (CircleImageView) findViewById(R.id.image_shared_by);
             setBitmapFromFirebase(imageSharedBy);
@@ -242,6 +243,7 @@ public class ShowBookFull extends AppCompatActivity {
             });
 
         } else {
+            cvSharedBy.setVisibility(View.GONE);
             book = getIntent().getParcelableExtra("book");
             user = getIntent().getParcelableExtra("user");
             key = getIntent().getExtras().getString("key");
