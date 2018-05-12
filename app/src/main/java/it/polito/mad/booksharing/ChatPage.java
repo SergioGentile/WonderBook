@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -12,6 +13,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -64,11 +66,22 @@ public class ChatPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_page);
+
+
         isRunning = true;
 
         sender = getIntent().getExtras().getParcelable("sender");
         receiver = getIntent().getExtras().getParcelable("receiver");
         chatKey = getIntent().getStringExtra("key_chat");
+
+        /*
+         *  write receiver key on sharedPreferences, the Notification will read it.
+         *  If message is sent from receiver, notification won't be submitted
+         **/
+        SharedPreferences sharedPref = getSharedPreferences("chatReceiver", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        edit.putString("receiver_key", receiver.getKey());
+        edit.commit();
 
         setStatus();
 
@@ -304,6 +317,8 @@ public class ChatPage extends AppCompatActivity {
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        notificationManager.clearNotification();
     }
 
     @Override

@@ -5,10 +5,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,6 +31,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -158,12 +161,15 @@ public class MainPage extends AppCompatActivity
     private List<SortedLocationItem> sortedLocationItems;
     LocationManager locationManager;
     private NavigationView navigationView;
-
+    private MyBroadcastReceiver mMessageReceiver;
+    private TextView toolbarNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
+        mMessageReceiver = new MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
         mAuth = FirebaseAuth.getInstance();
 
         //Ask permission for editing photo
@@ -192,8 +198,7 @@ public class MainPage extends AppCompatActivity
         navView = navigationView.getHeaderView(0);
 
 
-        setNotification(12);
-
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
 
         setDefaultUser();
 
@@ -215,6 +220,7 @@ public class MainPage extends AppCompatActivity
         imageScanOnSearch = (ImageView) findViewById(R.id.imgScanOnSearch);
         emptyResearch = (LinearLayout) findViewById(R.id.emptyResearch);
         progressAnimation = (ProgressBar) findViewById(R.id.progressAnimation);
+        toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         sortedLocationItems = new ArrayList<>();
         books = new ArrayList<>();
         booksQuery = new ArrayList<>();
@@ -260,6 +266,7 @@ public class MainPage extends AppCompatActivity
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
+                toolbarNotification.setVisibility(View.GONE);
                 tabFlag = false;
                 tabLayout.getTabAt(0).select();
                 tabLayout.setVisibility(View.VISIBLE);
@@ -269,6 +276,7 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSearchViewClosed() {
                 if (tabFlag == false) {
+                    toolbarNotification.setVisibility(View.VISIBLE);
                     tabLayout.setVisibility(View.GONE);
                     imageScanOnSearch.setVisibility(View.GONE);
                 }
@@ -385,19 +393,22 @@ public class MainPage extends AppCompatActivity
         getUserInfoFromFireBase();
         // Check if user is signed in (non-null) and update UI accordingly.
         mMapView.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mMapView.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
-    private void setNotification(Integer notificaction_count) {
+    protected void setNotification(Integer notificaction_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         if(notificaction_count!=0) {
-            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -406,12 +417,13 @@ public class MainPage extends AppCompatActivity
             message_nav_bar.setText(notificaction_count.toString());
 
             //Set notification on toolbar icon
-
+            message_nav_bar.setVisibility(View.VISIBLE);
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
         }else{
             toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
         }
     }
 
@@ -807,6 +819,9 @@ public class MainPage extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
         setUserInfoNavBar();
         mMapView.onResume();
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        notificationManager.clearNotification();
+        setNotification(notificationManager.getMessageCounter());
     }
 
     private void getUserFromSharedPreference() {
@@ -1718,6 +1733,22 @@ public class MainPage extends AppCompatActivity
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private MainPage currentActivity = null;
+
+        void  setCurrentActivityHandler(MainPage currentActivity){
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("UpdateView")){
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+            }
+        }
     }
 }
 

@@ -1,8 +1,10 @@
 package it.polito.mad.booksharing;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,12 +65,16 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             profileImage;
     private SwipeRefreshLayout srl;
     private NavigationView navigationView;
+    private MyBroadcastReceiver mMessageReceiver;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_all_my_book);
+
+        mMessageReceiver = new MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //This class manage the exhibition of all the book owned by the user.
@@ -94,7 +101,8 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
         navView = navigationView.getHeaderView(0);
 
-        setNotification(12);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
 
 
         setUserInfoNavBar();
@@ -125,11 +133,24 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
+    }
+
+    @Override
+    public  void onStop(){
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
     private void setNotification(Integer notificaction_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         if(notificaction_count!=0) {
-            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -138,12 +159,13 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             message_nav_bar.setText(notificaction_count.toString());
 
             //Set notification on toolbar icon
-
+            message_nav_bar.setVisibility(View.VISIBLE);
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
         }else{
             toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
         }
     }
 
@@ -156,6 +178,8 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         showAllMyBooks(user.getKey());
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(2).setChecked(true);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
     }
 
     private void showAllMyBooks(String keyOwner) {
@@ -373,6 +397,22 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             this.profileImage.setImageBitmap(image);
         }
 
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private ShowAllMyBook currentActivity = null;
+
+        void  setCurrentActivityHandler(ShowAllMyBook currentActivity){
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("UpdateView")){
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+            }
+        }
     }
 
 }

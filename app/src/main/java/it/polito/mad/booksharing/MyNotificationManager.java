@@ -48,7 +48,7 @@ public class MyNotificationManager {
         bundle.putParcelable("receiver", sender);
         intent.putExtra("key_chat", keyChat);
         intent.putExtras(bundle);
-        intent.putExtra("notificationCounter", notificationCounter);
+        intent.putExtra("dispatcherCode", 0);
 
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
@@ -84,7 +84,7 @@ public class MyNotificationManager {
         Bundle bundle = new Bundle();
         bundle.putParcelable("user", user);
         intent.putExtras(bundle);
-        intent.putExtra("notificationCounter", notificationCounter);
+        intent.putExtra("dispatcherCode", notificationCounter);
 
 
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
@@ -100,7 +100,7 @@ public class MyNotificationManager {
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setContentTitle(title)
                         //set content text to support devices running API level < 24
-                        .setContentText(String.valueOf(notificationCounter)+" new messages")
+                        .setContentText(String.valueOf(notificationCounter)+mCtx.getString(R.string.msg_notification))
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent)
                         .setSmallIcon(R.mipmap.ic_launcher)
@@ -125,8 +125,8 @@ public class MyNotificationManager {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            buildSummaryNotification("Incoming Message", receiver, notificationCounter+1,notificationManager);
             buildSimpleNotification(messageBody, sender, receiver, keyChat,notificationManager);
+            buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter+1,notificationManager);
 
             notificationCounter++;
             messageCounter++;

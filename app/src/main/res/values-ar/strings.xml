@@ -146,4 +146,6 @@
     <string name="last_seen">وصول الماضي</string>
     <string name="of">ال</string>
     <string name="show_chat">المشاركات</string>
+    <string name="incoming_msg">الرسائل الواردة</string>
+    <string name="msg_notification">رسائل جديدة</string>
 </resources>

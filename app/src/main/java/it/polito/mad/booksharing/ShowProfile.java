@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +19,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -54,11 +57,15 @@ public class ShowProfile extends AppCompatActivity
     private Animator mCurrentAnimator;
     private CircleImageView profileImage;
     private  NavigationView navigationView;
+    private MyBroadcastReceiver mMessageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Start the activity
         super.onCreate(savedInstanceState);
+
+        mMessageReceiver = new MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
 
         setContentView(R.layout.activity_show_profile);
 
@@ -126,18 +133,32 @@ public class ShowProfile extends AppCompatActivity
 
         navView = navigationView.getHeaderView(0);
 
-        setNotification(12);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
 
         setUserInfoNavBar();
 
 
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
+    }
+
+    @Override
+    public  void onStop(){
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
     private void setNotification(Integer notificaction_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         if(notificaction_count!=0) {
-            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -145,6 +166,7 @@ public class ShowProfile extends AppCompatActivity
             message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
             message_nav_bar.setText(notificaction_count.toString());
 
+            message_nav_bar.setVisibility(View.VISIBLE);
             //Set notification on toolbar icon
 
 
@@ -152,12 +174,15 @@ public class ShowProfile extends AppCompatActivity
             toolbarNotification.setVisibility(View.VISIBLE);
         }else{
             toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(1).setChecked(true);
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
@@ -495,6 +520,22 @@ public class ShowProfile extends AppCompatActivity
             if (this.user.getImagePath() != null) {
                 image = BitmapFactory.decodeFile(user.getImagePath());
                 barprofileImage.setImageBitmap(image);
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private ShowProfile currentActivity = null;
+
+        void  setCurrentActivityHandler(ShowProfile currentActivity){
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("UpdateView")){
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }
         }
     }

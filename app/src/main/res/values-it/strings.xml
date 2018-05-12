@@ -146,4 +146,6 @@
     <string name="last_seen">Ultimo accesso:</string>
     <string name="of">del</string>
     <string name="show_chat">Messaggi</string>
+    <string name="incoming_msg">Messaggi in arrivo</string>
+    <string name="msg_notification">nuovi messaggi</string>
 </resources>
