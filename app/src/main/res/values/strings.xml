@@ -159,6 +159,9 @@
     <string name="change_credential">Change your access credentials</string>
     <string name="last_seen">Last seen:</string>
     <string name="of">of</string>
+    <string name="incoming_msg">Incoming Message</string>
+    <string name="msg_notification">new messages</string>
+    <string name="notification_channel_id">channel_chat</string>
     <string name="message_to_delete">message to delete</string>
     <string name="messages_to_delete">messages to delete</string>
     <string name="reset_mail">We have send you an email to set a new password</string>

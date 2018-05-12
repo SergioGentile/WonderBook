@@ -1,9 +1,11 @@
 package it.polito.mad.booksharing;
 
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -11,6 +13,7 @@ import android.net.Uri;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,6 +65,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private FirebaseDatabase firebaseDatabaseAccess;
     private DatabaseReference databaseReferenceAccess;
     boolean updateStatusOnline;
+    private MyBroadcastReceiver mMessageReceiver;
     private List<String> updateMessageThreadOld;
     private List<String> updateMessageThreadNew;
 
@@ -69,6 +73,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_message_thread);
+
+        mMessageReceiver = new MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,8 +92,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         navView = navigationView.getHeaderView(0);
 
-
-        setNotification(12);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
 
         user = getIntent().getExtras().getParcelable("user");
 
@@ -97,11 +104,14 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         showAllChat();
 
     }
+
+
     private void setNotification(Integer notificaction_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         if(notificaction_count!=0) {
-            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -110,12 +120,13 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             message_nav_bar.setText(notificaction_count.toString());
 
             //Set notification on toolbar icon
-
+            message_nav_bar.setVisibility(View.VISIBLE);
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
         }else{
             toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
         }
     }
 
@@ -130,12 +141,13 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 final CircleImageView profileImage;
                 final TextView name, lastMessage, lastTimestamp;
                 final ReceiverInformation receiverInformation;
+                final TextView notification;
 
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
                 lastTimestamp = v.findViewById(R.id.text_time);
-
+                notification = (TextView) v.findViewById(R.id.notification);
                 receiverInformation = peer.getReceiverInformation();
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().placeholder(R.drawable.progress_animation).into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
@@ -143,7 +155,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 //Count the message not read
                 /***** UPDATE THIS PART WITH NOTIFICATION CLOUD SERVICE****/
 
-               /* FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
+                FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
                 DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
                 databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -169,9 +181,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });*/
+                });
 
-                 /*************/
+                /*************/
 
 
                 //Update receiver information if necessary
@@ -230,6 +242,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     lastMessage.setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
                     lastTimestamp.setVisibility(View.GONE);
+                    notification.setVisibility(View.GONE);
                     line.setVisibility(View.GONE);
                     ll.setVisibility(View.GONE);
                     ll1.setVisibility(View.GONE);
@@ -269,6 +282,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         intent.putExtra("key_chat", peer.getKeyChat());
                         intent.putExtras(bundle);
                         intent.putExtra("fromShowMessageThread", true);
+                        MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
+                        notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()));
+                        setNotification(notificationManager.getMessageCounter());
                         startActivity(intent);
                     }
                 });
@@ -377,6 +393,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         Log.d("OnStop:", "On stop is called");
     }
 
@@ -396,17 +413,36 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("status",updateStatusOnline);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         updateStatusOnline = savedInstanceState.getBoolean("status", true);
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private ShowMessageThread currentActivity = null;
+
+        void  setCurrentActivityHandler(ShowMessageThread currentActivity){
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("UpdateView")){
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+            }
+        }
     }
 }

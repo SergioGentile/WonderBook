@@ -147,6 +147,9 @@
     <string name="last_seen">Last seen:</string>
     <string name="of">of</string>
     <string name="show_chat">Messages</string>
+    <string name="incoming_msg">Incoming Message</string>
+    <string name="msg_notification">new messages</string>
+
     <string name="message_to_delete">message to delete</string>
     <string name="messages_to_delete">messages to delete</string>
     <string name="restore_psw">Did you forget your password?</string>
