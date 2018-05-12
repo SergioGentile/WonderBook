@@ -117,6 +117,12 @@ public class ShowBookFull extends AppCompatActivity {
 
         contactUser = (ImageButton) findViewById(R.id.contact_user);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         contactUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -566,6 +572,7 @@ public class ShowBookFull extends AppCompatActivity {
                         imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     }
                 });
+
 
                 if (book.getUrlImage().isEmpty()) {
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);

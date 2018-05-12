@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +58,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private EditText loginEmail, loginPassword;
     private ProgressBar progress;
     private LinearLayout container;
-    private TextView login_message;
+    private TextView login_message,resend_pwd;
     private FirebaseUser user;
     private String fromActivity;
     private Spannable spannable;
@@ -100,7 +101,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         login_message = (TextView) findViewById(R.id.login_message);
         resend_mail = (TextView) findViewById(R.id.resend_mail);
         user = null;
-
+        resend_pwd = (TextView) findViewById(R.id.restore_psw);
 
         String message = getString(R.string.confirm_mail_msg);
 
@@ -153,6 +154,35 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             @Override
             public void onClick(View v) {
                 attemptLogin();
+            }
+        });
+
+        resend_pwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String mail = loginEmail.getText().toString().toLowerCase().replace(" ","");
+                if(!mail.isEmpty()){
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(mail)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(Login.this, getString(R.string.reset_mail),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Login.this, getString(R.string.reset_mail_error),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    Toast.makeText(Login.this, getString(R.string.insert_email),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -238,6 +268,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         } else if (!isEmailValid(email)) {
             loginEmail.setError(getString(R.string.mail_not_valid));
             focusView = loginEmail;
+            cancel = true;
+        }
+
+        if(TextUtils.isEmpty(password)){
+            loginPassword.setError(getString(R.string.error_field_required));
+            focusView = loginPassword;
             cancel = true;
         }
 

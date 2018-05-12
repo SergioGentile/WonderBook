@@ -150,6 +150,18 @@
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/restore_psw"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:layout_marginTop="@dimen/top_inside_box"
+                    android:gravity="center"
+                    android:text="@string/restore_psw"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15dp" />
+
             </LinearLayout>
 
 

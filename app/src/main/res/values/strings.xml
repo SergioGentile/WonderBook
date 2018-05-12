@@ -161,5 +161,8 @@
     <string name="of">of</string>
     <string name="message_to_delete">message to delete</string>
     <string name="messages_to_delete">messages to delete</string>
+    <string name="reset_mail">We have send you an email to set a new password</string>
+    <string name="insert_email">Please insert email</string>
+    <string name="reset_mail_error">Impossible to reset the password</string>
 
 </resources>

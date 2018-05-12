@@ -158,6 +158,7 @@ public class MainPage extends AppCompatActivity
     private List<SortedLocationItem> sortedLocationItems;
     LocationManager locationManager;
     private NavigationView navigationView;
+    private TextView toolbarNotification;
 
 
     @Override
@@ -174,7 +175,7 @@ public class MainPage extends AppCompatActivity
 
         setContentView(R.layout.activity_main_page);
         searchView = findViewById(R.id.search_view);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final TabLayout tabLayout = findViewById(R.id.tabs);
         userImage = new ImageView(MainPage.this);
@@ -234,6 +235,7 @@ public class MainPage extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 imageScanOnSearch.setVisibility(View.GONE);
                 lv_search_runtime.setVisibility(View.GONE);
+                toolbarNotification.setVisibility(View.VISIBLE);
                 setAdapterSearched(query.toString().toLowerCase());
                 return false;
             }
@@ -261,6 +263,8 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSearchViewShown() {
                 tabFlag = false;
+                toolbarNotification.setVisibility(View.GONE);
+                toolbarNotification.invalidate();
                 tabLayout.getTabAt(0).select();
                 tabLayout.setVisibility(View.VISIBLE);
                 imageScanOnSearch.setVisibility(View.VISIBLE);
@@ -269,6 +273,8 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSearchViewClosed() {
                 if (tabFlag == false) {
+
+                    toolbarNotification.setVisibility(View.VISIBLE);
                     tabLayout.setVisibility(View.GONE);
                     imageScanOnSearch.setVisibility(View.GONE);
                 }
@@ -395,7 +401,7 @@ public class MainPage extends AppCompatActivity
 
     private void setNotification(Integer notificaction_count) {
 
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         if(notificaction_count!=0) {
             TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
 
