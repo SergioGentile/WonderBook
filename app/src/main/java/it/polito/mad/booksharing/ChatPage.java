@@ -227,20 +227,20 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
-                if (adapter.getItem(position).getKey() != null && adapter.getItem(position).getMessage() != null) {
-                    final int checkedCount = listOfMessage.getCheckedItemCount();
-                    if (checkedCount == 1) {
-                        mode.setTitle(checkedCount + " " + getString(R.string.message_to_delete));
-                    } else {
-                        mode.setTitle(checkedCount + " " + getString(R.string.messages_to_delete));
-                    }
 
-                    if (checked == true) {
-                        keysMessageSelected.add(adapter.getItem(position).getKey());
-                    } else {
-                        keysMessageSelected.remove(adapter.getItem(position).getKey());
-                    }
+                final int checkedCount = listOfMessage.getCheckedItemCount();
+                if (checkedCount == 1) {
+                    mode.setTitle(checkedCount + " " + getString(R.string.message_to_delete));
+                } else {
+                    mode.setTitle(checkedCount + " " + getString(R.string.messages_to_delete));
                 }
+
+                if (checked == true) {
+                    keysMessageSelected.add(adapter.getItem(position).getKey());
+                } else {
+                    keysMessageSelected.remove(adapter.getItem(position).getKey());
+                }
+
 
             }
 
@@ -309,15 +309,15 @@ public class ChatPage extends AppCompatActivity {
 
     }
 
-    private boolean dateToPut(int position){
+    private boolean dateToPut(int position) {
         //Se non è visibile, sicuramente non visualizzerò la data
-        if(adapter.getItem(position).getDeleteFor().contains(sender.getKey())){
+        if (adapter.getItem(position).getDeleteFor().contains(sender.getKey())) {
             return false;
         }
-        int counter=0;
+        int counter = 0;
         //Conto quanti visibili ci sono con la stessa data
-        for(int i=position-1; i>=0; i--){
-            if(!adapter.getItem(i).getDeleteFor().contains(sender.getKey()) && getDate(adapter.getItem(i).getTime()).equals(getDate(adapter.getItem(position).getTime()))){
+        for (int i = position - 1; i >= 0; i--) {
+            if (!adapter.getItem(i).getDeleteFor().contains(sender.getKey()) && getDate(adapter.getItem(i).getTime()).equals(getDate(adapter.getItem(position).getTime()))) {
                 return false;
             }
         }
@@ -336,18 +336,6 @@ public class ChatPage extends AppCompatActivity {
                 databaseReference.child(keyMessage).setValue(cmToDelete);
             }
         }
-
-        //Select the right last message on the thread
-        /*DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
-        databaseReference1.child("lastMessage").setValue(adapter.getCount()-1);
-        databaseReference1.child("lastTimestamp").setValue(new Date().getTime());
-        databaseReference1.setPriority(-1 * new Date().getTime());
-
-        DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(chatKey);
-        databaseReference2.child("lastMessage").setValue(input.getText().toString());
-        databaseReference2.child("lastTimestamp").setValue(new Date().getTime());
-        databaseReference2.setPriority(-1 * new Date().getTime());
-        input.setText("");*/
     }
 
     private ChatMessage takeMessageFromAdapter(String keyMessage) {

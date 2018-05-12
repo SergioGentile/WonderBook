@@ -183,7 +183,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     }
                 });
 
-                 /*************/
+                /*************/
 
 
                 //Update receiver information if necessary

@@ -70,11 +70,12 @@
 
         <android.support.design.widget.TabLayout
             android:visibility="gone"
+            app:tabPaddingStart="@dimen/margin_left"
+            app:tabPaddingEnd="@dimen/margin_right"
             android:id="@+id/tabs"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_gravity="center_horizontal"
-
             app:tabMode="scrollable"
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextColor="@color/colorTabUnselected">
