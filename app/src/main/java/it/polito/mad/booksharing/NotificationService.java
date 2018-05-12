@@ -54,8 +54,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         // Check if message contains a notification payload.
-
-        Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        Log.d("MessageReceived","YEEEEEEEEE");
         if (remoteMessage.getData().size() > 0) {
             HashMap<String, String> metaData = new HashMap<>(remoteMessage.getData());
             final String senderKey = metaData.get(SENDER_CONSTANT);
