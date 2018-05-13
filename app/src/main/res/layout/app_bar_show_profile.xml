@@ -14,27 +14,28 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
-            app:title="@string/app_name"
-            app:titleTextColor="@color/textColorPrimary"
-            app:navigationIcon="@drawable/ic_menu_black_24dp"
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageButton
-                android:id="@+id/btnModify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center"
-                android:layout_marginRight="@dimen/margin_right"
-                android:background="@android:color/transparent"
-                android:padding="@dimen/padding"
-                android:src="@drawable/ic_mode_edit_black_24dp" />
-        </android.support.v7.widget.Toolbar>
+            <android.support.v7.widget.Toolbar
+                app:title="@string/app_name"
+                app:titleTextColor="@color/textColorPrimary"
+                app:navigationIcon="@drawable/ic_menu_black_24dp"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentBottom="true"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <ImageButton
+                    android:id="@+id/btnModify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/padding"
+                    android:src="@drawable/ic_mode_edit_black_24dp" />
+            </android.support.v7.widget.Toolbar>
 
             <TextView
                 android:layout_width="15dp"
@@ -47,7 +48,7 @@
                 android:text="2"
                 android:textColor="@android:color/white"
                 android:textSize="8sp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 

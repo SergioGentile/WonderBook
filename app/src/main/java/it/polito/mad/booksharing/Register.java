@@ -54,13 +54,13 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        btnRegister = (Button) findViewById(R.id.buttonRegister);
-        loginEmail = (EditText) findViewById(R.id.edtLoginName);
-        loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
-        loginConfirmPassword = (EditText) findViewById(R.id.edtLoginPassword2);
+        btnRegister = findViewById(R.id.buttonRegister);
+        loginEmail = findViewById(R.id.edtLoginName);
+        loginPassword = findViewById(R.id.edtLoginPassword);
+        loginConfirmPassword = findViewById(R.id.edtLoginPassword2);
 
-        progress = (ProgressBar) findViewById(R.id.register_progress);
-        container = (LinearLayout) findViewById(R.id.RegisterContainer);
+        progress = findViewById(R.id.register_progress);
+        container = findViewById(R.id.RegisterContainer);
 
         mAuth = FirebaseAuth.getInstance();
 

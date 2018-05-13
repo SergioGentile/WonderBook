@@ -41,7 +41,7 @@
                 android:background="@color/colorDivider"
                 android:divider="@color/colorDivider"
                 android:dividerHeight="0dp"
-                tools:context="it.polito.mad.booksharing.ShowAllMyBook"/>
+                tools:context="it.polito.mad.booksharing.ShowAllMyBook" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <ProgressBar
@@ -50,8 +50,7 @@
             android:id="@+id/progressAnimation"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:id="@+id/llEmpty"
@@ -87,6 +86,7 @@
                 android:textSize="@dimen/tv_dim" />
 
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="8dp"

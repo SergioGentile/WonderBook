@@ -56,7 +56,7 @@ public class ShowProfile extends AppCompatActivity
     private View navView;
     private Animator mCurrentAnimator;
     private CircleImageView profileImage;
-    private  NavigationView navigationView;
+    private NavigationView navigationView;
     private MyBroadcastReceiver mMessageReceiver;
 
     @Override
@@ -70,21 +70,20 @@ public class ShowProfile extends AppCompatActivity
         setContentView(R.layout.activity_show_profile);
 
         //Take all the references to the fields
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        tvName = (TextView) findViewById(R.id.tvName);
-        tvStreet = (TextView) findViewById(R.id.tvStreet);
-        tvPhone = (TextView) findViewById(R.id.tvPhone);
-        tvMail = (TextView) findViewById(R.id.tvMail);
-        tvDescription = (TextView) findViewById(R.id.tvDescription);
-        btnModify = (ImageButton) findViewById(R.id.btnModify);
+        toolbar = findViewById(R.id.toolbar);
+        tvName = findViewById(R.id.tvName);
+        tvStreet = findViewById(R.id.tvStreet);
+        tvPhone = findViewById(R.id.tvPhone);
+        tvMail = findViewById(R.id.tvMail);
+        tvDescription = findViewById(R.id.tvDescription);
+        btnModify = findViewById(R.id.btnModify);
 
-        llMail = (LinearLayout) findViewById(R.id.llMail);
-        llPhone = (LinearLayout) findViewById(R.id.llPhone);
-        llParent = (LinearLayout) findViewById(R.id.llParent);
-        llDescription = (LinearLayout) findViewById(R.id.llDescription);
+        llMail = findViewById(R.id.llMail);
+        llPhone = findViewById(R.id.llPhone);
+        llParent = findViewById(R.id.llParent);
+        llDescription = findViewById(R.id.llDescription);
 
-        circleImageView = (CircleImageView) findViewById(R.id.profileImage);
-
+        circleImageView = findViewById(R.id.profileImage);
 
 
         //Initialize the user (must be removed an replace with data stored previously)
@@ -122,13 +121,13 @@ public class ShowProfile extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
@@ -142,14 +141,14 @@ public class ShowProfile extends AppCompatActivity
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("UpdateView"));
     }
 
     @Override
-    public  void onStop(){
+    public void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
@@ -158,7 +157,7 @@ public class ShowProfile extends AppCompatActivity
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if(notificaction_count!=0) {
+        if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -172,7 +171,7 @@ public class ShowProfile extends AppCompatActivity
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
             message_nav_bar.setVisibility(View.GONE);
         }
@@ -199,7 +198,7 @@ public class ShowProfile extends AppCompatActivity
     private void zoomImage() {
 
         //Take the reference of the field
-        expandedImage = (CircleImageView) findViewById(R.id.expanded_image);
+        expandedImage = findViewById(R.id.expanded_image);
         //If the user image is setted I take that from the path specified inside the user object
         //else I user the default one specified inside the resources
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
@@ -393,11 +392,11 @@ public class ShowProfile extends AppCompatActivity
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
-            circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+            circleImageView = findViewById(R.id.profileImage);
             circleImageView.setImageBitmap(image);
         } else if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
-            circleImageView = (CircleImageView) findViewById(R.id.profileImage);
+            circleImageView = findViewById(R.id.profileImage);
             circleImageView.setImageBitmap(image);
         }
     }
@@ -440,19 +439,16 @@ public class ShowProfile extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowProfile.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_show_chat){
+        } else if (id == R.id.nav_show_chat) {
             //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowProfile.this, ShowMessageThread.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_profile){
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        } else if (id == R.id.nav_profile) {
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        }
-        else if (id == R.id.nav_exit) {
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
@@ -468,7 +464,7 @@ public class ShowProfile extends AppCompatActivity
         }
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         finish();
@@ -492,7 +488,7 @@ public class ShowProfile extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -501,10 +497,10 @@ public class ShowProfile extends AppCompatActivity
     }
 
     private void setUserInfoNavBar() {
-        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        TextView barName = navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        CircleImageView barprofileImage = navView.findViewById(R.id.profileImageNavBar);
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
             User currentUser = getIntent().getExtras().getParcelable("user_owner");
             barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
@@ -527,13 +523,13 @@ public class ShowProfile extends AppCompatActivity
     private class MyBroadcastReceiver extends BroadcastReceiver {
         private ShowProfile currentActivity = null;
 
-        void  setCurrentActivityHandler(ShowProfile currentActivity){
+        void setCurrentActivityHandler(ShowProfile currentActivity) {
             this.currentActivity = currentActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("UpdateView")){
+            if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }

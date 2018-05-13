@@ -22,7 +22,7 @@ public class NotificationIDService extends FirebaseInstanceIdService {
         }
     }
 
-    public static void sendRegistrationToServer(){
+    public static void sendRegistrationToServer() {
         Log.d("FCM", "Sending token: " + FirebaseInstanceId.getInstance().getToken());
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/notificationToken");

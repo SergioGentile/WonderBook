@@ -8,57 +8,45 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatPage extends AppCompatActivity {
 
     private User sender, receiver;
-    boolean isRunning;
+    static boolean isRunning;
     private String chatKey;
     private FirebaseListAdapter<ChatMessage> adapter;
     private FloatingActionButton fab;
@@ -84,7 +72,7 @@ public class ChatPage extends AppCompatActivity {
         isRunning = true;
         keysMessageSelected = new ArrayList<>();
 
-        toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
+        toolbar = findViewById(R.id.chat_toolbar);
 
         sender = getIntent().getExtras().getParcelable("sender");
         receiver = getIntent().getExtras().getParcelable("receiver");
@@ -101,13 +89,13 @@ public class ChatPage extends AppCompatActivity {
 
         setStatus();
 
-        tvName = (TextView) findViewById(R.id.toolbarName);
+        tvName = findViewById(R.id.toolbarName);
         tvName.setText(receiver.getName().getValue() + " " + receiver.getSurname().getValue());
 
-        profileImage = (CircleImageView) findViewById(R.id.toolbarPhoto);
+        profileImage = findViewById(R.id.toolbarPhoto);
         Picasso.with(ChatPage.this).load(receiver.getUser_image_url()).into(profileImage);
 
-        backButton = (ImageButton) findViewById(R.id.chatToolbarBack);
+        backButton = findViewById(R.id.chatToolbarBack);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,8 +104,8 @@ public class ChatPage extends AppCompatActivity {
         });
 
         //Log.d("Chat " + chatKey, "Send from:" + sender.getName().getValue() + ", rec by:" + receiver.getName().getValue());
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        input = (TextInputEditText) findViewById(R.id.input);
+        fab = findViewById(R.id.fab);
+        input = findViewById(R.id.input);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +152,7 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private void displayChatMessage() {
-        listOfMessage = (ListView) findViewById(R.id.list_of_message);
+        listOfMessage = findViewById(R.id.list_of_message);
 
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.item_message, FirebaseDatabase.getInstance().getReference("chats").child(chatKey).orderByPriority()) {
             @Override
@@ -173,10 +161,10 @@ public class ChatPage extends AppCompatActivity {
                 TextView messageText, messageTime;
                 ImageView read;
                 Drawable d = null;
-                LinearLayout clSend = (LinearLayout) v.findViewById(R.id.send_container);
-                LinearLayout clRec = (LinearLayout) v.findViewById(R.id.received_container);
+                LinearLayout clSend = v.findViewById(R.id.send_container);
+                LinearLayout clRec = v.findViewById(R.id.received_container);
 
-                TextView tvDate = (TextView) v.findViewById(R.id.date);
+                TextView tvDate = v.findViewById(R.id.date);
                 if (dateToPut(position)) {
                     tvDate.setVisibility(View.VISIBLE);
                     tvDate.setText(getDate(adapter.getItem(position).getTime()));
@@ -193,9 +181,9 @@ public class ChatPage extends AppCompatActivity {
                 if (sender.getKey().equals(model.getSender())) {
                     //Case sender
                     // read.setVisibility(View.VISIBLE);
-                    messageText = (TextView) v.findViewById(R.id.text_message_body_send);
-                    messageTime = (TextView) v.findViewById(R.id.text_message_time_send);
-                    read = (ImageView) v.findViewById(R.id.message_read);
+                    messageText = v.findViewById(R.id.text_message_body_send);
+                    messageTime = v.findViewById(R.id.text_message_time_send);
+                    read = v.findViewById(R.id.message_read);
                     clRec.setVisibility(View.GONE);
                     clSend.setVisibility(View.VISIBLE);
 
@@ -208,8 +196,8 @@ public class ChatPage extends AppCompatActivity {
                     d.setTintMode(PorterDuff.Mode.SRC_IN);
                     read.setImageDrawable(d);
                 } else {
-                    messageText = (TextView) v.findViewById(R.id.text_message_body_rec);
-                    messageTime = (TextView) v.findViewById(R.id.text_message_time_rec);
+                    messageText = v.findViewById(R.id.text_message_body_rec);
+                    messageTime = v.findViewById(R.id.text_message_time_rec);
                     clSend.setVisibility(View.GONE);
                     clRec.setVisibility(View.VISIBLE);
                 }
@@ -502,7 +490,7 @@ public class ChatPage extends AppCompatActivity {
     private void setStatus() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(receiver.getKey()).child("status");
-        tvStatus = (TextView) findViewById(R.id.status);
+        tvStatus = findViewById(R.id.status);
         tvStatus.setVisibility(View.GONE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

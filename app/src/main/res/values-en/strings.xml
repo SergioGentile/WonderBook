@@ -40,7 +40,7 @@
     <string name="register">Sign in</string>
     <string name="login">Login</string>
     <string name="loginDescription">Insert your email and password</string>
-    <string name ="changeMail">You are changing your access credential. Are you sure?</string>
+    <string name="changeMail">You are changing your access credential. Are you sure?</string>
     <string name="registerMessage">Email not available!</string>
     <string name="subtitle">Subtitle (if present)</string>
     <string name="no_book_shared_title">No books have yet been shared</string>

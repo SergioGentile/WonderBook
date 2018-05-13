@@ -1,7 +1,6 @@
 package it.polito.mad.booksharing;
 
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -9,36 +8,28 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.PersistableBundle;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,11 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -77,17 +64,17 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         mMessageReceiver = new MyBroadcastReceiver();
         mMessageReceiver.setCurrentActivityHandler(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
@@ -110,7 +97,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if(notificaction_count!=0) {
+        if (notificaction_count != 0) {
 
 
             //Set current notification inside initNavBar method
@@ -124,15 +111,15 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
             message_nav_bar.setVisibility(View.GONE);
         }
     }
 
 
-    private void showAllChat(){
-        final ListView listOfMessage = (ListView) findViewById(R.id.list_of_message_thread);
+    private void showAllChat() {
+        final ListView listOfMessage = findViewById(R.id.list_of_message_thread);
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
             protected void populateView(final View v, final Peer peer, int position) {
@@ -147,7 +134,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
                 lastTimestamp = v.findViewById(R.id.text_time);
-                notification = (TextView) v.findViewById(R.id.notification);
+                notification = v.findViewById(R.id.notification);
                 receiverInformation = peer.getReceiverInformation();
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().placeholder(R.drawable.progress_animation).into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
@@ -160,21 +147,20 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshots) {
-                          notification.setVisibility(View.GONE);
-                            int counter_notification = 0;
-                            for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
-                                ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
-                                if(!cm.getSender().equals(user.getKey()) && !cm.isStatus_read()){
-                                    counter_notification++;
-                                }
+                        notification.setVisibility(View.GONE);
+                        int counter_notification = 0;
+                        for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
+                            ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
+                            if (!cm.getSender().equals(user.getKey()) && !cm.isStatus_read()) {
+                                counter_notification++;
                             }
-                            if(counter_notification>0){
-                                notification.setVisibility(View.VISIBLE);
-                                notification.setText(counter_notification + "");
-                            }
-                            else{
-                                notification.setVisibility(View.GONE);
-                            }
+                        }
+                        if (counter_notification > 0) {
+                            notification.setVisibility(View.VISIBLE);
+                            notification.setText(counter_notification + "");
+                        } else {
+                            notification.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override
@@ -199,44 +185,45 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         surnameUpdate = receiverInformation.getSurname();
                         User receiverUpdate = dataSnapshot.getValue(User.class);
                         //compare the name
-                        if(!receiverUpdate.getName().getValue().toLowerCase().equals(receiverInformation.getName().toLowerCase())){
+                        if (!receiverUpdate.getName().getValue().toLowerCase().equals(receiverInformation.getName().toLowerCase())) {
                             nameUpdate = receiverUpdate.getName().getValue();
                             somethingChange = true;
                         }
                         //compare the surname
-                        if(!receiverUpdate.getSurname().getValue().toLowerCase().equals(receiverInformation.getSurname().toLowerCase())){
+                        if (!receiverUpdate.getSurname().getValue().toLowerCase().equals(receiverInformation.getSurname().toLowerCase())) {
                             surnameUpdate = receiverUpdate.getName().getValue();
                             somethingChange = true;
                         }
                         //compare the image path
-                        if(!receiverUpdate.getUser_image_url().toLowerCase().equals(receiverInformation.getPathImage().toLowerCase())){
+                        if (!receiverUpdate.getUser_image_url().toLowerCase().equals(receiverInformation.getPathImage().toLowerCase())) {
                             Picasso.with(ShowMessageThread.this).load(receiverUpdate.getUser_image_url()).into(profileImage);
                             somethingChange = true;
                         }
                         name.setText(nameUpdate + " " + surnameUpdate);
                         //if something change, update the db.
                         FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
-                        Log.d("User key" , user.getKey());
+                        Log.d("User key", user.getKey());
                         Log.d("Peer key", peer.getKeyChat());
                         DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peer.getKeyChat()).child("receiverInformation");
-                        if(somethingChange){
-                            databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(),receiverUpdate.getKey()));
+                        if (somethingChange) {
+                            databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
 
-                LinearLayout ll = (LinearLayout) v.findViewById(R.id.adapter_message_thread);
-                LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.ll1);
-                LinearLayout ll2 = (LinearLayout) v.findViewById(R.id.ll2);
-                LinearLayout container = (LinearLayout) v.findViewById(R.id.container);
-                LinearLayout centerContainer = (LinearLayout) v.findViewById(R.id.center_container);
+                LinearLayout ll = v.findViewById(R.id.adapter_message_thread);
+                LinearLayout ll1 = v.findViewById(R.id.ll1);
+                LinearLayout ll2 = v.findViewById(R.id.ll2);
+                LinearLayout container = v.findViewById(R.id.container);
+                LinearLayout centerContainer = v.findViewById(R.id.center_container);
 
-                View line = (View) v.findViewById(R.id.view_line);
-                if(peer.getLastMessage().isEmpty()){
+                View line = v.findViewById(R.id.view_line);
+                if (peer.getLastMessage().isEmpty()) {
                     profileImage.setVisibility(View.GONE);
                     name.setVisibility(View.GONE);
                     lastMessage.setVisibility(View.GONE);
@@ -250,8 +237,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     centerContainer.setVisibility(View.GONE);
                     container.setVisibility(View.GONE);
                     return;
-                }
-                else{
+                } else {
                     profileImage.setVisibility(View.VISIBLE);
                     name.setVisibility(View.VISIBLE);
                     lastMessage.setVisibility(View.VISIBLE);
@@ -266,9 +252,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 }
 
 
-
                 lastMessage.setText(peer.getLastMessage());
-                lastTimestamp.setText(DateFormat.format("HH:mm",peer.getLastTimestamp()));
+                lastTimestamp.setText(DateFormat.format("HH:mm", peer.getLastTimestamp()));
 
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -304,17 +289,15 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowMessageThread.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowMessageThread.this, ShowProfile.class));
 
         }
-        if(id == R.id.nav_show_chat){
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (id == R.id.nav_show_chat) {
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        }
-        else if (id == R.id.nav_home) {
+        } else if (id == R.id.nav_home) {
             startActivity(new Intent(ShowMessageThread.this, MainPage.class));
 
         } else if (id == R.id.nav_exit) {
@@ -333,7 +316,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue(time);
@@ -344,10 +327,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
 
     private void setUserInfoNavBar() {
-        TextView barName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        TextView barName = navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        CircleImageView barprofileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        CircleImageView barprofileImage = navView.findViewById(R.id.profileImageNavBar);
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
             User currentUser = getIntent().getExtras().getParcelable("user_owner");
             barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
@@ -389,7 +372,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     protected void onStop() {
         super.onStop();
         String time = new Date().getTime() + "";
-        if(updateStatusOnline) {
+        if (updateStatusOnline) {
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
@@ -401,7 +384,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     protected void onPause() {
         super.onPause();
         String time = new Date().getTime() + "";
-        if(updateStatusOnline){
+        if (updateStatusOnline) {
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
@@ -420,7 +403,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("status",updateStatusOnline);
+        outState.putBoolean("status", updateStatusOnline);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
@@ -433,13 +416,13 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private class MyBroadcastReceiver extends BroadcastReceiver {
         private ShowMessageThread currentActivity = null;
 
-        void  setCurrentActivityHandler(ShowMessageThread currentActivity){
+        void setCurrentActivityHandler(ShowMessageThread currentActivity) {
             this.currentActivity = currentActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("UpdateView")){
+            if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }

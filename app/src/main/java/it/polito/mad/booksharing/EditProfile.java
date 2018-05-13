@@ -117,23 +117,23 @@ public class EditProfile extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get all the references to the component
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        edtName = (EditText) findViewById(R.id.edtName);
-        edtSurname = (EditText) findViewById(R.id.edtSurname);
-        edtCity = (EditText) findViewById(R.id.edtCity);
-        edtCap = (EditText) findViewById(R.id.edtCap);
-        edtStreet = (EditText) findViewById(R.id.edtStreet);
-        edtPhone = (EditText) findViewById(R.id.edtPhone);
-        edtDescription = (EditText) findViewById(R.id.description);
-        btnDone = (ImageButton) findViewById(R.id.btnDone);
-        btnEditImg = (ImageButton) findViewById(R.id.btnEditImg);
-        profileImg = (ImageView) findViewById(R.id.profileImage);
-        swPhone = (Switch) findViewById(R.id.swPhone);
-        swStreet = (Switch) findViewById(R.id.swStreet);
-        lockStreet = (ImageView) findViewById(R.id.lockStreet);
-        lockPhone = (ImageView) findViewById(R.id.lockPhine);
+        edtName = findViewById(R.id.edtName);
+        edtSurname = findViewById(R.id.edtSurname);
+        edtCity = findViewById(R.id.edtCity);
+        edtCap = findViewById(R.id.edtCap);
+        edtStreet = findViewById(R.id.edtStreet);
+        edtPhone = findViewById(R.id.edtPhone);
+        edtDescription = findViewById(R.id.description);
+        btnDone = findViewById(R.id.btnDone);
+        btnEditImg = findViewById(R.id.btnEditImg);
+        profileImg = findViewById(R.id.profileImage);
+        swPhone = findViewById(R.id.swPhone);
+        swStreet = findViewById(R.id.swStreet);
+        lockStreet = findViewById(R.id.lockStreet);
+        lockPhone = findViewById(R.id.lockPhine);
 
         fromActivity = getIntent().getStringExtra("from");
         user = getIntent().getParcelableExtra("user");
@@ -639,7 +639,7 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void updateUser(User userToUpdate){
+    private void updateUser(User userToUpdate) {
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(userToUpdate.getKey());
         dbref.child("cap").setValue(userToUpdate.getCap());
         dbref.child("city").setValue(userToUpdate.getCity());
@@ -654,7 +654,6 @@ public class EditProfile extends AppCompatActivity {
         dbref.child("surname").setValue(userToUpdate.getSurname());
         dbref.child("user_image_url").setValue(userToUpdate.getUser_image_url());
     }
-
 
 
     private void setSharedPrefUserInfo(User u) {

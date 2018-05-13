@@ -32,8 +32,6 @@
             </android.support.v7.widget.Toolbar>
 
 
-
-
             <com.miguelcatalan.materialsearchview.MaterialSearchView
                 app:searchCloseIcon="@android:color/transparent"
                 android:id="@+id/search_view"
@@ -62,7 +60,7 @@
                 android:text="2"
                 android:textColor="@android:color/white"
                 android:textSize="8sp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
 
         </FrameLayout>
@@ -109,11 +107,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/isbn" />
+
             <android.support.design.widget.TabItem
                 android:id="@+id/tabCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/city" />
+
             <android.support.design.widget.TabItem
                 android:id="@+id/tabUser"
                 android:layout_width="wrap_content"

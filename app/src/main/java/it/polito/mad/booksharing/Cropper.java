@@ -39,9 +39,9 @@ public class Cropper extends AppCompatActivity {
         originalBitmap = BitmapFactory.decodeFile(path.replace("profile", "profile_cropper"));
 
         //Take all the references to the view
-        btnDone = (TextView) findViewById(R.id.btn_done);
-        btnRotate = (ImageButton) findViewById(R.id.rotate_button);
-        cropperView = (CropperView) findViewById(R.id.imageView);
+        btnDone = findViewById(R.id.btn_done);
+        btnRotate = findViewById(R.id.rotate_button);
+        cropperView = findViewById(R.id.imageView);
         cropperView.setImageBitmap(originalBitmap);
         rotation = 0;
 

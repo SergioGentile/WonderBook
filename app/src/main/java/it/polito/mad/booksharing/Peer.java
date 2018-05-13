@@ -1,9 +1,6 @@
 package it.polito.mad.booksharing;
 
-import java.util.ArrayList;
-import java.util.List;
-
-class Peer{
+class Peer {
     private ReceiverInformation receiverInformation;
     private String keyChat, lastMessage;
     private String date;
@@ -64,7 +61,7 @@ class Peer{
     }
 }
 
-class ReceiverInformation{
+class ReceiverInformation {
     private String name, surname, pathImage, key;
 
     public ReceiverInformation(String name, String surname, String pathImage, String key) {

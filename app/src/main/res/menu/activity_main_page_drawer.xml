@@ -10,19 +10,17 @@
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/home"/>
+            android:title="@string/home" />
         <item
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/show_profile" >
-        </item>
+            android:title="@string/show_profile"></item>
         <item
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_show_shared_book"
             android:icon="@drawable/ic_menu_share"
-            android:title="@string/show_book"
-            />
+            android:title="@string/show_book" />
 
         <item
 
@@ -36,7 +34,7 @@
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_exit"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:title="@string/logout"/>
+            android:title="@string/logout" />
 
 
     </group>

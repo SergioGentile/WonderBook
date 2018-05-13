@@ -47,16 +47,16 @@ public class EditPwd extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_pwd);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Set all the variable
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
-        btnPwd = (Button) findViewById(R.id.confirm_new_password);
-        edtPassword = (EditText) findViewById(R.id.changePwd);
-        progress = (ProgressBar) findViewById(R.id.editPwd_progress);
-        container = (LinearLayout) findViewById(R.id.edtPwdContainer);
+        btnPwd = findViewById(R.id.confirm_new_password);
+        edtPassword = findViewById(R.id.changePwd);
+        progress = findViewById(R.id.editPwd_progress);
+        container = findViewById(R.id.edtPwdContainer);
 
 
         btnPwd.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class EditPwd extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
+                        TextInputEditText edittext = layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
                         if (!current_pwd.isEmpty() && !edtPassword.getText().toString().equals(current_pwd)) {
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);

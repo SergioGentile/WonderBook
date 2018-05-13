@@ -10,12 +10,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompatBase;
 import android.util.Log;
-
-
 
 import java.util.Date;
 
@@ -39,7 +35,7 @@ public class MyNotificationManager {
         return mInstance;
     }
 
-    private void buildSimpleNotification(String messageBody,User sender,User receiver, String keyChat, NotificationManager notificationManager) {
+    private void buildSimpleNotification(String messageBody, User sender, User receiver, String keyChat, NotificationManager notificationManager) {
         Intent intent = new Intent(mCtx, ActivityDispatcher.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -62,7 +58,7 @@ public class MyNotificationManager {
 
         String title = sender.getName().getValue() + " " + sender.getSurname().getValue();
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setSmallIcon(R.mipmap.sharebook_icon)
@@ -77,7 +73,7 @@ public class MyNotificationManager {
 
     }
 
-    private  void  buildSummaryNotification(String title, User user, int notificationCounter, NotificationManager notificationManager){
+    private void buildSummaryNotification(String title, User user, int notificationCounter, NotificationManager notificationManager) {
         Intent intent = new Intent(mCtx, ActivityDispatcher.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -100,7 +96,7 @@ public class MyNotificationManager {
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setContentTitle(title)
                         //set content text to support devices running API level < 24
-                        .setContentText(String.valueOf(notificationCounter)+mCtx.getString(R.string.msg_notification))
+                        .setContentText(String.valueOf(notificationCounter) + mCtx.getString(R.string.msg_notification))
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent)
                         .setSmallIcon(R.mipmap.sharebook_icon)
@@ -110,7 +106,7 @@ public class MyNotificationManager {
         notificationManager.notify(SUMMARY_ID, summaryNotification.build());
     }
 
-    public void displayNotification(String messageBody,User sender,User receiver, String keyChat){
+    public void displayNotification(String messageBody, User sender, User receiver, String keyChat) {
 
         android.app.NotificationManager notificationManager =
                 (android.app.NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -125,8 +121,8 @@ public class MyNotificationManager {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            buildSimpleNotification(messageBody, sender, receiver, keyChat,notificationManager);
-            buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter+1,notificationManager);
+            buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
+            buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
 
             notificationCounter++;
             messageCounter++;
@@ -136,11 +132,11 @@ public class MyNotificationManager {
         }
     }
 
-    public void clearNotification(){
+    public void clearNotification() {
         android.app.NotificationManager notificationManager =
                 (android.app.NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(notificationManager != null && notificationCounter > 0){
+        if (notificationManager != null && notificationCounter > 0) {
             notificationCounter = 0;
             notificationManager.cancelAll();
         }
@@ -151,10 +147,10 @@ public class MyNotificationManager {
         return messageCounter;
     }
 
-    public void subtractMessageCounter(int value){
-        if(messageCounter > 0){
+    public void subtractMessageCounter(int value) {
+        if (messageCounter > 0) {
             messageCounter = messageCounter - value;
-            if(messageCounter < 0){
+            if (messageCounter < 0) {
                 messageCounter = 0;
             }
         }

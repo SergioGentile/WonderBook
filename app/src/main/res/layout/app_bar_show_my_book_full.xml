@@ -19,18 +19,17 @@
             android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
             app:title="@string/app_name"
-            app:titleTextColor="@android:color/white"
-            >
+            app:titleTextColor="@android:color/white">
 
-        <ImageButton
-            android:id="@+id/btnEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center"
-            android:layout_marginRight="@dimen/margin_left"
-            android:background="@android:color/transparent"
-            android:padding="@dimen/padding"
-            android:src="@drawable/ic_mode_edit_black_24dp" />
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginRight="@dimen/margin_left"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/padding"
+                android:src="@drawable/ic_mode_edit_black_24dp" />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 

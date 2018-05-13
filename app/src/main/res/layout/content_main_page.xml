@@ -64,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:background="@drawable/shadow_toolbar" />
+
                 <LinearLayout
                     android:layout_marginTop="5dp"
                     android:visibility="gone"
@@ -73,12 +74,14 @@
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <ImageView
                         android:layout_marginBottom="@dimen/bottom_inside_box"
                         android:src="@drawable/ic_error_outline_black_24dp"
                         android:tint="@color/colorPrimary"
                         android:layout_width="70dp"
                         android:layout_height="70dp" />
+
                     <TextView
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
@@ -86,6 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
+
                 <ProgressBar
                     android:layout_marginTop="5dp"
                     android:visibility="gone"
@@ -94,8 +98,7 @@
                     android:id="@+id/progressAnimation"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    />
+                    android:layout_gravity="center" />
 
             </FrameLayout>
         </LinearLayout>
@@ -127,7 +130,7 @@
                     android:background="@color/windowBackground"
                     android:text="@string/latest_releases_near_you" />
 
-              <TextView
+                <TextView
                     android:id="@+id/dialogOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"

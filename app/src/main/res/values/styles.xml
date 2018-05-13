@@ -73,7 +73,8 @@
         <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="android:backgroundSplit">@android:color/transparent</item>
         <item name="android:height">@android:color/transparent</item>
-        <item name="android:textColorPrimary">@android:color/white</item> <!--Questo dovrebbe essere il colore per il titolo-->
+        <item name="android:textColorPrimary">@android:color/white
+        </item> <!--Questo dovrebbe essere il colore per il titolo-->
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="titleTextStyle">@style/ActionModeTitleTextStyle</item>

@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -38,8 +37,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -102,20 +99,20 @@ public class ShowBookFull extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_my_book_full);
 
-        title = (TextView) findViewById(R.id.shTitle);
-        subtitle = (TextView) findViewById(R.id.shSubtitle);
-        author = (TextView) findViewById(R.id.shAuthor);
-        publisher = (TextView) findViewById(R.id.shPublisher);
-        description = (TextView) findViewById(R.id.shDescription);
-        sv = (ScrollView) findViewById(R.id.scrollSh);
+        title = findViewById(R.id.shTitle);
+        subtitle = findViewById(R.id.shSubtitle);
+        author = findViewById(R.id.shAuthor);
+        publisher = findViewById(R.id.shPublisher);
+        description = findViewById(R.id.shDescription);
+        sv = findViewById(R.id.scrollSh);
         /*description.setScroller(new Scroller(ShowBookFull.this));
         description.setMaxLines(5);
         description.setVerticalScrollBarEnabled(true);*/
 
-        toolbar = (Toolbar) findViewById(R.id.toolbarShowProfile);
+        toolbar = findViewById(R.id.toolbarShowProfile);
         setSupportActionBar(toolbar);
 
-        contactUser = (ImageButton) findViewById(R.id.contact_user);
+        contactUser = findViewById(R.id.contact_user);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,23 +136,22 @@ public class ShowBookFull extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String keyChat = null;
-                        if(dataSnapshot.exists()){
+                        if (dataSnapshot.exists()) {
                             //Chat list already exist
                             //Find previous chat between peer
                             boolean found = false;
-                            for(DataSnapshot dataPeer : dataSnapshot.getChildren()){
+                            for (DataSnapshot dataPeer : dataSnapshot.getChildren()) {
                                 Peer peer = dataPeer.getValue(Peer.class);
-                                if(peer.getReceiverInformation().getKey().equals(receiver.getKey())){
+                                if (peer.getReceiverInformation().getKey().equals(receiver.getKey())) {
                                     //Chat already exist
                                     found = true;
                                     keyChat = dataPeer.getKey();
                                 }
                             }
-                            if(!found){
+                            if (!found) {
                                 keyChat = createInstanceOfChat(sender, receiver);
                             }
-                        }
-                        else{
+                        } else {
                             keyChat = createInstanceOfChat(sender, receiver);
                         }
 
@@ -208,26 +204,26 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-        publishDate = (TextView) findViewById(R.id.publishDate);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        btnEdit = (ImageButton) findViewById(R.id.btnEdit);
-        btnContact = (ImageButton) findViewById(R.id.contact_user);
-        imageMyBook = (ImageView) findViewById(R.id.shMyImage);
-        imageBook = (ImageView) findViewById(R.id.shImage);
-        available = (TextView) findViewById(R.id.tvState);
+        publishDate = findViewById(R.id.publishDate);
+        ratingBar = findViewById(R.id.ratingBar);
+        btnEdit = findViewById(R.id.btnEdit);
+        btnContact = findViewById(R.id.contact_user);
+        imageMyBook = findViewById(R.id.shMyImage);
+        imageBook = findViewById(R.id.shImage);
+        available = findViewById(R.id.tvState);
 
         //Fill all the textView of the view with the information about the book.
-        CardView cvSharedBy = (CardView) findViewById(R.id.card_shared_by);
+        CardView cvSharedBy = findViewById(R.id.card_shared_by);
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("book_mp") != null) {
             book = getIntent().getExtras().getParcelable("book_mp");
             user = getIntent().getExtras().getParcelable("user_mp");
             btnEdit.setVisibility(View.GONE);
             cvSharedBy.setVisibility(View.VISIBLE);
-            CircleImageView imageSharedBy = (CircleImageView) findViewById(R.id.image_shared_by);
+            CircleImageView imageSharedBy = findViewById(R.id.image_shared_by);
             setBitmapFromFirebase(imageSharedBy);
-            TextView tvSharedByName = (TextView) findViewById(R.id.name_shared_by);
+            TextView tvSharedByName = findViewById(R.id.name_shared_by);
             tvSharedByName.setText(user.getName().getValue() + " " + user.getSurname().getValue());
-            TextView tvSharedByLocation = (TextView) findViewById(R.id.location_shared_by);
+            TextView tvSharedByLocation = findViewById(R.id.location_shared_by);
             String city = book.getCity();
             if (book.getCity().length() >= 2) {
                 city = book.getCity().substring(0, 1).toUpperCase() + book.getCity().substring(1);
@@ -336,7 +332,7 @@ public class ShowBookFull extends AppCompatActivity {
 
     }
 
-    private String createInstanceOfChat(User sender, User receiver){
+    private String createInstanceOfChat(User sender, User receiver) {
         //Create chat list
         //For the user1
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -355,7 +351,7 @@ public class ShowBookFull extends AppCompatActivity {
     private void zoomImage() {
 
         //Take the reference of the field
-        expandedImage = (ImageView) findViewById(R.id.expanded_image_bookfull);
+        expandedImage = findViewById(R.id.expanded_image_bookfull);
 
         BitmapDrawable drawable = (BitmapDrawable) imageMyBook.getDrawable();
         Bitmap bitmap = drawable.getBitmap();

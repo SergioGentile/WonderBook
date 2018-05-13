@@ -15,7 +15,7 @@ public class ChatMessage {
     private List<String> deleteFor;
 
 
-    public ChatMessage(String sender, String receiver ,String message, String key) {
+    public ChatMessage(String sender, String receiver, String message, String key) {
         this.sender = sender;
         this.message = message;
         this.status_read = false;
@@ -25,7 +25,7 @@ public class ChatMessage {
         deleteFor = new ArrayList<>();
     }
 
-    public ChatMessage(){
+    public ChatMessage() {
         deleteFor = new ArrayList<>();
     }
 
@@ -77,7 +77,7 @@ public class ChatMessage {
         this.receiver = receiver;
     }
 
-    public void addUserDelete(String keyUser){
+    public void addUserDelete(String keyUser) {
         deleteFor.add(keyUser);
     }
 

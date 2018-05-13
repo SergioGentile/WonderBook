@@ -58,7 +58,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private EditText loginEmail, loginPassword;
     private ProgressBar progress;
     private LinearLayout container;
-    private TextView login_message,resend_pwd;
+    private TextView login_message, resend_pwd;
     private FirebaseUser user;
     private String fromActivity;
     private Spannable spannable;
@@ -93,15 +93,15 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        button = (Button) findViewById(R.id.LoginButton);
-        loginEmail = (EditText) findViewById(R.id.edtLoginName);
-        loginPassword = (EditText) findViewById(R.id.edtLoginPassword);
-        progress = (ProgressBar) findViewById(R.id.login_progress);
-        container = (LinearLayout) findViewById(R.id.LoginContainer);
-        login_message = (TextView) findViewById(R.id.login_message);
-        resend_mail = (TextView) findViewById(R.id.resend_mail);
+        button = findViewById(R.id.LoginButton);
+        loginEmail = findViewById(R.id.edtLoginName);
+        loginPassword = findViewById(R.id.edtLoginPassword);
+        progress = findViewById(R.id.login_progress);
+        container = findViewById(R.id.LoginContainer);
+        login_message = findViewById(R.id.login_message);
+        resend_mail = findViewById(R.id.resend_mail);
         user = null;
-        resend_pwd = (TextView) findViewById(R.id.restore_psw);
+        resend_pwd = findViewById(R.id.restore_psw);
 
         String message = getString(R.string.confirm_mail_msg);
 
@@ -161,8 +161,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             @Override
             public void onClick(View v) {
 
-                String mail = loginEmail.getText().toString().toLowerCase().replace(" ","");
-                if(!mail.isEmpty()){
+                String mail = loginEmail.getText().toString().toLowerCase().replace(" ", "");
+                if (!mail.isEmpty()) {
                     FirebaseAuth.getInstance().sendPasswordResetEmail(mail)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -179,7 +179,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
+                } else {
                     Toast.makeText(Login.this, getString(R.string.insert_email),
                             Toast.LENGTH_SHORT).show();
                 }
@@ -271,7 +271,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             cancel = true;
         }
 
-        if(TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             loginPassword.setError(getString(R.string.error_field_required));
             focusView = loginPassword;
             cancel = true;
@@ -326,10 +326,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     }
 
     private boolean checkUserCredential(FirebaseUser currentUser) {
-        if (currentUser != null && currentUser.isEmailVerified()) {
-            return true;
-        }
-        return false;
+        return currentUser != null && currentUser.isEmailVerified();
     }
 
     private boolean isEmailValid(String email) {

@@ -23,7 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
     <LinearLayout
@@ -49,8 +49,7 @@
                 android:text="Book Sharing"
                 android:textSize="25dp"
                 android:gravity="center"
-                android:textColor="@color/colorPrimaryDark"
-                />
+                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -58,7 +57,7 @@
                 android:text="@string/slogan"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
@@ -72,8 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -84,8 +82,7 @@
                     android:text="@string/loginDescription"
                     android:textColor="@android:color/black"
                     android:gravity="center"
-                    android:textSize="15dp"
-                    />
+                    android:textSize="15dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,8 +93,7 @@
                     android:layout_marginTop="15dp"
                     android:orientation="vertical"
                     android:layout_weight="3"
-                    android:background="@drawable/my_box"
-                    >
+                    android:background="@drawable/my_box">
 
                     <android.support.design.widget.TextInputLayout
 
@@ -110,8 +106,7 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
-                        android:hint="@string/mail"
-                        >
+                        android:hint="@string/mail">
 
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginName"
@@ -120,8 +115,7 @@
                             android:singleLine="true"
                             android:inputType="textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/my_box"
-                            />
+                            android:backgroundTint="@color/my_box" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -136,8 +130,7 @@
                         android:layout_marginBottom="@dimen/bottom_inside_box"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
-                        android:hint="@string/password"
-                        >
+                        android:hint="@string/password">
 
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginPassword"
@@ -146,7 +139,7 @@
                             android:singleLine="true"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/my_box"/>
+                            android:backgroundTint="@color/my_box" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -160,8 +153,7 @@
                         android:layout_marginRight="@dimen/margin_right"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/tv_dim"
-                        android:hint="@string/confirm_password"
-                        >
+                        android:hint="@string/confirm_password">
 
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtLoginPassword2"
@@ -172,7 +164,7 @@
                             android:textColor="@android:color/black"
                             android:inputType="textPassword|textNoSuggestions"
                             android:textSize="@dimen/tv_dim"
-                            android:backgroundTint="@color/my_box"/>
+                            android:backgroundTint="@color/my_box" />
 
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
@@ -195,7 +187,7 @@
                 android:layout_height="@dimen/button_h"
                 android:background="@drawable/my_rounded_button"
                 android:textColor="@color/white"
-                android:text="@string/register"/>
+                android:text="@string/register" />
         </LinearLayout>
 
 

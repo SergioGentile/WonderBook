@@ -1,21 +1,15 @@
 package it.polito.mad.booksharing;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +19,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -37,21 +30,14 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -62,20 +48,16 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -84,30 +66,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -119,7 +91,7 @@ public class MainPage extends AppCompatActivity
     private User user;
     private TextView tvName;
     private CircleImageView profileImage;
-    private ImageView userImage,userImageOriginal;
+    private ImageView userImage, userImageOriginal;
     private View navView;
     private String userId;
     private FirebaseAuth mAuth;
@@ -191,7 +163,7 @@ public class MainPage extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
@@ -206,7 +178,7 @@ public class MainPage extends AppCompatActivity
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-        mMapView = (MapView) findViewById(R.id.mapView);
+        mMapView = findViewById(R.id.mapView);
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
@@ -215,11 +187,11 @@ public class MainPage extends AppCompatActivity
 
         //Search part
         firebaseDatabase = FirebaseDatabase.getInstance();
-        lv_search_runtime = (ListView) findViewById(R.id.lv_search_runtime);
-        lv_searched = (ListView) findViewById(R.id.lv_searched);
-        imageScanOnSearch = (ImageView) findViewById(R.id.imgScanOnSearch);
-        emptyResearch = (LinearLayout) findViewById(R.id.emptyResearch);
-        progressAnimation = (ProgressBar) findViewById(R.id.progressAnimation);
+        lv_search_runtime = findViewById(R.id.lv_search_runtime);
+        lv_searched = findViewById(R.id.lv_searched);
+        imageScanOnSearch = findViewById(R.id.imgScanOnSearch);
+        emptyResearch = findViewById(R.id.emptyResearch);
+        progressAnimation = findViewById(R.id.progressAnimation);
         toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         sortedLocationItems = new ArrayList<>();
         books = new ArrayList<>();
@@ -349,8 +321,8 @@ public class MainPage extends AppCompatActivity
             }
         });
 
-        orderDialog = (TextView) findViewById(R.id.dialogOrder);
-        tvOrderType = (TextView) findViewById(R.id.tvOrderType);
+        orderDialog = findViewById(R.id.dialogOrder);
+        tvOrderType = findViewById(R.id.tvOrderType);
 
         orderDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -410,7 +382,7 @@ public class MainPage extends AppCompatActivity
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if(notificaction_count!=0) {
+        if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -423,7 +395,7 @@ public class MainPage extends AppCompatActivity
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
             message_nav_bar.setVisibility(View.GONE);
         }
@@ -479,6 +451,7 @@ public class MainPage extends AppCompatActivity
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("books");
         reference.child(marker.getTag().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
             final String bookID = marker.getTag().toString();
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Intent intent = new Intent(MainPage.this, ShowBookFull.class);
@@ -501,10 +474,10 @@ public class MainPage extends AppCompatActivity
 
 
     private void setDefaultUser() {
-        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        tvName = navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        profileImage = navView.findViewById(R.id.profileImageNavBar);
         tvName.setText("");
         profileImage.setImageResource(R.drawable.profile);
 
@@ -512,7 +485,7 @@ public class MainPage extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -540,7 +513,7 @@ public class MainPage extends AppCompatActivity
 
         MenuItem item = menu.findItem(R.id.searchButton);
 
-                searchView.setMenuItem(item);
+        searchView.setMenuItem(item);
         return true;
     }
 
@@ -574,8 +547,7 @@ public class MainPage extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowAllMyBook.class).putExtras(bundle));
-        }
-        else if (id == R.id.nav_show_chat) {
+        } else if (id == R.id.nav_show_chat) {
             //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
@@ -598,7 +570,7 @@ public class MainPage extends AppCompatActivity
             finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -662,20 +634,18 @@ public class MainPage extends AppCompatActivity
                             Log.d("Permission enabled:", user.getName().getValue());
                             try {
 
-                                if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)){
+                                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, MainPage.this);
-                                    Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+                                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                                     onLocationChanged(location);
                                     Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
-                                }
-                                else if(locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)){
+                                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainPage.this);
-                                    Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                                     onLocationChanged(location);
                                     Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
-                                }
-                                else{
-                                    Log.d("pos","Take permission from edit prof");
+                                } else {
+                                    Log.d("pos", "Take permission from edit prof");
                                     Geocoder geocoder = new Geocoder(MainPage.this);
                                     List<Address> addresses;
                                     String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -692,7 +662,7 @@ public class MainPage extends AppCompatActivity
                                     }
                                 }
                             } catch (Exception e) {
-                                Log.d("Exc","Exception catch");
+                                Log.d("Exc", "Exception catch");
                                 e.printStackTrace();
                                 Geocoder geocoder = new Geocoder(MainPage.this);
                                 List<Address> addresses;
@@ -825,10 +795,10 @@ public class MainPage extends AppCompatActivity
     }
 
     private void setUserInfoNavBar() {
-        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        tvName = navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        profileImage = navView.findViewById(R.id.profileImageNavBar);
         if (user != null) {
             tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
 
@@ -1367,7 +1337,7 @@ public class MainPage extends AppCompatActivity
                 }
                 //fill all the layout
                 final Book book = booksMatch.get(position);
-                imageView = (ImageView) convertView.findViewById(R.id.image_book_searched);
+                imageView = convertView.findViewById(R.id.image_book_searched);
                 Picasso.with(MainPage.this).load(book.getUrlMyImage())
                         .error(R.drawable.ic_error_outline_black_24dp).noFade().into(imageView, new com.squareup.picasso.Callback() {
                     @Override
@@ -1381,15 +1351,15 @@ public class MainPage extends AppCompatActivity
                     }
                 });
 
-                TextView title = (TextView) convertView.findViewById(R.id.title_searched);
-                TextView author = (TextView) convertView.findViewById(R.id.author_searched);
-                RatingBar rb = (RatingBar) convertView.findViewById(R.id.rating_searched);
+                TextView title = convertView.findViewById(R.id.title_searched);
+                TextView author = convertView.findViewById(R.id.author_searched);
+                RatingBar rb = convertView.findViewById(R.id.rating_searched);
                 //For setting a text view with two different colors
-                TextView owner = (TextView) convertView.findViewById(R.id.shared_name);
+                TextView owner = convertView.findViewById(R.id.shared_name);
                 owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
 
-                TextView distance = (TextView) convertView.findViewById(R.id.distance);
-                LinearLayout ll_distance = (LinearLayout) convertView.findViewById(R.id.ll_location);
+                TextView distance = convertView.findViewById(R.id.distance);
+                LinearLayout ll_distance = convertView.findViewById(R.id.ll_location);
 
                 //If the position is not available for some reason (because no permission, because the city wrote by the user is wrong)
                 //i hide the evaluation of the distance
@@ -1409,7 +1379,7 @@ public class MainPage extends AppCompatActivity
                 cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));*/
 
 
-                LinearLayout llAdapter = (LinearLayout) convertView.findViewById(R.id.ll_adapter_searched_book);
+                LinearLayout llAdapter = convertView.findViewById(R.id.ll_adapter_searched_book);
 
                 //If the item is clicked, i show the book
                 llAdapter.setOnClickListener(new View.OnClickListener() {
@@ -1625,10 +1595,10 @@ public class MainPage extends AppCompatActivity
                         TextView textView;
                         ImageView imageView;
                         View view;
-                        textView = (TextView) convertView.findViewById(R.id.tv_search_runtime);
-                        imageView = (ImageView) convertView.findViewById(R.id.image_search_runtime);
-                        ll = (LinearLayout) convertView.findViewById(R.id.ll_adapter_runtime);
-                        view = (View) convertView.findViewById(R.id.line_search_runtime);
+                        textView = convertView.findViewById(R.id.tv_search_runtime);
+                        imageView = convertView.findViewById(R.id.image_search_runtime);
+                        ll = convertView.findViewById(R.id.ll_adapter_runtime);
+                        view = convertView.findViewById(R.id.line_search_runtime);
 
                         //Depends on what the user search, I set a different image
                         Drawable d = null;
@@ -1770,13 +1740,13 @@ public class MainPage extends AppCompatActivity
     private class MyBroadcastReceiver extends BroadcastReceiver {
         private MainPage currentActivity = null;
 
-        void  setCurrentActivityHandler(MainPage currentActivity){
+        void setCurrentActivityHandler(MainPage currentActivity) {
             this.currentActivity = currentActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("UpdateView")){
+            if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }
@@ -1893,7 +1863,9 @@ class SortedLocationItem {
         this.longitude = longitude;
     }
 
-    public String getId() {return this.id;}
+    public String getId() {
+        return this.id;
+    }
 
 }
 

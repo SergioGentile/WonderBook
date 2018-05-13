@@ -7,20 +7,21 @@
     android:layout_height="wrap_content">
 
 
-        <ImageView
-            android:backgroundTint="@android:color/white"
-            android:id="@+id/image_search_runtime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_left"
-            android:layout_marginRight="@dimen/margin_right"
-            android:src="@drawable/ic_person_black_24dp" />
+    <ImageView
+        android:backgroundTint="@android:color/white"
+        android:id="@+id/image_search_runtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginRight="@dimen/margin_right"
+        android:src="@drawable/ic_person_black_24dp" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/tv_search_runtime"
             android:layout_width="match_parent"
@@ -29,6 +30,7 @@
             android:text="ciao"
             android:textColor="@android:color/black"
             android:textSize="@dimen/tv_dim" />
+
         <View
             android:id="@+id/line_search_runtime"
             android:layout_marginBottom="@dimen/bottom_inside_box"
@@ -36,5 +38,5 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/colorSecondaryText" />
-        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

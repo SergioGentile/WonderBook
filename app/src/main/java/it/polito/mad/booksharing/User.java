@@ -63,7 +63,7 @@ public class User implements Parcelable {
         this.street = street;
     }
 
-    public User(String name, String surname, String imageUrl, String key){
+    public User(String name, String surname, String imageUrl, String key) {
         this.name = new User.MyPair(name, "public");
         this.surname = new User.MyPair(surname, "public");
         this.user_image_url = imageUrl;
@@ -327,24 +327,15 @@ public class User implements Parcelable {
     //Methods used to check if an attribute is public(return true) or private(return false)
 
     public boolean checkMail() {
-        if (this.email.getStatus().equals("public")) {
-            return true;
-        }
-        return false;
+        return this.email.getStatus().equals("public");
     }
 
     public boolean checkStreet() {
-        if (this.street.getStatus().equals("public")) {
-            return true;
-        }
-        return false;
+        return this.street.getStatus().equals("public");
     }
 
     public boolean checkPhone() {
-        if (this.phone.getStatus().equals("public")) {
-            return true;
-        }
-        return false;
+        return this.phone.getStatus().equals("public");
     }
 
     public String getImagePath() {
@@ -368,12 +359,7 @@ public class User implements Parcelable {
         Pattern emailPatter = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcherMail = emailPatter.matcher(mail);
         boolean findMail = matcherMail.find();
-        if (mail.equals(myDefault) || !findMail) {
-
-            return false;
-        }
-
-        return true;
+        return !mail.equals(myDefault) && findMail;
     }
 
 

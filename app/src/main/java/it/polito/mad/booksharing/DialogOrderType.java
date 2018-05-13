@@ -27,10 +27,10 @@ public class DialogOrderType extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment+
         View v = inflater.inflate(R.layout.activity_dialog_order_type, container, false);
-        tvDistance = (TextView) v.findViewById(R.id.distance);
-        tvRating = (TextView) v.findViewById(R.id.rating);
-        tvRecent = (TextView) v.findViewById(R.id.recent);
-        tvCity = (TextView) v.findViewById(R.id.myCity);
+        tvDistance = v.findViewById(R.id.distance);
+        tvRating = v.findViewById(R.id.rating);
+        tvRecent = v.findViewById(R.id.recent);
+        tvCity = v.findViewById(R.id.myCity);
 
         tvDistance.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -23,8 +23,8 @@ public class Start extends AppCompatActivity {
         setContentView(R.layout.activity_start);
 
 
-        btnRegister = (Button) findViewById(R.id.buttonRegister);
-        btnLogin = (Button) findViewById(R.id.buttonLogin);
+        btnRegister = findViewById(R.id.buttonRegister);
+        btnLogin = findViewById(R.id.buttonLogin);
         mAuth = FirebaseAuth.getInstance();
 
 

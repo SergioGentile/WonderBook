@@ -6,28 +6,16 @@
             >
             <corners android:radius="70dp" />
             <solid android:color="@color/colorPrimaryDark" />
-            <stroke
-                android:width="1dip"
-                android:color="@color/white" />
-            <padding
-                android:bottom="4dp"
-                android:left="4dp"
-                android:right="4dp"
-                android:top="4dp" />
+            <stroke android:width="1dip" android:color="@color/white" />
+            <padding android:bottom="4dp" android:left="4dp" android:right="4dp" android:top="4dp" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="70dp" />
             <solid android:color="@color/colorPrimaryDark" />
-            <stroke
-                android:width="1dip"
-                android:color="@color/my_box" />
-            <padding
-                android:bottom="4dp"
-                android:left="4dp"
-                android:right="4dp"
-                android:top="4dp" />
+            <stroke android:width="1dip" android:color="@color/my_box" />
+            <padding android:bottom="4dp" android:left="4dp" android:right="4dp" android:top="4dp" />
         </shape>
     </item>
 </selector>

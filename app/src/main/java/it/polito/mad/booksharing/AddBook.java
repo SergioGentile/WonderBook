@@ -194,21 +194,21 @@ public class AddBook extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
-        btnScan = (LinearLayout) findViewById(R.id.btnScan);
-        btnDone = (ImageButton) findViewById(R.id.btnDone);
-        btnDelete = (ImageButton) findViewById(R.id.btnDelete);
+        btnScan = findViewById(R.id.btnScan);
+        btnDone = findViewById(R.id.btnDone);
+        btnDelete = findViewById(R.id.btnDelete);
         tvAuthor = findViewById(R.id.tvAuthor);
         tvTitle = findViewById(R.id.tvTitle);
         tvISBN = findViewById(R.id.tvISBN);
         tvSubtitle = findViewById(R.id.tvSubtitle);
         tvProduction = findViewById(R.id.tvProduction);
         tvDescription = findViewById(R.id.tvDescription);
-        sv = (ScrollView) findViewById(R.id.scrollAb);
+        sv = findViewById(R.id.scrollAb);
         tvYear = findViewById(R.id.tvYear);
-        myImageBook = (ImageView) findViewById(R.id.myImageBook);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        swAvailable = (Switch) findViewById(R.id.swAvailable);
-        tvAvailable = (TextView) findViewById(R.id.tvAvailable);
+        myImageBook = findViewById(R.id.myImageBook);
+        ratingBar = findViewById(R.id.ratingBar);
+        swAvailable = findViewById(R.id.swAvailable);
+        tvAvailable = findViewById(R.id.tvAvailable);
         tvCap = findViewById(R.id.tvCap);
         tvCity = findViewById(R.id.tvCity);
         tvStreet = findViewById(R.id.tvStreet);
@@ -390,8 +390,7 @@ public class AddBook extends Activity {
                                 isbn13 = tvISBN.getText().toString();
                             } else if (book.getIsbn13() != null) {
                                 isbn13 = book.getIsbn13();
-                            }
-                            else if (tvISBN.getText().toString().length() == 10) {
+                            } else if (tvISBN.getText().toString().length() == 10) {
                                 isbn10 = tvISBN.getText().toString();
                             } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
@@ -405,8 +404,7 @@ public class AddBook extends Activity {
                                 isbn13 = tvISBN.getText().toString();
                             } else if (book.getIsbn13() != null) {
                                 isbn13 = book.getIsbn13();
-                            }
-                            else if (tvISBN.getText().toString().length() == 10) {
+                            } else if (tvISBN.getText().toString().length() == 10) {
                                 isbn10 = tvISBN.getText().toString();
                             } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();

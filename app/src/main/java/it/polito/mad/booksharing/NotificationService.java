@@ -1,24 +1,12 @@
 package it.polito.mad.booksharing;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.NotificationManager;
-import android.app.job.JobService;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Binder;
-import android.os.IBinder;
-import android.os.Process;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,15 +15,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
-
-import static com.google.android.gms.common.util.WorkSourceUtil.TAG;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -95,7 +77,7 @@ public class NotificationService extends FirebaseMessagingService {
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");
                                 broadcaster.sendBroadcast(intent);
-                            } else if (!lastChatReceiver.equals(sender.getKey())) {
+                            } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
                                 //if is chatPage but messageThread is different notify the user
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");

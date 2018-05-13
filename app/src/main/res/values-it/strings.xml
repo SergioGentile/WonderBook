@@ -41,7 +41,7 @@
     <string name="confirm">conferma password</string>
     <string name="slogan">Condividi la tua libreria, scopri un mondo di libri</string>
     <string name="loginDescription">Inserisci la tua email e password</string>
-    <string name ="changeMail">Stai cambiando le tua mail. Ricordati di verificare il tuo indirizzo mail</string>
+    <string name="changeMail">Stai cambiando le tua mail. Ricordati di verificare il tuo indirizzo mail</string>
     <string name="email_verif_toast1">Abbiamo inviato una email a </string>
     <string name="email_verif_toast2">, segui il link per verificare il tuo account.</string>
     <string name="email_not_verif">Per favore, verifica il tuo indirizzo email.</string>

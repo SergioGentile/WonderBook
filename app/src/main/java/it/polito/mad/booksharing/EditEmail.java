@@ -55,18 +55,18 @@ public class EditEmail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_email);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Set all the variable
         user = getIntent().getParcelableExtra("user");
         fromActivity = getIntent().getStringExtra("from");
         email_status = user.getEmail().getStatus();
-        btnEmail = (Button) findViewById(R.id.confirm_new_email);
-        edtMail = (EditText) findViewById(R.id.changeMail);
-        swMail = (Switch) findViewById(R.id.email_switch);
-        progress = (ProgressBar) findViewById(R.id.editCred_progress);
-        container = (LinearLayout) findViewById(R.id.editCredContainer);
+        btnEmail = findViewById(R.id.confirm_new_email);
+        edtMail = findViewById(R.id.changeMail);
+        swMail = findViewById(R.id.email_switch);
+        progress = findViewById(R.id.editCred_progress);
+        container = findViewById(R.id.editCredContainer);
         //Set text value
         edtMail.setText(user.getEmail().getValue());
         //Need to set PasswordField
@@ -139,7 +139,7 @@ public class EditEmail extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TextInputEditText edittext = (TextInputEditText) layout.findViewById(R.id.my_pwd_edit);
+                        TextInputEditText edittext = layout.findViewById(R.id.my_pwd_edit);
                         String current_pwd = edittext.getText().toString();
                         if (!current_pwd.isEmpty()) {
                             //I need to re-authenticate the user using the current_pwd
@@ -220,12 +220,7 @@ public class EditEmail extends AppCompatActivity {
         if (clean_mail.isEmpty() || !user.checkMailFormat(clean_mail)) {
             edtMail.setError(getString(R.string.mail_not_valid));
             return false;
-        } else if (user.getEmail().getValue().equals(clean_mail)) {
-            //No changes
-            return false;
-        } else {
-            return true;
-        }
+        } else return !user.getEmail().getValue().equals(clean_mail);
     }
 
     private void returnToEdit(Boolean isUserMailChanged) {

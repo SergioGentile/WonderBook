@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -76,27 +74,27 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         mMessageReceiver = new MyBroadcastReceiver();
         mMessageReceiver.setCurrentActivityHandler(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         //This class manage the exhibition of all the book owned by the user.
 
-        srl = (SwipeRefreshLayout) findViewById(R.id.srl);
-        progressAnimation = (ProgressBar) findViewById(R.id.progressAnimation);
+        srl = findViewById(R.id.srl);
+        progressAnimation = findViewById(R.id.progressAnimation);
         progressAnimation.setVisibility(View.VISIBLE);
-        llEmpty = (LinearLayout) findViewById(R.id.llEmpty);
-        lv = (ListView) findViewById(R.id.lv);
+        llEmpty = findViewById(R.id.llEmpty);
+        lv = findViewById(R.id.lv);
         llEmpty.setVisibility(View.GONE);
         data = new ArrayList<>();
         keys = new ArrayList<>();
         user = getIntent().getExtras().getParcelable("user");
         showAllMyBooks(user.getKey());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         navView = navigationView.getHeaderView(0);
@@ -120,7 +118,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
+        FloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,14 +132,14 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("UpdateView"));
     }
 
     @Override
-    public  void onStop(){
+    public void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
@@ -150,7 +148,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if(notificaction_count!=0) {
+        if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -163,7 +161,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
             message_nav_bar.setVisibility(View.GONE);
         }
@@ -243,10 +241,10 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
                         }
 
                         //Now convertView refers to an instance of my layout.
-                        TextView title = (TextView) convertView.findViewById(R.id.title_adapter);
-                        TextView author = (TextView) convertView.findViewById(R.id.author_adapter);
-                        TextView publication = (TextView) convertView.findViewById(R.id.publication_adapter);
-                        final ImageView imageBook = (ImageView) convertView.findViewById(R.id.image_adapter);
+                        TextView title = convertView.findViewById(R.id.title_adapter);
+                        TextView author = convertView.findViewById(R.id.author_adapter);
+                        TextView publication = convertView.findViewById(R.id.publication_adapter);
+                        final ImageView imageBook = convertView.findViewById(R.id.image_adapter);
                         imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         Book book = data.get(position);
                         title.setText(User.capitalizeFirst(book.getTitle()));
@@ -292,8 +290,8 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
 
                         //Here to show all the book
-                        LinearLayout ll_my_book = (LinearLayout) convertView.findViewById(R.id.ll_adapter_my_book);
-                        ImageButton btnEdit = (ImageButton) convertView.findViewById(R.id.editMyBook);
+                        LinearLayout ll_my_book = convertView.findViewById(R.id.ll_adapter_my_book);
+                        ImageButton btnEdit = convertView.findViewById(R.id.editMyBook);
 
                         //edit the book
                         btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -335,7 +333,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         });
     }
 
-    private void initNavBar( TextView message_nav_bar ) {
+    private void initNavBar(TextView message_nav_bar) {
 
 
     }
@@ -348,19 +346,16 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
         if (id == R.id.nav_profile) {
             startActivity(new Intent(ShowAllMyBook.this, ShowProfile.class));
-        }
-        else if(id == R.id.nav_show_shared_book){
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        } else if (id == R.id.nav_show_shared_book) {
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        }
-        else if(id == R.id.nav_show_chat){
+        } else if (id == R.id.nav_show_chat) {
             //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowAllMyBook.this, ShowMessageThread.class).putExtras(bundle));
-        }
-        else if (id == R.id.nav_exit) {
+        } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
@@ -376,7 +371,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         }
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         finish();
         return true;
@@ -384,10 +379,10 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
 
     private void setUserInfoNavBar() {
-        tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
+        tvName = navView.findViewById(R.id.profileNameNavBar);
         navView.getBackground().setAlpha(80);
 
-        profileImage = (CircleImageView) navView.findViewById(R.id.profileImageNavBar);
+        profileImage = navView.findViewById(R.id.profileImageNavBar);
         tvName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
         Bitmap image = null;
 
@@ -401,13 +396,13 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
     private class MyBroadcastReceiver extends BroadcastReceiver {
         private ShowAllMyBook currentActivity = null;
 
-        void  setCurrentActivityHandler(ShowAllMyBook currentActivity){
+        void setCurrentActivityHandler(ShowAllMyBook currentActivity) {
             this.currentActivity = currentActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("UpdateView")){
+            if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }
