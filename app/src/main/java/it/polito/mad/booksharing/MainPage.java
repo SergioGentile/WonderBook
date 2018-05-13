@@ -113,7 +113,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainPage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener, GoogleMap.OnInfoWindowClickListener {
 
     private boolean firtTime = true;
     private User user;
@@ -470,7 +470,35 @@ public class MainPage extends AppCompatActivity
         this.map = map;
         map.setMaxZoomPreference(18);
         enableMyLocationIfPermitted(map);
+        map.setOnInfoWindowClickListener(this);
     }
+
+    @Override
+    public void onInfoWindowClick(final Marker marker) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("books");
+        reference.child(marker.getTag().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            final String bookID = marker.getTag().toString();
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Intent intent = new Intent(MainPage.this, ShowBookFull.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                bundle.putParcelable("book", dataSnapshot.getValue(Book.class));
+                intent.putExtra("key", bookID);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
 
     private void setDefaultUser() {
         tvName = (TextView) navView.findViewById(R.id.profileNameNavBar);
@@ -969,6 +997,7 @@ public class MainPage extends AppCompatActivity
                                                 //return a new lat and long in order to avoid overlap. The new lat/long is near the previous one and it is choose in a random way
                                                 Position overlap = avoidOverlap(markers.values(), new Position(location.latitude, location.longitude));
                                                 Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(User.capitalizeFirst(booksMatch.get(i).getTitle())).snippet(snippet));
+                                                m.setTag(bookIds.get(i));
                                                 markers.put(key, m);
                                                 //Evaluate distance for the bok if latPhone and longPhone are available.
 
@@ -1131,7 +1160,7 @@ public class MainPage extends AppCompatActivity
                                                 } else {
                                                     booksMatch.get(i).setDistance(-1);
                                                 }
-                                                sortedLocationItems.add(new SortedLocationItem(booksMatch.get(i), snippet, location.latitude, location.longitude));
+                                                sortedLocationItems.add(new SortedLocationItem(bookIds.get(i), booksMatch.get(i), snippet, location.latitude, location.longitude));
                                             } else {
                                                 booksMatch.get(i).setDistance(-1);
                                             }
@@ -1172,6 +1201,7 @@ public class MainPage extends AppCompatActivity
                                                 for (SortedLocationItem sortedLocationItem : sortedLocationItems) {
                                                     Position overlap = avoidOverlap(markers.values(), new Position(sortedLocationItem.getLatitude(), sortedLocationItem.getLongitude()));
                                                     Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(User.capitalizeFirst(sortedLocationItem.getBook().getTitle())).snippet(sortedLocationItem.getSnippet()));
+                                                    m.setTag(sortedLocationItem.getId());
                                                     markers.put(key, m);
 
                                                     //Evaluate distance for the bok
@@ -1818,11 +1848,13 @@ class Position {
 
 //This class incapsulate different things in order to help me in the sort operation
 class SortedLocationItem {
+    String id;
     Book book;
     String snippet;
     double latitude, longitude;
 
-    public SortedLocationItem(Book book, String snippet, double latitude, double longitude) {
+    public SortedLocationItem(String id, Book book, String snippet, double latitude, double longitude) {
+        this.id = id;
         this.book = book;
         this.snippet = snippet;
         this.latitude = latitude;
@@ -1860,6 +1892,8 @@ class SortedLocationItem {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public String getId() {return this.id;}
 
 }
 
