@@ -27,7 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,73 +58,63 @@ public class NotificationService extends FirebaseMessagingService {
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         // Check if message contains a notification payload.
-        Log.d("MessageReceived","YEEEEEEEEE");
+        Log.d("MessageReceived", remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             HashMap<String, String> metaData = new HashMap<>(remoteMessage.getData());
             final String senderKey = metaData.get(SENDER_CONSTANT);
             final String keyChat = metaData.get(CHAT_KEY_CONSTANT);
             final String body = metaData.get("body");
+            final String receiver = metaData.get("receiver");
 
             SharedPreferences sharedPref = getSharedPreferences("chatReceiver", Context.MODE_PRIVATE);
             lastChatReceiver = sharedPref.getString("receiver_key", "");
 
-            FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            Log.d("MessageReceived", "Querying Firebase");
+
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(senderKey);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser != null) {
-                        //query to get user info
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        //retrieve Sender user
+                        Gson json = new Gson();
+                        user = json.fromJson(receiver, User.class);
+                        sender = dataSnapshot.getValue(User.class);
 
-                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(currentUser.getUid());
-                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                user = dataSnapshot.getValue(User.class);
-                                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(senderKey);
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            //retrieve Sender user
-                                            sender = dataSnapshot.getValue(User.class);
-                                            ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                                            List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
-                                            if (tasks != null && !tasks.isEmpty()) {
-                                                String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
-                                                if (!className.contains("ChatPage")) {
-                                                    //if current activity is not chatPage notify the user
-                                                    mNotificationManager.displayNotification(body, sender, user, keyChat);
-                                                    Intent intent = new Intent("UpdateView");
-                                                    broadcaster.sendBroadcast(intent);
-                                                } else if (!lastChatReceiver.equals(sender.getKey())) {
-                                                    //if is chatPage but messageThread is different notify the user
-                                                    mNotificationManager.displayNotification(body, sender, user, keyChat);
-                                                    Intent intent = new Intent("UpdateView");
-                                                    broadcaster.sendBroadcast(intent);
-                                                }
-                                            }
-                                        }
-                                    }
+                        Log.d("MessageReceived", "Deserialized data");
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
+                        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                        List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
+                        Log.d("MessageReceived", "Got app tasks");
+                        if (tasks != null && !tasks.isEmpty()) {
+                            Log.d("MessageReceived", "Tasks empty");
+                            String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
+                            if (!className.contains("ChatPage")) {
+                                //if current activity is not chatPage notify the user
+                                mNotificationManager.displayNotification(body, sender, user, keyChat);
+                                Intent intent = new Intent("UpdateView");
+                                broadcaster.sendBroadcast(intent);
+                            } else if (!lastChatReceiver.equals(sender.getKey())) {
+                                //if is chatPage but messageThread is different notify the user
+                                mNotificationManager.displayNotification(body, sender, user, keyChat);
+                                Intent intent = new Intent("UpdateView");
+                                broadcaster.sendBroadcast(intent);
                             }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
+                        } else {
+                            Log.d("MessageReceived", "Tasks not empty");
+                            mNotificationManager.displayNotification(body, sender, user, keyChat);
+                            Intent intent = new Intent("UpdateView");
+                            broadcaster.sendBroadcast(intent);
+                        }
                     }
                 }
-            });
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }

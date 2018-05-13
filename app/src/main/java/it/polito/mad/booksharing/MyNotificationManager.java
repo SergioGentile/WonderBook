@@ -65,7 +65,7 @@ public class MyNotificationManager {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.mipmap.sharebook_icon)
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
@@ -103,7 +103,7 @@ public class MyNotificationManager {
                         .setContentText(String.valueOf(notificationCounter)+mCtx.getString(R.string.msg_notification))
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.mipmap.sharebook_icon)
                         .setGroup(GROUP_KEY)
                         .setGroupSummary(true);
 

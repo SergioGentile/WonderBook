@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            android:theme="@style/Theme.myToolbar"
             app:subtitleTextColor="@color/windowBackground"
             app:contentInsetLeft="0dp"
+
             app:titleTextColor="@android:color/white">
 
             <LinearLayout
