@@ -1390,7 +1390,7 @@ public class MainPage extends AppCompatActivity
                 final Book book = booksMatch.get(position);
                 imageView = convertView.findViewById(R.id.image_book_searched);
                 Picasso.with(MainPage.this).load(book.getUrlMyImage())
-                        .error(R.drawable.ic_error_outline_black_24dp).noFade().into(imageView, new com.squareup.picasso.Callback() {
+                        .error(R.drawable.ic_error_outline_black_24dp).noFade().placeholder(R.drawable.progress_animation).into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
