@@ -38,9 +38,9 @@ public class User implements Parcelable {
     private String user_image_url;
     private String cropped_image_url;
     private String key;
-
+    private Integer messageToRead = 0;
     public User() {
-
+        messageToRead = 0;
         name = new MyPair();
         surname = new MyPair();
         phone = new MyPair();
@@ -106,6 +106,7 @@ public class User implements Parcelable {
         this.key = new String(value.getKey());
         this.user_image_url = new String(value.getUser_image_url());
         this.cropped_image_url = new String(value.getCropped_image_url());
+        this.messageToRead = value.getMessageToRead();
     }
 
     //Method used to deserialize the method
@@ -130,6 +131,7 @@ public class User implements Parcelable {
         this.key = parcel.readString();
         this.user_image_url = parcel.readString();
         this.cropped_image_url = parcel.readString();
+        this.messageToRead = parcel.readInt();
     }
 
     public static String capitalizeSpace(String s) {
@@ -240,6 +242,7 @@ public class User implements Parcelable {
         dest.writeString(this.getKey());
         dest.writeString(this.getUser_image_url());
         dest.writeString(this.getCropped_image_url());
+        dest.writeInt(this.getMessageToRead());
     }
 
     //Method used to check if the information placed by the user during the edit phase are correct
@@ -377,6 +380,14 @@ public class User implements Parcelable {
 
     public void setCropped_image_url(String cropped_image_url) {
         this.cropped_image_url = cropped_image_url;
+    }
+
+    public Integer getMessageToRead() {
+        return messageToRead;
+    }
+
+    public void setMessageToRead(Integer messageToRead) {
+        this.messageToRead = messageToRead;
     }
 
 

@@ -128,6 +128,7 @@
             android:value="@string/notification_channel_id" />
 
         <activity android:name=".ActivityDispatcher"></activity>
+
     </application>
 
 </manifest>

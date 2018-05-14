@@ -14,6 +14,7 @@
         android:background="@color/colorDivider">
 
         <android.support.v7.widget.Toolbar
+            app:contentInsetStart="0dp"
             android:id="@+id/chat_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -29,7 +30,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:paddingRight="@dimen/padding"
+                    android:padding="@dimen/padding"
                     android:id="@+id/chatToolbarBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

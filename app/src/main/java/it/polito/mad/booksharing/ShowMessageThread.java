@@ -56,6 +56,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private List<String> updateMessageThreadOld;
     private List<String> updateMessageThreadNew;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,7 +269,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         intent.putExtras(bundle);
                         intent.putExtra("fromShowMessageThread", true);
                         MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
-                        notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()));
+                        notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
                         setNotification(notificationManager.getMessageCounter());
                         startActivity(intent);
                     }
@@ -357,6 +358,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
+        navigationView.getMenu().getItem(3).setChecked(true);
+        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
     }
 
     @Override
