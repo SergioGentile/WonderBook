@@ -6,12 +6,25 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
@@ -22,10 +35,12 @@ public class MyNotificationManager {
     private final int SUMMARY_ID = 0;
     private final String CHANNEL_ID = "channel_chat";
     private int notificationCounter = 0;
-    private int messageCounter = 0;
+    private Integer messageCounter = 0;
+    private LocalBroadcastManager broadcaster;
 
     private MyNotificationManager(Context context) {
         mCtx = context;
+        broadcaster = LocalBroadcastManager.getInstance(context);
     }
 
     public static synchronized MyNotificationManager getInstance(Context context) {
@@ -126,6 +141,8 @@ public class MyNotificationManager {
 
             notificationCounter++;
             messageCounter++;
+            DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(receiver.getKey());
+            dbref.child("messageToRead").setValue(messageCounter);
 
         } else {
             Log.d("NOTIFICATION_MANAGER", "Notification Manager Null Pointer");
@@ -143,16 +160,25 @@ public class MyNotificationManager {
 
     }
 
+    public void setMessageCounter(int messageCounter){
+        this.messageCounter = messageCounter;
+    }
+
     public int getMessageCounter() {
         return messageCounter;
     }
 
-    public void subtractMessageCounter(int value) {
+    public void subtractMessageCounter(int value,String Uid) {
         if (messageCounter > 0) {
             messageCounter = messageCounter - value;
             if (messageCounter < 0) {
                 messageCounter = 0;
             }
+            DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(Uid);
+            dbref.child("messageToRead").setValue(messageCounter);
+
         }
     }
+
+
 }

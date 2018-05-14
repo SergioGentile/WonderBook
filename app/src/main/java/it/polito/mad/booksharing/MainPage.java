@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -135,6 +136,7 @@ public class MainPage extends AppCompatActivity
     private NavigationView navigationView;
     private MyBroadcastReceiver mMessageReceiver;
     private TextView toolbarNotification;
+    private MyNotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,9 +170,6 @@ public class MainPage extends AppCompatActivity
 
         // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
-
-
-        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
 
         setDefaultUser();
 
@@ -369,6 +368,7 @@ public class MainPage extends AppCompatActivity
         mMapView.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("UpdateView"));
+        notificationManager = MyNotificationManager.getInstance(this);
     }
 
     @Override
@@ -590,6 +590,7 @@ public class MainPage extends AppCompatActivity
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
                         setUserInfoNavBar();
+                        notificationManager.setMessageCounter(user.getMessageToRead());
                         if (firtTime) {
                             setAdapterSearchedRecentAdd();
                             firtTime = false;
@@ -819,7 +820,6 @@ public class MainPage extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
         setUserInfoNavBar();
         mMapView.onResume();
-        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         notificationManager.clearNotification();
         setNotification(notificationManager.getMessageCounter());
     }
@@ -1747,6 +1747,10 @@ public class MainPage extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+            }
+            else if(intent.getAction().equals("RefreshNotificationView")){
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }

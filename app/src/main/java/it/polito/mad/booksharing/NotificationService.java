@@ -66,6 +66,8 @@ public class NotificationService extends FirebaseMessagingService {
 
                         Log.d("MessageReceived", "Deserialized data");
 
+                        mNotificationManager.setMessageCounter(user.getMessageToRead());
+
                         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                         List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
                         Log.d("MessageReceived", "Got app tasks");
