@@ -357,6 +357,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
+        navigationView.getMenu().getItem(3).setChecked(true);
     }
 
     @Override
