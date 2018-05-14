@@ -269,8 +269,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         intent.putExtras(bundle);
                         intent.putExtra("fromShowMessageThread", true);
                         MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
-                        notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
-                        setNotification(notificationManager.getMessageCounter());
+                        //notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
+                        int counter = Integer.parseInt(notification.getText().toString());
+                        setNotification(counter);
                         startActivity(intent);
                     }
                 });

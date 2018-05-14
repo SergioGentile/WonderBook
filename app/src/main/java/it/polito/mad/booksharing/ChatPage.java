@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,10 +62,13 @@ public class ChatPage extends AppCompatActivity {
     private DatabaseReference databaseReferenceAccess;
     private boolean backPressed;
     private List<String> keysMessageSelected;
+    private MyNotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        notificationManager = MyNotificationManager.getInstance(this);
         setContentView(R.layout.activity_chat_page);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -196,6 +200,9 @@ public class ChatPage extends AppCompatActivity {
                     d.setTintMode(PorterDuff.Mode.SRC_IN);
                     read.setImageDrawable(d);
                 } else {
+                    if(model.isStatus_read()){
+                        notificationManager.subtractMessageCounter(1,sender.getKey());
+                    }
                     messageText = v.findViewById(R.id.text_message_body_rec);
                     messageTime = v.findViewById(R.id.text_message_time_rec);
                     clSend.setVisibility(View.GONE);
