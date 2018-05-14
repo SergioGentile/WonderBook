@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class DialogOrderType extends BottomSheetDialogFragment {
     Context context;
     private BottomSheetListener mListener;
-    private TextView tvDistance, tvRating, tvRecent, tvCity;
+    private TextView tvDistance, tvRating, tvRecent, tvPosition;
 
     public DialogOrderType() {
 
@@ -30,7 +30,7 @@ public class DialogOrderType extends BottomSheetDialogFragment {
         tvDistance = v.findViewById(R.id.distance);
         tvRating = v.findViewById(R.id.rating);
         tvRecent = v.findViewById(R.id.recent);
-        tvCity = v.findViewById(R.id.myCity);
+        tvPosition = v.findViewById(R.id.myPosition);
 
         tvDistance.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class DialogOrderType extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
-        tvCity.setOnClickListener(new View.OnClickListener() {
+        tvPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onButtonClicked(3);

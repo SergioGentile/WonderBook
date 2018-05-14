@@ -68,6 +68,7 @@ import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -105,6 +106,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -114,13 +116,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainPage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener, GoogleMap.OnInfoWindowClickListener  {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, DialogOrderType.BottomSheetListener, LocationListener, GoogleMap.OnInfoWindowClickListener {
 
     private boolean firtTime = true;
     private User user;
     private TextView tvName;
     private CircleImageView profileImage;
-    private ImageView userImage,userImageOriginal;
+    private ImageView userImage, userImageOriginal;
     private View navView;
     private String userId;
     private FirebaseAuth mAuth;
@@ -128,7 +130,12 @@ public class MainPage extends AppCompatActivity
     private MaterialSearchView searchView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private final static int AUTHOR = 0, TITLE = 1, ANY = 2, PUBLISHER = 3, ISBN = 4, CITY = 5, OWNER = 6;
-    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3, YOUR_CITY = 4;
+    private final static int DISTANCE = 0, RATING = 1, NO_ORDER = 2, DATE = 3;
+    private final static int ACTIVITY_POSITION = 111;
+    private static int lastSearch = NO_ORDER;
+    private static boolean locationCanChange = true;
+    private static String lastStringSearched = "";
+    private static int radius = 20;
     //For showing book
     LinearLayout ll_search_runtime;
     ListView lv_search_runtime, lv_searched;
@@ -155,7 +162,7 @@ public class MainPage extends AppCompatActivity
     private TextView orderDialog, tvOrderType;
     private ImageView imageView;
 
-    double latPhone, longPhone;
+    double latPhone, longPhone, currentLatPhone, currentLongPhone;
     private boolean tabFlag = false;
     private LinearLayout emptyResearch;
     private ProgressBar progressAnimation;
@@ -240,7 +247,9 @@ public class MainPage extends AppCompatActivity
                 imageScanOnSearch.setVisibility(View.GONE);
                 lv_search_runtime.setVisibility(View.GONE);
                 toolbarNotification.setVisibility(View.VISIBLE);
-                setAdapterSearched(query.toString().toLowerCase());
+                lastStringSearched = query.toString().toLowerCase();
+                lastSearch = NO_ORDER;
+                setAdapterSearched(lastStringSearched);
                 return false;
             }
 
@@ -339,7 +348,6 @@ public class MainPage extends AppCompatActivity
                 if (tab.getPosition() == 4 || tab.getPosition() == 0) {
                     imageScanOnSearch.setVisibility(View.GONE);
                 }
-
             }
 
             @Override
@@ -410,7 +418,7 @@ public class MainPage extends AppCompatActivity
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if(notificaction_count!=0) {
+        if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -423,7 +431,7 @@ public class MainPage extends AppCompatActivity
 
             toolbarNotification.setText(notificaction_count.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
             message_nav_bar.setVisibility(View.GONE);
         }
@@ -434,6 +442,23 @@ public class MainPage extends AppCompatActivity
         //Take the ISBN of the camera scan in order to facility the search operation
         if (requestCode == 0 && resultCode == AppCompatActivity.RESULT_OK) {
             searchView.setQuery(intent.getStringExtra("isbn"), false);
+        }
+        if (requestCode == ACTIVITY_POSITION && resultCode == AppCompatActivity.RESULT_OK) {
+            radius = intent.getIntExtra("radius", 20);
+            double newLatPhone = intent.getDoubleExtra("latPhone", -1);
+            double newLongPhone = intent.getDoubleExtra("longPhone", -1);
+            if (newLatPhone != -1 && newLongPhone != -1) {
+                if (newLatPhone != latPhone && newLongPhone != longPhone) {
+                    locationCanChange = intent.getBooleanExtra("enableCurrentLocation", false);
+                    latPhone = newLatPhone;
+                    longPhone = newLongPhone;
+                }
+            }
+            if (!lastStringSearched.isEmpty()) {
+                setAdapterSearched(lastStringSearched);
+            } else {
+                setAdapterSearchedRecentAdd();
+            }
         }
 
     }
@@ -653,7 +678,6 @@ public class MainPage extends AppCompatActivity
                         //Bisogna gestire i permessi.
                         //Se non si ha il permesso entra nel primo ramo dell'if e calcola la distanza libro/posizione rispetto alla posizione
                         //che si ha sulla showProfile.
-                        Log.d("Search location for:", user.getName().getValue());
                         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         if (ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             Log.d("Permission dis-enabled:", user.getName().getValue());
@@ -685,20 +709,16 @@ public class MainPage extends AppCompatActivity
                             Log.d("Permission enabled:", user.getName().getValue());
                             try {
 
-                                if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)){
+                                if (locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)) {
                                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, MainPage.this);
                                     Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
                                     onLocationChanged(location);
-                                    Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
-                                }
-                                else if(locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)){
+                                } else if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
                                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainPage.this);
                                     Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
                                     onLocationChanged(location);
-                                    Log.d("Position:", location.getLatitude() + " " + location.getLongitude());
-                                }
-                                else{
-                                    Log.d("pos","Take permission from edit prof");
+                                } else {
+                                    Log.d("pos", "Take permission from edit prof");
                                     Geocoder geocoder = new Geocoder(MainPage.this);
                                     List<Address> addresses;
                                     String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -715,7 +735,7 @@ public class MainPage extends AppCompatActivity
                                     }
                                 }
                             } catch (Exception e) {
-                                Log.d("Exc","Exception catch");
+                                Log.d("Exc", "Exception catch");
                                 e.printStackTrace();
                                 Geocoder geocoder = new Geocoder(MainPage.this);
                                 List<Address> addresses;
@@ -753,7 +773,6 @@ public class MainPage extends AppCompatActivity
             //Download the user picture and save it inside the local storage
             Picasso.with(MainPage.this)
                     .load(user.getUser_image_url()).noFade()
-                    .placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp)
                     .into(profileImage, new com.squareup.picasso.Callback() {
                         @Override
@@ -792,7 +811,6 @@ public class MainPage extends AppCompatActivity
 
             Picasso.with(MainPage.this)
                     .load(user.getCropped_image_url()).noFade()
-                    .placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp)
                     .into(userImageOriginal, new com.squareup.picasso.Callback() {
                         @Override
@@ -1048,8 +1066,23 @@ public class MainPage extends AppCompatActivity
                                             if (counter_location == booksMatch.size()) {
                                                 //Qui si setta l'adapter della list view
                                                 //Sort adapter
+
+                                                //Filter by distance
+                                                Iterator<Book> booksToDelete = booksMatch.iterator();
+                                                while (booksToDelete.hasNext()) {
+                                                    Book bookToDelete = booksToDelete.next(); // must be called before you can call i.remove()
+                                                    if ((bookToDelete.getDistance() == -1) || bookToDelete.getDistance() > radius) {
+                                                        booksToDelete.remove();
+                                                    }
+                                                }
                                                 progressAnimation.setVisibility(View.GONE);
-                                                setAdapter(DISTANCE);
+                                                if(lastSearch==NO_ORDER){
+                                                    lastSearch=DISTANCE;
+                                                    setAdapter(DISTANCE);
+                                                }
+                                                else{
+                                                    setAdapter(lastSearch);
+                                                }
 
                                             }
                                         }
@@ -1194,7 +1227,7 @@ public class MainPage extends AppCompatActivity
                                                 //Store all in SortedLocationItem. This class allow to sort all the three list in the same way.
                                                 List<SortedLocationItem> tmp = new ArrayList<>();
                                                 for (int i = 0; i < sortedLocationItems.size(); i++) {
-                                                    if (sortedLocationItems.get(i).getBook().getDistance() < 20 && sortedLocationItems.get(i).getBook().getDistance() >= 0) {
+                                                    if (sortedLocationItems.get(i).getBook().getDistance() < radius && sortedLocationItems.get(i).getBook().getDistance() >= 0) {
                                                         tmp.add(sortedLocationItems.get(i));
                                                     }
                                                 }
@@ -1390,8 +1423,9 @@ public class MainPage extends AppCompatActivity
                 //fill all the layout
                 final Book book = booksMatch.get(position);
                 imageView = convertView.findViewById(R.id.image_book_searched);
-                Picasso.with(MainPage.this).load(book.getUrlMyImage())
-                        .error(R.drawable.ic_error_outline_black_24dp).noFade().placeholder(R.drawable.progress_animation).into(imageView, new com.squareup.picasso.Callback() {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                Picasso.with(MainPage.this).load(book.getUrlMyImage()).noFade()
+                        .error(R.drawable.ic_error_outline_black_24dp).placeholder(R.drawable.progress_animation).into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -1758,20 +1792,54 @@ public class MainPage extends AppCompatActivity
     public void onButtonClicked(int position) {
 
         if (position == 0) {
+            lastSearch = DISTANCE;
             setAdapter(DISTANCE);
         } else if (position == 1) {
             setAdapter(RATING);
+            lastSearch = RATING;
         } else if (position == 2) {
             setAdapter(DATE);
+            lastSearch = DATE;
         } else if (position == 3) {
-            setAdapter(YOUR_CITY);
+            //start the activity to change the position
+            Intent intent = new Intent(MainPage.this, FilterPosition.class);
+            //Put here the current position
+            String currentLocationStreet = new String("");
+            String currentLocationCity = new String("");
+            Geocoder geocoder = new Geocoder(MainPage.this);
+            List<Address> addresses;
+            if (latPhone != -1 && longPhone != -1) {
+                try {
+                    addresses = geocoder.getFromLocation(latPhone, longPhone, 1);
+                    if (addresses.size() > 0) {
+                        currentLocationCity = addresses.get(0).getLocality();
+                        String[] currentAddresses = addresses.get(0).getAddressLine(0).split(",");
+                        currentLocationStreet = currentAddresses[0] != null ? currentAddresses[0] : "";
+                        currentLocationStreet += currentAddresses[1] != null ? " " + currentAddresses[1] : "";
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+            intent.putExtra("currentStreet", currentLocationStreet);
+            intent.putExtra("currentCity", currentLocationCity);
+            intent.putExtra("radius", radius);
+            intent.putExtra("currentLat", currentLatPhone);
+            intent.putExtra("currentLong", currentLongPhone);
+            startActivityForResult(intent, ACTIVITY_POSITION);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        latPhone = location.getLatitude();
-        longPhone = location.getLongitude();
+        if (locationCanChange) {
+            latPhone = location.getLatitude();
+            longPhone = location.getLongitude();
+        }
+
+        System.out.println("Set new current location.");
+        currentLatPhone = location.getLatitude();
+        currentLongPhone = location.getLongitude();
     }
 
     @Override
@@ -1792,13 +1860,13 @@ public class MainPage extends AppCompatActivity
     private class MyBroadcastReceiver extends BroadcastReceiver {
         private MainPage currentActivity = null;
 
-        void  setCurrentActivityHandler(MainPage currentActivity){
+        void setCurrentActivityHandler(MainPage currentActivity) {
             this.currentActivity = currentActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("UpdateView")){
+            if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
             }

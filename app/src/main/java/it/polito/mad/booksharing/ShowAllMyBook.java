@@ -255,6 +255,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
                         //If an official image of the book exist, fill the card with it, otherwise fill the image view
                         //With the image taken by me (the image that show the conditions of the book)
                         if (!book.getUrlImage().isEmpty()) {
+                            imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             Picasso.with(ShowAllMyBook.this)
                                     .load(book.getUrlImage()).noFade()
                                     .placeholder(R.drawable.progress_animation)
@@ -271,6 +272,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
                                         }
                                     });
                         } else {
+                            imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             Picasso.with(ShowAllMyBook.this)
                                     .load(book.getUrlMyImage()).noFade()
                                     .placeholder(R.drawable.progress_animation)

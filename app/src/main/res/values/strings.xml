@@ -125,7 +125,7 @@
     <string name="insert_new_password">Insert new password</string>
     <string name="email_settings">Email Settings</string>
     <string name="change_password">Change Password</string>
-    <string name="title_activity_edit_pwd" translatable="false">EditPwd</string>
+    <string name="title_activity_edit_pwd">EditPwd</string>
     <string name="use_new_pwd">Please choose a new password</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_title">Title</string>
@@ -164,8 +164,15 @@
     <string name="notification_channel_id">channel_chat</string>
     <string name="message_to_delete">message to delete</string>
     <string name="messages_to_delete">messages to delete</string>
-    <string name="reset_mail">We have send you an email to set a new password</string>
+    <string name="reset_mail">We have sent you an email to set a new password</string>
     <string name="insert_email">Please insert email</string>
     <string name="reset_mail_error">Impossible to reset the password</string>
+    <string name="position_filter_description">Modify the search position</string>
+    <string name="restore_psw">Did you forget your password?</string>
+    <string name="current_position">Current position</string>
+    <string name="position_filter_radius">Specify a search radius</string>
+    <string name="radius">Km radius</string>
+    <string name="valid_radius">Attention: insert a valid radius</string>
+    <string name="change_mail_pass">Change email and password</string>
 
 </resources>

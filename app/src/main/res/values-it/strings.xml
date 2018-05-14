@@ -151,4 +151,13 @@
     <string name="message_to_delete">messaggio da eliminare</string>
     <string name="messages_to_delete">messaggi da eliminare</string>
     <string name="restore_psw">Hai dimenticato la password?</string>
+    <string name="position_filter_description">Modifica la posizione attuale</string>
+    <string name="current_position">Posizione attuale</string>
+    <string name="position_filter_radius">Specifica un raggio di ricerca</string>
+    <string name="radius">Km Radius</string>
+    <string name="valid_radius">Attenzione: inserisci un raggio valido</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="reset_mail">Ti abbiamo mandato una mail per modificare la password</string>
+    <string name="insert_email">Per favore inserisci la mail</string>
+    <string name="reset_mail_error">Impossibile modificare la password</string>
 </resources>

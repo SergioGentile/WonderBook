@@ -153,4 +153,13 @@
     <string name="message_to_delete">message to delete</string>
     <string name="messages_to_delete">messages to delete</string>
     <string name="restore_psw">Did you forget your password?</string>
+    <string name="position_filter_description">Modify the current position</string>
+    <string name="current_position">Current position</string>
+    <string name="position_filter_radius">Specify a search radius</string>
+    <string name="radius">Km di raggio</string>
+    <string name="valid_radius">Attention: insert a valid radius</string>
+    <string name="email_private">Set as public/private</string>
+    <string name="insert_email">Please insert email</string>
+    <string name="reset_mail">We have send you an email to set a new password</string>
+    <string name="reset_mail_error">Impossible to reset the password</string>
 </resources>

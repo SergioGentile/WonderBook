@@ -136,7 +136,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 lastTimestamp = v.findViewById(R.id.text_time);
                 notification = v.findViewById(R.id.notification);
                 receiverInformation = peer.getReceiverInformation();
-                Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().placeholder(R.drawable.progress_animation).into(profileImage);
+                Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
 
                 //Count the message not read
