@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,12 +25,18 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +54,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ShowMessageThread extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListAdapter adapter;
+    private FirebaseListAdapter<Peer> adapter;
     private User user;
     private View navView;
     private NavigationView navigationView;
@@ -53,8 +62,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private DatabaseReference databaseReferenceAccess;
     boolean updateStatusOnline;
     private MyBroadcastReceiver mMessageReceiver;
-    private List<String> updateMessageThreadOld;
-    private List<String> updateMessageThreadNew;
+    SwipeMenuListView listOfMessage;
+    private float x1,x2;
+    static final int MIN_DISTANCE = 100;
+
 
 
     @Override
@@ -67,6 +78,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        listOfMessage = findViewById(R.id.list_of_message_thread);
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -81,17 +94,96 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        setNotification(notificationManager.getMessageCounter());
 
         user = getIntent().getExtras().getParcelable("user");
 
         firebaseDatabaseAccess = FirebaseDatabase.getInstance();
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
 
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(dp2px(90));
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete_black_24dp);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+// set creator
+        listOfMessage.setMenuCreator(creator);
+        listOfMessage.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+
+        listOfMessage.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case 0:
+                        //delete chat
+                        deleteChat(position);
+                        break;
+                }
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });
         setUserInfoNavBar();
         showAllChat();
 
     }
 
+    private void deleteChat(final int position){
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats").child(adapter.getItem(position).getKeyChat());
+        databaseReference.child("lastMessage").setValue("");
+        databaseReference.setPriority(1);
+
+        //Delete all the messages
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+               FirebaseDatabase firebaseDatabaseMessages = FirebaseDatabase.getInstance();
+               final DatabaseReference databaseReferenceMessages = firebaseDatabaseMessages.getReference("chats").child(adapter.getItem(position).getKeyChat());
+               databaseReferenceMessages.addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshots) {
+                       for(DataSnapshot dataSnapshot : dataSnapshots.getChildren() ){
+                           ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
+                           if(!cm.getDeleteFor().contains(user.getKey())){
+                                //Update
+                               if(!cm.getSender().equals(user.getKey()) ){
+                                   databaseReferenceMessages.child(cm.getKey()).child("status_read").setValue(true);
+                               }
+                               cm.getDeleteFor().add(user.getKey());
+                               databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
+                           }
+                       }
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+               });
+
+            }
+        });
+
+    }
+
+    private int dp2px(int dips){
+        return (int) (dips * ShowMessageThread.this.getResources().getDisplayMetrics().density + 0.5f);
+    }
 
     private void setNotification(Integer notificaction_count) {
 
@@ -119,10 +211,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
 
     private void showAllChat() {
-        final ListView listOfMessage = findViewById(R.id.list_of_message_thread);
+
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
-            protected void populateView(final View v, final Peer peer, int position) {
+            protected void populateView(final View v, final Peer peer, final int position) {
                 //Get references to the views of list_item.xml
 
                 final CircleImageView profileImage;
@@ -139,8 +231,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
 
-                //Count the message not read
-                /***** UPDATE THIS PART WITH NOTIFICATION CLOUD SERVICE****/
 
                 FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
                 DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
@@ -169,7 +259,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     }
                 });
 
-                /*************/
 
 
                 //Update receiver information if necessary
@@ -202,8 +291,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         name.setText(nameUpdate + " " + surnameUpdate);
                         //if something change, update the db.
                         FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
-                        Log.d("User key", user.getKey());
-                        Log.d("Peer key", peer.getKeyChat());
                         DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peer.getKeyChat()).child("receiverInformation");
                         if (somethingChange) {
                             databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
@@ -255,19 +342,43 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 lastMessage.setText(peer.getLastMessage());
                 lastTimestamp.setText(DateFormat.format("HH:mm", peer.getLastTimestamp()));
 
-                v.setOnClickListener(new View.OnClickListener() {
+                v.setOnTouchListener(new View.OnTouchListener() {
                     @Override
-                    public void onClick(View v) {
-                        //Here i have a chat with key keyChat
-                        updateStatusOnline = false;
-                        Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("sender", user);
-                        bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
-                        intent.putExtra("key_chat", peer.getKeyChat());
-                        intent.putExtras(bundle);
-                        intent.putExtra("fromShowMessageThread", true);
-                        startActivity(intent);
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch(event.getAction())
+                        {
+                            case MotionEvent.ACTION_DOWN:
+                                x1 = event.getX();
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                x2 = event.getX();
+                                float deltaX = x2 - x1;
+                                System.out.println("Swipe: " + deltaX);
+                                if (deltaX < -MIN_DISTANCE) {
+                                    //It's a swipe right to left
+                                   listOfMessage.smoothOpenMenu(position);
+                                }
+                                else if(deltaX > MIN_DISTANCE){
+                                    listOfMessage.smoothCloseMenu();
+                                }
+                                else{
+                                    updateStatusOnline = false;
+                                    Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("sender", user);
+                                    bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
+                                    intent.putExtra("key_chat", peer.getKeyChat());
+                                    intent.putExtras(bundle);
+                                    intent.putExtra("fromShowMessageThread", true);
+                                    MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
+                                    //notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
+                                    int counter = Integer.parseInt(notification.getText().toString());
+                                    setNotification(counter);
+                                    startActivity(intent);
+                                }
+                                break;
+                        }
+                        return true;
                     }
                 });
             }
@@ -307,7 +418,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 crop_image.delete();
                 File user_image = new File(directory, User.profileImgName);
                 user_image.delete();
-
             }
             startActivity(new Intent(ShowMessageThread.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
@@ -350,6 +460,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     @Override
     protected void onResume() {
         super.onResume();
+        listOfMessage.smoothCloseMenu();
         updateStatusOnline = true;
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");

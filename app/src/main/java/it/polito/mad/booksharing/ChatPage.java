@@ -146,9 +146,6 @@ public class ChatPage extends AppCompatActivity {
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(sender.getKey()).child("status");
 
         displayChatMessage();
-        //isReadUpdate();
-
-
     }
 
     private String getDate(long timestamp) {
@@ -212,6 +209,12 @@ public class ChatPage extends AppCompatActivity {
                 messageText.setText(model.getMessage());
                 messageTime.setText(DateFormat.format("HH:mm", model.getTime()));
 
+                if(!model.isStatus_read() && model.getReceiver().equals(sender.getKey())){
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
+                    databaseReference.setValue(true);
+                }
+
             }
         };
 
@@ -272,36 +275,6 @@ public class ChatPage extends AppCompatActivity {
                 listOfMessage.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
             }
         });
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("chats").child(chatKey);
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (isRunning) {
-                    //isReadUpdate();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
     }
 
     private boolean dateToPut(int position) {
@@ -357,36 +330,11 @@ public class ChatPage extends AppCompatActivity {
         return -1;
     }*/
 
-    private void isReadUpdate() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot message : dataSnapshot.getChildren()) {
-                    ChatMessage cm = message.getValue(ChatMessage.class);
-                    if (!cm.isStatus_read() && !cm.getSender().equals(sender.getKey())) {
-                        //update status read
-                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(message.getKey()).child("status_read");
-                        databaseReference.setValue(true);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
         isRunning = true;
-        //isReadUpdate();
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
