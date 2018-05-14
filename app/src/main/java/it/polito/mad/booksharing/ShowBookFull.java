@@ -278,7 +278,7 @@ public class ShowBookFull extends AppCompatActivity {
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
 
-        Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade()
+        Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                 .error(R.drawable.ic_error_outline_black_24dp).into(imageMyBook, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
@@ -299,7 +299,7 @@ public class ShowBookFull extends AppCompatActivity {
 
         if (book.getUrlImage() == null || book.getUrlImage().isEmpty()) {
             imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade()
+            Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                     .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
@@ -312,7 +312,7 @@ public class ShowBookFull extends AppCompatActivity {
                 }
             });
         } else {
-            Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().into(imageBook);
+            Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().placeholder(R.drawable.progress_animation).into(imageBook);
         }
 
 
@@ -550,7 +550,7 @@ public class ShowBookFull extends AppCompatActivity {
 
                 //Set the images of the book
                 imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade()
+                Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                         .error(R.drawable.ic_error_outline_black_24dp).into(imageMyBook, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
@@ -572,7 +572,7 @@ public class ShowBookFull extends AppCompatActivity {
 
                 if (book.getUrlImage().isEmpty()) {
                     imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade()
+                    Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                             .error(R.drawable.ic_error_outline_black_24dp).into(imageBook, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {

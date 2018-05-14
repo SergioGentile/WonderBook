@@ -652,7 +652,7 @@ public class EditProfile extends AppCompatActivity {
         dbref.child("phone").setValue(userToUpdate.getPhone());
         dbref.child("street").setValue(userToUpdate.getStreet());
         dbref.child("surname").setValue(userToUpdate.getSurname());
-        dbref.child("user_image_url").setValue(userToUpdate.getUser_image_url());
+
     }
 
 
@@ -694,9 +694,6 @@ public class EditProfile extends AppCompatActivity {
                 //save the new picture Uri on the DB
                 savePicturePath(true, downloadUrl.toString());
                 user.setUser_image_url(downloadUrl.toString());
-
-                updateUser(user);
-
                 setSharedPrefUserInfo(user);
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
 

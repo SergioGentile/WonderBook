@@ -482,13 +482,11 @@ public class MainPage extends AppCompatActivity
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Intent intent = new Intent(MainPage.this, ShowBookFull.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                bundle.putParcelable("book", dataSnapshot.getValue(Book.class));
-                intent.putExtra("key", bookID);
-                intent.putExtras(bundle);
-                startActivity(intent);
+
+
+                getUserBook(dataSnapshot.getValue(Book.class));
+
+
             }
 
             @Override
@@ -498,6 +496,29 @@ public class MainPage extends AppCompatActivity
         });
 
 
+    }
+
+    private void getUserBook(final Book book) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference child = reference.child("users").child(book.getOwner());
+        child.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Intent intent = new Intent(MainPage.this, ShowBookFull.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("book_mp", book);
+                User currentUser = dataSnapshot.getValue(User.class);
+                bundle.putParcelable("user_mp", currentUser);
+                bundle.putParcelable("user_owner", user);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
 
@@ -1369,7 +1390,7 @@ public class MainPage extends AppCompatActivity
                 final Book book = booksMatch.get(position);
                 imageView = convertView.findViewById(R.id.image_book_searched);
                 Picasso.with(MainPage.this).load(book.getUrlMyImage())
-                        .error(R.drawable.ic_error_outline_black_24dp).noFade().into(imageView, new com.squareup.picasso.Callback() {
+                        .error(R.drawable.ic_error_outline_black_24dp).noFade().placeholder(R.drawable.progress_animation).into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
                         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
