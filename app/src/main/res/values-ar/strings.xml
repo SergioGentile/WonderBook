@@ -148,4 +148,16 @@
     <string name="show_chat">المشاركات</string>
     <string name="incoming_msg">الرسائل الواردة</string>
     <string name="msg_notification">رسائل جديدة</string>
+    <string name="current_position">الموقف الحالى</string>
+    <string name="enable_position_performances">يرجى تشغيل نظام تحديد المواقع لاستغلال أفضل تجربة</string>
+    <string name="insert_email">يرجى إدخال البريد الإلكتروني</string>
+    <string name="message_to_delete">رسالة لحذفها</string>
+    <string name="messages_to_delete">رسالة لحذفها</string>
+    <string name="position_filter_description">تعديل موضع البحث</string>
+    <string name="position_filter_radius">حدد نصف قطر بحث</string>
+    <string name="radius">كم نصف قطر</string>
+    <string name="reset_mail">لقد أرسلنا لك رسالة بريد إلكتروني لتعيين كلمة مرور جديدة</string>
+    <string name="reset_mail_error">المستحيل لإعادة تعيين كلمة المرور</string>
+    <string name="restore_psw">Did you هل نسيت كلمة المرور الخاصة بك؟ yourهل نسيت كلمة المرور الخاصة بك؟</string>
+    <string name="valid_radius">انتباه: أدخل نصف قطر صالح</string>
 </resources>

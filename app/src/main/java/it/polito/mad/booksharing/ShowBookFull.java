@@ -278,6 +278,7 @@ public class ShowBookFull extends AppCompatActivity {
 
         Bitmap image = BitmapFactory.decodeFile(user.getImagePath());
 
+        imageMyBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         Picasso.with(ShowBookFull.this).load(book.getUrlMyImage()).noFade().placeholder(R.drawable.progress_animation)
                 .error(R.drawable.ic_error_outline_black_24dp).into(imageMyBook, new com.squareup.picasso.Callback() {
             @Override
@@ -312,7 +313,18 @@ public class ShowBookFull extends AppCompatActivity {
                 }
             });
         } else {
-            Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().placeholder(R.drawable.progress_animation).into(imageBook);
+            imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            Picasso.with(ShowBookFull.this).load(book.getUrlImage()).noFade().placeholder(R.drawable.progress_animation).into(imageBook, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    imageBook.setScaleType(ImageView.ScaleType.FIT_XY);
+                }
+
+                @Override
+                public void onError() {
+                    imageBook.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+            });
         }
 
 

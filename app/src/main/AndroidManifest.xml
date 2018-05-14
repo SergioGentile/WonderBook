@@ -45,9 +45,9 @@
             android:name=".MainPage"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ShowProfile" />
+        <activity android:name=".FilterPosition" />
         <activity android:name=".EditProfile" />
         <activity android:name=".Cropper" />
         <activity
@@ -74,7 +74,7 @@
         <activity
             android:name=".Start"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -92,13 +92,12 @@
         <activity
             android:name=".EditEmail"
             android:label="@string/title_activity_edit_credential"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".EditPwd"
-            android:label="@string/title_activity_edit_pwd"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".ChatPage" />
+            android:label="@string/title_activity_edit_pwd" />
+        <activity android:name=".ChatPage"
+            android:theme="@style/AppThemeChat"/>
         <activity android:name=".ShowMessageThread" />
 
         <service android:name=".NotificationService">
