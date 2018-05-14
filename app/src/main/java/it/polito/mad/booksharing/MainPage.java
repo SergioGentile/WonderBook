@@ -639,8 +639,8 @@ public class MainPage extends AppCompatActivity
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
                         setUserInfoNavBar();
-                        notificationManager.setMessageCounter(user.getMessageToRead());
-                        setNotification(notificationManager.getMessageCounter());
+                        //notificationManager.setMessageCounter(user.getMessageToRead());
+                        //setNotification(notificationManager.getMessageCounter());
                         if (firtTime) {
                             setAdapterSearchedRecentAdd();
                             firtTime = false;

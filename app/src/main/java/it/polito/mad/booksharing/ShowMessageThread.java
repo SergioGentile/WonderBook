@@ -81,7 +81,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter());
 
         user = getIntent().getExtras().getParcelable("user");
 
@@ -98,7 +97,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if (notificaction_count != 0) {
+        if (notificaction_count > 0) {
 
 
             //Set current notification inside initNavBar method
@@ -268,10 +267,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         intent.putExtra("key_chat", peer.getKeyChat());
                         intent.putExtras(bundle);
                         intent.putExtra("fromShowMessageThread", true);
-                        MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
-                        //notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
-                        int counter = Integer.parseInt(notification.getText().toString());
-                        setNotification(counter);
                         startActivity(intent);
                     }
                 });

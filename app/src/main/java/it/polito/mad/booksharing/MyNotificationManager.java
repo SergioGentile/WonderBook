@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -41,6 +42,9 @@ public class MyNotificationManager {
     private MyNotificationManager(Context context) {
         mCtx = context;
         broadcaster = LocalBroadcastManager.getInstance(context);
+
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
+        messageCounter = sharedPreferences.getInt("messageCounter",0);
     }
 
     public static synchronized MyNotificationManager getInstance(Context context) {
@@ -111,7 +115,7 @@ public class MyNotificationManager {
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setContentTitle(title)
                         //set content text to support devices running API level < 24
-                        .setContentText(String.valueOf(notificationCounter) + mCtx.getString(R.string.msg_notification))
+                        .setContentText(String.valueOf(notificationCounter) + " " + mCtx.getString(R.string.msg_notification))
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent)
                         .setSmallIcon(R.drawable.ic_logo_black_24dp)
@@ -141,8 +145,11 @@ public class MyNotificationManager {
 
             notificationCounter++;
             messageCounter++;
-            DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(receiver.getKey());
-            dbref.child("messageToRead").setValue(messageCounter);
+
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = sharedPref.edit();
+            edit.putInt("messageCounter",messageCounter).commit();
+
 
         } else {
             Log.d("NOTIFICATION_MANAGER", "Notification Manager Null Pointer");
@@ -174,8 +181,9 @@ public class MyNotificationManager {
             if (messageCounter < 0) {
                 messageCounter = 0;
             }
-            DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("users").child(Uid);
-            dbref.child("messageToRead").setValue(messageCounter);
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = sharedPref.edit();
+            edit.putInt("messageCounter",messageCounter).commit();
 
         }
     }

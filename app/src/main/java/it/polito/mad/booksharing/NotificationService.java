@@ -74,24 +74,22 @@ public class NotificationService extends FirebaseMessagingService {
                             String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
                             if (!className.contains("ChatPage")) {
                                 //if current activity is not chatPage notify the user
-                                mNotificationManager.setMessageCounter(user.getMessageToRead());
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");
                                 broadcaster.sendBroadcast(intent);
                             } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
                                 //if is chatPage but messageThread is different notify the user
-                                mNotificationManager.setMessageCounter(user.getMessageToRead());
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");
                                 broadcaster.sendBroadcast(intent);
                             }
                         } else {
                             Log.d("MessageReceived", "Tasks not empty");
-                            mNotificationManager.setMessageCounter(user.getMessageToRead());
                             mNotificationManager.displayNotification(body, sender, user, keyChat);
                             Intent intent = new Intent("UpdateView");
                             broadcaster.sendBroadcast(intent);
                         }
+
                     }
                 }
 

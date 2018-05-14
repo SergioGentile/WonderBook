@@ -63,7 +63,7 @@ public class ChatPage extends AppCompatActivity {
     private boolean backPressed;
     private List<String> keysMessageSelected;
     private MyNotificationManager notificationManager;
-
+    private int messageCounter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +89,7 @@ public class ChatPage extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences("chatReceiver", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.putString("receiver_key", receiver.getKey());
-        edit.commit();
+        edit.apply();
 
         setStatus();
 
@@ -146,7 +146,7 @@ public class ChatPage extends AppCompatActivity {
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(sender.getKey()).child("status");
 
         displayChatMessage();
-        isReadUpdate();
+        //isReadUpdate();
 
 
     }
@@ -200,8 +200,8 @@ public class ChatPage extends AppCompatActivity {
                     d.setTintMode(PorterDuff.Mode.SRC_IN);
                     read.setImageDrawable(d);
                 } else {
-                    if(model.isStatus_read()){
-                        notificationManager.subtractMessageCounter(1,sender.getKey());
+                    if(!model.isStatus_read()){
+                        messageCounter++;
                     }
                     messageText = v.findViewById(R.id.text_message_body_rec);
                     messageTime = v.findViewById(R.id.text_message_time_rec);
@@ -278,7 +278,7 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (isRunning) {
-                    isReadUpdate();
+                    //isReadUpdate();
                 }
             }
 
@@ -342,32 +342,6 @@ public class ChatPage extends AppCompatActivity {
         return null;
     }
 
-    private void setNotification(ChatMessage cm) {
-
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(ChatPage.this)
-                        .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                        .setContentTitle(cm.getSender())
-                        .setContentText(cm.getMessage());
-        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, ShowMessageThread.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(contentIntent);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, mBuilder.build());
-        Log.d("Notification:", "Set not");
-
-        /*int id = 0;
-        if((id = searchUserNotifyId(cm.getMessageUser())) < 0){
-            id = userNotify.size();
-            userNotify.add(cm.getMessageUser());
-            userNotify.add(cm.getMessageUser());
-        }
-        notificationManager.notify(id, mBuilder.build());*/
-    }
-
    /* private void destroyNotification(){
         notificationManager.cancelAll();
         userNotify.clear();
@@ -412,7 +386,7 @@ public class ChatPage extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isRunning = true;
-        isReadUpdate();
+        //isReadUpdate();
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
@@ -453,6 +427,7 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
 
+        notificationManager.subtractMessageCounter(messageCounter,sender.getKey());
         finish();
     }
 
