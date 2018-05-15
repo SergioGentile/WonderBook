@@ -138,10 +138,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 return false;
             }
         });
+        
         imDelete = false;
         setUserInfoNavBar();
         showAllChat();
-
     }
 
     private void deleteChat(final int position) {

@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class MyNotificationManager {
     private Context mCtx;
     private static MyNotificationManager mInstance;
@@ -39,12 +41,14 @@ public class MyNotificationManager {
     private Integer messageCounter = 0;
     private LocalBroadcastManager broadcaster;
 
+
     private MyNotificationManager(Context context) {
         mCtx = context;
         broadcaster = LocalBroadcastManager.getInstance(context);
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
         messageCounter = sharedPreferences.getInt("messageCounter",0);
+
     }
 
     public static synchronized MyNotificationManager getInstance(Context context) {
@@ -146,6 +150,8 @@ public class MyNotificationManager {
             notificationCounter++;
             messageCounter++;
 
+            ShortcutBadger.applyCount(mCtx, messageCounter);
+
             SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
             edit.putInt("messageCounter",messageCounter).commit();
@@ -178,6 +184,12 @@ public class MyNotificationManager {
     public void subtractMessageCounter(int value,String Uid) {
         if (messageCounter > 0) {
             messageCounter = messageCounter - value;
+            if(messageCounter<=0){
+                ShortcutBadger.removeCount(mCtx);
+            }
+            else{
+                ShortcutBadger.applyCount(mCtx, messageCounter);
+            }
             if (messageCounter < 0) {
                 messageCounter = 0;
             }
