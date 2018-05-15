@@ -246,7 +246,6 @@ public class MainPage extends AppCompatActivity
                 tabLayout.setVisibility(View.GONE);
                 imageScanOnSearch.setVisibility(View.GONE);
                 lv_search_runtime.setVisibility(View.GONE);
-                toolbarNotification.setVisibility(View.VISIBLE);
                 lastStringSearched = query.toString().toLowerCase();
                 lastSearch = NO_ORDER;
                 setAdapterSearched(lastStringSearched);
@@ -275,7 +274,6 @@ public class MainPage extends AppCompatActivity
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-                toolbarNotification.setVisibility(View.GONE);
                 tabFlag = false;
                 tabLayout.getTabAt(0).select();
                 tabLayout.setVisibility(View.VISIBLE);
@@ -285,8 +283,6 @@ public class MainPage extends AppCompatActivity
             @Override
             public void onSearchViewClosed() {
                 if (tabFlag == false) {
-
-                    toolbarNotification.setVisibility(View.VISIBLE);
                     tabLayout.setVisibility(View.GONE);
                     imageScanOnSearch.setVisibility(View.GONE);
                 }
