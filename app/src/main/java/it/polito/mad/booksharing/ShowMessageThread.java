@@ -138,7 +138,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 return false;
             }
         });
-        
+
         imDelete = false;
         setUserInfoNavBar();
         showAllChat();
@@ -147,8 +147,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private void deleteChat(final int position) {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats").child(adapter.getItem(position).getKeyChat());
-        databaseReference.child("lastMessage").setValue("");
         databaseReference.setPriority(1);
+        databaseReference.child("lastMessage").setValue("");
+
 
         //Delete the notification
        TextView notification = (TextView)  adapter.getView(position, null, null).findViewById(R.id.notification);
