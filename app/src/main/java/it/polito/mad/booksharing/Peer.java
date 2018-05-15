@@ -1,5 +1,7 @@
 package it.polito.mad.booksharing;
 
+import android.widget.TextView;
+
 class Peer {
     private ReceiverInformation receiverInformation;
     private String keyChat, lastMessage;
@@ -63,6 +65,7 @@ class Peer {
 
 class ReceiverInformation {
     private String name, surname, pathImage, key;
+    private TextView notification;
 
     public ReceiverInformation(String name, String surname, String pathImage, String key) {
         this.name = name;
@@ -106,5 +109,11 @@ class ReceiverInformation {
         this.key = key;
     }
 
+    public TextView getNotification() {
+        return notification;
+    }
 
+    public void setNotification(TextView notification) {
+        this.notification = notification;
+    }
 }

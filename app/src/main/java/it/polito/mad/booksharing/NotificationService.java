@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -76,17 +77,22 @@ public class NotificationService extends FirebaseMessagingService {
                                 //if current activity is not chatPage notify the user
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");
+                                intent.putExtra("sender", sender);
                                 broadcaster.sendBroadcast(intent);
                             } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
                                 //if is chatPage but messageThread is different notify the user
                                 mNotificationManager.displayNotification(body, sender, user, keyChat);
                                 Intent intent = new Intent("UpdateView");
+                                Bundle bundle  = new Bundle();
+                                bundle.putParcelable("sender", sender);
+                                intent.putExtras(bundle);
                                 broadcaster.sendBroadcast(intent);
                             }
                         } else {
                             Log.d("MessageReceived", "Tasks not empty");
                             mNotificationManager.displayNotification(body, sender, user, keyChat);
                             Intent intent = new Intent("UpdateView");
+                            intent.putExtra("sender", sender);
                             broadcaster.sendBroadcast(intent);
                         }
 

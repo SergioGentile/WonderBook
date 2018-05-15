@@ -174,5 +174,6 @@
     <string name="radius">Km radius</string>
     <string name="valid_radius">Attention: insert a valid radius</string>
     <string name="change_mail_pass">Change email and password</string>
+    <string name="filter">FILTER</string>
 
 </resources>

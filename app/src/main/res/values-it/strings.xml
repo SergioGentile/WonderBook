@@ -160,4 +160,5 @@
     <string name="reset_mail">Ti abbiamo mandato una mail per modificare la password</string>
     <string name="insert_email">Per favore inserisci la mail</string>
     <string name="reset_mail_error">Impossibile modificare la password</string>
+    <string name="filter">FILTRA</string>
 </resources>

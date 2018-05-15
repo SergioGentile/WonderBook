@@ -162,4 +162,5 @@
     <string name="insert_email">Please insert email</string>
     <string name="reset_mail">We have send you an email to set a new password</string>
     <string name="reset_mail_error">Impossible to reset the password</string>
+    <string name="filter">FILTER</string>
 </resources>

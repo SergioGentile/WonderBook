@@ -46,9 +46,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.Date;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -63,10 +64,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     boolean updateStatusOnline;
     private MyBroadcastReceiver mMessageReceiver;
     SwipeMenuListView listOfMessage;
-    private float x1,x2;
-    static final int MIN_DISTANCE = 100;
-
-
+    private float x1, x2;
+    static final int MIN_DISTANCE = 40;
+    private boolean imDelete;
+    private MyNotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         listOfMessage = findViewById(R.id.list_of_message_thread);
 
+        notificationManager = MyNotificationManager.getInstance(this);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,52 +138,57 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 return false;
             }
         });
+        imDelete = false;
         setUserInfoNavBar();
         showAllChat();
 
     }
 
-    private void deleteChat(final int position){
+    private void deleteChat(final int position) {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats").child(adapter.getItem(position).getKeyChat());
         databaseReference.child("lastMessage").setValue("");
         databaseReference.setPriority(1);
 
+        //Delete the notification
+       TextView notification = (TextView)  adapter.getView(position, null, null).findViewById(R.id.notification);
+       notification.setVisibility(View.GONE);
+       notification.setText(0+"");
+
         //Delete all the messages
-
-        AsyncTask.execute(new Runnable() {
+        FirebaseDatabase firebaseDatabaseMessages = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReferenceMessages = firebaseDatabaseMessages.getReference("chats").child(adapter.getItem(position).getKeyChat());
+        databaseReferenceMessages.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-               FirebaseDatabase firebaseDatabaseMessages = FirebaseDatabase.getInstance();
-               final DatabaseReference databaseReferenceMessages = firebaseDatabaseMessages.getReference("chats").child(adapter.getItem(position).getKeyChat());
-               databaseReferenceMessages.addListenerForSingleValueEvent(new ValueEventListener() {
-                   @Override
-                   public void onDataChange(DataSnapshot dataSnapshots) {
-                       for(DataSnapshot dataSnapshot : dataSnapshots.getChildren() ){
-                           ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
-                           if(!cm.getDeleteFor().contains(user.getKey())){
-                                //Update
-                               if(!cm.getSender().equals(user.getKey()) ){
-                                   databaseReferenceMessages.child(cm.getKey()).child("status_read").setValue(true);
-                               }
-                               cm.getDeleteFor().add(user.getKey());
-                               databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
-                           }
-                       }
-                   }
+            public void onDataChange(DataSnapshot dataSnapshots) {
+                int counter_unread = 0;
+                for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
+                    ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
+                    if (!cm.getDeleteFor().contains(user.getKey())) {
+                        //Update
+                        if (!cm.getSender().equals(user.getKey())) {
+                            databaseReferenceMessages.child(cm.getKey()).child("status_read").setValue(true);
+                            counter_unread++;
+                        }
+                        cm.getDeleteFor().add(user.getKey());
+                        databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
 
-                   @Override
-                   public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+                notificationManager.subtractMessageCounter(counter_unread, user.getKey());
+                setNotification(notificationManager.getMessageCounter());
+            }
 
-                   }
-               });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
 
+
     }
 
-    private int dp2px(int dips){
+    private int dp2px(int dips) {
         return (int) (dips * ShowMessageThread.this.getResources().getDisplayMetrics().density + 0.5f);
     }
 
@@ -214,51 +221,21 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
             @Override
-            protected void populateView(final View v, final Peer peer, final int position) {
+            protected void populateView(View v, Peer peer, final int position) {
                 //Get references to the views of list_item.xml
 
                 final CircleImageView profileImage;
                 final TextView name, lastMessage, lastTimestamp;
                 final ReceiverInformation receiverInformation;
-                final TextView notification;
+                final Peer peerAnonymus = peer;
 
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
                 lastTimestamp = v.findViewById(R.id.text_time);
-                notification = v.findViewById(R.id.notification);
                 receiverInformation = peer.getReceiverInformation();
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
-
-
-                FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
-                DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
-                databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshots) {
-                        notification.setVisibility(View.GONE);
-                        int counter_notification = 0;
-                        for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
-                            ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
-                            if (!cm.getSender().equals(user.getKey()) && !cm.isStatus_read()) {
-                                counter_notification++;
-                            }
-                        }
-                        if (counter_notification > 0) {
-                            notification.setVisibility(View.VISIBLE);
-                            notification.setText(counter_notification + "");
-                        } else {
-                            notification.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
 
 
                 //Update receiver information if necessary
@@ -291,7 +268,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         name.setText(nameUpdate + " " + surnameUpdate);
                         //if something change, update the db.
                         FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peer.getKeyChat()).child("receiverInformation");
+                        DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peerAnonymus.getKeyChat()).child("receiverInformation");
                         if (somethingChange) {
                             databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
                         }
@@ -308,15 +285,14 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 LinearLayout ll2 = v.findViewById(R.id.ll2);
                 LinearLayout container = v.findViewById(R.id.container);
                 LinearLayout centerContainer = v.findViewById(R.id.center_container);
-
                 View line = v.findViewById(R.id.view_line);
+
                 if (peer.getLastMessage().isEmpty()) {
                     profileImage.setVisibility(View.GONE);
                     name.setVisibility(View.GONE);
                     lastMessage.setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
                     lastTimestamp.setVisibility(View.GONE);
-                    notification.setVisibility(View.GONE);
                     line.setVisibility(View.GONE);
                     ll.setVisibility(View.GONE);
                     ll1.setVisibility(View.GONE);
@@ -342,11 +318,13 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 lastMessage.setText(peer.getLastMessage());
                 lastTimestamp.setText(DateFormat.format("HH:mm", peer.getLastTimestamp()));
 
+
+                final TextView notification = v.findViewById(R.id.notification);
                 v.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        switch(event.getAction())
-                        {
+                        System.out.println("Event catched: " + event.getAction());
+                        switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 x1 = event.getX();
                                 break;
@@ -356,31 +334,71 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                                 System.out.println("Swipe: " + deltaX);
                                 if (deltaX < -MIN_DISTANCE) {
                                     //It's a swipe right to left
-                                   listOfMessage.smoothOpenMenu(position);
-                                }
-                                else if(deltaX > MIN_DISTANCE){
+                                    imDelete = true;
+                                    listOfMessage.smoothOpenMenu(position);
+                                } else if (deltaX > MIN_DISTANCE) {
+                                    imDelete = false;
                                     listOfMessage.smoothCloseMenu();
+                                } else {
+
+                                    if(imDelete){
+                                        listOfMessage.smoothCloseMenu();
+                                    }else{
+                                        notification.setVisibility(View.GONE);
+                                        notification.setText(0+"");
+                                        updateStatusOnline = false;
+                                        Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable("sender", user);
+                                        bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
+                                        intent.putExtra("key_chat", peerAnonymus.getKeyChat());
+                                        intent.putExtras(bundle);
+                                        intent.putExtra("fromShowMessageThread", true);
+                                        startActivity(intent);
+                                    }
+                                    imDelete=false;
                                 }
-                                else{
-                                    updateStatusOnline = false;
-                                    Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable("sender", user);
-                                    bundle.putParcelable("receiver", new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()));
-                                    intent.putExtra("key_chat", peer.getKeyChat());
-                                    intent.putExtras(bundle);
-                                    intent.putExtra("fromShowMessageThread", true);
-                                    MyNotificationManager notificationManager = MyNotificationManager.getInstance(ShowMessageThread.this);
-                                    //notificationManager.subtractMessageCounter(Integer.parseInt(notification.getText().toString()),user.getKey());
-                                    int counter = Integer.parseInt(notification.getText().toString());
-                                    setNotification(counter);
-                                    startActivity(intent);
-                                }
+                                break;
+                            case MotionEvent.ACTION_CANCEL:
+                                imDelete = true;
+                                listOfMessage.smoothOpenMenu(position);
                                 break;
                         }
                         return true;
                     }
                 });
+
+                //Update the notification only the first time
+                FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
+                DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
+
+                databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshots) {
+                        notification.setVisibility(View.GONE);
+                        int counter_notification = 0;
+                        for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
+                            ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
+                            if (!cm.getSender().equals(user.getKey()) && !cm.isStatus_read()) {
+                                counter_notification++;
+                            }
+                        }
+                        if (counter_notification > 0) {
+                            notification.setVisibility(View.VISIBLE);
+                            notification.setText(counter_notification + "");
+                        } else {
+                            notification.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
             }
         };
 
@@ -536,6 +554,23 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
+                //Search the right things to update
+                User sender = intent.getExtras().getParcelable("sender");
+                /*int posToUpdate=0;
+                for(int i=0; i<adapter.getCount(); i++){
+                    if(adapter.getItem(i).getReceiverInformation().getKey().equals(sender.getKey())){
+                        posToUpdate = i;
+                        break;
+                    }
+                }
+                System.out.println("Pos to update " + posToUpdate);*/
+
+                TextView tv = (TextView) adapter.getView(0,null, null).findViewById(R.id.notification);
+                Integer currentNot = Integer.valueOf(tv.getText().toString());
+                currentNot++;
+                tv.setText(String.valueOf(currentNot));
+                tv.setVisibility(View.VISIBLE);
+
             }
         }
     }
