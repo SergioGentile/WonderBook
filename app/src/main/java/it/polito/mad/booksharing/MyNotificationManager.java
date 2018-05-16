@@ -181,7 +181,7 @@ public class MyNotificationManager {
         return messageCounter;
     }
 
-    public void subtractMessageCounter(int value,String Uid) {
+    public void subtractMessageCounter(int value) {
         if (messageCounter > 0) {
             messageCounter = messageCounter - value;
             if(messageCounter<=0){

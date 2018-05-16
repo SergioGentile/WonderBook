@@ -377,7 +377,7 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
         Log.d("subtractChatPage",message_read.toString());
-        notificationManager.subtractMessageCounter(message_read,sender.getKey());
+        notificationManager.subtractMessageCounter(message_read);
         finish();
     }
 
@@ -390,7 +390,7 @@ public class ChatPage extends AppCompatActivity {
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
-        notificationManager.subtractMessageCounter(message_read,sender.getKey());
+        notificationManager.subtractMessageCounter(message_read);
 
         //Get the last message
         String lastMessage = new String("");
@@ -408,8 +408,7 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastMessage").setValue(lastMessage);
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
-        Log.d("subtractChatPage",message_read.toString());
-        notificationManager.subtractMessageCounter(message_read,sender.getKey());
+        notificationManager.subtractMessageCounter(message_read);
 
     }
 
