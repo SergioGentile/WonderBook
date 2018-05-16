@@ -176,7 +176,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
                     }
                 }
-                notificationManager.subtractMessageCounter(counter_unread, user.getKey());
+                notificationManager.subtractMessageCounter(counter_unread);
                 setNotification(notificationManager.getMessageCounter());
             }
 
@@ -428,6 +428,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             startActivity(new Intent(ShowMessageThread.this, MainPage.class));
 
         } else if (id == R.id.nav_exit) {
+
+           // FirebaseDatabase.getInstance().getReference().child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
