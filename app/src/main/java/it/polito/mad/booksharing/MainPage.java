@@ -625,6 +625,7 @@ public class MainPage extends AppCompatActivity
         } else if (id == R.id.nav_exit) {
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {
