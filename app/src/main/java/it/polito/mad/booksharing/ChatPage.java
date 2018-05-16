@@ -63,10 +63,13 @@ public class ChatPage extends AppCompatActivity {
     private boolean backPressed;
     private List<String> keysMessageSelected;
     private MyNotificationManager notificationManager;
+    private Integer message_read;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        message_read = 0;
         notificationManager = MyNotificationManager.getInstance(this);
         setContentView(R.layout.activity_chat_page);
 
@@ -197,7 +200,7 @@ public class ChatPage extends AppCompatActivity {
                     read.setImageDrawable(d);
                 } else {
                     if(!model.isStatus_read()){
-                        notificationManager.subtractMessageCounter(1,sender.getKey());
+
                     }
                     messageText = v.findViewById(R.id.text_message_body_rec);
                     messageTime = v.findViewById(R.id.text_message_time_rec);
@@ -212,6 +215,7 @@ public class ChatPage extends AppCompatActivity {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
                     databaseReference.setValue(true);
+                    message_read++;
                 }
 
             }
@@ -373,6 +377,8 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastMessage").setValue(lastMessage);
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
+        Log.d("subtractChatPage",message_read.toString());
+        notificationManager.subtractMessageCounter(message_read,sender.getKey());
         finish();
     }
 

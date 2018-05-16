@@ -487,6 +487,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         databaseReferenceAccess.onDisconnect().setValue(time);
         navigationView.getMenu().getItem(3).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
+        notificationManager.clearNotification();
         setNotification(notificationManager.getMessageCounter());
     }
 
@@ -570,7 +571,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 TextView tv = (TextView) adapter.getView(0,null, null).findViewById(R.id.notification);
                 Integer currentNot = Integer.valueOf(tv.getText().toString());
                 currentNot++;
+                Log.d("currentNot",currentNot.toString());
                 tv.setText(String.valueOf(currentNot));
+
                 tv.setVisibility(View.VISIBLE);
 
             }
