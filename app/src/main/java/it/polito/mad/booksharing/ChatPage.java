@@ -199,9 +199,6 @@ public class ChatPage extends AppCompatActivity {
                     d.setTintMode(PorterDuff.Mode.SRC_IN);
                     read.setImageDrawable(d);
                 } else {
-                    if(!model.isStatus_read()){
-
-                    }
                     messageText = v.findViewById(R.id.text_message_body_rec);
                     messageTime = v.findViewById(R.id.text_message_time_rec);
                     clSend.setVisibility(View.GONE);
@@ -391,6 +388,27 @@ public class ChatPage extends AppCompatActivity {
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
+        notificationManager.subtractMessageCounter(message_read,sender.getKey());
+
+        //Get the last message
+        String lastMessage = new String("");
+        Long lastTime = new Long(0);
+        for (int i = adapter.getCount() - 1; i >= 0; i--) {
+            System.out.println("Message " + adapter.getItem(i).getMessage() + " delete for " + adapter.getItem(i).getDeleteFor().size() + " people");
+            if (!adapter.getItem(i).getDeleteFor().contains(sender.getKey())) {
+                lastMessage = adapter.getItem(i).getMessage();
+                lastTime = adapter.getItem(i).getTime();
+                break;
+            }
+        }
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
+        databaseReference.child("lastMessage").setValue(lastMessage);
+        databaseReference.child("lastTimestamp").setValue(lastTime);
+        databaseReference.setPriority(-1 * lastTime);
+        Log.d("subtractChatPage",message_read.toString());
+        notificationManager.subtractMessageCounter(message_read,sender.getKey());
+
     }
 
     @Override
