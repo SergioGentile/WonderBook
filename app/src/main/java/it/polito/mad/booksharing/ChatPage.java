@@ -58,6 +58,7 @@ public class ChatPage extends AppCompatActivity {
     private Toolbar toolbar;
     private TextInputEditText input;
 
+    private ArrayList<String> messagesRead = new ArrayList<>();
     private FirebaseDatabase firebaseDatabaseAccess;
     private DatabaseReference databaseReferenceAccess;
     private boolean backPressed;
@@ -211,11 +212,12 @@ public class ChatPage extends AppCompatActivity {
                 messageText.setText(model.getMessage());
                 messageTime.setText(DateFormat.format("HH:mm", model.getTime()));
 
-                if(!model.isStatus_read() && model.getReceiver().equals(sender.getKey())){
+                if(!model.isStatus_read() && model.getReceiver().equals(sender.getKey()) && !messagesRead.contains(model.getKey())){
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
                     databaseReference.setValue(true);
                     message_read++;
+                    messagesRead.add(model.getKey());
                 }
 
             }
@@ -409,6 +411,8 @@ public class ChatPage extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isRunning", isRunning);
         outState.putBoolean("backPressed", backPressed);
+        outState.putStringArrayList("messageReadList",messagesRead);
+        outState.putInt("messageCounter",message_read);
 
     }
 
@@ -417,6 +421,9 @@ public class ChatPage extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         isRunning = savedInstanceState.getBoolean("isRunning");
         backPressed = savedInstanceState.getBoolean("backPressed");
+        messagesRead = savedInstanceState.getStringArrayList("messageReadList");
+        message_read = savedInstanceState.getInt("messageCounter");
+
     }
 
 
