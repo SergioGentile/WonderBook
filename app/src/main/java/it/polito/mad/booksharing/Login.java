@@ -3,9 +3,11 @@ package it.polito.mad.booksharing;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,6 +24,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,6 +40,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +70,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private FirebaseUser user;
     private String fromActivity;
     private Spannable spannable;
+    private MyNotificationManager nManager;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -341,6 +350,31 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     private void startMain(String userEmail) {
         //Start MainPage Activity
+        SharedPreferences sharedPreferences = getSharedPreferences("messageCounter", Context.MODE_PRIVATE);
+        Integer messageCounter = sharedPreferences.getInt("messageCounter",-1);
+        if(messageCounter== -1) {
+            nManager = MyNotificationManager.getInstance(this);
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("notificationCounter");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("setCounterLogin","");
+                    nManager.setMessageCounter(dataSnapshot.getValue(Integer.class));
+
+                    Intent intent = new Intent(Login.this, MainPage.class);
+                    setResult(Activity.RESULT_OK, intent);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            return;
+        }
+
         Intent intent = new Intent(Login.this, MainPage.class);
         setResult(Activity.RESULT_OK, intent);
         startActivity(intent);

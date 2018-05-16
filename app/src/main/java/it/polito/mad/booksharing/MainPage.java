@@ -623,6 +623,8 @@ public class MainPage extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowMessageThread.class).putExtras(bundle));
         } else if (id == R.id.nav_exit) {
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
+
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();

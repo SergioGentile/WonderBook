@@ -48,6 +48,7 @@ public class MyNotificationManager {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
         messageCounter = sharedPreferences.getInt("messageCounter",0);
+        Log.d("SetCounterSharePref",messageCounter.toString());
 
     }
 
@@ -173,8 +174,12 @@ public class MyNotificationManager {
 
     }
 
-    public void setMessageCounter(int messageCounter){
+    public void setMessageCounter(Integer messageCounter){
         this.messageCounter = messageCounter;
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        edit.putInt("messageCounter",messageCounter).commit();
+        Log.d("SetCounter",messageCounter.toString());
     }
 
     public int getMessageCounter() {
