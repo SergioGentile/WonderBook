@@ -64,6 +64,33 @@
                 android:layout_height="@dimen/shadow"
                 android:background="@drawable/shadow_toolbar"
                 android:layout_below="@id/toolbarLayout" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/llEmpty"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/ivEmpty"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_message_black_24dp"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp" />
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tvEmpty"
+                    android:layout_marginBottom="100dp"
+                    android:layout_gravity="center"
+                    android:text="@string/there_are_no_chats"
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
         </FrameLayout>
 
     </RelativeLayout>

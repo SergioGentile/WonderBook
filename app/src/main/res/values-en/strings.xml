@@ -163,4 +163,6 @@
     <string name="reset_mail">We have send you an email to set a new password</string>
     <string name="reset_mail_error">Impossible to reset the password</string>
     <string name="filter">FILTER</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="there_are_no_chats">There are no chats</string>
 </resources>

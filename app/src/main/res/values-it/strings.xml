@@ -161,4 +161,5 @@
     <string name="insert_email">Per favore inserisci la mail</string>
     <string name="reset_mail_error">Impossibile modificare la password</string>
     <string name="filter">FILTRA</string>
+    <string name="there_are_no_chats">Non sono presenti conversazioni</string>
 </resources>

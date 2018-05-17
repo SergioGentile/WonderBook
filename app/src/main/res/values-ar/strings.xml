@@ -160,4 +160,5 @@
     <string name="reset_mail_error">المستحيل لإعادة تعيين كلمة المرور</string>
     <string name="restore_psw">Did you هل نسيت كلمة المرور الخاصة بك؟ yourهل نسيت كلمة المرور الخاصة بك؟</string>
     <string name="valid_radius">انتباه: أدخل نصف قطر صالح</string>
+    <string name="there_are_no_chats">لا توجد محادثات</string>
 </resources>

@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -69,11 +70,13 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     static final int MIN_DISTANCE = 40;
     private boolean imDelete;
     private MyNotificationManager notificationManager;
+    private int counter_examinated, counter_not_empty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_message_thread);
+
 
         mMessageReceiver = new MyBroadcastReceiver();
         mMessageReceiver.setCurrentActivityHandler(this);
@@ -145,6 +148,76 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         imDelete = false;
         setUserInfoNavBar();
         showAllChat();
+        showImageEmpty();
+
+    }
+
+    private void showImageEmpty(){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshots) {
+                final ImageView iv= (ImageView)findViewById(R.id.ivEmpty);
+                final LinearLayout ll = (LinearLayout) findViewById(R.id.llEmpty);
+                final TextView tv  = (TextView) findViewById(R.id.tvEmpty);
+                counter_examinated=0;
+                counter_not_empty=0;
+                if(dataSnapshots.exists()){
+                    Log.d("Counter", "passo 1");
+                    for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
+                        Log.d("Counter", "passo 2");
+                        databaseReference.child(dataSnapshot.getKey()).child("lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.d("Counter", "passo 3");
+                                String result = dataSnapshot.getValue(String.class);
+                                counter_examinated++;
+                                if(!result.isEmpty()){
+                                    counter_not_empty++;
+                                }
+
+                                if(counter_examinated == dataSnapshots.getChildrenCount()){
+                                    Log.d("Counter", "Not empty: " + counter_not_empty);
+                                    Log.d("Counter ", "Examinated: " + counter_examinated);
+                                    if(counter_not_empty>0){
+                                        //Set Gone
+                                        tv.setVisibility(View.GONE);
+                                        iv.setVisibility(View.GONE);
+                                        ll.setVisibility(View.GONE);
+
+
+                                    }
+                                    else{
+                                        //Set Visible
+                                        tv.setVisibility(View.VISIBLE);
+                                        iv.setVisibility(View.VISIBLE);
+                                        ll.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+                else{
+                    tv.setVisibility(View.GONE);
+                    iv.setVisibility(View.GONE);
+                    ll.setVisibility(View.GONE);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void deleteChat(final int position) {
@@ -206,6 +279,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
        if(currentNotification>0){
            v.setVisibility(View.VISIBLE);
            v.setText(currentNotification +"");
+       }
+       else{
+           v.setVisibility(View.GONE);
        }
     }
 
@@ -286,11 +362,12 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                             Picasso.with(ShowMessageThread.this).load(receiverUpdate.getUser_image_url()).into(profileImage);
                             somethingChange = true;
                         }
-                        name.setText(nameUpdate + " " + surnameUpdate);
+
                         //if something change, update the db.
                         FirebaseDatabase firebaseDatabaseUpdate = FirebaseDatabase.getInstance();
                         DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peerAnonymus.getKeyChat()).child("receiverInformation");
                         if (somethingChange) {
+                            name.setText(nameUpdate + " " + surnameUpdate);
                             databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
                         }
                     }
