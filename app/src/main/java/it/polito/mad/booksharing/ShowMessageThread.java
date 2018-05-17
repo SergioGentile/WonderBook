@@ -163,18 +163,19 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         databaseReferenceMessages.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshots) {
+
                 int counter_unread = 0;
                 for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
                     ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
                     if (!cm.getDeleteFor().contains(user.getKey())) {
                         //Update
                         if (!cm.getSender().equals(user.getKey())) {
+                            notificationManager.clearNotificationUser(cm.getSender());
                             databaseReferenceMessages.child(cm.getKey()).child("status_read").setValue(true);
                             counter_unread++;
                         }
                         cm.getDeleteFor().add(user.getKey());
                         databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
-
                     }
                 }
                 setNotification(notificationManager.getMessageCounter());
@@ -194,17 +195,17 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     }
 
 
-    private void setNotificationAdapterThread(User sender, TextView tv){
-
-        if(tv == null){
-            tv = (TextView)  adapter.getView(0, null, null).findViewById(R.id.notification);
-        }
-        Integer currentNotification = notificationManager.getReceiverCount(sender.getKey());
+    private void setNotificationAdapterThread(String key){
+        int currentNotification = notificationManager.getReceiverCount(key);
+        Log.d("SNAT", currentNotification + "");
+        TextView tv = (TextView)adapter.getView(0, null, null).findViewById(R.id.notification);
+        TextView name = (TextView)adapter.getView(0, null, null).findViewById(R.id.user);
         if(currentNotification<=0){
-            tv.setVisibility(View.GONE);
+           //tv.setVisibility(View.GONE);
         }
         else{
-            tv.setText(currentNotification);
+            Log.d("SNAT", "Set the text. before is " + tv.getText().toString() + " for " + name.getText().toString());
+            tv.setText(currentNotification + "");
             tv.setVisibility(View.VISIBLE);
         }
     }
@@ -384,10 +385,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         return true;
                     }
                 });
-
-                //Update the notification only the first time
-                //TODO: TAKE INFORMATION ABOUT THE USER
-                setNotificationAdapterThread(new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()), (TextView) v.findViewById(R.id.notification) );
             }
         };
 
@@ -556,7 +553,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
                 //Search the right things to update
                 User sender = intent.getExtras().getParcelable("sender");
-                currentActivity.setNotificationAdapterThread(sender, null);
+                currentActivity.setNotificationAdapterThread( sender.getKey());
             }
         }
     }

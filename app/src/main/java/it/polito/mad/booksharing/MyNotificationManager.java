@@ -157,14 +157,15 @@ public class MyNotificationManager {
 
             notificationCounter++;
             messageCounter++;
-            if(userKeyMessageCounter.containsKey(receiver.getKey())){
-                Integer currentCounter = userKeyMessageCounter.get(receiver.getKey());
+            if(userKeyMessageCounter.containsKey(sender.getKey())){
+                Integer currentCounter = userKeyMessageCounter.get(sender.getKey());
                 currentCounter++;
-                userKeyMessageCounter.put(receiver.getKey(), currentCounter);
+                userKeyMessageCounter.put(sender.getKey(), currentCounter);
             }
             else{
-                userKeyMessageCounter.put(receiver.getKey(), 1);
+                userKeyMessageCounter.put(sender.getKey(), 1);
             }
+            Log.d("NotificationManager", "User " +userKeyMessageCounter.get(sender.getKey()) + " notification" );
 
             ShortcutBadger.applyCount(mCtx, messageCounter);
 
