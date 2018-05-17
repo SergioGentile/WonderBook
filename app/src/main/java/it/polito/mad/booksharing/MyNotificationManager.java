@@ -26,9 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,7 +48,7 @@ public class MyNotificationManager {
     private final String CHANNEL_ID = "channel_chat";
     private int notificationCounter = 0;
     private Integer messageCounter = 0;
-    private Map<String, Integer> userKeyMessageCounter ;
+    private HashMap<String, Long> userKeyMessageCounter ;
     private LocalBroadcastManager broadcaster;
 
 
@@ -56,7 +60,7 @@ public class MyNotificationManager {
         messageCounter = sharedPreferences.getInt("messageCounter",0);
         Log.d("SetCounterSharePref",messageCounter.toString());
 
-        userKeyMessageCounter = getMap();
+        userKeyMessageCounter = getMapFromSharedPref();
     }
 
     public static synchronized MyNotificationManager getInstance(Context context) {
@@ -158,12 +162,12 @@ public class MyNotificationManager {
             notificationCounter++;
             messageCounter++;
             if(userKeyMessageCounter.containsKey(sender.getKey())){
-                Integer currentCounter = userKeyMessageCounter.get(sender.getKey());
+                Long currentCounter = userKeyMessageCounter.get(sender.getKey());
                 currentCounter++;
-                userKeyMessageCounter.put(sender.getKey(), currentCounter);
+                userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
             }
             else{
-                userKeyMessageCounter.put(sender.getKey(), 1);
+                userKeyMessageCounter.put(sender.getKey(), new Long(1));
             }
             Log.d("NotificationManager", "User " +userKeyMessageCounter.get(sender.getKey()) + " notification" );
 
@@ -172,6 +176,7 @@ public class MyNotificationManager {
             SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
             edit.putInt("messageCounter",messageCounter).commit();
+            saveMap();
 
 
         } else {
@@ -180,12 +185,12 @@ public class MyNotificationManager {
     }
 
     public void clearNotificationUser(String key){
-        Integer currentNotification =0;
+        Long currentNotification = new Long(0);
         if(userKeyMessageCounter.containsKey(key)){
-            currentNotification = userKeyMessageCounter.get(key);
+            currentNotification =userKeyMessageCounter.get(key);
         }
-        userKeyMessageCounter.put(key, 0);
-        subtractMessageCounter(currentNotification);
+        userKeyMessageCounter.put(key, new Long(0));
+        subtractMessageCounter(currentNotification.intValue());
 
     }
 
@@ -206,6 +211,7 @@ public class MyNotificationManager {
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.putInt("messageCounter",messageCounter).commit();
         Log.d("SetCounter",messageCounter.toString());
+
     }
 
     public int getMessageCounter() {
@@ -227,48 +233,56 @@ public class MyNotificationManager {
             SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
             edit.putInt("messageCounter",messageCounter).commit();
+            saveMap();
 
         }
     }
 
 
-    public int getReceiverCount(String key) {
+    public Long getReceiverCount(String key) {
         if(userKeyMessageCounter.containsKey(key)){
             return userKeyMessageCounter.get(key);
         }
-        return 0;
+        return new Long(0);
     }
 
-    private void saveMap (Map<String,Integer> myMap){
+    private void saveMap (){
 
         SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationMap",Context.MODE_PRIVATE);
         if(sharedPref!=null){
-            JSONObject jObj = new JSONObject(myMap);
-            String jsonString = jObj.toString();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("notificationMap",jsonString);
-            editor.commit();
+            SharedPreferences.Editor edit = sharedPref.edit();
+            Gson json = new GsonBuilder().create();
+            String toStore = json.toJson(userKeyMessageCounter);
+            edit.putString("notificationMap", toStore).apply();
+            edit.commit();
 
         }
     }
 
-    private Map<String,Integer> getMap (){
-        Map<String,Integer> outputMap = new HashMap<String,Integer>();
-        SharedPreferences pSharedPref = mCtx.getSharedPreferences("notificationMap", Context.MODE_PRIVATE);
-        try{
-            if (pSharedPref != null){
-                String jsonString = pSharedPref.getString("notificationMap", (new JSONObject()).toString());
-                JSONObject jsonObject = new JSONObject(jsonString);
-                Iterator<String> keysItr = jsonObject.keys();
-                while(keysItr.hasNext()) {
-                    String key = keysItr.next();
-                    Integer value = (Integer) jsonObject.get(key);
-                    outputMap.put(key, value);
-                }
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+    private HashMap<String,Long> getMapFromSharedPref(){
+        HashMap<String,Long> outputMap = new HashMap<>();
+        SharedPreferences SharedPref = mCtx.getSharedPreferences("notificationMap", Context.MODE_PRIVATE);
+        String map = SharedPref.getString("notificationMap", "noMap");
+        if(map.equals("noMap")){
+            return outputMap;
         }
+        Gson json = new Gson();
+        Type typeOfHashmap = new TypeToken<HashMap<String,Long>>(){}.getType();
+        outputMap = json.fromJson(map, typeOfHashmap);
         return outputMap;
+    }
+
+    public HashMap<String,Long> getMap(){
+        if(userKeyMessageCounter==null){
+            userKeyMessageCounter = new HashMap<>();
+        }
+
+        return new HashMap<String,Long>(userKeyMessageCounter);
+    }
+
+
+    public void setMap(HashMap value) {
+        this.userKeyMessageCounter = new HashMap<>(value);
+        saveMap();
     }
 }

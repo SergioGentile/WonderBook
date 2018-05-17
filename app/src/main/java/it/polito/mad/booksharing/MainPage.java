@@ -623,12 +623,10 @@ public class MainPage extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowMessageThread.class).putExtras(bundle));
         } else if (id == R.id.nav_exit) {
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
-            databaseReference.setValue(false);
-
-            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
-
+            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child( "loggedIn").setValue(false);
+            databaseReference.child("notificationMap").setValue(notificationManager.getMap());
+            databaseReference.child("notificationCounter").setValue(notificationManager.getMessageCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
@@ -668,6 +666,9 @@ public class MainPage extends AppCompatActivity
                         saveUserInfoInSharedPref(dataSnapshot.getValue(User.class));
                         getImageInfoFromFireBase();
                         setUserInfoNavBar();
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("loggedIn");
+                        databaseReference.setValue(true);
                         //notificationManager.setMessageCounter(user.getMessageToRead());
                         //setNotification(notificationManager.getMessageCounter());
                         if (firtTime) {
@@ -860,6 +861,7 @@ public class MainPage extends AppCompatActivity
         if (alertMessage != null) {
             Bundle bundle = new Bundle();
             bundle.putString("from", "Register");
+            bundle.putParcelable("user", this.user);
             Intent intent = new Intent(MainPage.this, EditProfile.class);
             intent.putExtras(bundle);
             startActivity(intent);

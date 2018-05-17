@@ -83,6 +83,7 @@ public class ChatPage extends AppCompatActivity {
         receiver = getIntent().getExtras().getParcelable("receiver");
         chatKey = getIntent().getStringExtra("key_chat");
 
+
         /*
          *  write receiver key on sharedPreferences, the Notification will read it.
          *  If message is sent from receiver, notification won't be submitted

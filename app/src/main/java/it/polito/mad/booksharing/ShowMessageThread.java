@@ -101,6 +101,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         user = getIntent().getExtras().getParcelable("user");
 
+
+
         firebaseDatabaseAccess = FirebaseDatabase.getInstance();
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
 
@@ -195,19 +197,16 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     }
 
 
-    private void setNotificationAdapterThread(String key){
-        int currentNotification = notificationManager.getReceiverCount(key);
-        Log.d("SNAT", currentNotification + "");
-        TextView tv = (TextView)adapter.getView(0, null, null).findViewById(R.id.notification);
-        TextView name = (TextView)adapter.getView(0, null, null).findViewById(R.id.user);
-        if(currentNotification<=0){
-           //tv.setVisibility(View.GONE);
-        }
-        else{
-            Log.d("SNAT", "Set the text. before is " + tv.getText().toString() + " for " + name.getText().toString());
-            tv.setText(currentNotification + "");
-            tv.setVisibility(View.VISIBLE);
-        }
+    private void setNotificationAdapterThread(TextView v , String key){
+        int currentNotification = notificationManager.getReceiverCount(key).intValue();
+
+       if(v==null){
+            v = (TextView)adapter.getView(0, null, null).findViewById(R.id.notification);
+       }
+       if(currentNotification>0){
+           v.setVisibility(View.VISIBLE);
+           v.setText(currentNotification +"");
+       }
     }
 
     private void setNotification(Integer notificaction_count) {
@@ -246,12 +245,16 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 final TextView name, lastMessage, lastTimestamp;
                 final ReceiverInformation receiverInformation;
                 final Peer peerAnonymus = peer;
+                final TextView notificationView;
 
                 profileImage = v.findViewById(R.id.profile);
                 name = v.findViewById(R.id.user);
                 lastMessage = v.findViewById(R.id.last_mess);
                 lastTimestamp = v.findViewById(R.id.text_time);
                 receiverInformation = peer.getReceiverInformation();
+                notificationView = v.findViewById(R.id.notification);
+
+                setNotificationAdapterThread(notificationView,receiverInformation.getKey());
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
 
@@ -414,10 +417,11 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         } else if (id == R.id.nav_exit) {
 
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
-            databaseReference.setValue(false);
-            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
+            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child( "loggedIn").setValue(false);
+            databaseReference.child("notificationMap").setValue(notificationManager.getMap());
+            databaseReference.child("notificationCounter").setValue(notificationManager.getMessageCounter());
+
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
@@ -549,11 +553,20 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
+
+                SwipeMenuListView view = findViewById(R.id.list_of_message_thread);
+                for(int i = 0; i<adapter.getCount();i++){
+
+                    View child =  view.getChildAt(i);
+                    String key =adapter.getItem(i).getReceiverInformation().getKey();
+                    setNotificationAdapterThread((TextView) child.findViewById(R.id.notification), key);
+
+                }
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
                 //Search the right things to update
-                User sender = intent.getExtras().getParcelable("sender");
-                currentActivity.setNotificationAdapterThread( sender.getKey());
+
+
             }
         }
     }

@@ -452,10 +452,10 @@ public class ShowProfile extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             return true;
         } else if (id == R.id.nav_exit) {
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
-            databaseReference.setValue(false);
-            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
+            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child( "loggedIn").setValue(false);
+            databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
+            databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
 
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();

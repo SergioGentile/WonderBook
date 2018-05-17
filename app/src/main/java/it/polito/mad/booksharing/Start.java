@@ -60,9 +60,7 @@ public class Start extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Start Login Activity if logged in
         if (currentUser != null && currentUser.isEmailVerified()) {
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + currentUser.getUid() + "/loggedIn");
-            databaseReference.setValue(true);
+
             Intent intent = new Intent(Start.this, MainPage.class);
             startActivity(intent);
             finish();

@@ -45,9 +45,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -354,13 +358,33 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         Integer messageCounter = sharedPreferences.getInt("messageCounter",-1);
         if(messageCounter== -1) {
             nManager = MyNotificationManager.getInstance(this);
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("notificationCounter");
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+           final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            ref.child("notificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("setCounterLogin","");
-                    nManager.setMessageCounter(dataSnapshot.getValue(Integer.class));
+                    if(dataSnapshot.exists()) {
+                        nManager.setMessageCounter(dataSnapshot.getValue(Integer.class));
 
+                        ref.child("notificationMap").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+
+                                    nManager.setMap((HashMap<String,Long>)dataSnapshot.getValue());
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }else {
+                        nManager.setMessageCounter(0);
+                    }
                     Intent intent = new Intent(Login.this, MainPage.class);
                     setResult(Activity.RESULT_OK, intent);
                     startActivity(intent);
