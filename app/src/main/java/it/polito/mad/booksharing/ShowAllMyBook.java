@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ShowAllMyBook extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -365,6 +366,8 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationMap", Context.MODE_PRIVATE).edit().clear().apply();
+            ShortcutBadger.removeCount(ShowAllMyBook.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {

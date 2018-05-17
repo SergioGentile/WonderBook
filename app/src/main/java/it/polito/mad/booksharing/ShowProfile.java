@@ -42,6 +42,7 @@ import com.google.gson.Gson;
 import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 
 public class ShowProfile extends AppCompatActivity
@@ -459,6 +460,8 @@ public class ShowProfile extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationMap", Context.MODE_PRIVATE).edit().clear().apply();
+            ShortcutBadger.removeCount(ShowProfile.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {

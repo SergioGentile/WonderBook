@@ -113,6 +113,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 
 public class MainPage extends AppCompatActivity
@@ -160,7 +161,6 @@ public class MainPage extends AppCompatActivity
     private String runTimeQuery;
     private ImageView imageScanOnSearch;
     private TextView orderDialog, tvOrderType;
-    private ImageView imageView;
 
     double latPhone, longPhone, currentLatPhone, currentLongPhone;
     private boolean tabFlag = false;
@@ -632,6 +632,7 @@ public class MainPage extends AppCompatActivity
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            ShortcutBadger.removeCount(MainPage.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {
@@ -1425,7 +1426,7 @@ public class MainPage extends AppCompatActivity
                 }
                 //fill all the layout
                 final Book book = booksMatch.get(position);
-                imageView = convertView.findViewById(R.id.image_book_searched);
+                final ImageView imageView = convertView.findViewById(R.id.image_book_searched);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 Picasso.with(MainPage.this).load(book.getUrlMyImage()).noFade()
                         .error(R.drawable.ic_error_outline_black_24dp).placeholder(R.drawable.progress_animation).into(imageView, new com.squareup.picasso.Callback() {

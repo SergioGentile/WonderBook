@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ShowMessageThread extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -176,7 +177,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
                     }
                 }
-                notificationManager.subtractMessageCounter(counter_unread);
                 setNotification(notificationManager.getMessageCounter());
             }
 
@@ -191,6 +191,22 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private int dp2px(int dips) {
         return (int) (dips * ShowMessageThread.this.getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+
+    private void setNotificationAdapterThread(User sender, TextView tv){
+
+        if(tv == null){
+            tv = (TextView)  adapter.getView(0, null, null).findViewById(R.id.notification);
+        }
+        Integer currentNotification = notificationManager.getReceiverCount(sender.getKey());
+        if(currentNotification<=0){
+            tv.setVisibility(View.GONE);
+        }
+        else{
+            tv.setText(currentNotification);
+            tv.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setNotification(Integer notificaction_count) {
@@ -370,36 +386,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 });
 
                 //Update the notification only the first time
-                FirebaseDatabase firebaseDatabaseNotRead = FirebaseDatabase.getInstance();
-                DatabaseReference databaseReferenceNotRead = firebaseDatabaseNotRead.getReference().child("chats").child(peer.getKeyChat());
-
-                databaseReferenceNotRead.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshots) {
-                        notification.setVisibility(View.GONE);
-                        int counter_notification = 0;
-                        for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
-                            ChatMessage cm = dataSnapshot.getValue(ChatMessage.class);
-                            if (!cm.getSender().equals(user.getKey()) && !cm.isStatus_read()) {
-                                counter_notification++;
-                            }
-                        }
-                        if (counter_notification > 0) {
-                            notification.setVisibility(View.VISIBLE);
-                            notification.setText(counter_notification + "");
-                        } else {
-                            notification.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
+                //TODO: TAKE INFORMATION ABOUT THE USER
+                setNotificationAdapterThread(new User(receiverInformation.getName(), receiverInformation.getSurname(), receiverInformation.getPathImage(), receiverInformation.getKey()), (TextView) v.findViewById(R.id.notification) );
             }
         };
 
@@ -436,6 +424,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationMap", Context.MODE_PRIVATE).edit().clear().apply();
+            ShortcutBadger.removeCount(ShowMessageThread.this);
+
+
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {
@@ -564,23 +556,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 currentActivity.setNotification(myNotificationManager.getMessageCounter());
                 //Search the right things to update
                 User sender = intent.getExtras().getParcelable("sender");
-                /*int posToUpdate=0;
-                for(int i=0; i<adapter.getCount(); i++){
-                    if(adapter.getItem(i).getReceiverInformation().getKey().equals(sender.getKey())){
-                        posToUpdate = i;
-                        break;
-                    }
-                }
-                System.out.println("Pos to update " + posToUpdate);*/
-
-                TextView tv = (TextView) adapter.getView(0,null, null).findViewById(R.id.notification);
-                Integer currentNot = Integer.valueOf(tv.getText().toString());
-                currentNot++;
-                Log.d("currentNot",currentNot.toString());
-                tv.setText(String.valueOf(currentNot));
-
-                tv.setVisibility(View.VISIBLE);
-
+                currentActivity.setNotificationAdapterThread(sender, null);
             }
         }
     }

@@ -27,7 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -39,6 +44,7 @@ public class MyNotificationManager {
     private final String CHANNEL_ID = "channel_chat";
     private int notificationCounter = 0;
     private Integer messageCounter = 0;
+    private Map<String, Integer> userKeyMessageCounter ;
     private LocalBroadcastManager broadcaster;
 
 
@@ -50,6 +56,7 @@ public class MyNotificationManager {
         messageCounter = sharedPreferences.getInt("messageCounter",0);
         Log.d("SetCounterSharePref",messageCounter.toString());
 
+        userKeyMessageCounter = getMap();
     }
 
     public static synchronized MyNotificationManager getInstance(Context context) {
@@ -150,6 +157,14 @@ public class MyNotificationManager {
 
             notificationCounter++;
             messageCounter++;
+            if(userKeyMessageCounter.containsKey(receiver.getKey())){
+                Integer currentCounter = userKeyMessageCounter.get(receiver.getKey());
+                currentCounter++;
+                userKeyMessageCounter.put(receiver.getKey(), currentCounter);
+            }
+            else{
+                userKeyMessageCounter.put(receiver.getKey(), 1);
+            }
 
             ShortcutBadger.applyCount(mCtx, messageCounter);
 
@@ -161,6 +176,16 @@ public class MyNotificationManager {
         } else {
             Log.d("NOTIFICATION_MANAGER", "Notification Manager Null Pointer");
         }
+    }
+
+    public void clearNotificationUser(String key){
+        Integer currentNotification =0;
+        if(userKeyMessageCounter.containsKey(key)){
+            currentNotification = userKeyMessageCounter.get(key);
+        }
+        userKeyMessageCounter.put(key, 0);
+        subtractMessageCounter(currentNotification);
+
     }
 
     public void clearNotification() {
@@ -206,4 +231,43 @@ public class MyNotificationManager {
     }
 
 
+    public int getReceiverCount(String key) {
+        if(userKeyMessageCounter.containsKey(key)){
+            return userKeyMessageCounter.get(key);
+        }
+        return 0;
+    }
+
+    private void saveMap (Map<String,Integer> myMap){
+
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationMap",Context.MODE_PRIVATE);
+        if(sharedPref!=null){
+            JSONObject jObj = new JSONObject(myMap);
+            String jsonString = jObj.toString();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("notificationMap",jsonString);
+            editor.commit();
+
+        }
+    }
+
+    private Map<String,Integer> getMap (){
+        Map<String,Integer> outputMap = new HashMap<String,Integer>();
+        SharedPreferences pSharedPref = mCtx.getSharedPreferences("notificationMap", Context.MODE_PRIVATE);
+        try{
+            if (pSharedPref != null){
+                String jsonString = pSharedPref.getString("notificationMap", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while(keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    Integer value = (Integer) jsonObject.get(key);
+                    outputMap.put(key, value);
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return outputMap;
+    }
 }

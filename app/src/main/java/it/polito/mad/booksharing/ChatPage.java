@@ -64,13 +64,11 @@ public class ChatPage extends AppCompatActivity {
     private boolean backPressed;
     private List<String> keysMessageSelected;
     private MyNotificationManager notificationManager;
-    private Integer message_read;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        message_read = 0;
         notificationManager = MyNotificationManager.getInstance(this);
         setContentView(R.layout.activity_chat_page);
 
@@ -148,6 +146,8 @@ public class ChatPage extends AppCompatActivity {
         firebaseDatabaseAccess = FirebaseDatabase.getInstance();
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(sender.getKey()).child("status");
 
+        notificationManager.clearNotificationUser(receiver.getKey());
+
         displayChatMessage();
     }
 
@@ -213,8 +213,8 @@ public class ChatPage extends AppCompatActivity {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
                     databaseReference.setValue(true);
-                    message_read++;
-                    messagesRead.add(model.getKey());
+                    //TODO: chekc if the status was been updated
+                    model.setStatus_read(true);
                 }
 
             }
@@ -376,8 +376,7 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastMessage").setValue(lastMessage);
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
-        Log.d("subtractChatPage",message_read.toString());
-        notificationManager.subtractMessageCounter(message_read);
+
         finish();
     }
 
@@ -390,7 +389,6 @@ public class ChatPage extends AppCompatActivity {
             databaseReferenceAccess.setValue(time);
         }
         databaseReferenceAccess.onDisconnect().setValue(time);
-        notificationManager.subtractMessageCounter(message_read);
 
         //Get the last message
         String lastMessage = new String("");
@@ -408,7 +406,6 @@ public class ChatPage extends AppCompatActivity {
         databaseReference.child("lastMessage").setValue(lastMessage);
         databaseReference.child("lastTimestamp").setValue(lastTime);
         databaseReference.setPriority(-1 * lastTime);
-        notificationManager.subtractMessageCounter(message_read);
 
     }
 
@@ -429,7 +426,6 @@ public class ChatPage extends AppCompatActivity {
         outState.putBoolean("isRunning", isRunning);
         outState.putBoolean("backPressed", backPressed);
         outState.putStringArrayList("messageReadList",messagesRead);
-        outState.putInt("messageCounter",message_read);
 
     }
 
@@ -439,7 +435,7 @@ public class ChatPage extends AppCompatActivity {
         isRunning = savedInstanceState.getBoolean("isRunning");
         backPressed = savedInstanceState.getBoolean("backPressed");
         messagesRead = savedInstanceState.getStringArrayList("messageReadList");
-        message_read = savedInstanceState.getInt("messageCounter");
+
 
     }
 
