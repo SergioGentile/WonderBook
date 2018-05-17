@@ -39,6 +39,7 @@ public class User implements Parcelable {
     private String cropped_image_url;
     private String key;
 
+
     public User() {
         name = new MyPair();
         surname = new MyPair();

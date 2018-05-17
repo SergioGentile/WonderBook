@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Start extends AppCompatActivity {
 
@@ -58,6 +60,9 @@ public class Start extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Start Login Activity if logged in
         if (currentUser != null && currentUser.isEmailVerified()) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + currentUser.getUid() + "/loggedIn");
+            databaseReference.setValue(true);
             Intent intent = new Intent(Start.this, MainPage.class);
             startActivity(intent);
             finish();

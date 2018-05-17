@@ -35,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
@@ -450,6 +451,9 @@ public class ShowProfile extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             return true;
         } else if (id == R.id.nav_exit) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
+            databaseReference.setValue(false);
             FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
 
             FirebaseAuth.getInstance().signOut();

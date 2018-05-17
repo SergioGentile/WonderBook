@@ -429,6 +429,9 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         } else if (id == R.id.nav_exit) {
 
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
+            databaseReference.setValue(false);
             FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();

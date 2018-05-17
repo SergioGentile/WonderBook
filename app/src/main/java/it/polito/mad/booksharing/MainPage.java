@@ -623,6 +623,10 @@ public class MainPage extends AppCompatActivity
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowMessageThread.class).putExtras(bundle));
         } else if (id == R.id.nav_exit) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference("users/" + user.getKey() + "/loggedIn");
+            databaseReference.setValue(false);
+
             FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("notificationCounter").setValue(notificationManager.getMessageCounter());
 
             FirebaseAuth.getInstance().signOut();
