@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-            app:title="@string/app_name"
+            app:title="@string/show_book_full"
             app:titleTextColor="@android:color/white">
 
             <ImageButton

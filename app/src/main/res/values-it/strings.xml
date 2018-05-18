@@ -162,4 +162,7 @@
     <string name="reset_mail_error">Impossibile modificare la password</string>
     <string name="filter">FILTRA</string>
     <string name="there_are_no_chats">Non sono presenti conversazioni</string>
+    <string name="edit_profile">Modifica Profilo</string>
+    <string name="show_book_full">Informazioni sul libro</string>
+
 </resources>

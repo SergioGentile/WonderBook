@@ -16,7 +16,7 @@
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
-                app:title="@string/app_name"
+                app:title="@string/show_profile"
                 app:titleTextColor="@color/textColorPrimary"
                 app:navigationIcon="@drawable/ic_menu_black_24dp"
                 android:id="@+id/toolbar"

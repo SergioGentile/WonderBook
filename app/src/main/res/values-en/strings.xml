@@ -165,4 +165,8 @@
     <string name="filter">FILTER</string>
     <string name="title_activity_chat">Chat</string>
     <string name="there_are_no_chats">There are no chats</string>
+
+    <string name="edit_profile">Edit Your Profile</string>
+    <string name="show_book_full">Book Information</string>
+
 </resources>

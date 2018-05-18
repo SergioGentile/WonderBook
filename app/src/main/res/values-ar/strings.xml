@@ -161,4 +161,8 @@
     <string name="restore_psw">Did you هل نسيت كلمة المرور الخاصة بك؟ yourهل نسيت كلمة المرور الخاصة بك؟</string>
     <string name="valid_radius">انتباه: أدخل نصف قطر صالح</string>
     <string name="there_are_no_chats">لا توجد محادثات</string>
+
+    <string name="edit_profile">تحرير الملف الشخصي</string>
+    <string name="show_book_full">معلومات حول الكتاب</string>
+
 </resources>

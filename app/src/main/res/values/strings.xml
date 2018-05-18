@@ -176,5 +176,7 @@
     <string name="change_mail_pass">Change email and password</string>
     <string name="filter">FILTER</string>
     <string name="there_are_no_chats">There are no chats</string>
+    <string name="edit_profile">Edit Your Profile</string>
+    <string name="show_book_full">Book Information</string>
 
 </resources>
