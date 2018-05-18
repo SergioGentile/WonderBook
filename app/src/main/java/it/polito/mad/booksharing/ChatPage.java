@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -64,6 +65,7 @@ public class ChatPage extends AppCompatActivity {
     private boolean backPressed;
     private List<String> keysMessageSelected;
     private MyNotificationManager notificationManager;
+    List<String> messageToNot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class ChatPage extends AppCompatActivity {
         setContentView(R.layout.activity_chat_page);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        messageToNot = new ArrayList<>();
 
         isRunning = true;
         keysMessageSelected = new ArrayList<>();
@@ -159,6 +162,7 @@ public class ChatPage extends AppCompatActivity {
     private void displayChatMessage() {
         listOfMessage = findViewById(R.id.list_of_message);
 
+        messageToNot.clear();
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.item_message, FirebaseDatabase.getInstance().getReference("chats").child(chatKey).orderByPriority()) {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
@@ -210,12 +214,21 @@ public class ChatPage extends AppCompatActivity {
                 messageText.setText(model.getMessage());
                 messageTime.setText(DateFormat.format("HH:mm", model.getTime()));
 
+                ImageView  messageRecNot = (ImageView) v.findViewById(R.id.message_rec_notification);
                 if(!model.isStatus_read() && model.getReceiver().equals(sender.getKey()) && !messagesRead.contains(model.getKey())){
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
                     databaseReference.setValue(true);
                     //TODO: chekc if the status was been updated
                     model.setStatus_read(true);
+                    messageRecNot.setVisibility(View.VISIBLE);
+                    messageToNot.add(model.getKey());
+                }
+                if(!messageToNot.contains(model.getKey())){
+                    messageRecNot.setVisibility(View.GONE);
+                }
+                else{
+                    messageRecNot.setVisibility(View.VISIBLE);
                 }
 
             }
