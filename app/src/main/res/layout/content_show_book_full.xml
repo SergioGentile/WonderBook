@@ -124,11 +124,13 @@
                                 android:src="@drawable/profile" />
 
                             <LinearLayout
+                                android:weightSum="2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
                                 <LinearLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_weight="0.4"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/margin_left"
                                     android:layout_marginRight="@dimen/margin_right"
@@ -157,6 +159,7 @@
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:layout_weight="1.6"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:gravity="center|right">

@@ -123,7 +123,7 @@ public class ChatPage extends AppCompatActivity {
                 if (!input.getText().toString().isEmpty()) {
 
                     messageToNot.clear();
-                    
+
                     //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).push();
@@ -136,13 +136,11 @@ public class ChatPage extends AppCompatActivity {
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
                     databaseReference1.child("lastMessage").setValue(input.getText().toString());
-                    databaseReference1.child("lastTimestamp").setValue(new Date().getTime());
-                    databaseReference1.setPriority(-1 * new Date().getTime());
+                    databaseReference1.child("lastTimestamp").setValue(-1*new Date().getTime());
 
                     DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(chatKey);
                     databaseReference2.child("lastMessage").setValue(input.getText().toString());
-                    databaseReference2.child("lastTimestamp").setValue(new Date().getTime());
-                    databaseReference2.setPriority(-1 * new Date().getTime());
+                    databaseReference2.child("lastTimestamp").setValue(-1*new Date().getTime());
                     input.setText("");
                 }
 
@@ -377,7 +375,7 @@ public class ChatPage extends AppCompatActivity {
 
         //Get the last message
         String lastMessage = new String("");
-        Long lastTime = new Long(0);
+        Long lastTime = new Long(-1);
         for (int i = adapter.getCount() - 1; i >= 0; i--) {
             System.out.println("Message " + adapter.getItem(i).getMessage() + " delete for " + adapter.getItem(i).getDeleteFor().size() + " people");
             if (!adapter.getItem(i).getDeleteFor().contains(sender.getKey())) {
@@ -390,8 +388,7 @@ public class ChatPage extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
         databaseReference.child("lastMessage").setValue(lastMessage);
-        databaseReference.child("lastTimestamp").setValue(lastTime);
-        databaseReference.setPriority(-1 * lastTime);
+        databaseReference.child("lastTimestamp").setValue(-1*lastTime);
 
         finish();
     }
@@ -408,7 +405,7 @@ public class ChatPage extends AppCompatActivity {
 
         //Get the last message
         String lastMessage = new String("");
-        Long lastTime = new Long(0);
+        Long lastTime = new Long(-1);
         for (int i = adapter.getCount() - 1; i >= 0; i--) {
             System.out.println("Message " + adapter.getItem(i).getMessage() + " delete for " + adapter.getItem(i).getDeleteFor().size() + " people");
             if (!adapter.getItem(i).getDeleteFor().contains(sender.getKey())) {
@@ -420,8 +417,8 @@ public class ChatPage extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
         databaseReference.child("lastMessage").setValue(lastMessage);
-        databaseReference.child("lastTimestamp").setValue(lastTime);
-        databaseReference.setPriority(-1 * lastTime);
+        databaseReference.child("lastTimestamp").setValue(-1*lastTime);
+
 
     }
 
