@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -105,7 +106,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         user = getIntent().getExtras().getParcelable("user");
 
 
-
         firebaseDatabaseAccess = FirebaseDatabase.getInstance();
         databaseReferenceAccess = firebaseDatabaseAccess.getReference("users").child(user.getKey()).child("status");
 
@@ -152,20 +152,20 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     }
 
-    private void showImageEmpty(){
+    private void showImageEmpty() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshots) {
-                final ImageView iv= (ImageView)findViewById(R.id.ivEmpty);
+                final ImageView iv = (ImageView) findViewById(R.id.ivEmpty);
                 final LinearLayout ll = (LinearLayout) findViewById(R.id.llEmpty);
-                final TextView tv  = (TextView) findViewById(R.id.tvEmpty);
-                counter_examinated=0;
-                counter_not_empty=0;
-                if(dataSnapshots.exists()){
+                final TextView tv = (TextView) findViewById(R.id.tvEmpty);
+                counter_examinated = 0;
+                counter_not_empty = 0;
+                if (dataSnapshots.exists()) {
                     Log.d("Counter", "passo 1");
-                    for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
+                    for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
                         Log.d("Counter", "passo 2");
                         databaseReference.child(dataSnapshot.getKey()).child("lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -173,22 +173,21 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                                 Log.d("Counter", "passo 3");
                                 String result = dataSnapshot.getValue(String.class);
                                 counter_examinated++;
-                                if(!result.isEmpty()){
+                                if (!result.isEmpty()) {
                                     counter_not_empty++;
                                 }
 
-                                if(counter_examinated == dataSnapshots.getChildrenCount()){
+                                if (counter_examinated == dataSnapshots.getChildrenCount()) {
                                     Log.d("Counter", "Not empty: " + counter_not_empty);
                                     Log.d("Counter ", "Examinated: " + counter_examinated);
-                                    if(counter_not_empty>0){
+                                    if (counter_not_empty > 0) {
                                         //Set Gone
                                         tv.setVisibility(View.GONE);
                                         iv.setVisibility(View.GONE);
                                         ll.setVisibility(View.GONE);
 
 
-                                    }
-                                    else{
+                                    } else {
                                         //Set Visible
                                         tv.setVisibility(View.VISIBLE);
                                         iv.setVisibility(View.VISIBLE);
@@ -203,11 +202,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                             }
                         });
                     }
-                }
-                else{
-                    tv.setVisibility(View.GONE);
-                    iv.setVisibility(View.GONE);
-                    ll.setVisibility(View.GONE);
+                } else {
+                    tv.setVisibility(View.VISIBLE);
+                    iv.setVisibility(View.VISIBLE);
+                    ll.setVisibility(View.VISIBLE);
                 }
 
 
@@ -223,14 +221,14 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private void deleteChat(final int position) {
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(user.getKey()).child("chats").child(adapter.getItem(position).getKeyChat());
-        databaseReference.setPriority(1);
+        databaseReference.child("lastTimestamp").setValue(1);
         databaseReference.child("lastMessage").setValue("");
 
 
         //Delete the notification
-       TextView notification = (TextView)  adapter.getView(position, null, null).findViewById(R.id.notification);
-       notification.setVisibility(View.GONE);
-       notification.setText(0+"");
+        TextView notification = (TextView) adapter.getView(position, null, null).findViewById(R.id.notification);
+        notification.setVisibility(View.GONE);
+        notification.setText(0 + "");
 
         //Delete all the messages
         FirebaseDatabase firebaseDatabaseMessages = FirebaseDatabase.getInstance();
@@ -270,19 +268,18 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     }
 
 
-    private void setNotificationAdapterThread(TextView v , String key){
+    private void setNotificationAdapterThread(TextView v, String key) {
         int currentNotification = notificationManager.getReceiverCount(key).intValue();
 
-       if(v==null){
-            v = (TextView)adapter.getView(0, null, null).findViewById(R.id.notification);
-       }
-       if(currentNotification>0){
-           v.setVisibility(View.VISIBLE);
-           v.setText(currentNotification +"");
-       }
-       else{
-           v.setVisibility(View.GONE);
-       }
+        if (v == null) {
+            v = (TextView) adapter.getView(0, null, null).findViewById(R.id.notification);
+        }
+        if (currentNotification > 0) {
+            v.setVisibility(View.VISIBLE);
+            v.setText(currentNotification + "");
+        } else {
+            v.setVisibility(View.GONE);
+        }
     }
 
     private void setNotification(Integer notificaction_count) {
@@ -312,11 +309,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
     private void showAllChat() {
 
-        adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByPriority()) {
+        adapter = new FirebaseListAdapter<Peer>(this, Peer.class, R.layout.adapter_message_thread, FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("chats").orderByChild("lastTimestamp")) {
             @Override
             protected void populateView(View v, Peer peer, final int position) {
                 //Get references to the views of list_item.xml
-
                 final CircleImageView profileImage;
                 final TextView name, lastMessage, lastTimestamp;
                 final ReceiverInformation receiverInformation;
@@ -330,7 +326,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 receiverInformation = peer.getReceiverInformation();
                 notificationView = v.findViewById(R.id.notification);
 
-                setNotificationAdapterThread(notificationView,receiverInformation.getKey());
+                setNotificationAdapterThread(notificationView, receiverInformation.getKey());
                 Picasso.with(ShowMessageThread.this).load(peer.getReceiverInformation().getPathImage()).noFade().into(profileImage);
                 name.setText(receiverInformation.getName() + " " + receiverInformation.getSurname());
 
@@ -381,40 +377,22 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 LinearLayout ll = v.findViewById(R.id.adapter_message_thread);
                 LinearLayout ll1 = v.findViewById(R.id.ll1);
                 LinearLayout ll2 = v.findViewById(R.id.ll2);
+                LinearLayout ll3 = v.findViewById(R.id.ll2);
                 LinearLayout container = v.findViewById(R.id.container);
                 LinearLayout centerContainer = v.findViewById(R.id.center_container);
+                FrameLayout frameLayout = v.findViewById(R.id.frame);
                 View line = v.findViewById(R.id.view_line);
 
                 if (peer.getLastMessage().isEmpty()) {
-                    profileImage.setVisibility(View.GONE);
-                    name.setVisibility(View.GONE);
-                    lastMessage.setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
-                    lastTimestamp.setVisibility(View.GONE);
-                    line.setVisibility(View.GONE);
-                    ll.setVisibility(View.GONE);
-                    ll1.setVisibility(View.GONE);
-                    ll2.setVisibility(View.GONE);
-                    centerContainer.setVisibility(View.GONE);
-                    container.setVisibility(View.GONE);
                     return;
                 } else {
-                    profileImage.setVisibility(View.VISIBLE);
-                    name.setVisibility(View.VISIBLE);
-                    lastMessage.setVisibility(View.VISIBLE);
                     v.setVisibility(View.VISIBLE);
-                    lastTimestamp.setVisibility(View.VISIBLE);
-                    line.setVisibility(View.VISIBLE);
-                    ll.setVisibility(View.VISIBLE);
-                    ll1.setVisibility(View.VISIBLE);
-                    ll2.setVisibility(View.VISIBLE);
-                    centerContainer.setVisibility(View.VISIBLE);
-                    container.setVisibility(View.VISIBLE);
                 }
 
 
                 lastMessage.setText(peer.getLastMessage());
-                lastTimestamp.setText(DateFormat.format("HH:mm", peer.getLastTimestamp()));
+                lastTimestamp.setText(DateFormat.format("HH:mm", -1 * peer.getLastTimestamp()));
 
 
                 final TextView notification = v.findViewById(R.id.notification);
@@ -439,11 +417,11 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                                     listOfMessage.smoothCloseMenu();
                                 } else {
 
-                                    if(imDelete){
+                                    if (imDelete) {
                                         listOfMessage.smoothCloseMenu();
-                                    }else{
+                                    } else {
                                         notification.setVisibility(View.GONE);
-                                        notification.setText(0+"");
+                                        notification.setText(0 + "");
                                         updateStatusOnline = false;
                                         Intent intent = new Intent(ShowMessageThread.this, ChatPage.class);
                                         Bundle bundle = new Bundle();
@@ -454,7 +432,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                                         intent.putExtra("fromShowMessageThread", true);
                                         startActivity(intent);
                                     }
-                                    imDelete=false;
+                                    imDelete = false;
                                 }
                                 break;
                             case MotionEvent.ACTION_CANCEL:
@@ -494,8 +472,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         } else if (id == R.id.nav_exit) {
 
-            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
-            databaseReference.child( "loggedIn").setValue(false);
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child("loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(notificationManager.getMap());
             databaseReference.child("notificationCounter").setValue(notificationManager.getMessageCounter());
 
@@ -632,10 +610,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             if (intent.getAction().equals("UpdateView")) {
 
                 SwipeMenuListView view = findViewById(R.id.list_of_message_thread);
-                for(int i = 0; i<adapter.getCount();i++){
+                for (int i = 0; i < adapter.getCount(); i++) {
 
-                    View child =  view.getChildAt(i);
-                    String key =adapter.getItem(i).getReceiverInformation().getKey();
+                    View child = view.getChildAt(i);
+                    String key = adapter.getItem(i).getReceiverInformation().getKey();
                     setNotificationAdapterThread((TextView) child.findViewById(R.id.notification), key);
 
                 }
