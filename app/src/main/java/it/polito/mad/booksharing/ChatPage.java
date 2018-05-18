@@ -122,6 +122,8 @@ public class ChatPage extends AppCompatActivity {
 
                 if (!input.getText().toString().isEmpty()) {
 
+                    messageToNot.clear();
+                    
                     //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).push();
