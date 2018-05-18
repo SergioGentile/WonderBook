@@ -23,14 +23,17 @@
             android:id="@+id/received_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/activatedBackgroundIndicator">
+            android:background="?android:attr/activatedBackgroundIndicator"
+            >
 
 
             <TextView
                 android:id="@+id/text_message_body_rec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin_chat"
+                android:layout_marginTop="@dimen/text_margin_chat"
+                android:layout_marginLeft="@dimen/text_margin_chat"
+                android:layout_marginBottom="@dimen/text_margin_chat"
                 android:background="@drawable/rounded_rectangle_received"
                 android:maxWidth="240dp"
                 android:padding="@dimen/text_padding_chat"
@@ -47,6 +50,15 @@
                 android:layout_marginLeft="4dp"
                 android:text="11:40"
                 android:textSize="10sp" />
+
+            <ImageView
+                android:id="@+id/message_rec_notification"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="4dp"
+                android:src="@drawable/round_notification" />
         </LinearLayout>
 
 
@@ -77,7 +89,9 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:layout_margin="@dimen/text_margin_chat"
+                android:layout_marginTop="@dimen/text_margin_chat"
+                android:layout_marginRight="@dimen/text_margin_chat"
+                android:layout_marginBottom="@dimen/text_margin_chat"
                 android:id="@+id/text_message_body_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
