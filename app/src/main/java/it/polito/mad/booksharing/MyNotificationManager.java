@@ -1,5 +1,6 @@
 package it.polito.mad.booksharing;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,6 +37,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -143,11 +145,17 @@ public class MyNotificationManager {
 
     public void displayNotification(String messageBody, User sender, User receiver, String keyChat) {
 
+
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences("chatReceiver", Context.MODE_PRIVATE);
+        String lastChatReceiver = sharedPreferences.getString("receiver_key", "");
+
         android.app.NotificationManager notificationManager =
                 (android.app.NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
-        if (notificationManager != null) {
+        ActivityManager activityManager = (ActivityManager) mCtx.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
+
+        if(notificationManager != null){
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -156,32 +164,42 @@ public class MyNotificationManager {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
-            buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
+            if (tasks != null && !tasks.isEmpty()) {
 
-            notificationCounter++;
+                String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
+                if (!className.contains("ChatPage")) {
+                    buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
+                    buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
+                    notificationCounter++;
+                } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
+                    buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
+                    buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
+                    notificationCounter++;
+                }
+            }else{
+                buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
+                buildSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
+                notificationCounter++;
+            }
+
             messageCounter++;
-            if(userKeyMessageCounter.containsKey(sender.getKey())){
+            if (userKeyMessageCounter.containsKey(sender.getKey())) {
                 Long currentCounter = userKeyMessageCounter.get(sender.getKey());
                 currentCounter++;
                 userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
-            }
-            else{
+            } else {
                 userKeyMessageCounter.put(sender.getKey(), new Long(1));
             }
-            Log.d("NotificationManager", "User " +userKeyMessageCounter.get(sender.getKey()) + " notification" );
+            Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
 
             ShortcutBadger.applyCount(mCtx, messageCounter);
 
-            SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("messageCounter", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
-            edit.putInt("messageCounter",messageCounter).commit();
+            edit.putInt("messageCounter", messageCounter).commit();
             saveMap();
-
-
-        } else {
-            Log.d("NOTIFICATION_MANAGER", "Notification Manager Null Pointer");
         }
+
     }
 
     public void clearNotificationUser(String key){

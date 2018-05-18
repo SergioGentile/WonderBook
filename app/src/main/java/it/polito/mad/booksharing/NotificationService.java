@@ -65,37 +65,12 @@ public class NotificationService extends FirebaseMessagingService {
                         user = json.fromJson(receiver, User.class);
                         sender = dataSnapshot.getValue(User.class);
 
-                        Log.d("MessageReceived", "Deserialized data");
-
-                        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                        List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
-                        Log.d("MessageReceived", "Got app tasks");
-                        if (tasks != null && !tasks.isEmpty()) {
-                            Log.d("MessageReceived", "Tasks empty");
-                            String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
-                            if (!className.contains("ChatPage")) {
-                                //if current activity is not chatPage notify the user
-                                mNotificationManager.displayNotification(body, sender, user, keyChat);
-                                Intent intent = new Intent("UpdateView");
-                                intent.putExtra("sender", sender);
-                                broadcaster.sendBroadcast(intent);
-                            } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
-                                //if is chatPage but messageThread is different notify the user
-                                mNotificationManager.displayNotification(body, sender, user, keyChat);
-                                Intent intent = new Intent("UpdateView");
-                                Bundle bundle  = new Bundle();
-                                bundle.putParcelable("sender", sender);
-                                intent.putExtras(bundle);
-                                broadcaster.sendBroadcast(intent);
-                            }
-                        } else {
-                            Log.d("MessageReceived", "Tasks not empty");
-                            mNotificationManager.displayNotification(body, sender, user, keyChat);
-                            Intent intent = new Intent("UpdateView");
-                            intent.putExtra("sender", sender);
-                            broadcaster.sendBroadcast(intent);
-                        }
-
+                        mNotificationManager.displayNotification(body, sender, user, keyChat);
+                        Intent intent = new Intent("UpdateView");
+                        Bundle bundle  = new Bundle();
+                        bundle.putParcelable("sender", sender);
+                        intent.putExtras(bundle);
+                        broadcaster.sendBroadcast(intent);
                     }
                 }
 
