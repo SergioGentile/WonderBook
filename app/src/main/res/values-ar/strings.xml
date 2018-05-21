@@ -45,7 +45,7 @@
     <!-- String nav bar -->
     <string name="home">خانه</string>
     <string name="show_profile">نمایه</string>
-    <string name="show_book">کتابهای به اشتراک گذاشته شده</string>
+    <string name="show_book">مكتبة</string>
     <string name="logout">خروج</string>
     <string name="registerMessage">Email not avaiable!</string>
     <string name="subtitle">العنوان الفرعي (إن وجد)</string>
@@ -164,5 +164,6 @@
 
     <string name="edit_profile">تحرير الملف الشخصي</string>
     <string name="show_book_full">معلومات حول الكتاب</string>
-
+    <string name="loans">قرض</string>
+    <string name="pending_request">طلبات القروض</string>
 </resources>

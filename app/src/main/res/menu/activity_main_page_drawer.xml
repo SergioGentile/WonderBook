@@ -15,13 +15,26 @@
             android:iconTint="@color/colorAccent"
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/show_profile"></item>
-        <item
-            android:iconTint="@color/colorAccent"
-            android:id="@+id/nav_show_shared_book"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/show_book" />
+            android:title="@string/show_profile"/>
 
+        <group
+            android:id="@+id/grouped_book"
+            android:checkableBehavior="single">
+
+            <item
+                android:title="@string/show_book"
+                android:icon = "@drawable/ic_library_books_black_24dp"
+                android:id="@+id/nav_show_shared_book"/>
+            <item
+                android:title="@string/loans"
+                android:id="@+id/nav_loans"
+                android:icon= "@drawable/ic_menu_share"/>
+            <item
+                android:title = "@string/pending_request"
+                android:id = "@+id/pending_request"
+                android:icon= "@drawable/ic_import_export_black_24dp"/>
+
+        </group>
         <item
 
             android:iconTint="@color/colorAccent"

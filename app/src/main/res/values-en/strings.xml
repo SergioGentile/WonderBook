@@ -63,7 +63,7 @@
     <!-- String nav bar -->
     <string name="home">Home</string>
     <string name="show_profile">Profile</string>
-    <string name="show_book">Shared Book</string>
+    <string name="show_book">Library</string>
     <string name="logout">Logout</string>
     <string name="isbn">ISBN</string>
     <string name="wait">Please wait...</string>
@@ -174,5 +174,6 @@
     <string name="describe_exp_with">Describe your expirience with</string>
     <string name="i_borrow_book">I borrowed a book</string>
     <string name="i_lend_book">I lended a book</string>
-
+    <string name="loans">Loans</string>
+    <string name="pending_request">Loan Requests</string>
 </resources>
