@@ -184,6 +184,7 @@
     <string name="describe_exp_with">Describe your expirience with</string>
     <string name="i_lend_book">I lended a book</string>
     <string name="i_borrow_book">I borrowed a book</string>
+    <string name="message_request_book">Hello *user_name*! I\'m interested in your book *book_name*. Do you wanna share it with me? 😀</string>
     <string name="loans">Loans</string>
     <string name="pending_request">Loan Requests</string>
 

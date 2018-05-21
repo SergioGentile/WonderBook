@@ -23,7 +23,9 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -338,6 +340,20 @@ public class ShowBookFull extends AppCompatActivity {
                 intent.putExtras(bundle);
                 intent.putExtra("key", key);
                 startActivityForResult(intent, 0);
+            }
+        });
+
+        LinearLayout ll = (LinearLayout) findViewById(R.id.container);
+        ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("book", book);
+                bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
+                bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 

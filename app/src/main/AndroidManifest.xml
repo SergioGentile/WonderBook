@@ -131,7 +131,7 @@
         <activity android:name=".ActivityDispatcher" />
         <activity android:name=".ShowReviews" />
         <activity android:name=".AddReview" />
-        <activity android:name=".ActivityAddRequest"></activity>
+        <activity android:name=".AddNewRequest"></activity>
     </application>
 
 </manifest>

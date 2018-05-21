@@ -61,6 +61,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:weightSum="2"
                     android:id="@+id/ll2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,6 +69,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:layout_weight="1.7"
                         android:id="@+id/last_mess"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -77,8 +79,9 @@
                         android:textColor="@color/colorSecondaryText" />
 
                     <LinearLayout
+                        android:layout_weight="0.3"
                         android:id="@+id/ll3"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="right">
 
@@ -91,7 +94,7 @@
                             android:text="0"
                             android:textColor="@android:color/white"
                             android:textSize="@dimen/tv_dim"
-                            android:visibility="gone" />
+                            />
                     </LinearLayout>
 
 
