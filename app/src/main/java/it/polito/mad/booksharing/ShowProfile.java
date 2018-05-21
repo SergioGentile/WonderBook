@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,6 +62,7 @@ public class ShowProfile extends AppCompatActivity
     private CircleImageView profileImage;
     private NavigationView navigationView;
     private MyBroadcastReceiver mMessageReceiver;
+    private RelativeLayout rlReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,21 @@ public class ShowProfile extends AppCompatActivity
         llParent = findViewById(R.id.llParent);
         llDescription = findViewById(R.id.llDescription);
 
+
         circleImageView = findViewById(R.id.profileImage);
+
+        rlReviews = findViewById(R.id.rl_reviews);
+        rlReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ShowProfile.this, ShowReviews.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user_logged", getIntent().getExtras().getParcelable("user_owner"));
+                bundle.putParcelable("user_to_review", getIntent().getExtras().getParcelable("user_mp"));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
 
         //Initialize the user (must be removed an replace with data stored previously)

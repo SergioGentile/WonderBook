@@ -283,7 +283,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_left"
                         android:layout_marginRight="@dimen/margin_right"
-                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                        android:layout_marginBottom="60dp"
                         android:layout_marginTop="@dimen/top_inside_box">
 
 
@@ -323,6 +323,7 @@
                                         android:layout_height="@dimen/height_book"
                                         android:layout_alignParentLeft="true"
                                         android:layout_marginRight="@dimen/margin_right"
+
                                         app:cardUseCompatPadding="true">
 
                                         <ImageView
@@ -365,10 +366,55 @@
                             </LinearLayout>
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
-
                 </LinearLayout>
 
             </ScrollView>
+
+            <FrameLayout
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <View
+                        android:layout_above="@+id/container"
+                        android:rotation="180"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/shadow"
+                        android:background="@drawable/shadow_toolbar" />
+
+                    <LinearLayout
+                        android:gravity="right"
+                        android:background="@color/white"
+                        android:id="@+id/container"
+                        android:orientation="horizontal"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+                    <TextView
+                        android:textSize="@dimen/title_box_size"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:textColor="@color/colorAccent"
+                        android:id="@+id/requireBook"
+                        android:gravity="center_vertical"
+                        android:text="Richiedi questo libro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:layout_marginTop="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="@dimen/margin_right"
+                        android:src="@drawable/ic_arrow_forward_black_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </FrameLayout>
+
         </RelativeLayout>
 
         <View

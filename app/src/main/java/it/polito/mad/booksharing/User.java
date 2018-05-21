@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class User implements Parcelable {
     private String imagePath = "";
     private String user_image_url;
     private String cropped_image_url;
-    private String key;
+    private @NonNull String key;
 
 
     public User() {

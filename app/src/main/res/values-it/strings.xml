@@ -164,5 +164,11 @@
     <string name="there_are_no_chats">Non sono presenti conversazioni</string>
     <string name="edit_profile">Modifica Profilo</string>
     <string name="show_book_full">Informazioni sul libro</string>
+    <string name="reviews">Recensioni</string>
+    <string name="review">Recensione</string>
+    <string name="write_new_review">Scrivi una nuova recensione</string>
+    <string name="describe_exp_with">Descrivi la tua esperienza con</string>
+    <string name="i_lend_book">Ho dato un libro in prestito</string>
+    <string name="i_borrow_book">Ho preso un libro in prestito</string>
 
 </resources>
