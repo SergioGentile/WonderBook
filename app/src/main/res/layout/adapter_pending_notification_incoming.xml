@@ -12,7 +12,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/image_book_searched"
+            android:id="@+id/image_book"
             android:layout_width="@dimen/width_book_small"
             android:layout_height="@dimen/height_book_small"
             android:layout_gravity="center"
@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_right"
             android:layout_marginTop="@dimen/top_inside_box"
-            android:layout_toEndOf="@+id/image_book_searched"
             android:orientation="vertical">
 
             <LinearLayout
@@ -41,19 +40,20 @@
                     android:text="Title"
                     android:layout_marginRight="@dimen/margin_right"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="@dimen/title_box_size" />
+                    android:textSize="@dimen/tv_dim" />
             <TextView
-                android:id="@+id/title_searched"
+                android:id="@+id/book_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Il Codice da Vinci"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/title_box_size" />
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/tv_dim" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:weightSum="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
@@ -61,10 +61,10 @@
                     android:layout_height="wrap_content"
                     android:text="Owner "
                     android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@color/colorSecondaryText"
+                    android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/tv_dim" />
             <TextView
-                android:id="@+id/author_searched"
+                android:id="@+id/book_owner"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,36 +79,103 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <LinearLayout
+                android:layout_marginRight="0dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
 
+                    android:layout_weight="0.3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lender"
                     android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@color/colorSecondaryText"
+                    android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/tv_dim" />
 
                 <TextView
-                    android:id="@+id/shared_name"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
+                    android:id="@+id/book_lender"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1.4"
+                    android:gravity="center"
                     android:text="Sergio Gentile"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/tv_dim" />
+
+                <ImageView
+                    android:paddingRight="0dp"
+                    android:id="@+id/drop_down_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                    android:visibility="visible" />
+                <ImageView
+
+                    android:layout_weight="0.3"
+                    android:id="@+id/drop_up_menu"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
             </LinearLayout>
 
-                <View
-                    android:layout_marginTop="9dp"
-                    android:background="@color/colorPrimary"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
+
+
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/top_inside_box"
+                android:id="@+id/accept_refuse_ll"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tv_accept"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/title_box_size"
+                    android:text="@string/accept"/>
+
+
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/tv_refuse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/title_box_size"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:text="@string/refuse"/>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_gravity="end"
+                android:layout_marginTop="9dp"
+                android:background="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+
 
 
         </LinearLayout>
+
+
     </LinearLayout>
+
+
 
 </LinearLayout>

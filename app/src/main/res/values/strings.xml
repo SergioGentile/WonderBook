@@ -187,5 +187,8 @@
     <string name="message_request_book">Hello *user_name*! I\'m interested in your book *book_name*. Do you wanna share it with me? 😀</string>
     <string name="loans">Loans</string>
     <string name="pending_request">Loan Requests</string>
+    <string name="accept">Accept</string>
+    <string name="refuse">Refuse</string>
+    <string name="DeleteRequest">Cancel</string>
 
 </resources>

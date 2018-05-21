@@ -173,5 +173,7 @@
     <string name="loans">Prestiti</string>
     <string name="pending_request">Richieste di prestito</string>
     <string name="message_request_book">Ciao *user_name*! Sono interessato al tuo libro *book_name*. Vorresti condividerlo con me? 😀</string>
+    <string name="accept">Accetta</string>
+    <string name="refuse">Rifiuta</string>
 
 </resources>
