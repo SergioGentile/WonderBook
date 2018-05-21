@@ -104,33 +104,35 @@
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/tv_dim" />
 
-                <ImageView
-                    android:paddingRight="0dp"
-                    android:id="@+id/drop_down_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                    android:visibility="visible" />
-                <ImageView
 
-                    android:layout_weight="0.3"
-                    android:id="@+id/drop_up_menu"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
             </LinearLayout>
+
 
 
 
             </LinearLayout>
 
+            <ImageView
+                android:layout_margin="0dp"
+                android:paddingRight="0dp"
+                android:id="@+id/drop_down_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="0.1"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                android:visibility="visible" />
+            <ImageView
+
+                android:layout_weight="0.3"
+                android:id="@+id/drop_up_menu"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
 
             <LinearLayout
-                android:layout_marginTop="@dimen/top_inside_box"
                 android:id="@+id/accept_refuse_ll"
                 android:visibility="visible"
                 android:layout_width="match_parent"
