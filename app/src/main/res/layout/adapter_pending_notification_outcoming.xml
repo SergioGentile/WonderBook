@@ -54,28 +54,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:weightSum="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Owner "
-                    android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="@dimen/tv_dim" />
-                <TextView
-                    android:id="@+id/book_owner"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Brown"
-                    android:textColor="@color/colorSecondaryText"
-                    android:textSize="@dimen/tv_dim" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

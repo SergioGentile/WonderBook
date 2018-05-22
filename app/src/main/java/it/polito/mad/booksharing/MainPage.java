@@ -622,7 +622,12 @@ public class MainPage extends AppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(MainPage.this, ShowMessageThread.class).putExtras(bundle));
-        } else if (id == R.id.nav_exit) {
+        }else if(id == R.id.pending_request){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(MainPage.this, ShowPendingRequest.class).putExtras(bundle));
+        }
+         else if (id == R.id.nav_exit) {
             DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
             databaseReference.child( "loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(notificationManager.getMap());
