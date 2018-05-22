@@ -122,7 +122,7 @@ public class AddBook extends Activity {
         } else if (book != null && book.getIsbn10() != null) {
             isbn10 = book.getIsbn10();
         }
-        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue());
+        Book bookToSave = new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook == null ? "" : urlImageBook, urlMyImageBook == null ? "" : urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), "");
         if (uploadDate != null) {
             bookToSave.setDate(uploadDate);
         }
@@ -395,7 +395,7 @@ public class AddBook extends Activity {
                             } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
                             }
-                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                            reloadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), ""));
                         } else {
                             //Otherwise it's the first time
                             String isbn10 = new String("");
@@ -409,7 +409,7 @@ public class AddBook extends Activity {
                             } else if (book.getIsbn10() != null) {
                                 isbn10 = book.getIsbn10();
                             }
-                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                            uploadDatabase(new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, "", user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), ""));
                         }
                     } else {
                         Toast.makeText(AddBook.this, getString(R.string.wrong_isbn), Toast.LENGTH_SHORT).show();
@@ -578,7 +578,7 @@ public class AddBook extends Activity {
     }
 
     //Re-Load an existing book, for example because the user change something such as the title, author and so on
-    public void reloadDatabase(Book book) {
+    public void reloadDatabase(final Book book) {
         //Instatiate the book as final so that it can be used in the anonymous methods.
         final Book bookToUpload = book;
         Log.d("RELOAD", "I upload the database for the user " + book.getOwnerName());
@@ -604,6 +604,7 @@ public class AddBook extends Activity {
                     //Replace the content of the database
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+                    bookToUpload.setKey(key);
                     databaseReference.setValue(bookToUpload);
 
                     Intent intent = new Intent();
@@ -621,7 +622,7 @@ public class AddBook extends Activity {
                     } else {
                         isbn10 = bookToUpload.getIsbn10();
                     }
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), ""));
                     intent.putExtras(bundle);
                     setResult(RESULT_CANCELED, intent);
                     if (pd.isShowing()) {
@@ -663,7 +664,7 @@ public class AddBook extends Activity {
                     } else {
                         isbn10 = bookToUpload.getIsbn10();
                     }
-                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+                    bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), ""));
                     intent.putExtras(bundle);
                     setResult(RESULT_OK, intent);
                     //Upload with the new settings
@@ -671,6 +672,7 @@ public class AddBook extends Activity {
                     DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
                     //Upload the location
                     uploadLocation(databaseReference);
+                    bookToUpload.setKey(key);
                     databaseReference.setValue(bookToUpload);
                     if (pd.isShowing()) {
                         pd.dismiss();
@@ -684,6 +686,7 @@ public class AddBook extends Activity {
             //Replace the content of the database, the image doesn't change.
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+            bookToUpload.setKey(key);
             databaseReference.setValue(bookToUpload);
             //Upload the location
             uploadLocation(databaseReference);
@@ -703,7 +706,7 @@ public class AddBook extends Activity {
             } else if (book.getIsbn10() != null) {
                 isbn10 = book.getIsbn10();
             }
-            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue()));
+            bundle.putParcelable("book", new Book(tvTitle.getText().toString(), tvSubtitle.getText().toString(), tvAuthor.getText().toString(), tvYear.getText().toString(), tvProduction.getText().toString(), tvDescription.getText().toString(), urlImageBook, urlMyImageBook, user.getKey(), isbn10, isbn13, Float.toString(ratingBar.getRating()), swAvailable.isChecked(), tvCity.getText().toString(), tvStreet.getText().toString(), tvCap.getText().toString(), user.getName().getValue() + " " + user.getSurname().getValue(), ""));
             intent.putExtras(bundle);
             setResult(RESULT_OK, intent);
             if (pd.isShowing()) {
@@ -754,7 +757,7 @@ public class AddBook extends Activity {
 
                 //Upload the location
                 uploadLocation(instanceReference);
-
+                bookToUpload.setKey(instanceReference.getKey());
                 instanceReference.setValue(bookToUpload);
                 if (pd.isShowing()) {
                     pd.dismiss();

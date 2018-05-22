@@ -23,7 +23,7 @@ public class Book implements Parcelable {
             return new Book[size];
         }
     };
-    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle, city, street, cap;
+    private String title, author, year, urlImage, urlMyImage, owner, isbn10, isbn13, publisher, description, rating, date, subtitle, city, street, cap, key;
     private boolean available;
     private String ownerName;
     private Double distance;
@@ -32,7 +32,7 @@ public class Book implements Parcelable {
 
     }
 
-    public Book(String title, String subtitle, String author, String year, String publisher, String description, String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available, String city, String street, String cap, String ownerName) {
+    public Book(String title, String subtitle, String author, String year, String publisher, String description, String urlImage, String urlMyImage, String owner, String isbn10, String isbn13, String rating, boolean available, String city, String street, String cap, String ownerName, String key) {
         this.title = title.toLowerCase().trim();
         this.subtitle = subtitle;
         this.author = author.toLowerCase().trim();
@@ -53,12 +53,12 @@ public class Book implements Parcelable {
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.format(dateCalendar);
+        this.key = key;
     }
 
     // Parcelling part
     public Book(Parcel in) {
-        String[] data = new String[17];
-
+        String[] data = new String[18];
 
         in.readStringArray(data);
         this.available = in.readByte() != 0;
@@ -80,6 +80,7 @@ public class Book implements Parcelable {
         this.street = data[14];
         this.cap = data[15];
         this.ownerName = data[16];
+        this.key = data[17];
     }
 
     public Boolean isAvailable() {
@@ -213,7 +214,7 @@ public class Book implements Parcelable {
                 this.isbn10,
                 this.isbn13,
                 this.rating,
-                this.date, this.city, this.street, this.cap, this.ownerName});
+                this.date, this.city, this.street, this.cap, this.ownerName, this.key});
         dest.writeByte((byte) (available ? 1 : 0));
     }
 
@@ -264,5 +265,13 @@ public class Book implements Parcelable {
 
     public void setCap(String cap) {
         this.cap = cap;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
