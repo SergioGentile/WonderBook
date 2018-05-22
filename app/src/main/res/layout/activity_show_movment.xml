@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="it.polito.mad.booksharing.ShowMovment">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.myToolbar">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/Theme.myToolbar"
+            app:subtitleTextColor="@color/windowBackground"
+            app:title="Le tue condivisioni"
+            app:titleTextColor="@android:color/white">
+
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabsMovment"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            app:tabGravity="fill"
+            app:tabPaddingEnd="@dimen/margin_right"
+            app:tabPaddingStart="@dimen/margin_left"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@color/colorTabUnselected">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabOutcoming"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Presi in prestito" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabIncoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dati in prestito" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabPast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Concluse" />
+        </android.support.design.widget.TabLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/list_of_requests"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"/>
+
+        <View
+            android:background="@drawable/shadow_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow"/>
+    </FrameLayout>
+
+
+</LinearLayout>

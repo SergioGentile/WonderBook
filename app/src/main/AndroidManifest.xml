@@ -132,7 +132,8 @@
         <activity android:name=".ShowReviews" />
         <activity android:name=".AddReview" />
         <activity android:name=".AddNewRequest" />
-        <activity android:name=".ShowPendingRequest"></activity>
+        <activity android:name=".ShowPendingRequest" />
+        <activity android:name=".ShowMovment"></activity>
     </application>
 
 </manifest>
