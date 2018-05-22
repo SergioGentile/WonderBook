@@ -1,9 +1,11 @@
 package it.polito.mad.booksharing;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,8 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class ShowMovment extends AppCompatActivity {
@@ -103,23 +108,11 @@ public class ShowMovment extends AppCompatActivity {
                     borrower.setText(request.getNameBorrower());
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
-                    LinearLayout conclude = (LinearLayout)v.findViewById(R.id.conclude_ll);
+                    final LinearLayout conclude = (LinearLayout)v.findViewById(R.id.conclude_ll);
                     conclude.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
-                            Request requestToEnd = request;
-                            requestToEnd.setStatus(Request.END);
-                            DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
-                            DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
-                            String keyEnd = dbrLend.getKey();
-                            requestToEnd.setStatus(Request.END);
-                            requestToEnd.setKeyRequest(keyEnd);
-                            dbrLend.setValue(requestToEnd);
-                            dbrBorrow.child(keyEnd).setValue(requestToEnd);
-                            //change the status of the book from "available" to "not available"
-                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
+                            conclude(request, LAND);
                         }
                     });
 
@@ -145,19 +138,7 @@ public class ShowMovment extends AppCompatActivity {
                     conclude.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
-                            Request requestToEnd = request;
-                            requestToEnd.setStatus(Request.END);
-                            DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
-                            DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
-                            String keyEnd = dbrLend.getKey();
-                            requestToEnd.setStatus(Request.END);
-                            requestToEnd.setKeyRequest(keyEnd);
-                            dbrLend.setValue(requestToEnd);
-                            dbrBorrow.child(keyEnd).setValue(requestToEnd);
-                            //change the status of the book from "available" to "not available"
-                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
+                            conclude(request, BORROW);
                         }
                     });
                 }
@@ -177,7 +158,50 @@ public class ShowMovment extends AppCompatActivity {
                 }
             };
         }
-
         return adapterToReturn;
+    }
+
+
+    private void conclude(Request request, int type){
+        FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
+        FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
+        request.setStatus(Request.END);
+        DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
+        DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
+        String keyEnd = dbrLend.getKey();
+        request.setStatus(Request.END);
+        request.setKeyRequest(keyEnd);
+        dbrLend.setValue(request);
+        dbrBorrow.child(keyEnd).setValue(request);
+        //change the status of the book from "available" to "not available"
+        FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
+
+        String keyUserToReview = null;
+        if(type == LAND){
+            keyUserToReview = request.getKeyBorrower();
+        }
+        else{
+            keyUserToReview = request.getKeyLender();
+        }
+
+        Log.d("User to review: ", keyUserToReview);
+
+        FirebaseDatabase.getInstance().getReference("users").child(keyUserToReview).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User userToReview = dataSnapshot.getValue(User.class);
+                Intent intent = new Intent(ShowMovment.this, AddReview.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user_logged", user);
+                bundle.putParcelable("user_to_review", userToReview);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
