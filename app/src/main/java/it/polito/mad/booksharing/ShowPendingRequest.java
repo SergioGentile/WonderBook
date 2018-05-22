@@ -92,9 +92,13 @@ public class ShowPendingRequest extends AppCompatActivity {
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_incoming, databaseReference) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
+                    LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
                     if(!request.getStatus().equals(Request.SENDED)){
-                        v.setVisibility(View.GONE);
+                        ll1.setVisibility(View.GONE);
                         return;
+                    }
+                    else{
+                        ll1.setVisibility(View.VISIBLE);
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
@@ -153,9 +157,13 @@ public class ShowPendingRequest extends AppCompatActivity {
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, databaseReference) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
+                    LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
                     if(!request.getStatus().equals(Request.SENDED)){
-                        v.setVisibility(View.GONE);
+                        ll1.setVisibility(View.GONE);
                         return;
+                    }
+                    else{
+                        ll1.setVisibility(View.VISIBLE);
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);

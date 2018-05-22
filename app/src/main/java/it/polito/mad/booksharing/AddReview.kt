@@ -36,15 +36,17 @@ class AddReview : AppCompatActivity() {
         button.setOnClickListener(View.OnClickListener {
             //Upload all on firebase
             var status: String
-            if(radioBoxLand?.isChecked!!){
-                status = Review.land
-            }
-            else{
-                status = Review.borrow
-            }
+            status = intent.getStringExtra("status")
 
             val review  = Review(tvTitle?.text.toString(), tvReview?.text.toString(), status, rating?.rating!!, userLogged?.name?.value!!, userLogged?.surname?.value!!, userLogged?.key!! ,userLogged?.user_image_url!! )
             FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("reviews").push().setValue(review)
+            var numRev: Int = userToReview?.numRev!!
+            var numStars: Float = rating?.rating!!
+            var lastScore: Float = userToReview?.numStars!! * userToReview?.numRev!!
+            numRev++
+            numStars = (lastScore + numStars)/(numRev)
+            FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("numStars").setValue(numStars)
+            FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("numRev").setValue(numRev)
             finish()
         })
     }

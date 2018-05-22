@@ -278,7 +278,7 @@
                                         android:theme="@style/RatingBar" />
 
                                     <TextView
-                                        android:id="@+id/number_reviews"
+                                        android:id="@+id/tv_reviews"
                                         android:textColor="@color/colorSecondaryText"
                                         android:textSize="@dimen/subtitle_box_size"
                                         android:layout_marginLeft="5dp"

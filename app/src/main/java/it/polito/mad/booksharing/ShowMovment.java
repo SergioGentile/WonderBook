@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 public class ShowMovment extends AppCompatActivity {
 
@@ -98,9 +101,13 @@ public class ShowMovment extends AppCompatActivity {
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_incoming, databaseReference) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
-                    if(!request.getStatus().equals(Request.ACCEPTED)){
-                        v.setVisibility(View.GONE);
+                    LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
+                    if(!request.getStatus().equals(Request.ACCEPTED) && !request.getStatus().equals(Request.WAIT_END)){
+                        ll1.setVisibility(View.GONE);
                         return;
+                    }
+                    else{
+                        ll1.setVisibility(View.VISIBLE);
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
@@ -108,14 +115,22 @@ public class ShowMovment extends AppCompatActivity {
                     borrower.setText(request.getNameBorrower());
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
-                    final LinearLayout conclude = (LinearLayout)v.findViewById(R.id.conclude_ll);
-                    conclude.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            conclude(request, LAND);
-                        }
-                    });
-
+                    TextView conclude = (TextView)v.findViewById(R.id.tv_accept);
+                    TextView waitEnd = (TextView) v.findViewById(R.id.waitEnd);
+                    if(user.getKey().equals(request.getEndRequestBy())){
+                        waitEnd.setVisibility(View.VISIBLE);
+                        conclude.setVisibility(View.GONE);
+                    }
+                    else{
+                        waitEnd.setVisibility(View.GONE);
+                        conclude.setVisibility(View.VISIBLE);
+                        conclude.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                conclude(request, LAND);
+                            }
+                        });
+                    }
                 }
             };
         }
@@ -124,9 +139,13 @@ public class ShowMovment extends AppCompatActivity {
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_outcoming, databaseReference) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
-                    if(!request.getStatus().equals(Request.ACCEPTED)){
-                        v.setVisibility(View.GONE);
+                    LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
+                    if(!request.getStatus().equals(Request.ACCEPTED) && !request.getStatus().equals(Request.WAIT_END) ){
+                        ll1.setVisibility(View.GONE);
                         return;
+                    }
+                    else{
+                        ll1.setVisibility(View.VISIBLE);
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);
@@ -134,13 +153,22 @@ public class ShowMovment extends AppCompatActivity {
                     title.setText(request.getBookTitle());
                     lender.setText(request.getNameLender());
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
-                    LinearLayout conclude = (LinearLayout)v.findViewById(R.id.conclude_ll);
-                    conclude.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            conclude(request, BORROW);
-                        }
-                    });
+                    TextView conclude = (TextView)v.findViewById(R.id.tv_accept);
+                    TextView waitEnd = (TextView) v.findViewById(R.id.waitEnd);
+                    if(user.getKey().equals(request.getEndRequestBy())){
+                        waitEnd.setVisibility(View.VISIBLE);
+                        conclude.setVisibility(View.GONE);
+                    }
+                    else{
+                        waitEnd.setVisibility(View.GONE);
+                        conclude.setVisibility(View.VISIBLE);
+                        conclude.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                conclude(request, BORROW);
+                            }
+                        });
+                    }
                 }
             };
         }
@@ -162,20 +190,34 @@ public class ShowMovment extends AppCompatActivity {
     }
 
 
-    private void conclude(Request request, int type){
-        FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
-        FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
-        request.setStatus(Request.END);
-        DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
-        DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
-        String keyEnd = dbrLend.getKey();
-        request.setStatus(Request.END);
-        request.setKeyRequest(keyEnd);
-        dbrLend.setValue(request);
-        dbrBorrow.child(keyEnd).setValue(request);
-        //change the status of the book from "available" to "not available"
-        FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
+    private void conclude(Request request, final int type){
 
+        if(request.getStatus().equals(Request.WAIT_END)){
+            //It means that i can conclude all
+            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
+            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
+            request.setStatus(Request.END);
+            DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
+            DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
+            String keyEnd = dbrLend.getKey();
+            request.setStatus(Request.END);
+            request.setKeyRequest(keyEnd);
+            dbrLend.setValue(request);
+            dbrBorrow.child(keyEnd).setValue(request);
+            //change the status of the book from "available" to "not available"
+            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
+            Toast.makeText(ShowMovment.this, "Il prestito è stato completato", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            //Set only the flag in order to wait the other peer
+            request.setEndRequestBy(user.getKey());
+            request.setStatus(Request.WAIT_END);
+            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).setValue(request);
+            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).setValue(request);
+            Toast.makeText(ShowMovment.this, "In attesa che l'altro utente confermi la cessione", Toast.LENGTH_SHORT).show();
+        }
+
+        //Make the review
         String keyUserToReview = null;
         if(type == LAND){
             keyUserToReview = request.getKeyBorrower();
@@ -189,12 +231,19 @@ public class ShowMovment extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("users").child(keyUserToReview).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 User userToReview = dataSnapshot.getValue(User.class);
                 Intent intent = new Intent(ShowMovment.this, AddReview.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user_logged", user);
                 bundle.putParcelable("user_to_review", userToReview);
                 intent.putExtras(bundle);
+                if(type == LAND){
+                    intent.putExtra("status", "land");
+                }
+                else{
+                    intent.putExtra("status", "borrow");
+                }
                 startActivity(intent);
             }
 

@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.media.Rating;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -51,7 +53,8 @@ public class ShowProfile extends AppCompatActivity
     private static final int MODIFY_PROFILE = 1;
     private ImageButton btnModify;
     private Toolbar toolbar;
-    private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail;
+    private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail, tvReviews;
+    private RatingBar rateReviews;
 
     private User user;
     private LinearLayout llParent, llPhone, llMail, llDescription;
@@ -87,9 +90,10 @@ public class ShowProfile extends AppCompatActivity
         llPhone = findViewById(R.id.llPhone);
         llParent = findViewById(R.id.llParent);
         llDescription = findViewById(R.id.llDescription);
-
-
         circleImageView = findViewById(R.id.profileImage);
+        tvReviews = findViewById(R.id.tv_reviews);
+        rateReviews = findViewById(R.id.rating_reviews);
+
 
         rlReviews = findViewById(R.id.rl_reviews);
         rlReviews.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +101,14 @@ public class ShowProfile extends AppCompatActivity
             public void onClick(View v) {
                 Intent intent = new Intent(ShowProfile.this, ShowReviews.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("user_logged", getIntent().getExtras().getParcelable("user_owner"));
-                bundle.putParcelable("user_to_review", getIntent().getExtras().getParcelable("user_mp"));
+                if(getIntent().getExtras()==null || getIntent().getExtras().getParcelable("user_owner") == null || getIntent().getExtras().getParcelable("user_mp") == null) {
+                    bundle.putParcelable("user_logged", user);
+                    bundle.putParcelable("user_to_review", user);
+                }else{
+                    bundle.putParcelable("user_logged", getIntent().getExtras().getParcelable("user_owner"));
+                    bundle.putParcelable("user_to_review", getIntent().getExtras().getParcelable("user_mp"));
+                }
+
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -400,6 +410,16 @@ public class ShowProfile extends AppCompatActivity
         } else {
             llMail.setVisibility(View.VISIBLE);
         }
+
+        if(Integer.valueOf(user.getNumRev())==1){
+            tvReviews.setText(user.getNumRev() + " recensioni");
+        }
+        else{
+            tvReviews.setText(user.getNumRev() + " recensione");
+        }
+
+        rateReviews.setRating(user.getNumStars());
+
 
         //Set the user profile image
         showUserPictureProfile(user);

@@ -347,13 +347,18 @@ public class ShowBookFull extends AppCompatActivity {
         ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("book", book);
-                bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
-                bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
-                intent.putExtras(bundle);
-                startActivity(intent);
+               if(!book.isAvailable()){
+                   Toast.makeText(ShowBookFull.this, "Attenzione: questo libro non è disponibile quindi non può essere richiesto.", Toast.LENGTH_SHORT).show();
+               }
+               else{
+                   Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
+                   Bundle bundle = new Bundle();
+                   bundle.putParcelable("book", book);
+                   bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
+                   bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
+                   intent.putExtras(bundle);
+                   startActivity(intent);
+               }
             }
         });
 

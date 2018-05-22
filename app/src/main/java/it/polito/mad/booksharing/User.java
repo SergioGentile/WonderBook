@@ -38,6 +38,8 @@ public class User implements Parcelable {
     private String imagePath = "";
     private String user_image_url;
     private String cropped_image_url;
+    private float numStars;
+    private int numRev;
     private @NonNull String key;
 
 
@@ -50,6 +52,8 @@ public class User implements Parcelable {
         city = new MyPair();
         cap = new MyPair();
         street = new MyPair();
+        numStars = 0;
+        numRev = 0;
 
     }
 
@@ -62,6 +66,8 @@ public class User implements Parcelable {
         this.city = city;
         this.cap = cap;
         this.street = street;
+        numStars = 0;
+        numRev = 0;
     }
 
     public User(String name, String surname, String imageUrl, String key) {
@@ -76,6 +82,8 @@ public class User implements Parcelable {
         city = new MyPair();
         cap = new MyPair();
         street = new MyPair();
+        numStars = 0;
+        numRev = 0;
     }
 
     public User(MyPair name, MyPair surname, MyPair phone, MyPair email, MyPair description, MyPair city, MyPair cap, MyPair street, String imagePath, String key, String user_image_url, String cropped_image_url) {
@@ -91,6 +99,8 @@ public class User implements Parcelable {
         this.key = key;
         this.user_image_url = user_image_url;
         this.cropped_image_url = cropped_image_url;
+        numStars = 0;
+        numRev = 0;
     }
 
     public User(User value) {
@@ -107,6 +117,8 @@ public class User implements Parcelable {
         this.key = new String(value.getKey());
         this.user_image_url = new String(value.getUser_image_url());
         this.cropped_image_url = new String(value.getCropped_image_url());
+        numStars = 0;
+        numRev = 0;
     }
 
     //Method used to deserialize the method
@@ -131,6 +143,8 @@ public class User implements Parcelable {
         this.key = parcel.readString();
         this.user_image_url = parcel.readString();
         this.cropped_image_url = parcel.readString();
+        this.numRev = parcel.readInt();
+        this.numStars = parcel.readFloat();
     }
 
     public static String capitalizeSpace(String s) {
@@ -241,6 +255,8 @@ public class User implements Parcelable {
         dest.writeString(this.getKey());
         dest.writeString(this.getUser_image_url());
         dest.writeString(this.getCropped_image_url());
+        dest.writeInt(numRev);
+        dest.writeFloat(numStars);
     }
 
     //Method used to check if the information placed by the user during the edit phase are correct
@@ -363,6 +379,21 @@ public class User implements Parcelable {
         return !mail.equals(myDefault) && findMail;
     }
 
+    public float getNumStars() {
+        return numStars;
+    }
+
+    public void setNumStars(float numStars) {
+        this.numStars = numStars;
+    }
+
+    public int getNumRev() {
+        return numRev;
+    }
+
+    public void setNumRev(int numRev) {
+        this.numRev = numRev;
+    }
 
     public String getUser_image_url() {
         return user_image_url;
