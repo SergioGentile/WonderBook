@@ -305,7 +305,7 @@ public class CameraScan extends AppCompatActivity {
                             }
                         }
 
-                        Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "", true, "", "", "", "");
+                        Book book = new Book(title, subtitle, author, date, publisher, "", urlStr, "", "Sergio", isbn10, isbn13, "", true, "", "", "", "", "");
                         books.add(book);
                     } catch (JSONException e) {
                         setResult(RESULT_CANCELED, intent);

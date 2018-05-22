@@ -10,9 +10,9 @@ import it.polito.mad.booksharing.User;
  */
 
 public class Request {
-    String nameLender, nameBorrower, bookImageUrl, bookTitle, status, keyLender, keyBorrower, keyRequest, position;
+    String nameLender, nameBorrower, bookImageUrl, bookTitle, status, keyLender, keyBorrower, keyRequest, position, keyBook;
     long time;
-    final static String SENDED = "sended", ACCEPTED = "accepted", REJECTED = "rejected";
+    final static String SENDED = "sended", ACCEPTED = "accepted", REJECTED = "rejected", END = "end";
 
     public Request(){
 
@@ -25,6 +25,7 @@ public class Request {
         this.nameBorrower = logged.getName().getValue() + " " + logged.getSurname().getValue();
         this.keyBorrower = logged.getKey();
         this.bookTitle = book.getTitle();
+        this.keyBook = book.getKey();
         if(!book.getUrlImage().isEmpty()){
             this.bookImageUrl = book.getUrlImage();
         }
@@ -115,5 +116,13 @@ public class Request {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getKeyBook() {
+        return keyBook;
+    }
+
+    public void setKeyBook(String keyBook) {
+        this.keyBook = keyBook;
     }
 }

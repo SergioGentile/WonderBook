@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -90,13 +91,36 @@ public class ShowPendingRequest extends AppCompatActivity {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming");
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_incoming, databaseReference) {
                 @Override
-                protected void populateView(View v, Request request, int position) {
+                protected void populateView(View v, final Request request, int position) {
+                    if(!request.getStatus().equals(Request.SENDED)){
+                        v.setVisibility(View.GONE);
+                        return;
+                    }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
                     title.setText(request.getBookTitle());
                     borrower.setText(request.getNameBorrower());
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
+                    TextView accept = (TextView) v.findViewById(R.id.tv_accept);
+                    TextView reject = (TextView) v.findViewById(R.id.tv_refuse);
+                    accept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
+                            //change the status of the book from "available" to "not available"
+                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
+                        }
+                    });
+                    reject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
+                        }
+                    });
+
 
                 }
             };
@@ -105,13 +129,27 @@ public class ShowPendingRequest extends AppCompatActivity {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming");
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, databaseReference) {
                 @Override
-                protected void populateView(View v, Request request, int position) {
+                protected void populateView(View v, final Request request, int position) {
+                    if(!request.getStatus().equals(Request.SENDED)){
+                        v.setVisibility(View.GONE);
+                        return;
+                    }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
-                    TextView borrower =(TextView) v.findViewById(R.id.book_lender);
+                    TextView lender =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     title.setText(request.getBookTitle());
-                    borrower.setText(request.getNameBorrower());
+                    lender.setText(request.getNameLender());
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
+                    LinearLayout cancel = (LinearLayout)v.findViewById(R.id.cancel_ll);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
+                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
+
+                        }
+                    });
+
                 }
             };
         }
