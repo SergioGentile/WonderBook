@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -96,6 +97,29 @@ public class ShowPendingRequest extends AppCompatActivity {
                     title.setText(request.getBookTitle());
                     borrower.setText(request.getNameBorrower());
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
+
+                    final LinearLayout ll = (LinearLayout) v.findViewById(R.id.accept_refuse_ll);
+                    final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
+                    ll.setVisibility(View.GONE);
+
+                    llConteiner.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(ll.getVisibility() == View.GONE){
+
+                                ll.setVisibility(View.VISIBLE);
+                                ll.animate().translationY(ll.getHeight()).setDuration(100);
+
+                            }else{
+
+                                ll.animate().translationY(0).setDuration(100);
+                                ll.setVisibility(View.GONE);
+                            }
+
+
+                        }
+                    });
+
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
 
                 }
@@ -107,11 +131,39 @@ public class ShowPendingRequest extends AppCompatActivity {
                 @Override
                 protected void populateView(View v, Request request, int position) {
                     TextView title =(TextView) v.findViewById(R.id.book_title);
+
                     TextView borrower =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     title.setText(request.getBookTitle());
+
                     borrower.setText(request.getNameBorrower());
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
+
+
+
+                    final LinearLayout ll = (LinearLayout) v.findViewById(R.id.cancel_ll);
+                    final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
+                    ll.setVisibility(View.GONE);
+
+                    llConteiner.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(ll.getVisibility() == View.GONE){
+
+                                ll.setVisibility(View.VISIBLE);
+                                ll.animate().translationY(ll.getHeight()).setDuration(100);
+
+                            }else{
+
+                                ll.setVisibility(View.GONE);
+                                ll.animate().translationY(0).setDuration(100);
+
+                            }
+
+
+                        }
+                    });
+
                 }
             };
         }
