@@ -112,11 +112,11 @@ public class ShowPendingRequest extends AppCompatActivity {
                             if(ll.getVisibility() == View.GONE){
 
                                 ll.setVisibility(View.VISIBLE);
-                                ll.animate().translationY(ll.getHeight()).setDuration(100);
+                                ll.animate().translationY(0).setDuration(200);
 
                             }else{
 
-                                ll.animate().translationY(0).setDuration(100);
+                                ll.animate().translationY(ll.getBaseline()).setDuration(200);
                                 ll.setVisibility(View.GONE);
                             }
 
@@ -176,12 +176,13 @@ public class ShowPendingRequest extends AppCompatActivity {
                             if(ll.getVisibility() == View.GONE){
 
                                 ll.setVisibility(View.VISIBLE);
-                                ll.animate().translationY(ll.getHeight()).setDuration(100);
+                                ll.animate().translationY(0).setDuration(200);
+
 
                             }else{
 
                                 ll.setVisibility(View.GONE);
-                                ll.animate().translationY(0).setDuration(100);
+                                ll.animate().translationY(0).setDuration(200);
 
                             }
 
