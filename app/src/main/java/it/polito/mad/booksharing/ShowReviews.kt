@@ -41,15 +41,7 @@ class ShowReviews : AppCompatActivity() {
         userLogged = intent.extras.getParcelable("user_logged")
         userToReview = intent.extras.getParcelable("user_to_review")
         listOfReviews = findViewById(R.id.list_of_reviews)
-        val addReviewButton: ImageView = findViewById(R.id.addReview)
-        addReviewButton.setOnClickListener(View.OnClickListener {
-            var intent: Intent = Intent(this, AddReview::class.java)
-            var bundle: Bundle = Bundle()
-            bundle.putParcelable("user_logged", userLogged)
-            bundle.putParcelable("user_to_review", userToReview)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        })
+
 
         var tabLayout: TabLayout = findViewById(R.id.tabsReviews)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{

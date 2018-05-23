@@ -454,36 +454,42 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_show_shared_book) {
+        if (id == R.id.nav_profile) {
+            // Handle the camera action
+            // Handle the camera action
+            startActivity(new Intent(ShowMessageThread.this, ShowProfile.class));
+
+        } else if (id == R.id.nav_show_shared_book) {
+            //Start the intent
             //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowMessageThread.this, ShowAllMyBook.class).putExtras(bundle));
-        } else if (id == R.id.nav_profile) {
-            startActivity(new Intent(ShowMessageThread.this, ShowProfile.class));
-
-        }
-        if (id == R.id.nav_show_chat) {
+        } else if (id == R.id.nav_show_chat) {
+            //Start the intent
             DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        } else if (id == R.id.nav_home) {
-            startActivity(new Intent(ShowMessageThread.this, MainPage.class));
-
-        } else if (id == R.id.nav_exit) {
-
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
-            databaseReference.child("loggedIn").setValue(false);
-            databaseReference.child("notificationMap").setValue(notificationManager.getMap());
-            databaseReference.child("notificationCounter").setValue(notificationManager.getMessageCounter());
-
+        } if (id == R.id.pending_request) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMessageThread.this, ShowPendingRequest.class).putExtras(bundle));
+        }
+        else if(id == R.id.nav_loans){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMessageThread.this, ShowMovment.class).putExtras(bundle));
+        }
+        else if (id == R.id.nav_exit) {
+            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child( "loggedIn").setValue(false);
+            databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
+            databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("notificationMap", Context.MODE_PRIVATE).edit().clear().apply();
             ShortcutBadger.removeCount(ShowMessageThread.this);
-
-
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
             if (directory.exists()) {
@@ -491,16 +497,16 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                 crop_image.delete();
                 File user_image = new File(directory, User.profileImgName);
                 user_image.delete();
+
             }
+
             startActivity(new Intent(ShowMessageThread.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
 
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        String time = new Date().getTime() + "";
-        databaseReferenceAccess.setValue(time);
-        databaseReferenceAccess.onDisconnect().setValue(time);
         finish();
         return true;
     }
@@ -538,7 +544,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         String time = new Date().getTime() + "";
         databaseReferenceAccess.setValue("online");
         databaseReferenceAccess.onDisconnect().setValue(time);
-        navigationView.getMenu().getItem(3).setChecked(true);
+        navigationView.getMenu().getItem(5).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         notificationManager.clearNotification();
         setNotification(notificationManager.getMessageCounter());
@@ -583,6 +589,56 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         databaseReferenceAccess.onDisconnect().setValue(time);
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("UpdateView"));
+    }
+
+
+    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
+    }
+
+
+    protected void setNotificaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
     }
 
     @Override

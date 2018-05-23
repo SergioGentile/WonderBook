@@ -1,11 +1,22 @@
 package it.polito.mad.booksharing;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +37,11 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
-public class ShowMovment extends AppCompatActivity {
+import java.io.File;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
+
+public class ShowMovment extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private Toolbar toolbar;
@@ -34,6 +50,7 @@ public class ShowMovment extends AppCompatActivity {
     private final static int BORROW=0, LAND=1, PAST = 2;
     private ListView listOfRequest;
     private FirebaseListAdapter<Request> adapter;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +60,18 @@ public class ShowMovment extends AppCompatActivity {
         user = getIntent().getExtras().getParcelable("user");
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
         toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         tabLayout = findViewById(R.id.tabsMovment);
         setList(BORROW);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -252,5 +279,121 @@ public class ShowMovment extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_profile) {
+            // Handle the camera action
+            startActivity(new Intent(ShowMovment.this, ShowProfile.class));
+        } else if (id == R.id.nav_show_shared_book) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMovment.this, ShowAllMyBook.class).putExtras(bundle));
+        } else if (id == R.id.nav_show_chat) {
+            //Start the intent
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMovment.this, ShowMessageThread.class).putExtras(bundle));
+        }else if(id == R.id.pending_request){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            startActivity(new Intent(ShowMovment.this, ShowPendingRequest.class).putExtras(bundle));
+        }
+        if (id == R.id.nav_loans) {
+            //Start the intent
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        else if (id == R.id.nav_exit) {
+            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child( "loggedIn").setValue(false);
+            databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
+            databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
+            FirebaseAuth.getInstance().signOut();
+            getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            ShortcutBadger.removeCount(ShowMovment.this);
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
+            if (directory.exists()) {
+                File crop_image = new File(directory, User.profileImgNameCrop);
+                crop_image.delete();
+                File user_image = new File(directory, User.profileImgName);
+                user_image.delete();
+
+            }
+
+            startActivity(new Intent(ShowMovment.this, Start.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        finish();
+        return true;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(3).setChecked(true);
+    }
+
+
+    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
+    }
+
+
+    protected void setNotificaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
     }
 }

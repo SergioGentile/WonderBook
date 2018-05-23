@@ -192,5 +192,7 @@
     <string name="DeleteRequest">Cancel</string>
     <string name="Lender">Lender</string>
     <string name="send">Send</string>
+    <string name="show_movment">Yours Shares</string>
+    <string name="request">Request</string>
 
 </resources>

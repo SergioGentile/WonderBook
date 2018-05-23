@@ -28,11 +28,13 @@
             <item
                 android:title="@string/loans"
                 android:id="@+id/nav_loans"
-                android:icon= "@drawable/ic_menu_share"/>
+                android:icon= "@drawable/ic_menu_share"
+                app:actionViewClass="android.widget.TextView"/>
             <item
                 android:title = "@string/pending_request"
                 android:id = "@+id/pending_request"
-                android:icon= "@drawable/ic_import_export_black_24dp"/>
+                android:icon= "@drawable/ic_import_export_black_24dp"
+                app:actionViewClass="android.widget.TextView"/>
 
         </group>
         <item

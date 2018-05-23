@@ -365,6 +365,9 @@ public class MainPage extends AppCompatActivity
 
 
         NotificationIDService.sendRegistrationToServer();
+        setNotification(3);
+        setNotificaPrestito(10);
+        setNotificaRichiestaPrestito(2);
     }
 
     //evaluate the distance between two point (latitude, longitude) in KM
@@ -414,6 +417,56 @@ public class MainPage extends AppCompatActivity
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
+    }
+
+
+    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        if (notificaction_count != 0) {
+
+            //Set current notification inside initNavBar method
+            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            message_nav_bar.setTypeface(null, Typeface.BOLD);
+            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            message_nav_bar.setText(notificaction_count.toString());
+
+            //Set notification on toolbar icon
+            message_nav_bar.setVisibility(View.VISIBLE);
+
+            toolbarNotification.setText(notificaction_count.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        } else {
+            toolbarNotification.setVisibility(View.GONE);
+            message_nav_bar.setVisibility(View.GONE);
+        }
+    }
+
+
+    protected void setNotificaPrestito(Integer notificaction_count) {
+
+
+        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
         if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
