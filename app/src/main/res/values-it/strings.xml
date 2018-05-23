@@ -176,6 +176,8 @@
     <string name="accept">Accetta</string>
     <string name="refuse">Rifiuta</string>
     <string name="send">Invia</string>
-    <string name="DeleteRequest">Annulla</string>
+    <string name="DeleteRequest">Annulla la richiesta</string>
+    <string name="your_request_description">Richiesto a *req_name* in data *req_date*</string>
+    <string name="other_request_description">Richiesto da *req_name* in data *req_date*</string>
 
 </resources>

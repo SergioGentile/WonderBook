@@ -239,10 +239,10 @@ public class ShowMovment extends AppCompatActivity {
                 bundle.putParcelable("user_to_review", userToReview);
                 intent.putExtras(bundle);
                 if(type == LAND){
-                    intent.putExtra("status", "land");
+                    intent.putExtra("status", "borrow");
                 }
                 else{
-                    intent.putExtra("status", "borrow");
+                    intent.putExtra("status", "land");
                 }
                 startActivity(intent);
             }

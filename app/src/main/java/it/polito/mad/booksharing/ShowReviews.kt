@@ -29,8 +29,8 @@ class ShowReviews : AppCompatActivity() {
     var userToReview: User? = null
     var listOfReviews: ListView? = null
     val ANY = 0;
-    val BORROW = 1;
-    val LAND = 2
+    val BORROW = 2
+    val LAND = 1
     val reviews: MutableList<Review> = mutableListOf()
 
 
@@ -73,15 +73,15 @@ class ShowReviews : AppCompatActivity() {
                     window.setStatusBarColor(getColor(R.color.colorPrimaryDark))
                     tabLayout.setBackgroundColor(getColor(R.color.colorPrimary))
                 }
-                else if(tab?.position == BORROW){
-                    toolbar.setBackgroundColor(getColor(R.color.borrow))
-                    window.setStatusBarColor(getColor(R.color.borrowDark))
-                    tabLayout.setBackgroundColor(getColor(R.color.borrow))
-                }
                 else if(tab?.position == LAND){
                     toolbar.setBackgroundColor(getColor(R.color.land))
                     window.setStatusBarColor(getColor(R.color.landDark))
                     tabLayout.setBackgroundColor(getColor(R.color.land))
+                }
+                else if(tab?.position == BORROW){
+                    toolbar.setBackgroundColor(getColor(R.color.borrow))
+                    window.setStatusBarColor(getColor(R.color.borrowDark))
+                    tabLayout.setBackgroundColor(getColor(R.color.borrow))
                 }
                 showReviews(tab?.position!!)
             }
@@ -99,10 +99,12 @@ class ShowReviews : AppCompatActivity() {
         var databaseReference: DatabaseReference?
         databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("reviews")
 
+
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshots: DataSnapshot) {
                 if (dataSnapshots.exists()) {
                     reviews.clear()
+                    listOfReviews?.adapter = null
                     //Download the review
                     for (reviewDataSnapshot: DataSnapshot? in dataSnapshots.children) {
                         val review = reviewDataSnapshot?.getValue(Review::class.java)!!
@@ -119,8 +121,6 @@ class ShowReviews : AppCompatActivity() {
                             }
                         }
                     }
-                    //Finish to scan the list
-                    listOfReviews?.adapter = null
                     listOfReviews?.adapter = AdapterReviews(reviews, this@ShowReviews)
                 } else {
                     //Print something to say: no reviews exists for that user

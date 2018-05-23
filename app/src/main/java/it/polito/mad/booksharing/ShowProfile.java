@@ -412,10 +412,10 @@ public class ShowProfile extends AppCompatActivity
         }
 
         if(Integer.valueOf(user.getNumRev())==1){
-            tvReviews.setText(user.getNumRev() + " recensioni");
+            tvReviews.setText(user.getNumRev() + " recensione");
         }
         else{
-            tvReviews.setText(user.getNumRev() + " recensione");
+            tvReviews.setText(user.getNumRev() + " recensioni");
         }
 
         rateReviews.setRating(user.getNumStars());

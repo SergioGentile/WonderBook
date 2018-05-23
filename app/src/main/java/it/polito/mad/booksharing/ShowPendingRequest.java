@@ -4,6 +4,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -33,7 +35,6 @@ public class ShowPendingRequest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_pending_request);
-
         user = getIntent().getExtras().getParcelable("user");
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
         toolbar = findViewById(R.id.toolbar);
@@ -103,8 +104,11 @@ public class ShowPendingRequest extends AppCompatActivity {
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
                     title.setText(request.getBookTitle());
-                    borrower.setText(request.getNameBorrower());
+                    borrower.setText(getString(R.string.other_request_description).replace("*req_name*", request.getNameBorrower()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
+                    View view = v.findViewById(R.id.line);
+                    view.setBackgroundColor(getColor(R.color.land));
+
 /*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.accept_refuse_ll);
                     final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
@@ -153,8 +157,8 @@ public class ShowPendingRequest extends AppCompatActivity {
             };
         }
         else {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").orderByChild("time");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
@@ -169,9 +173,10 @@ public class ShowPendingRequest extends AppCompatActivity {
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     title.setText(request.getBookTitle());
-                    lender.setText(request.getNameLender());
+                    lender.setText(getString(R.string.your_request_description).replace("*req_name*", request.getNameLender()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
-
+                    View view = v.findViewById(R.id.line);
+                    view.setBackgroundColor(getColor(R.color.borrow));
 
 /*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.cancel_ll);

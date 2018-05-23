@@ -189,8 +189,10 @@
     <string name="pending_request">Loan Requests</string>
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
-    <string name="DeleteRequest">Cancel</string>
+    <string name="DeleteRequest">Cancel request</string>
     <string name="Lender">Lender</string>
     <string name="send">Send</string>
+    <string name="your_request_description">Request to *req_name* on *req_date*</string>
+    <string name="other_request_description">Request by *req_name* on *req_date*</string>
 
 </resources>
