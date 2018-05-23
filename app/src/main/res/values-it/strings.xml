@@ -175,5 +175,7 @@
     <string name="message_request_book">Ciao *user_name*! Sono interessato al tuo libro *book_name*. Vorresti condividerlo con me? 😀</string>
     <string name="accept">Accetta</string>
     <string name="refuse">Rifiuta</string>
+    <string name="send">Invia</string>
+    <string name="DeleteRequest">Annulla</string>
 
 </resources>

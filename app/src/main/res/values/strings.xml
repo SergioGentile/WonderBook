@@ -180,7 +180,7 @@
     <string name="show_book_full">Book Information</string>
     <string name="reviews">Reviews</string>
     <string name="review">Review</string>
-    <string name="write_new_review">Write a new review</string>
+    <string name="write_new_review">Write review</string>
     <string name="describe_exp_with">Describe your expirience with</string>
     <string name="i_lend_book">I lended a book</string>
     <string name="i_borrow_book">I borrowed a book</string>
@@ -190,5 +190,7 @@
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
     <string name="DeleteRequest">Cancel</string>
+    <string name="Lender">Lender</string>
+    <string name="send">Send</string>
 
 </resources>

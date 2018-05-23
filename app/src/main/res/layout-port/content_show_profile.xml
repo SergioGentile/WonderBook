@@ -240,12 +240,14 @@
                         </android.support.v7.widget.CardView>
 
                         <android.support.v7.widget.CardView
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
                             android:layout_marginTop="@dimen/top_inside_box">
 
                             <LinearLayout
+                                android:id="@+id/rl_reviews"
                                 android:orientation="vertical"
                                 android:layout_marginTop="@dimen/top_inside_box"
                                 android:layout_marginBottom="@dimen/bottom_inside_box"
@@ -262,7 +264,7 @@
                                 <LinearLayout
                                     android:layout_marginTop="@dimen/top_inside_box"
                                     android:orientation="horizontal"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
 
                                     <RatingBar
@@ -278,37 +280,28 @@
                                         android:theme="@style/RatingBar" />
 
                                     <TextView
+                                        android:gravity="center"
                                         android:id="@+id/tv_reviews"
                                         android:textColor="@color/colorSecondaryText"
                                         android:textSize="@dimen/subtitle_box_size"
                                         android:layout_marginLeft="5dp"
                                         android:text="10 recensioni"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" />
-                                </LinearLayout>
+                                        android:layout_height="match_parent" />
 
-
-                                <RelativeLayout
-                                    android:id="@+id/rl_reviews"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <TextView
-                                        android:layout_marginTop="@dimen/top_inside_box"
-                                        android:text="Visualizza le recensioni"
-                                        android:textColor="@color/colorSecondaryText"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" />
-
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="right|center"
+                                        >
                                     <ImageView
-                                        android:layout_marginTop="7dp"
-                                        android:layout_alignParentRight="true"
-                                        android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+                                        android:layout_gravity="center"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" />
+                                        android:layout_height="wrap_content"
 
-
-                                </RelativeLayout>
+                                        android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+                                    </LinearLayout>
+                                </LinearLayout>
 
                                 <View
                                     android:layout_marginTop="4dp"

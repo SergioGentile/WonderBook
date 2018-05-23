@@ -105,7 +105,7 @@ public class ShowPendingRequest extends AppCompatActivity {
                     title.setText(request.getBookTitle());
                     borrower.setText(request.getNameBorrower());
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
-
+/*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.accept_refuse_ll);
                     final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
                     ll.setVisibility(View.GONE);
@@ -127,7 +127,7 @@ public class ShowPendingRequest extends AppCompatActivity {
 
                         }
                     });
-
+                    */
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
                     TextView accept = (TextView) v.findViewById(R.id.tv_accept);
                     TextView reject = (TextView) v.findViewById(R.id.tv_refuse);
@@ -173,7 +173,7 @@ public class ShowPendingRequest extends AppCompatActivity {
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
 
 
-
+/*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.cancel_ll);
                     final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
                     ll.setVisibility(View.GONE);
@@ -197,7 +197,7 @@ public class ShowPendingRequest extends AppCompatActivity {
 
                         }
                     });
-
+*/
                     LinearLayout cancel = (LinearLayout)v.findViewById(R.id.cancel_ll);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override

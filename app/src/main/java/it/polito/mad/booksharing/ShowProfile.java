@@ -65,7 +65,7 @@ public class ShowProfile extends AppCompatActivity
     private CircleImageView profileImage;
     private NavigationView navigationView;
     private MyBroadcastReceiver mMessageReceiver;
-    private RelativeLayout rlReviews;
+    private LinearLayout rlReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

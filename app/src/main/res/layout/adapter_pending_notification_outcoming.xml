@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Title"
+                    android:text="@string/title"
                     android:layout_marginRight="@dimen/margin_right"
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/tv_dim" />
@@ -69,7 +69,7 @@
                         android:layout_weight="0.3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lender"
+                        android:text="@string/Lender"
                         android:layout_marginRight="@dimen/margin_right"
                         android:textColor="@color/colorPrimaryText"
                         android:textSize="@dimen/tv_dim" />
