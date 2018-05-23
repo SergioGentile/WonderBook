@@ -15,10 +15,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -40,11 +45,14 @@ public class ShowPendingRequest extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
         setList(BORROW);
+        showEmpty(BORROW);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setList(tab.getPosition());
+                showEmpty(tab.getPosition());
+                //Add the listener to notify if the list is empty
             }
 
             @Override
@@ -59,6 +67,98 @@ public class ShowPendingRequest extends AppCompatActivity {
         });
 
     }
+
+
+    private void showEmpty(int type){
+        //Set all gone
+        final LinearLayout ll = (LinearLayout) findViewById(R.id.empty);
+        final TextView tv = (TextView) findViewById(R.id.tvWarning);
+        ll.setVisibility(View.GONE);
+        if(type == BORROW){
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_out_request));
+                        }
+                        else{
+                            //check if some request with state start exist
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.SENDED)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_out_request));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+        else{
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_in_request));
+                        }
+                        else{
+                            //Empty gone
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.SENDED)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_in_request));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
 
     private void setList(int type){
         listOfRequest.setAdapter(null);

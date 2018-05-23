@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
+
+import java.util.Date;
 
 public class ShowMovment extends AppCompatActivity {
 
@@ -82,8 +85,8 @@ public class ShowMovment extends AppCompatActivity {
             colorDark = R.color.borrowDark;
         }
         else{
-            color = R.color.past;
-            colorDark = R.color.pastDark;
+            color = R.color.colorPrimary;
+            colorDark = R.color.colorPrimaryDark;
         }
 
         toolbar.setBackgroundColor(getColor(color));
@@ -112,9 +115,11 @@ public class ShowMovment extends AppCompatActivity {
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
                     title.setText(request.getBookTitle());
-                    borrower.setText(request.getNameBorrower());
+                    borrower.setText(getString(R.string.lended_by_descr).replace("*name*", request.getNameBorrower()).replace("*date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
+                    View line = (View) v.findViewById(R.id.line);
+                    line.setBackgroundColor(getColor(R.color.land));
                     TextView conclude = (TextView)v.findViewById(R.id.tv_accept);
                     TextView waitEnd = (TextView) v.findViewById(R.id.waitEnd);
                     if(user.getKey().equals(request.getEndRequestBy())){
@@ -151,7 +156,9 @@ public class ShowMovment extends AppCompatActivity {
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     title.setText(request.getBookTitle());
-                    lender.setText(request.getNameLender());
+                    lender.setText(getString(R.string.borrowed_by_descr).replace("*name*", request.getNameLender()).replace("*date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
+                    View line = (View) v.findViewById(R.id.line);
+                    line.setBackgroundColor(getColor(R.color.borrow));
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
                     TextView conclude = (TextView)v.findViewById(R.id.tv_accept);
                     TextView waitEnd = (TextView) v.findViewById(R.id.waitEnd);
@@ -177,11 +184,23 @@ public class ShowMovment extends AppCompatActivity {
             adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_past_movment, databaseReference) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
-                    TextView title =(TextView) v.findViewById(R.id.book_title);
-                    TextView lender =(TextView) v.findViewById(R.id.book_borrower);
+                    TextView title =(TextView) v.findViewById(R.id.tvTitle);
+                    TextView tvUser =(TextView) v.findViewById(R.id.tvNameUser);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
+                    TextView time = (TextView) v.findViewById(R.id.tvTime);
                     title.setText(request.getBookTitle());
-                    lender.setText(request.getNameLender());
+                    View line = (View) v.findViewById(R.id.line);
+                    if(request.getKeyLender().equals(user.getKey())){
+                        tvUser.setText(getString(R.string.lended_by) + " " + request.getNameBorrower());
+                        line.setBackgroundColor(getColor(R.color.land));
+                    }
+                    else{
+                        tvUser.setText(getString(R.string.borrowed_by)+ " " + request.getNameLender());
+                        line.setBackgroundColor(getColor(R.color.borrow));
+                    }
+
+                    time.setText(getString(R.string.from) + " " + DateFormat.format("dd/MM/yyyy", -1*request.getTime()) +  " " + getString(R.string.to) + " " +  DateFormat.format("dd/MM/yyyy", request.getTimeEnd()));
+
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
                 }
             };
@@ -197,6 +216,7 @@ public class ShowMovment extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
             request.setStatus(Request.END);
+            request.setTimeEnd(new Date().getTime());
             DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
             DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
             String keyEnd = dbrLend.getKey();
@@ -206,7 +226,7 @@ public class ShowMovment extends AppCompatActivity {
             dbrBorrow.child(keyEnd).setValue(request);
             //change the status of the book from "available" to "not available"
             FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(true);
-            Toast.makeText(ShowMovment.this, "Il prestito è stato completato", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ShowMovment.this, getString(R.string.loan_completed), Toast.LENGTH_SHORT).show();
         }
         else{
             //Set only the flag in order to wait the other peer
@@ -214,7 +234,7 @@ public class ShowMovment extends AppCompatActivity {
             request.setStatus(Request.WAIT_END);
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).setValue(request);
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).setValue(request);
-            Toast.makeText(ShowMovment.this, "In attesa che l'altro utente confermi la cessione", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ShowMovment.this, getString(R.string.wait_other_user_finish), Toast.LENGTH_SHORT).show();
         }
 
         //Make the review

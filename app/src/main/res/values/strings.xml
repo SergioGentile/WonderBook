@@ -194,5 +194,16 @@
     <string name="send">Send</string>
     <string name="your_request_description">Request to *req_name* on *req_date*</string>
     <string name="other_request_description">Request by *req_name* on *req_date*</string>
+    <string name="conclude_the_loan">Conclude the loan</string>
+    <string name="wait_other_user_finish">Wait for the user to complete the loan</string>
+    <string name="borrowed_by_descr">Borrowed by *name* on *date*</string>
+    <string name="lended_by_descr">Lended to *name* on date *date*</string>
+    <string name="borrowed_by">Borrowed by</string>
+    <string name="lended_by">Lended by</string>
+    <string name="from">From</string>
+    <string name="to">to</string>
+    <string name="loan_completed">Loan has been completed</string>
+    <string name="warning_no_out_request">You didn\'t make any request</string>
+    <string name="warning_no_in_request">You don\'t have any sharing request</string>
 
 </resources>

@@ -54,6 +54,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_cloud_queue_black_24dp"
+                android:layout_gravity="center"
+                android:layout_width="90dp"
+                android:layout_height="90dp" />
+            <TextView
+                android:text="try"
+                android:id="@+id/tvWarning"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/tv_dim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
         <ListView
             android:id="@+id/list_of_requests"
             android:layout_width="match_parent"
