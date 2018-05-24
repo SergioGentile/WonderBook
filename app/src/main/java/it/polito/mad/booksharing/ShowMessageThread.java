@@ -101,7 +101,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter());
+        setNotification(notificationManager.getMessageCounter(),0,0);
 
         user = getIntent().getExtras().getParcelable("user");
 
@@ -251,7 +251,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
                     }
                 }
-                setNotification(notificationManager.getMessageCounter());
+                setNotification(notificationManager.getMessageCounter(),0,0);
             }
 
             @Override
@@ -282,12 +282,14 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         }
     }
 
-    private void setNotification(Integer notificaction_count) {
+    protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        if (notificaction_count > 0) {
+        TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
 
+        if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -297,14 +299,43 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
+        }else{
             message_nav_bar.setVisibility(View.GONE);
         }
+
+        if(notification_pending_count!=0){
+            //Set current notification inside initNavBar method
+            pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
+            pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            pending_request_nav_bar.setText(notification_pending_count.toString());
+            //Set notification on toolbar icon
+            pending_request_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            pending_request_nav_bar.setVisibility(View.GONE);
+        }
+        if(notification_loans_count!=0){
+            //Set current notification inside initNavBar method
+            loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            loans_nav_bar.setTypeface(null, Typeface.BOLD);
+            loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            loans_nav_bar.setText(notification_loans_count.toString());
+            //Set notification on toolbar icon
+            loans_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            loans_nav_bar.setVisibility(View.GONE);
+        }
+        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
+
+        if(tot!= 0){
+            toolbarNotification.setText(tot.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        }else{
+            toolbarNotification.setVisibility(View.GONE);
+        }
     }
+
+
 
 
     private void showAllChat() {
@@ -547,7 +578,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().getItem(5).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         notificationManager.clearNotification();
-        setNotification(notificationManager.getMessageCounter());
+        setNotification(notificationManager.getMessageCounter(),0,0);
     }
 
     @Override
@@ -592,54 +623,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     }
 
 
-    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
-
-
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
-        if (notificaction_count != 0) {
-
-            //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
-
-            //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
-            message_nav_bar.setVisibility(View.GONE);
-        }
-    }
-
-
-    protected void setNotificaPrestito(Integer notificaction_count) {
-
-
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
-        if (notificaction_count != 0) {
-
-            //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
-
-            //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
-            message_nav_bar.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -674,7 +657,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
                 }
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,0);
                 //Search the right things to update
 
 

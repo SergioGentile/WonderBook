@@ -101,7 +101,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter());
+        setNotification(notificationManager.getMessageCounter(),0,0);
 
 
         setUserInfoNavBar();
@@ -145,10 +145,13 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
-    private void setNotification(Integer notificaction_count) {
+    protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+        TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
+
         if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
@@ -159,14 +162,42 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
+        }else{
             message_nav_bar.setVisibility(View.GONE);
         }
+
+        if(notification_pending_count!=0){
+            //Set current notification inside initNavBar method
+            pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
+            pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            pending_request_nav_bar.setText(notification_pending_count.toString());
+            //Set notification on toolbar icon
+            pending_request_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            pending_request_nav_bar.setVisibility(View.GONE);
+        }
+        if(notification_loans_count!=0){
+            //Set current notification inside initNavBar method
+            loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            loans_nav_bar.setTypeface(null, Typeface.BOLD);
+            loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            loans_nav_bar.setText(notification_loans_count.toString());
+            //Set notification on toolbar icon
+            loans_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            loans_nav_bar.setVisibility(View.GONE);
+        }
+        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
+
+        if(tot!= 0){
+            toolbarNotification.setText(tot.toString());
+            toolbarNotification.setVisibility(View.VISIBLE);
+        }else{
+            toolbarNotification.setVisibility(View.GONE);
+        }
     }
+
 
     @Override
     protected void onResume() {
@@ -178,7 +209,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(2).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter());
+        setNotification(notificationManager.getMessageCounter(),0,0);
     }
 
     private void showAllMyBooks(String keyOwner) {
@@ -342,54 +373,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
     }
 
 
-    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
 
-
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
-        if (notificaction_count != 0) {
-
-            //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
-
-            //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
-            message_nav_bar.setVisibility(View.GONE);
-        }
-    }
-
-
-    protected void setNotificaPrestito(Integer notificaction_count) {
-
-
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
-        if (notificaction_count != 0) {
-
-            //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
-
-            //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
-            message_nav_bar.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -479,7 +463,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,0);
             }
         }
     }

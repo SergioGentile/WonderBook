@@ -3,6 +3,8 @@ package it.polito.mad.booksharing;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -41,6 +43,7 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ShowPendingRequest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,7 +55,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private ListView listOfRequest;
     private FirebaseListAdapter<Request> adapter;
     private NavigationView navigationView;
-
+    private View navView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +76,9 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-       // navView = navigationView.getHeaderView(0);
+        navView = navigationView.getHeaderView(0);
 
-
+        setUserInfoNavBar();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -407,12 +410,13 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         return true;
     }
 
-
-    protected void setNotificaRichiestaPrestito(Integer notificaction_count) {
-
+    protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+        TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+        TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
+
         if (notificaction_count != 0) {
 
             //Set current notification inside initNavBar method
@@ -423,39 +427,43 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
-
-            toolbarNotification.setText(notificaction_count.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
-            toolbarNotification.setVisibility(View.GONE);
+        }else{
             message_nav_bar.setVisibility(View.GONE);
         }
-    }
 
-
-    protected void setNotificaPrestito(Integer notificaction_count) {
-
-
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
-        if (notificaction_count != 0) {
-
+        if(notification_pending_count!=0){
             //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
-
+            pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
+            pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            pending_request_nav_bar.setText(notification_pending_count.toString());
             //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
+            pending_request_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            pending_request_nav_bar.setVisibility(View.GONE);
+        }
+        if(notification_loans_count!=0){
+            //Set current notification inside initNavBar method
+            loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+            loans_nav_bar.setTypeface(null, Typeface.BOLD);
+            loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            loans_nav_bar.setText(notification_loans_count.toString());
+            //Set notification on toolbar icon
+            loans_nav_bar.setVisibility(View.VISIBLE);
+        }else{
+            loans_nav_bar.setVisibility(View.GONE);
+        }
+        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
 
-            toolbarNotification.setText(notificaction_count.toString());
+        if(tot!= 0){
+            toolbarNotification.setText(tot.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        } else {
+        }else{
             toolbarNotification.setVisibility(View.GONE);
-            message_nav_bar.setVisibility(View.GONE);
         }
     }
+
+
 
     @Override
     public void onResume() {
@@ -463,4 +471,30 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(4).setChecked(true);
     }
+
+
+    private void setUserInfoNavBar() {
+        TextView barName = navView.findViewById(R.id.profileNameNavBar);
+        navView.getBackground().setAlpha(80);
+
+        CircleImageView barprofileImage = navView.findViewById(R.id.profileImageNavBar);
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
+            User currentUser = getIntent().getExtras().getParcelable("user_owner");
+            barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+            Bitmap image = null;
+            if (currentUser.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(currentUser.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        } else {
+            barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+            Bitmap image = null;
+
+            if (this.user.getImagePath() != null) {
+                image = BitmapFactory.decodeFile(user.getImagePath());
+                barprofileImage.setImageBitmap(image);
+            }
+        }
+    }
+
 }
