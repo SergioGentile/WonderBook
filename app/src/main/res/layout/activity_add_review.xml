@@ -98,7 +98,28 @@
                     android:stepSize="1"
                     android:theme="@style/RatingBar" />
 
+                <TextView
+                    android:layout_marginTop="@dimen/top_inside_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Scrivi una recensione (facoltativa)"
+                    android:textSize="@dimen/tv_dim"
+                    android:textColor="@color/colorPrimaryText"
+                    />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title">
 
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/top_inside_box"
+                        android:inputType="textNoSuggestions|textMultiLine"
+                        android:singleLine="false"
+                        android:textSize="@dimen/tv_dim" />
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"

@@ -23,6 +23,7 @@ class AddReview : AppCompatActivity() {
     var userToReview: User? = null
     var userPicture: ImageView? = null
     var usertv: TextView?=null
+    var tvTitle: EditText? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +33,9 @@ class AddReview : AppCompatActivity() {
         tvReview = findViewById(R.id.edtReview)
         userPicture = findViewById(R.id.profileImage)
         usertv = findViewById(R.id.usertoReview)
-
+        tvTitle = findViewById(R.id.edtTitle)
         //Dal bundle
-        val tvTitle = "HarryPotter"
+
         userLogged = intent.extras.getParcelable("user_logged")
         userToReview = intent.extras.getParcelable("user_to_review")
 
@@ -57,7 +58,7 @@ class AddReview : AppCompatActivity() {
             var status: String
             status = intent.getStringExtra("status")
 
-            val review  = Review(tvTitle, tvReview?.text.toString(), status, rating?.rating!!, userLogged?.name?.value!!, userLogged?.surname?.value!!, userLogged?.key!! ,userLogged?.user_image_url!! )
+            val review  = Review(tvTitle?.text.toString(), tvReview?.text.toString(), status, rating?.rating!!, userLogged?.name?.value!!, userLogged?.surname?.value!!, userLogged?.key!! ,userLogged?.user_image_url!! )
             FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("reviews").push().setValue(review)
             var numRev: Int = userToReview?.numRev!!
             var numStars: Float = rating?.rating!!
