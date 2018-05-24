@@ -13,70 +13,72 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabsMovment"
-            android:layout_below="@id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabPaddingEnd="@dimen/margin_right"
-            app:tabPaddingStart="@dimen/margin_left"
-            app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@color/colorTabUnselected">
+            android:layout_height="wrap_content">
 
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabOutcoming"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Presi in prestito" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabIncoming"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dati in prestito" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabPast"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Concluse" />
-        </android.support.design.widget.TabLayout>
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:navigationIcon="@drawable/ic_menu_black_24dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/show_movment" />
-
-        <TextView
-            android:layout_below="@id/toolbar"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:id="@+id/tv_nav_drawer_notification"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="-25dp"
-            android:background="@drawable/round_notification"
-            android:gravity="center"
-            android:text="2"
-            android:textColor="@android:color/white"
-            android:textSize="8sp"
-            android:visibility="visible" />
+                android:layout_height="wrap_content">
 
 
-    </RelativeLayout>
-</FrameLayout>
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabsMovment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toolbar"
+                    app:tabGravity="fill"
+                    app:tabPaddingEnd="@dimen/margin_right"
+                    app:tabPaddingStart="@dimen/margin_left"
+                    app:tabSelectedTextColor="@android:color/white"
+                    app:tabTextColor="@color/colorTabUnselected">
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabOutcoming"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/borrowed" />
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabIncoming"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lended" />
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabPast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/concluded_loans" />
+                </android.support.design.widget.TabLayout>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:navigationIcon="@drawable/ic_menu_black_24dp"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
+                    app:title="@string/show_movment" />
+
+                <TextView
+                    android:id="@+id/tv_nav_drawer_notification"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_below="@id/toolbar"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="-25dp"
+                    android:background="@drawable/round_notification"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="8sp"
+                    android:visibility="visible" />
+
+
+            </RelativeLayout>
+        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
@@ -88,12 +90,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
-            android:dividerHeight="0dp"/>
+            android:dividerHeight="0dp" />
 
         <View
-            android:background="@drawable/shadow_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/shadow"/>
+            android:layout_height="@dimen/shadow"
+            android:background="@drawable/shadow_toolbar" />
+
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_cloud_queue_black_24dp"
+                android:layout_gravity="center"
+                android:layout_width="90dp"
+                android:layout_height="90dp" />
+            <TextView
+                android:id="@+id/tvWarning"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/tv_dim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </FrameLayout>
 
 

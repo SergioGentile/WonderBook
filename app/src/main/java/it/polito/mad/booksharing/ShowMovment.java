@@ -35,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -60,6 +61,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private FirebaseListAdapter<Request> adapter;
     private NavigationView navigationView;
     private View navView;
+    private int posTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +84,18 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navView = navigationView.getHeaderView(0);
+        showEmpty(BORROW);
+        posTab = 0;
+
+
 
         setUserInfoNavBar();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setList(tab.getPosition());
+                showEmpty(tab.getPosition());
+                posTab = tab.getPosition();
             }
 
             @Override
@@ -100,6 +108,145 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
             }
         });
+
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("posTab", posTab);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        TabLayout.Tab tab = tabLayout.getTabAt(savedInstanceState.getInt("posTab"));
+        tab.select();
+
+    }
+
+    private void showEmpty(int type){
+        //Set all gone
+        final LinearLayout ll = (LinearLayout) findViewById(R.id.empty);
+        final TextView tv = (TextView) findViewById(R.id.tvWarning);
+        ll.setVisibility(View.GONE);
+        if(type == BORROW){
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_borrow_book));
+                        }
+                        else{
+                            //check if some request with state start exist
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.ACCEPTED) || r.getStatus().equals(Request.WAIT_END)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                tv.setText(getString(R.string.warning_no_borrow_book));
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_borrow_book));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+        else if (type == LAND){
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_lend_book));
+                        }
+                        else{
+                            //Empty gone
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.ACCEPTED) || r.getStatus().equals(Request.WAIT_END)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                tv.setText(getString(R.string.warning_no_lend_book));
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_lend_book));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+        else{
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_shared_book));
+                        }
+                        else{
+                            //Empty gone
+                            tv.setText(getString(R.string.warning_no_shared_book));
+                            ll.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_shared_book));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 
     private void setList(int type){
@@ -135,8 +282,8 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private FirebaseListAdapter<Request> getAdapter(int type) {
         FirebaseListAdapter<Request> adapterToReturn = null;
         if(LAND == type){
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_incoming, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").orderByChild("time");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_incoming, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
@@ -175,8 +322,8 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             };
         }
         else if(type == BORROW){
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_outcoming, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").orderByChild("time");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_movment_outcoming, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
@@ -215,8 +362,8 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             };
         }
         else {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_past_movment, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").orderByChild("timeEnd");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_past_movment, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     TextView title =(TextView) v.findViewById(R.id.tvTitle);
@@ -234,7 +381,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                         line.setBackgroundColor(getColor(R.color.borrow));
                     }
 
-                    time.setText(getString(R.string.from) + " " + DateFormat.format("dd/MM/yyyy", -1*request.getTime()) +  " " + getString(R.string.to) + " " +  DateFormat.format("dd/MM/yyyy", request.getTimeEnd()));
+                    time.setText(getString(R.string.from) + " " + DateFormat.format("dd/MM/yyyy", -1*request.getTime()) +  " " + getString(R.string.to) + " " +  DateFormat.format("dd/MM/yyyy", -1*request.getTimeEnd()));
 
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
                 }
@@ -244,14 +391,14 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     }
 
 
-    private void conclude(Request request, final int type){
+    private void conclude(final Request request, final int type){
 
         if(request.getStatus().equals(Request.WAIT_END)){
             //It means that i can conclude all
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
             request.setStatus(Request.END);
-            request.setTimeEnd(new Date().getTime());
+            request.setTimeEnd(-1*new Date().getTime());
             DatabaseReference dbrLend = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("ended").push();
             DatabaseReference dbrBorrow = FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("ended");
             String keyEnd = dbrLend.getKey();
@@ -289,6 +436,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
                 User userToReview = dataSnapshot.getValue(User.class);
                 Intent intent = new Intent(ShowMovment.this, AddReview.class);
+                intent.putExtra("titleBook", request.getBookTitle());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user_logged", user);
                 bundle.putParcelable("user_to_review", userToReview);

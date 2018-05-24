@@ -666,8 +666,6 @@ public class EditProfile extends AppCompatActivity {
         edit.putString("user", toStore).apply();
         edit.commit();
         setUser(u);
-
-
     }
 
     private void saveonFirebase(String imagePath) {

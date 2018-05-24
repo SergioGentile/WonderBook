@@ -98,7 +98,7 @@
     <string name="auth_fail_internet">Authentication failed. Please check your internet connection.</string>
     <string name="change_mail_pass">Change email and password</string>
     <string name="available_upper">Available</string>
-    <string name="unavailable_upper">Available</string>
+    <string name="unavailable_upper">Unavailable</string>
     <string name="state">State</string>
     <string name="state_description">Indicate here if your book is available or not</string>
 
@@ -196,5 +196,23 @@
     <string name="warning_no_in_request">You don\'t have any sharing request</string>
     <string name="request">Requests</string>
     <string name="show_movment">Yours Shares</string>
+    <string name="carry_out">carry out</string>
+    <string name="received">received</string>
+    <string name="lended">lended</string>
+    <string name="borrowed">borrowed</string>
+    <string name="concluded_loans">concluded loans</string>
+    <string name="require_this_book">Require this book</string>
+    <string name="summary">Summary</string>
+    <string name="message">Message request</string>
+    <string name="send_message_to_user">Send a message to the user</string>
+    <string name="request_book">Request a book</string>
+    <string name="borrow_the_book">Borrowed the book</string>
+    <string name="lend_the_book">Lended the book</string>
+    <string name="write_your_review_optional">Write a comment (optional)</string>
+    <string name="please_insert_score">Please, insert at least a score</string>
+    <string name="all">All</string>
+    <string name="warning_no_borrow_book">You didn\'t borrow any book</string>
+    <string name="warning_no_lend_book">You didn\'t lend any book</string>
+    <string name="warning_no_shared_book">You didn\'t share any book</string>
 
 </resources>

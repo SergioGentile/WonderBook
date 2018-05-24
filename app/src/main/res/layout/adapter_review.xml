@@ -14,26 +14,25 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_gravity="center"
             android:src="@drawable/profile" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="@dimen/margin_right"
             android:orientation="vertical">
 
             <TextView
-                android:textStyle="bold"
-                android:id="@+id/title"
+                android:textSize="@dimen/title"
+                android:id="@+id/name"
+                android:textColor="@color/colorPrimaryText"
+                android:text="Sergio Gentile"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="''Un ottimo utente''" />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,16 +64,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:textColor="@color/colorSecondaryText"
+                    android:inputType="textMultiLine"
+                    android:text="Ha rcievuto in prestito Harry Potter e la camera dei segreti"
                     android:id="@+id/type"
                     android:layout_marginLeft="2dp"
                     android:textSize="@dimen/subtitle_box_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:textSize="@dimen/subtitle_box_size"
-                    android:id="@+id/name"
-                    android:textColor="@color/colorSecondaryText"
-                    android:text="da Sergio Gentile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -88,8 +83,8 @@
         android:id="@+id/reviewText"
         android:text="Ho ricevuto in prestito un libro in data 10/09/2018. Antonio si è sempre mostrato puntuale nel rispondere ed è stato molto gentile venendo incontro alle mie esigenze. Consigilio di prendere libri in prestito da lui."
         android:layout_marginTop="@dimen/top_inside_box"
-        android:layout_marginLeft="@dimen/margin_left"
-        android:layout_marginRight="@dimen/margin_right"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp"
         android:textColor="@color/colorPrimaryText"
         android:textSize="@dimen/tv_dim"
         android:layout_width="wrap_content"

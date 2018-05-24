@@ -243,29 +243,29 @@
 
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                                    android:layout_marginTop="@dimen/top_inside_box">
+                                    android:layout_marginBottom="@dimen/bottom_inside_box">
 
                                     <LinearLayout
                                         android:id="@+id/rl_reviews"
-                                        android:orientation="vertical"
-                                        android:layout_marginTop="@dimen/top_inside_box"
-                                        android:layout_marginBottom="@dimen/bottom_inside_box"
-                                        android:layout_marginRight="@dimen/margin_right"
-                                        android:layout_marginLeft="@dimen/margin_left"
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                                        android:layout_marginLeft="@dimen/margin_left"
+                                        android:layout_marginRight="@dimen/margin_right"
+                                        android:layout_marginTop="@dimen/top_inside_box"
+                                        android:orientation="vertical">
+
                                         <TextView
-                                            android:textSize="@dimen/title_box_size"
-                                            android:text="Recensioni"
                                             android:layout_width="match_parent"
-                                            android:layout_height="wrap_content" />
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/reviews"
+                                            android:textSize="@dimen/title_box_size" />
 
                                         <LinearLayout
-                                            android:layout_marginTop="@dimen/top_inside_box"
-                                            android:orientation="horizontal"
                                             android:layout_width="match_parent"
-                                            android:layout_height="wrap_content">
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="@dimen/top_inside_box"
+                                            android:orientation="horizontal">
 
                                             <RatingBar
                                                 android:id="@+id/rating_reviews"
@@ -280,34 +280,34 @@
                                                 android:theme="@style/RatingBar" />
 
                                             <TextView
-                                                android:gravity="center"
                                                 android:id="@+id/tv_reviews"
-                                                android:textColor="@color/colorSecondaryText"
-                                                android:textSize="@dimen/subtitle_box_size"
-                                                android:layout_marginLeft="5dp"
-                                                android:text="10 recensioni"
                                                 android:layout_width="wrap_content"
-                                                android:layout_height="match_parent" />
+                                                android:layout_height="match_parent"
+                                                android:layout_marginLeft="5dp"
+                                                android:gravity="center"
+                                                android:text="10 recensioni"
+                                                android:textColor="@color/colorSecondaryText"
+                                                android:textSize="@dimen/subtitle_box_size" />
 
                                             <LinearLayout
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
-                                                android:gravity="right|center"
-                                                >
+                                                android:gravity="right|center">
+
                                                 <ImageView
-                                                    android:layout_gravity="center"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
+                                                    android:layout_gravity="center"
 
                                                     android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
                                             </LinearLayout>
                                         </LinearLayout>
 
                                         <View
-                                            android:layout_marginTop="4dp"
-                                            android:background="@color/colorPrimaryText"
                                             android:layout_width="match_parent"
-                                            android:layout_height="1dp"/>
+                                            android:layout_height="1dp"
+                                            android:layout_marginTop="4dp"
+                                            android:background="@color/colorPrimaryText" />
 
 
                                     </LinearLayout>

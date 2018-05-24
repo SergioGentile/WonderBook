@@ -56,6 +56,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private FirebaseListAdapter<Request> adapter;
     private NavigationView navigationView;
     private View navView;
+    private int posTab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         tabLayout = findViewById(R.id.tabsRequest);
         setList(BORROW);
         showEmpty(BORROW);
+        posTab = 0;
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -84,7 +86,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             public void onTabSelected(TabLayout.Tab tab) {
                 setList(tab.getPosition());
                 showEmpty(tab.getPosition());
-                //Add the listener to notify if the list is empty
+                posTab = tab.getPosition();
             }
 
             @Override
@@ -127,6 +129,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                                 }
                             }
                             if(count<=0){
+                                tv.setText(getString(R.string.warning_no_out_request));
                                 ll.setVisibility(View.VISIBLE);
                             }
                             else{
@@ -169,6 +172,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                                 }
                             }
                             if(count<=0){
+                                tv.setText(getString(R.string.warning_no_in_request));
                                 ll.setVisibility(View.VISIBLE);
                             }
                             else{
@@ -191,6 +195,23 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         }
     }
 
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("posTab", posTab);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        TabLayout.Tab tab = tabLayout.getTabAt(savedInstanceState.getInt("posTab"));
+        tab.select();
+
+    }
 
     private void setList(int type){
         listOfRequest.setAdapter(null);

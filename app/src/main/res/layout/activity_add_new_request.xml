@@ -17,7 +17,7 @@
         app:contentInsetStart="0dp"
         app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
         app:subtitleTextColor="@color/windowBackground"
-        app:title="Richiedi il libro"
+        app:title="@string/request_book"
         app:titleTextColor="@android:color/white" />
 
     <FrameLayout
@@ -50,7 +50,7 @@
                     <TextView
                         android:textColor="@color/colorPrimaryText"
                         android:textSize="@dimen/title_box_size"
-                        android:text="Conferma"
+                        android:text="@string/summary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -159,13 +159,13 @@
 
                     <TextView
                         android:textSize="@dimen/title_box_size"
-                        android:text="Messaggio di richiesta"
+                        android:text="@string/message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="@dimen/subtitle_box_size"
-                        android:text="Invia un messaggio in chat all'utente"
+                        android:text="@string/send_message_to_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:background="@drawable/my_rounded_button"
-                    android:text="Invia"
+                    android:text="@string/send"
                     android:textColor="@android:color/white" />
             </LinearLayout>
 

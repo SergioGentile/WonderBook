@@ -192,5 +192,23 @@
     <string name="warning_no_in_request">Non hai richieste di condivisione</string>
     <string name="request">Richieste</string>
     <string name="show_movment">I tuoi prestiti</string>
+    <string name="carry_out">Effettuate</string>
+    <string name="received">Ricevute</string>
+    <string name="lended">Dati in prestito</string>
+    <string name="borrowed">Presi in prestito</string>
+    <string name="concluded_loans">prestiti conclusi</string>
+    <string name="require_this_book">Richiedi questo libro</string>
+    <string name="summary">Conferma</string>
+    <string name="message">Messaggio di richiesta</string>
+    <string name="send_message_to_user">Manda un messaggio all\'utente</string>
+    <string name="request_book">Richiedi un libro</string>
+    <string name="borrow_the_book">Ha preso in prestito il libro</string>
+    <string name="lend_the_book">Ha dato in prestito il libro</string>
+    <string name="write_your_review_optional">Inserisci una recensione (facoltativo)</string>
+    <string name="please_insert_score">Per favore, inserisci almeno un voto</string>
+    <string name="all">tutte</string>
+    <string name="warning_no_borrow_book">Non hai libri in prestito</string>
+    <string name="warning_no_lend_book">Non hai dato libri in prestito</string>
+    <string name="warning_no_shared_book">Non hai ancora condiviso libri</string>
 
 </resources>

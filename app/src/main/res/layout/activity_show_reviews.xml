@@ -13,21 +13,23 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.myToolbar">
 
+        <android.support.v7.widget.Toolbar
+            app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:theme="@style/Theme.myToolbar"
+            app:subtitleTextColor="@color/windowBackground"
+            app:title="@string/reviews"
+            app:titleTextColor="@android:color/white">
+
+        </android.support.v7.widget.Toolbar>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                android:theme="@style/Theme.myToolbar"
-                app:subtitleTextColor="@color/windowBackground"
-                app:title="Recensioni"
-                app:titleTextColor="@android:color/white">
-
-            </android.support.v7.widget.Toolbar>
 
 
         </FrameLayout>
@@ -47,19 +49,19 @@
                 android:id="@+id/tabAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tutte" />
+                android:text="@string/all" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabOwner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dati" />
+                android:text="lended" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabBorrwer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="presi" />
+                android:text="@string/borrowed" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 

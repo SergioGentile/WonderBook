@@ -38,8 +38,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -253,6 +256,61 @@ public class ShowProfile extends AppCompatActivity
         }
         setUserInfoNavBar();
 
+        FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("numRev").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Integer numRev =dataSnapshot.getValue(Integer.class);
+                    if(user.getNumRev()!=numRev){
+                        user.setNumRev(numRev);
+                        if(Integer.valueOf(user.getNumRev())==1){
+                            tvReviews.setText(user.getNumRev() + " " + getString(R.string.review));
+                        }
+                        else{
+                            tvReviews.setText(user.getNumRev() + " " + getString(R.string.reviews));
+                        }
+                        setSharedPrefUserInfo(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("numStars").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Float numStars =dataSnapshot.getValue(Float.class);
+                    if(user.getNumStars()!=numStars){
+                        user.setNumStars(numStars);
+                        rateReviews.setRating(numStars);
+                        setSharedPrefUserInfo(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void setSharedPrefUserInfo(User u) {
+        //I Create a new json object in order to store all the information contained inside my user object.
+        //Then I save it inside the SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        Gson json = new Gson();
+        String toStore = json.toJson(u);
+        edit.putString("user", toStore).apply();
+        edit.commit();
     }
 
     private void zoomImage() {
@@ -443,10 +501,10 @@ public class ShowProfile extends AppCompatActivity
         }
 
         if(Integer.valueOf(user.getNumRev())==1){
-            tvReviews.setText(user.getNumRev() + " recensione");
+            tvReviews.setText(user.getNumRev() + " " + getString(R.string.review));
         }
         else{
-            tvReviews.setText(user.getNumRev() + " recensioni");
+            tvReviews.setText(user.getNumRev() + " " + getString(R.string.reviews));
         }
 
         rateReviews.setRating(user.getNumStars());

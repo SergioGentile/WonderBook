@@ -37,13 +37,13 @@
                   android:id="@+id/tabOutcoming"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:text="Le tue richieste" />
+                  android:text="@string/carry_out" />
 
               <android.support.design.widget.TabItem
                   android:id="@+id/taIncoming"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:text="In arrivo" />
+                  android:text="@string/received" />
           </android.support.design.widget.TabLayout>
 
         <android.support.v7.widget.Toolbar
@@ -93,7 +93,6 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp" />
             <TextView
-                android:text="try"
                 android:id="@+id/tvWarning"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/tv_dim"

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorDivider"
+    android:orientation="vertical"
     tools:context="it.polito.mad.booksharing.AddReview">
 
     <android.support.design.widget.AppBarLayout
@@ -26,137 +26,130 @@
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
+
     <View
-        android:background="@drawable/shadow_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="8dp"/>
+        android:layout_height="8dp"
+        android:background="@drawable/shadow_toolbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-        <android.support.v7.widget.CardView
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="@dimen/margin_right"
-            android:layout_marginLeft="@dimen/margin_left"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_marginRight="@dimen/margin_right"
-                android:layout_marginLeft="@dimen/margin_left"
-                android:layout_marginBottom="@dimen/bottom_inside_box"
-                android:layout_marginTop="@dimen/top_inside_box"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <TextView
-                    android:text="@string/describe_exp_with"
-                    android:textSize="@dimen/title_box_size"
-                    android:layout_marginTop="@dimen/top_inside_box"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="@dimen/margin_left"
+                    android:layout_marginRight="@dimen/margin_right">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                        android:layout_marginLeft="@dimen/margin_left"
+                        android:layout_marginRight="@dimen/margin_right"
+                        android:layout_marginTop="@dimen/top_inside_box"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:text="@string/describe_exp_with"
+                            android:textSize="@dimen/title_box_size" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_top"
+                            android:orientation="horizontal">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profileImage"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/profile" />
+
+                            <TextView
+                                android:id="@+id/usertoReview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/margin_top"
+                                android:gravity="center_vertical"
+                                android:text="Sergio Gentile"
+                                android:textSize="@dimen/tv_dim" />
+                        </LinearLayout>
+
+                        <RatingBar
+                            android:id="@+id/rating_reviews"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="@dimen/bottom_inside_box"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="@dimen/margin_top"
+                            android:isIndicator="false"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:theme="@style/RatingBar" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:text="@string/write_your_review_optional"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="@dimen/title_box_size" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_marginTop="@dimen/top_inside_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/review">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/edtReview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/top_inside_box"
+                                android:inputType="textNoSuggestions|textMultiLine"
+                                android:singleLine="false"
+                                android:textSize="@dimen/tv_dim" />
+                        </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/margin_top">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/profile" />
+                    android:orientation="vertical"
 
-                    <TextView
-                        android:id="@+id/usertoReview"
-                        android:layout_marginLeft="@dimen/margin_top"
+                    android:paddingBottom="@dimen/bottom_inside_box">
+
+                    <Button
+                        android:id="@+id/fab"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Sergio Gentile"
-                        android:gravity="center_vertical"
-                        android:textSize="@dimen/tv_dim"/>
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="@dimen/fab_margin"
+                        android:background="@drawable/my_rounded_button"
+                        android:text="@string/send"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
-
-                <RatingBar
-                    android:layout_marginBottom="@dimen/bottom_inside_box"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="@dimen/margin_top"
-                    android:id="@+id/rating_reviews"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:isIndicator="false"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:theme="@style/RatingBar" />
-
-                <TextView
-                    android:layout_marginTop="@dimen/top_inside_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Scrivi una recensione (facoltativa)"
-                    android:textSize="@dimen/tv_dim"
-                    android:textColor="@color/colorPrimaryText"
-                    />
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/title">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edtTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/top_inside_box"
-                        android:inputType="textNoSuggestions|textMultiLine"
-                        android:singleLine="false"
-                        android:textSize="@dimen/tv_dim" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/review">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edtReview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/top_inside_box"
-                        android:inputType="textNoSuggestions|textMultiLine"
-                        android:singleLine="false"
-                        android:textSize="@dimen/tv_dim" />
-                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-
-            android:paddingBottom="@dimen/bottom_inside_box">
-
-            <Button
-                android:layout_marginRight="@dimen/fab_margin"
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@drawable/my_rounded_button"
-                android:text="@string/send"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-</LinearLayout>
+        </ScrollView>
 
     </FrameLayout>
 

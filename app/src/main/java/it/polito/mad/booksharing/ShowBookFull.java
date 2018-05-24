@@ -13,6 +13,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +56,7 @@ public class ShowBookFull extends AppCompatActivity {
     private Animator mCurrentAnimator;
     private ImageView expandedImage;
     private ImageButton contactUser;
+    private FloatingActionButton fab;
 
     private Toolbar toolbar;
     private TextView available;
@@ -213,6 +215,7 @@ public class ShowBookFull extends AppCompatActivity {
         imageMyBook = findViewById(R.id.shMyImage);
         imageBook = findViewById(R.id.shImage);
         available = findViewById(R.id.tvState);
+        fab = (FloatingActionButton) findViewById(R.id.fabRequest);
 
         //Fill all the textView of the view with the information about the book.
         CardView cvSharedBy = findViewById(R.id.card_shared_by);
@@ -220,6 +223,7 @@ public class ShowBookFull extends AppCompatActivity {
             book = getIntent().getExtras().getParcelable("book_mp");
             user = getIntent().getExtras().getParcelable("user_mp");
             btnEdit.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
             cvSharedBy.setVisibility(View.VISIBLE);
             CircleImageView imageSharedBy = findViewById(R.id.image_shared_by);
             setBitmapFromFirebase(imageSharedBy);
@@ -247,6 +251,7 @@ public class ShowBookFull extends AppCompatActivity {
             });
 
         } else {
+            fab.setVisibility(View.GONE);
             cvSharedBy.setVisibility(View.GONE);
             book = getIntent().getParcelableExtra("book");
             user = getIntent().getParcelableExtra("user");
@@ -343,7 +348,7 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-        LinearLayout ll = (LinearLayout) findViewById(R.id.container);
+        /*LinearLayout ll = (LinearLayout) findViewById(R.id.container);
         ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -360,7 +365,28 @@ public class ShowBookFull extends AppCompatActivity {
                    startActivity(intent);
                }
             }
+        });*/
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!book.isAvailable()){
+                    Toast.makeText(ShowBookFull.this, "Attenzione: questo libro non è disponibile quindi non può essere richiesto.", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("book", book);
+                    bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
+                    bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
         });
+
+
 
 
     }

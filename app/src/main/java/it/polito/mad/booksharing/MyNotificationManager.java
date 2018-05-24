@@ -165,7 +165,6 @@ public class MyNotificationManager {
             }
 
             if (tasks != null && !tasks.isEmpty()) {
-
                 String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
                 if (!className.contains("ChatPage")) {
                     buildSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);

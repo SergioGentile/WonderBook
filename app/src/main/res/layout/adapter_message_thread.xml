@@ -69,19 +69,20 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_weight="1.7"
+                        android:layout_marginRight="0dp"
+                        android:layout_weight="1.5"
                         android:id="@+id/last_mess"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:text="Testo di prova"
+                        android:text="Testo di prova per vedere se il testo fitta bene o no"
                         android:textColor="@color/colorSecondaryText" />
 
                     <LinearLayout
-                        android:layout_weight="0.3"
+                        android:layout_weight="0.5"
                         android:id="@+id/ll3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:gravity="right">
 
