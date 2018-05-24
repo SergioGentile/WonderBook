@@ -170,7 +170,7 @@
     <string name="show_book_full">Book Information</string>
     <string name="reviews">Reviews</string>
     <string name="review">Review</string>
-    <string name="write_new_review">Write a new review</string>
+    <string name="write_new_review">Write review</string>
     <string name="describe_exp_with">Describe your expirience with</string>
     <string name="i_borrow_book">I borrowed a book</string>
     <string name="i_lend_book">I lended a book</string>
@@ -194,5 +194,7 @@
     <string name="loan_completed">Loan has been completed</string>
     <string name="warning_no_out_request">You didn\'t make any request</string>
     <string name="warning_no_in_request">You don\'t have any sharing request</string>
+    <string name="request">Requests</string>
+    <string name="show_movment">Yours Shares</string>
 
 </resources>

@@ -193,7 +193,7 @@
     <string name="Lender">Lender</string>
     <string name="send">Send</string>
     <string name="show_movment">Yours Shares</string>
-    <string name="request">Request</string>
+    <string name="request">Requests</string>
     <string name="your_request_description">Request to *req_name* on *req_date*</string>
     <string name="other_request_description">Request by *req_name* on *req_date*</string>
     <string name="conclude_the_loan">Conclude the loan</string>

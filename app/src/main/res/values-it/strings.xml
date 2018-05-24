@@ -166,7 +166,7 @@
     <string name="show_book_full">Informazioni sul libro</string>
     <string name="reviews">Recensioni</string>
     <string name="review">Recensione</string>
-    <string name="write_new_review">Scrivi una nuova recensione</string>
+    <string name="write_new_review">Scrivi una recensione</string>
     <string name="describe_exp_with">Descrivi la tua esperienza con</string>
     <string name="i_lend_book">Ho dato un libro in prestito</string>
     <string name="i_borrow_book">Ho preso un libro in prestito</string>
@@ -190,5 +190,7 @@
     <string name="loan_completed">Il prestito è stato completato</string>
     <string name="warning_no_out_request">Non hai effettuato alcuna richiesta</string>
     <string name="warning_no_in_request">Non hai richieste di condivisione</string>
+    <string name="request">Richieste</string>
+    <string name="show_movment">I tuoi prestiti</string>
 
 </resources>

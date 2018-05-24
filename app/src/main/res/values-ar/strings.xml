@@ -166,4 +166,32 @@
     <string name="show_book_full">معلومات حول الكتاب</string>
     <string name="loans">قرض</string>
     <string name="pending_request">طلبات القروض</string>
+    <string name="title_activity_chat">ثرثرة</string>
+    <string name="filter">FILTER</string>
+    <string name="reviews">التعليقات</string>
+    <string name="review">مراجعة</string>
+    <string name="write_new_review">اكتب مراجعة</string>
+    <string name="describe_exp_with">صف تجربتك مع</string>
+    <string name="i_lend_book">أنا قدمت كتابا على سبيل الاعارة</string>
+    <string name="i_borrow_book">أخذت كتابا على سبيل الاعارة</string>
+    <string name="message_request_book">مرحبًا *user_name*! أنا مهتم بكتابك *book_name*. هل ترغب في مشاركتها معي؟ 😀</string>
+    <string name="accept">الفأس</string>
+    <string name="DeleteRequest">إلغاء الطلب</string>
+    <string name="refuse">يرفض</string>
+    <string name="send">عرض</string>
+    <string name="show_movment">القروض الخاصة بك</string>
+    <string name="request">طلبات</string>
+    <string name="your_request_description">طلب *req_name* على *req_date*</string>
+    <string name="other_request_description">مطلوب بواسطة *req_name* على *req_date*</string>
+    <string name="conclude_the_loan">اختتام القرض</string>
+    <string name="wait_other_user_finish">في انتظار المستخدم الآخر لاستكمال القرض</string>
+    <string name="borrowed_by_descr">تم الاقتراض من *name* في *date*</string>
+    <string name="lended_by_descr">تم الاقراض في *name* في *date*</string>
+    <string name="borrowed_by">اقتراض من</string>
+    <string name="lended_by">منح على قرض</string>
+    <string name="from">من</string>
+    <string name="to">إلى</string>
+    <string name="loan_completed">وقد تم الانتهاء من القرض</string>
+    <string name="warning_no_out_request">أنت لم تقدم أي طلبات</string>
+    <string name="warning_no_in_request">ليس لديك أي طلبات للمشاركة</string>
 </resources>
