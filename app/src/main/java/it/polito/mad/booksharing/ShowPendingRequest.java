@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -26,10 +27,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.List;
@@ -50,12 +57,12 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_pending_request);
-
         user = getIntent().getExtras().getParcelable("user");
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
         setList(BORROW);
+        showEmpty(BORROW);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -73,6 +80,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 setList(tab.getPosition());
+                showEmpty(tab.getPosition());
+                //Add the listener to notify if the list is empty
             }
 
             @Override
@@ -87,6 +96,98 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         });
 
     }
+
+
+    private void showEmpty(int type){
+        //Set all gone
+        final LinearLayout ll = (LinearLayout) findViewById(R.id.empty);
+        final TextView tv = (TextView) findViewById(R.id.tvWarning);
+        ll.setVisibility(View.GONE);
+        if(type == BORROW){
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_out_request));
+                        }
+                        else{
+                            //check if some request with state start exist
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.SENDED)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_out_request));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+        else{
+            FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getChildrenCount() <= 0){
+                            //Empty visible
+                            ll.setVisibility(View.VISIBLE);
+                            tv.setText(getString(R.string.warning_no_in_request));
+                        }
+                        else{
+                            //Empty gone
+                            int count = 0;
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                Request r = ds.getValue(Request.class);
+                                if(r.getStatus().equals(Request.SENDED)){
+                                    count++;
+                                }
+                            }
+                            if(count<=0){
+                                ll.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                ll.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                    else{
+                        //Empty visible
+                        ll.setVisibility(View.VISIBLE);
+                        tv.setText(getString(R.string.warning_no_in_request));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ll.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
 
     private void setList(int type){
         listOfRequest.setAdapter(null);
@@ -132,8 +233,11 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
                     title.setText(request.getBookTitle());
-                    borrower.setText(request.getNameBorrower());
+                    borrower.setText(getString(R.string.other_request_description).replace("*req_name*", request.getNameBorrower()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
+                    View view = v.findViewById(R.id.line);
+                    view.setBackgroundColor(getColor(R.color.land));
+
 /*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.accept_refuse_ll);
                     final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
@@ -182,8 +286,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             };
         }
         else {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").orderByChild("time");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_outcoming, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
@@ -198,9 +302,10 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     title.setText(request.getBookTitle());
-                    lender.setText(request.getNameLender());
+                    lender.setText(getString(R.string.your_request_description).replace("*req_name*", request.getNameLender()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
-
+                    View view = v.findViewById(R.id.line);
+                    view.setBackgroundColor(getColor(R.color.borrow));
 
 /*
                     final LinearLayout ll = (LinearLayout) v.findViewById(R.id.cancel_ll);

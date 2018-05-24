@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/margin_right"
@@ -47,10 +48,9 @@
                     android:id="@+id/book_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:text="Il Codice da Vinci"
-                    android:textColor="@color/colorSecondaryText"
-                    android:textSize="@dimen/tv_dim" />
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/title" />
 
             </LinearLayout>
 
@@ -60,6 +60,7 @@
                 android:weightSum="2">
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/margin_right"
@@ -71,7 +72,6 @@
                     android:id="@+id/book_borrower"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:text="Brown"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/tv_dim" />
@@ -132,6 +132,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_gravity="end"

@@ -11,7 +11,7 @@ import it.polito.mad.booksharing.User;
 
 public class Request {
     String nameLender, nameBorrower, bookImageUrl, bookTitle, status, keyLender, keyBorrower, keyRequest, position, keyBook, endRequestBy;
-    long time;
+    long time, timeEnd;
     final static String SENDED = "sended", ACCEPTED = "accepted", REJECTED = "rejected", END = "end", WAIT_END = "wait";
 
     public Request(){
@@ -132,5 +132,13 @@ public class Request {
 
     public void setEndRequestBy(String endRequestBy) {
         this.endRequestBy = endRequestBy;
+    }
+
+    public long getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(long timeEnd) {
+        this.timeEnd = timeEnd;
     }
 }

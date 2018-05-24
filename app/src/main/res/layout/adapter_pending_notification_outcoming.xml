@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title"
@@ -47,10 +48,10 @@
                     android:id="@+id/book_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:gravity=""
                     android:text="Il Codice da Vinci"
-                    android:textColor="@color/colorSecondaryText"
-                    android:textSize="@dimen/tv_dim" />
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/title" />
 
             </LinearLayout>
 
@@ -65,7 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-
+                        android:visibility="gone"
                         android:layout_weight="0.3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,8 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.4"
-                        android:gravity="center"
-                        android:text="Sergio Gentile"
+                        android:text="Richiesto a Sergio Gentile il 25/04/2018"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="@dimen/tv_dim" />
 
@@ -100,9 +100,10 @@
                 >
 
                 <TextView
+                    android:layout_marginTop="6dp"
                     android:id="@+id/tv_cancel"
                     android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@android:color/holo_red_light"
+                    android:textColor="@android:color/holo_red_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -115,6 +116,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/line"
                 android:layout_gravity="end"
                 android:layout_marginTop="9dp"
                 android:background="@color/colorPrimary"

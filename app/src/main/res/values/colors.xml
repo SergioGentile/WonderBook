@@ -22,8 +22,8 @@
     <color name="colorTabUnselected">#c6c6cc</color>
     <color name="borrow">#009688</color>
     <color name="borrowDark">#00796B</color>
-    <color name="land">#F44336</color>
-    <color name="landDark">#D32F2F</color>
+    <color name="land">#C62828</color>
+    <color name="landDark">#B71C1C</color>
     <color name="pastDark"> #AFB42B</color>
     <color name="past">#CDDC39</color>
 </resources>
