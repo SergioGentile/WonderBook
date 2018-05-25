@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -42,6 +43,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -344,6 +346,29 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         }
                     });
 
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(DataSnapshot dataSnapshot) {
+                                   User userIntent = dataSnapshot.getValue(User.class);
+                                   Intent intent = new Intent(ShowPendingRequest.this, ShowProfile.class);
+                                   Bundle bundle = new Bundle();
+                                   bundle.putParcelable("user_mp", userIntent);
+                                   bundle.putParcelable("user_owner", user);
+                                   intent.putExtras(bundle);
+                                   startActivity(intent);
+                               }
+
+                               @Override
+                               public void onCancelled(DatabaseError databaseError) {
+
+                               }
+                           });
+                        }
+                    });
+
                 }
             };
         }
@@ -417,12 +442,49 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         }
                     });
 
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference child = reference.child("users").child(request.getKeyLender());
+                            child.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    //Download the updated book and start the activity
+                                    final User currentUser = dataSnapshot.getValue(User.class);
+                                    FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Book bookUpdated = dataSnapshot.getValue(Book.class);
+                                            Intent intent = new Intent(ShowPendingRequest.this, ShowBookFull.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelable("book_mp", bookUpdated);
+                                            bundle.putParcelable("user_mp", currentUser);
+                                            bundle.putParcelable("user_owner", user);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                    });
                 }
             };
         }
 
         return adapterToReturn;
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

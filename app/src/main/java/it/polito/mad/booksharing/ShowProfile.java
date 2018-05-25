@@ -44,6 +44,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -536,9 +537,9 @@ public class ShowProfile extends AppCompatActivity
         Bitmap image = null;
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
+            //image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
             circleImageView = findViewById(R.id.profileImage);
-            circleImageView.setImageBitmap(image);
+            Picasso.with(ShowProfile.this).load(user.getUser_image_url()).into(circleImageView);
         } else if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
             circleImageView = findViewById(R.id.profileImage);
@@ -659,6 +660,7 @@ public class ShowProfile extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        finish();
     }
 
     private void setUserInfoNavBar() {

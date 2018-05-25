@@ -20,12 +20,12 @@
     <color name="colorPressItem">#E1F5FE</color>
     <color name="colorCheckItem">#B3E5FC</color>
     <color name="colorTabUnselected">#c6c6cc</color>
-    <color name="borrow">#009688</color>
-    <color name="borrowDark">#00796B</color>
-    <color name="land">#C62828</color>
-    <color name="landDark">#B71C1C</color>
-    <color name="pastDark"> #AFB42B</color>
-    <color name="past">#CDDC39</color>
+    <color name="borrow">#1565C0</color>
+    <color name="borrowDark">#0D47A1</color>
+    <color name="land">#1565C0</color>
+    <color name="landDark">#0D47A1</color>
+    <color name="pastDark"> #1565C0</color>
+    <color name="past">#0D47A1</color>
 </resources>
 
 
