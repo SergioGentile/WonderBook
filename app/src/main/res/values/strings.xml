@@ -226,5 +226,7 @@
     <string name="warning_no_shared_book">You didn\'t share any book</string>
     <string name="no_review_available">No review available</string>
     <string name="lended">lent</string>
+    <string name="book_already_lent">The book is already been lent to another user</string>
+    <string name="request_already_sent">You already sent a request for this book. Please wait a response from the owner.</string>
 
 </resources>

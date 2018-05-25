@@ -396,11 +396,13 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
-                            }
+                           if(dataSnapshot.exists()){
+                               User userToUpdate = dataSnapshot.getValue(User.class);
+                               if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                   //Update it
+                                   FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                               }
+                           }
                         }
 
                         @Override
@@ -412,10 +414,12 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            if(dataSnapshot.exists()){
+                                User userToUpdate = dataSnapshot.getValue(User.class);
+                                if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                    //Update it
+                                    FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                                }
                             }
                         }
 
@@ -456,10 +460,12 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            if(dataSnapshot.exists()){
+                                User userToUpdate = dataSnapshot.getValue(User.class);
+                                if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                    //Update it
+                                    FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                                }
                             }
                         }
 
@@ -472,10 +478,12 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            if(dataSnapshot.exists()){
+                                User userToUpdate = dataSnapshot.getValue(User.class);
+                                if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                    //Update it
+                                    FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                                }
                             }
                         }
 
