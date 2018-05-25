@@ -262,29 +262,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     View view = v.findViewById(R.id.line);
                     view.setBackgroundColor(getColor(R.color.land));
 
-/*
-                    final LinearLayout ll = (LinearLayout) v.findViewById(R.id.accept_refuse_ll);
-                    final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
-                    ll.setVisibility(View.GONE);
-
-                    llConteiner.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(ll.getVisibility() == View.GONE){
-
-                                ll.setVisibility(View.VISIBLE);
-                                ll.animate().translationY(0).setDuration(200);
-
-                            }else{
-
-                                ll.animate().translationY(ll.getBaseline()).setDuration(200);
-                                ll.setVisibility(View.GONE);
-                            }
 
 
-                        }
-                    });
-                    */
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
                     TextView accept = (TextView) v.findViewById(R.id.tv_accept);
                     TextView reject = (TextView) v.findViewById(R.id.tv_refuse);
@@ -305,6 +284,39 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         }
                     });
 
+
+                    //Update lender
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //Update borrower
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                 }
             };
@@ -331,37 +343,46 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     View view = v.findViewById(R.id.line);
                     view.setBackgroundColor(getColor(R.color.borrow));
 
-/*
-                    final LinearLayout ll = (LinearLayout) v.findViewById(R.id.cancel_ll);
-                    final LinearLayout llConteiner = (LinearLayout) v.findViewById(R.id.item_container);
-                    ll.setVisibility(View.GONE);
 
-                    llConteiner.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(ll.getVisibility() == View.GONE){
-
-                                ll.setVisibility(View.VISIBLE);
-                                ll.animate().translationY(0).setDuration(200);
-
-
-                            }else{
-
-                                ll.setVisibility(View.GONE);
-                                ll.animate().translationY(0).setDuration(200);
-
-                            }
-
-
-                        }
-                    });
-*/
                     LinearLayout cancel = (LinearLayout)v.findViewById(R.id.cancel_ll);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).removeValue();
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).removeValue();
+
+                        }
+                    });
+
+                    //Update lender
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //Update borrower
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });

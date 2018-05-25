@@ -1491,8 +1491,28 @@ public class MainPage extends AppCompatActivity
                 TextView author = convertView.findViewById(R.id.author_searched);
                 RatingBar rb = convertView.findViewById(R.id.rating_searched);
                 //For setting a text view with two different colors
-                TextView owner = convertView.findViewById(R.id.shared_name);
+                final TextView owner = convertView.findViewById(R.id.shared_name);
                 owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
+
+
+                //Modify the name of shared by if necessary
+                FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User currentUser = dataSnapshot.getValue(User.class);
+                        if(!book.getOwnerName().equals(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase())){
+                            //I have to update it
+                            book.setOwnerName(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase());
+                            owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
+                            FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
                 TextView distance = convertView.findViewById(R.id.distance);
                 LinearLayout ll_distance = convertView.findViewById(R.id.ll_location);
@@ -1526,14 +1546,26 @@ public class MainPage extends AppCompatActivity
                         child.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Intent intent = new Intent(MainPage.this, ShowBookFull.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("book_mp", book);
-                                User currentUser = dataSnapshot.getValue(User.class);
-                                bundle.putParcelable("user_mp", currentUser);
-                                bundle.putParcelable("user_owner", user);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
+                                //Download the updated book and start the activity
+                                final User currentUser = dataSnapshot.getValue(User.class);
+                                FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Book bookUpdated = dataSnapshot.getValue(Book.class);
+                                        Intent intent = new Intent(MainPage.this, ShowBookFull.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable("book_mp", bookUpdated);
+                                        bundle.putParcelable("user_mp", currentUser);
+                                        bundle.putParcelable("user_owner", user);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
 
                             @Override

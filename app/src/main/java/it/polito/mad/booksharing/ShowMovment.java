@@ -318,6 +318,39 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                             }
                         });
                     }
+
+                    //Update lender
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //Update borrower
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             };
         }
@@ -358,6 +391,40 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                             }
                         });
                     }
+
+                    //Update lender
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //Update borrower
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
             };
         }
@@ -384,6 +451,39 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     time.setText(getString(R.string.from) + " " + DateFormat.format("dd/MM/yyyy", -1*request.getTime()) +  " " + getString(R.string.to) + " " +  DateFormat.format("dd/MM/yyyy", -1*request.getTimeEnd()));
 
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
+
+                    //Update lender
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //Update borrower
+                    FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User userToUpdate = dataSnapshot.getValue(User.class);
+                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                //Update it
+                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("ended").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             };
         }
