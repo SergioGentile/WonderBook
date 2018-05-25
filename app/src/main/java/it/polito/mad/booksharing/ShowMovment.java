@@ -443,11 +443,22 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     TextView time = (TextView) v.findViewById(R.id.tvTime);
                     title.setText(request.getBookTitle());
                     View line = (View) v.findViewById(R.id.line);
+                    LinearLayout arrow_lend = v.findViewById(R.id.lend_arrow);
+                    LinearLayout arrow_borr = v.findViewById(R.id.borrow_arrow);
+
                     if(request.getKeyLender().equals(user.getKey())){
+                        //PRESTATO A
+
+                        arrow_lend.setVisibility(View.VISIBLE);
+                        arrow_borr.setVisibility(View.GONE);
                         tvUser.setText(getString(R.string.lended_by) + " " + request.getNameBorrower());
                         line.setBackgroundColor(getColor(R.color.land));
                     }
                     else{
+                        //PRESO IN PRESTITO DA
+
+                        arrow_lend.setVisibility(View.GONE);
+                        arrow_borr.setVisibility(View.VISIBLE);
                         tvUser.setText(getString(R.string.borrowed_by)+ " " + request.getNameLender());
                         line.setBackgroundColor(getColor(R.color.borrow));
                     }

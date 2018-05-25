@@ -44,7 +44,15 @@
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/title" />
 
-
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5">
                 <TextView
                     android:id="@+id/book_borrower"
                     android:layout_width="wrap_content"
@@ -52,7 +60,21 @@
                     android:text="@string/borrowed_by_descr"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/tv_dim" />
+                    </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="0.5"
+                    android:id="@+id/borrow_arrow"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|right">
+                    <ImageView
+                        android:layout_gravity="right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_call_received_black_24dp" />
+                </LinearLayout>
 
+                </LinearLayout>
 
             </LinearLayout>
 
