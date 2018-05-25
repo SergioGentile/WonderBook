@@ -167,8 +167,6 @@
     <string name="loans">قرض</string>
     <string name="pending_request">طلبات القروض</string>
     <string name="title_activity_chat">ثرثرة</string>
-    <string name="filter">FILTER</string>
-    <string name="reviews">التعليقات</string>
     <string name="review">مراجعة</string>
     <string name="write_new_review">اكتب مراجعة</string>
     <string name="describe_exp_with">صف تجربتك مع</string>
@@ -194,4 +192,26 @@
     <string name="loan_completed">وقد تم الانتهاء من القرض</string>
     <string name="warning_no_out_request">أنت لم تقدم أي طلبات</string>
     <string name="warning_no_in_request">ليس لديك أي طلبات للمشاركة</string>
+
+    <string name="filter">مرشحات</string>
+    <string name="reviews">التعليقات</string>
+    <string name="carry_out">تنفيذ</string>
+    <string name="received">تم الاستلام</string>
+    <string name="lended">أقرض</string>
+    <string name="borrowed">اقترضت، استعارت</string>
+    <string name="concluded_loans">القروض المبرمة</string>
+    <string name="require_this_book">يتطلب هذا الكتاب</string>
+    <string name="summary">ملخص</string>
+    <string name="message">طلب الرسالة</string>
+    <string name="send_message_to_user">أرسل رسالة إلى المستخدم</string>
+    <string name="request_book">طلب كتاب</string>
+    <string name="borrow_the_book">اقترضت الكتاب</string>
+    <string name="lend_the_book">أقرض الكتاب</string>
+    <string name="write_your_review_optional">اكتب تعليقًا (اختياري)</string>
+    <string name="please_insert_score">من فضلك ، أدخل على الأقل درجة</string>
+    <string name="all">الكل</string>
+    <string name="warning_no_borrow_book">أنت لم تقترض أي كتاب</string>
+    <string name="warning_no_lend_book">أنت لم تقرض أي كتاب</string>
+    <string name="warning_no_shared_book">أنت لم تشارك أي كتاب</string>
+    <string name="no_review_available">لا يوجد مراجعة متاحة</string>
 </resources>
