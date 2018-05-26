@@ -286,7 +286,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
-                    title.setText(request.getBookTitle());
+                    title.setText(User.capitalizeSpace(request.getBookTitle()));
                     borrower.setText(getString(R.string.other_request_description).replace("*req_name*", request.getNameBorrower()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     View view = v.findViewById(R.id.line);
@@ -419,7 +419,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView lender =(TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
-                    title.setText(request.getBookTitle());
+                    title.setText(User.capitalizeSpace(request.getBookTitle()));
                     lender.setText(getString(R.string.your_request_description).replace("*req_name*", request.getNameLender()).replace("*req_date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     Picasso.with(ShowPendingRequest.this).load(request.getBookImageUrl()).into(imageBook);
                     View view = v.findViewById(R.id.line);

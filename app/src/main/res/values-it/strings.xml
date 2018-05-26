@@ -163,7 +163,8 @@
     <string name="filter">FILTRA</string>
     <string name="there_are_no_chats">Non sono presenti conversazioni</string>
     <string name="edit_profile">Modifica Profilo</string>
-    <string name="show_book_full">Informazioni sul libro</string>
+    <string name="show_book_full">Informazioni sul Libro</string>
+    <string name="add_book">Aggiungi Libro</string>
     <string name="reviews">Recensioni</string>
     <string name="review">Recensione</string>
     <string name="write_new_review">Scrivi una recensione</string>

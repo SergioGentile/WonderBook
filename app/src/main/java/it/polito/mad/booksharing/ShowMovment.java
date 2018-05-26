@@ -311,7 +311,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     }
                     TextView title =(TextView) v.findViewById(R.id.book_title);
                     TextView borrower =(TextView) v.findViewById(R.id.book_borrower);
-                    title.setText(request.getBookTitle());
+                    title.setText(User.capitalizeSpace(request.getBookTitle()));
                     borrower.setText(getString(R.string.lended_by_descr).replace("*name*", request.getNameBorrower()).replace("*date*", DateFormat.format("dd/MM/yyyy", -1*request.getTime())));
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     Picasso.with(ShowMovment.this).load(request.getBookImageUrl()).into(imageBook);
@@ -409,7 +409,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     TextView title = (TextView) v.findViewById(R.id.book_title);
                     TextView lender = (TextView) v.findViewById(R.id.book_lender);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
-                    title.setText(request.getBookTitle());
+                    title.setText(User.capitalizeSpace(request.getBookTitle()));
                     lender.setText(getString(R.string.borrowed_by_descr).replace("*name*", request.getNameLender()).replace("*date*", DateFormat.format("dd/MM/yyyy", -1 * request.getTime())));
                     View line = (View) v.findViewById(R.id.line);
                     line.setBackgroundColor(getColor(R.color.borrow));
@@ -517,7 +517,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                     TextView tvUser = (TextView) v.findViewById(R.id.tvNameUser);
                     ImageView imageBook = (ImageView) v.findViewById(R.id.image_book);
                     TextView time = (TextView) v.findViewById(R.id.tvTime);
-                    title.setText(request.getBookTitle());
+                    title.setText(User.capitalizeSpace(request.getBookTitle()));
                     View line = (View) v.findViewById(R.id.line);
                     LinearLayout arrow_lend = v.findViewById(R.id.lend_arrow);
                     LinearLayout arrow_borr = v.findViewById(R.id.borrow_arrow);
@@ -625,7 +625,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
                 User userToReview = dataSnapshot.getValue(User.class);
                 Intent intent = new Intent(ShowMovment.this, AddReview.class);
-                intent.putExtra("titleBook", request.getBookTitle());
+                intent.putExtra("titleBook", User.capitalizeSpace(request.getBookTitle()));
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user_logged", user);
                 bundle.putParcelable("user_to_review", userToReview);

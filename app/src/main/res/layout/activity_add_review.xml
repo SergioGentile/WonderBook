@@ -76,8 +76,8 @@
 
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/profileImage"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
                                 android:src="@drawable/profile" />
 
                             <TextView
@@ -85,22 +85,25 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="@dimen/margin_top"
-                                android:gravity="center_vertical"
+                                android:layout_marginTop="@dimen/margin_top"
+                                android:gravity="top"
                                 android:text="Sergio Gentile"
-                                android:textSize="@dimen/tv_dim" />
+                                android:textSize="@dimen/title_box_size" />
                         </LinearLayout>
 
                         <RatingBar
                             android:id="@+id/rating_reviews"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="?android:attr/ratingBarStyleIndicator"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_marginBottom="@dimen/bottom_inside_box"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginLeft="-15dp"
                             android:layout_marginTop="@dimen/margin_top"
                             android:isIndicator="false"
                             android:numStars="5"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
                             android:stepSize="1"
                             android:theme="@style/RatingBar" />
 

@@ -30,7 +30,7 @@
     <string name="title_activity_main_page">MainPage</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="information">Informations</string>
+    <string name="information">Information</string>
     <string name="bar_code_fill">Fill in with barcode scan</string>
     <string name="title">Title</string>
     <string name="author">Author</string>
@@ -41,6 +41,7 @@
     <string name="title_activity_start">Start</string>
     <string name="slogan">Share your library, find a world of books</string>
     <string name="title_activity_sign_in">Sign In</string>
+    <string name="add_book">Add Book</string>
     <string name="register">Sign in</string>
     <string name="login">Login</string>
     <string name="confirm">confirm password</string>

@@ -1048,10 +1048,11 @@ public class MainPage extends AppCompatActivity
                 //Unmarshall al the book and put it into the list booksMatch.
                 //Save the id into bookIds and avoid the one of the user that is using the application
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        if (!issue.getValue(Book.class).getOwner().equals(user.getKey())) {
-                            booksMatch.add(issue.getValue(Book.class));
-                            bookIds.add(issue.getKey());
+                    for (DataSnapshot bookEntry : dataSnapshot.getChildren()) {
+                        Book book = bookEntry.getValue(Book.class);
+                        if (!book.getOwner().equals(user.getKey()) && book.isAvailable()) {
+                            booksMatch.add(book);
+                            bookIds.add(bookEntry.getKey());
                         }
                     }
                 } else {
@@ -1222,10 +1223,11 @@ public class MainPage extends AppCompatActivity
                 map.clear();
 
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        if (!issue.getValue(Book.class).getOwner().equals(user.getKey())) {
-                            booksMatch.add(issue.getValue(Book.class));
-                            bookIds.add(issue.getKey());
+                    for (DataSnapshot bookEntry : dataSnapshot.getChildren()) {
+                        Book book = bookEntry.getValue(Book.class);
+                        if (!book.getOwner().equals(user.getKey()) && book.isAvailable()) {
+                            booksMatch.add(book);
+                            bookIds.add(bookEntry.getKey());
                         }
                     }
                 } else {
@@ -1614,7 +1616,7 @@ public class MainPage extends AppCompatActivity
                     //i use the list booksQuery and books in order to avoid that the same book is show more than one time on the list
                     //So i keep track of all the book showed before
                     if (tabField == ANY) {
-                        if (concatenateFieldBook(book).contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey())) {
+                        if (concatenateFieldBook(book).contains(searchedString.toLowerCase()) && !book.getOwner().equals(user.getKey()) && book.isAvailable()) {
                             if (!stringAlreadyPresentOnBookList(concatenateFieldBook(book), books, ANY)) {
                                 books.add(book);
                                 booksQuery.add(searchedString.toLowerCase());
