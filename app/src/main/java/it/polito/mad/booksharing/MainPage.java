@@ -1309,7 +1309,7 @@ public class MainPage extends AppCompatActivity
                                                 markers.clear();
                                                 for (SortedLocationItem sortedLocationItem : sortedLocationItems) {
                                                     Position overlap = avoidOverlap(markers.values(), new Position(sortedLocationItem.getLatitude(), sortedLocationItem.getLongitude()));
-                                                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(User.capitalizeFirst(sortedLocationItem.getBook().getTitle())).snippet(sortedLocationItem.getSnippet()));
+                                                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(User.capitalizeSpace(sortedLocationItem.getBook().getTitle())).snippet(sortedLocationItem.getSnippet()));
                                                     m.setTag(sortedLocationItem.getId());
                                                     markers.put(key, m);
 
@@ -1531,7 +1531,7 @@ public class MainPage extends AppCompatActivity
                 }
 
 
-                title.setText(User.capitalizeFirst(book.getTitle()));
+                title.setText(User.capitalizeSpace(book.getTitle()));
                 author.setText(User.capitalizeSpace(book.getAuthor()));
                 rb.setRating(new Float(book.getRating()));
 
