@@ -671,9 +671,11 @@ public class MainPage extends AppCompatActivity
             databaseReference.child( "loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(notificationManager.getMap());
             databaseReference.child("notificationCounter").setValue(notificationManager.getMessageCounter());
+            databaseReference.child("pendingRequestCounter").setValue(notificationManager.getPendingRequestCounter());
+            databaseReference.child("changeLendingStatusCounter").setValue(notificationManager.getChangeLendingStatusCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
             ShortcutBadger.removeCount(MainPage.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
@@ -941,7 +943,7 @@ public class MainPage extends AppCompatActivity
         setUserInfoNavBar();
         mMapView.onResume();
         notificationManager.clearNotification();
-        setNotification(notificationManager.getMessageCounter(),0,0);
+        setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeLendingStatusCounter());
     }
 
     private void getUserFromSharedPreference() {
@@ -1950,11 +1952,11 @@ public class MainPage extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,0);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
             }
             else if(intent.getAction().equals("RefreshNotificationView")){
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,0);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
             }
         }
     }

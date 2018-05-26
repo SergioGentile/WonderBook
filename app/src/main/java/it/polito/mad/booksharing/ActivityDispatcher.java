@@ -6,15 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 
 public class ActivityDispatcher extends AppCompatActivity {
 
-    private static int dispatcherCode = 0;
+    private final int CHAT_PAGE = 0, MESSAGE_THREAD = 1, SHOW_MOVMENT = 2, MAIN_PAGE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dispatcherCode = getIntent().getIntExtra("dispatcherCode", 0);
+        int dispatcherCode = getIntent().getIntExtra("dispatcherCode", -1);
 
-        if (dispatcherCode == 0) {
+        if (dispatcherCode == CHAT_PAGE) {
             //start ChatPage
             User owner = getIntent().getParcelableExtra("sender");
             User receiver = getIntent().getParcelableExtra("receiver");
@@ -29,7 +29,8 @@ public class ActivityDispatcher extends AppCompatActivity {
 
             startActivity(intent);
             finish();
-        } else {
+        }
+        else if(dispatcherCode == MESSAGE_THREAD){
             //start showThread
             //start ChatPage
             User owner = getIntent().getParcelableExtra("user");
@@ -39,6 +40,24 @@ public class ActivityDispatcher extends AppCompatActivity {
             bundle.putParcelable("user", owner);
             intent.putExtras(bundle);
 
+            startActivity(intent);
+            finish();
+        }
+        else if(dispatcherCode == MAIN_PAGE){
+            User user = getIntent().getParcelableExtra("user");
+            Intent intent = new Intent(this, MainPage.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+        }
+        else if(dispatcherCode == SHOW_MOVMENT){
+            User user = getIntent().getParcelableExtra("user");
+            Intent intent = new Intent(this, ShowMovment.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            intent.putExtras(bundle);
             startActivity(intent);
             finish();
         }

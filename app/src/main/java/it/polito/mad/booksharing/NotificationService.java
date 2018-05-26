@@ -24,10 +24,13 @@ public class NotificationService extends FirebaseMessagingService {
 
     private LocalBroadcastManager broadcaster;
     private final String SENDER_CONSTANT = "sender";
+    private final String RECEIVER_CONSTANT = "receiver";
     private final String CHAT_KEY_CONSTANT = "chatID";
+    private final String CHAT_NOTIFICATION = "CHAT";
+    private final String LENDING_NOTIFICATION = "LENDING";
+    private final String LENDING_STATUS = "status";
     private User user, sender;
     private MyNotificationManager mNotificationManager;
-    private String lastChatReceiver;
 
     @Override
     public void onCreate() {
@@ -44,41 +47,80 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d("MessageReceived", remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             HashMap<String, String> metaData = new HashMap<>(remoteMessage.getData());
-            final String senderKey = metaData.get(SENDER_CONSTANT);
-            final String keyChat = metaData.get(CHAT_KEY_CONSTANT);
-            final String body = metaData.get("body");
-            final String receiver = metaData.get("receiver");
+            String notificationType = metaData.get("notificationType");
+            if(notificationType.equals(CHAT_NOTIFICATION)){
+                showChatMessage(metaData);
+            }
+            else if(notificationType.equals(LENDING_NOTIFICATION)){
+                showLendingNotification(metaData);
+            }
 
-            SharedPreferences sharedPref = getSharedPreferences("chatReceiver", Context.MODE_PRIVATE);
-            lastChatReceiver = sharedPref.getString("receiver_key", "");
-
-            Log.d("MessageReceived", "Querying Firebase");
-
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(senderKey);
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        //retrieve Sender user
-                        Gson json = new Gson();
-                        user = json.fromJson(receiver, User.class);
-                        sender = dataSnapshot.getValue(User.class);
-
-                        mNotificationManager.displayNotification(body, sender, user, keyChat);
-                        Intent intent = new Intent("UpdateView");
-                        Bundle bundle  = new Bundle();
-                        bundle.putParcelable("sender", sender);
-                        intent.putExtras(bundle);
-                        broadcaster.sendBroadcast(intent);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
         }
+    }
+
+    private void showLendingNotification(HashMap<String, String> metaData) {
+        final String status = metaData.get(LENDING_STATUS);
+        final String sender_key = metaData.get("sender");
+        final String receiver = metaData.get("receiver");
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender_key);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //retrieve Sender user
+                    Gson json = new Gson();
+                    user = json.fromJson(receiver, User.class);
+                    sender = dataSnapshot.getValue(User.class);
+
+                    mNotificationManager.displayStatusLendingNotification(status, user, sender);
+                    Intent intent = new Intent("UpdateView");
+                    broadcaster.sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void showChatMessage(HashMap<String,String> metaData){
+        final String senderKey = metaData.get(SENDER_CONSTANT);
+        final String keyChat = metaData.get(CHAT_KEY_CONSTANT);
+        final String receiver = metaData.get(RECEIVER_CONSTANT);
+        final String body = metaData.get("body");
+
+        Log.d("MessageReceived", "Querying Firebase");
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(senderKey);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //retrieve Sender user
+                    Gson json = new Gson();
+                    user = json.fromJson(receiver, User.class);
+                    sender = dataSnapshot.getValue(User.class);
+
+                    mNotificationManager.displayChatNotification(body, sender, user, keyChat);
+                    Intent intent = new Intent("UpdateView");
+                    Bundle bundle  = new Bundle();
+                    bundle.putParcelable("sender", sender);
+                    intent.putExtras(bundle);
+                    broadcaster.sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

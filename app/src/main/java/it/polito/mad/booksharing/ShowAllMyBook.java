@@ -209,7 +209,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(2).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter(),0,0);
+        setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeLendingStatusCounter());
     }
 
     private void showAllMyBooks(String keyOwner) {
@@ -411,9 +411,11 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
             databaseReference.child( "loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
+            databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
+            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
             ShortcutBadger.removeCount(ShowAllMyBook.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
@@ -463,7 +465,7 @@ public class ShowAllMyBook extends AppCompatActivity implements NavigationView.O
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,0);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
             }
         }
     }

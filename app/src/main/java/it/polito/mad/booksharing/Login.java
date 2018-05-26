@@ -354,11 +354,11 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     private void startMain(String userEmail) {
         //Start MainPage Activity
-        SharedPreferences sharedPreferences = getSharedPreferences("messageCounter", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         Integer messageCounter = sharedPreferences.getInt("messageCounter",-1);
         if(messageCounter== -1) {
             nManager = MyNotificationManager.getInstance(this);
-           final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
             ref.child("notificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -389,6 +389,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                     setResult(Activity.RESULT_OK, intent);
                     startActivity(intent);
                     finish();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            ref.child("pendingRequestCounter").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        nManager.setPendingRequestCounter(dataSnapshot.getValue(Integer.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            ref.child("changeStatusRequestCounter").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        nManager.setChangeLendingStatusCounter(dataSnapshot.getValue(Integer.class));
+                    }
                 }
 
                 @Override

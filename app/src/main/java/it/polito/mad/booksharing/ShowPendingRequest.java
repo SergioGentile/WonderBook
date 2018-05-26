@@ -1,14 +1,18 @@
 package it.polito.mad.booksharing;
 
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -57,6 +61,9 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private NavigationView navigationView;
     private View navView;
     private int posTab;
+    private MyBroadcastReceiver mMessageReceiver;
+    private MyNotificationManager mNotificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,11 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         setList(BORROW);
         showEmpty(BORROW);
         posTab = 0;
+
+        mNotificationManager = MyNotificationManager.getInstance(this);
+
+        mMessageReceiver = new ShowPendingRequest.MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -213,6 +225,21 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
     }
 
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
+
     private void setList(int type){
         listOfRequest.setAdapter(null);
         setToolbarColor(type);
@@ -274,6 +301,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
                             //change the status of the book from "available" to "not available"
                             FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
+                            mNotificationManager.subtractPendingRequestCounter(1);
+                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
                         }
                     });
                     reject.setOnClickListener(new View.OnClickListener() {
@@ -281,6 +310,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
+                            mNotificationManager.subtractPendingRequestCounter(1);
+                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
                         }
                     });
 
@@ -427,9 +458,11 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             databaseReference.child( "loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
+            databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
+            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
             ShortcutBadger.removeCount(ShowPendingRequest.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
@@ -452,20 +485,20 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         return true;
     }
 
-    protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
+    protected void setNotification(Integer notification_message_count,Integer notification_pending_count,Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
         TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
 
-        if (notificaction_count != 0) {
+        if (notification_message_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             message_nav_bar.setTypeface(null, Typeface.BOLD);
             message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
+            message_nav_bar.setText(notification_message_count.toString());
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
@@ -495,7 +528,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         }else{
             loans_nav_bar.setVisibility(View.GONE);
         }
-        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
+        Integer tot = notification_message_count + notification_pending_count + notification_loans_count;
 
         if(tot!= 0){
             toolbarNotification.setText(tot.toString());
@@ -512,6 +545,11 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(4).setChecked(true);
+        int messageCounter = mNotificationManager.getMessageCounter();
+        int pendingRequestCounter = mNotificationManager.getPendingRequestCounter();
+        int changeStatusLendingCounter = mNotificationManager.getChangeLendingStatusCounter();
+        mNotificationManager.clearNotification();
+        setNotification(messageCounter,pendingRequestCounter,changeStatusLendingCounter);
     }
 
 
@@ -535,6 +573,22 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             if (this.user.getImagePath() != null) {
                 image = BitmapFactory.decodeFile(user.getImagePath());
                 barprofileImage.setImageBitmap(image);
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private ShowPendingRequest currentActivity = null;
+
+        void setCurrentActivityHandler(ShowPendingRequest currentActivity) {
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("UpdateView")) {
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
             }
         }
     }

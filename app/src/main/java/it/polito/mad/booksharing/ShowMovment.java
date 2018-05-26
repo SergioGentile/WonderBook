@@ -1,14 +1,17 @@
 package it.polito.mad.booksharing;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -49,10 +52,6 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ShowMovment extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
-
-
-
-
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private User user;
@@ -62,11 +61,15 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private NavigationView navigationView;
     private View navView;
     private int posTab;
+    private  MyBroadcastReceiver mMessageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_movment);
+
+        mMessageReceiver = new ShowMovment.MyBroadcastReceiver();
+        mMessageReceiver.setCurrentActivityHandler(this);
 
         user = getIntent().getExtras().getParcelable("user");
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
@@ -111,6 +114,18 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
+                new IntentFilter("UpdateView"));
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -590,9 +605,11 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             databaseReference.child( "loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
+            databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
+            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("messageCounter", Context.MODE_PRIVATE).edit().clear().apply();
+            getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
             ShortcutBadger.removeCount(ShowMovment.this);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir(User.imageDir, Context.MODE_PRIVATE);
@@ -621,6 +638,13 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(3).setChecked(true);
+        MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(this);
+        myNotificationManager.setChangeLendingStatusCounter(0);
+        int messageCounter = myNotificationManager.getMessageCounter();
+        int pendingRequestCounter = myNotificationManager.getPendingRequestCounter();
+        int changeStatusLendingCounter = myNotificationManager.getChangeLendingStatusCounter();
+        myNotificationManager.clearNotification();
+        setNotification(messageCounter,pendingRequestCounter,changeStatusLendingCounter);
     }
 
 
@@ -699,6 +723,22 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             if (this.user.getImagePath() != null) {
                 image = BitmapFactory.decodeFile(user.getImagePath());
                 barprofileImage.setImageBitmap(image);
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        private ShowMovment currentActivity = null;
+
+        void setCurrentActivityHandler(ShowMovment currentActivity) {
+            this.currentActivity = currentActivity;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("UpdateView")) {
+                MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
             }
         }
     }
