@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -81,6 +82,7 @@ public class AddBook extends Activity {
     private String uploadDate;
     private User user;
     private ScrollView sv;
+    private Toolbar toolbar;
 
     //Calculate the parameter used for reduce the dimension and the resolution of the image
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -214,6 +216,14 @@ public class AddBook extends Activity {
         tvStreet = findViewById(R.id.tvStreet);
         urlImageBook = "";
         urlMyImageBook = "";
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //This part is useful when the description field over the max number of lines.
         //If the user scroll the description field, the scrollerView is blocked, and with the same principle
