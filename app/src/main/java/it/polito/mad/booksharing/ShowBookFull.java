@@ -348,27 +348,9 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-        /*LinearLayout ll = (LinearLayout) findViewById(R.id.container);
-        ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               if(!book.isAvailable()){
-                   Toast.makeText(ShowBookFull.this, "Attenzione: questo libro non è disponibile quindi non può essere richiesto.", Toast.LENGTH_SHORT).show();
-               }
-               else{
-                   Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
-                   Bundle bundle = new Bundle();
-                   bundle.putParcelable("book", book);
-                   bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
-                   bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
-                   intent.putExtras(bundle);
-                   startActivity(intent);
-               }
-            }
-        });*/
 
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!book.isAvailable()){
@@ -384,10 +366,59 @@ public class ShowBookFull extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
+        });*/
+
+
+
+        if(book.isAvailable()){
+            fab.setVisibility(View.VISIBLE);
+        }
+        else{
+            fab.setVisibility(View.GONE);
+        }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User userLogged =  getIntent().getExtras().getParcelable("user_owner");
+                Log.d("User", userLogged.getName().getValue());
+                FirebaseDatabase.getInstance().getReference("users").child(userLogged.getKey()).child("requests").child("outcoming").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot dsReq : dataSnapshot.getChildren()) {
+                                Request request = dsReq.getValue(Request.class);
+                                if (request.getKeyBook().equals(book.getKey()) && request.getStatus().equals(Request.SENDED)) {
+                                    Toast.makeText(ShowBookFull.this, getString(R.string.request_already_sent), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("book", book);
+                            bundle.putParcelable("userOwner", getIntent().getExtras().getParcelable("user_mp"));
+                            bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("book", book);
+                            bundle.putParcelable("userOwner", getIntent().getExtras().getParcelable("user_mp"));
+                            bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         });
-
-
-
 
     }
 

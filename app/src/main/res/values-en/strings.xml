@@ -185,10 +185,10 @@
     <string name="other_request_description">Request by *req_name* on *req_date*</string>
     <string name="conclude_the_loan">Conclude the loan</string>
     <string name="borrowed_by_descr">Borrowed by *name* on *date*</string>
-    <string name="lended_by_descr">Lended to *name* on date *date*</string>
+    <string name="lended_by_descr">Lent to *name* on date *date*</string>
     <string name="wait_other_user_finish">Wait for the user to complete the loan</string>
     <string name="borrowed_by">Borrowed by</string>
-    <string name="lended_by">Lended by</string>
+    <string name="lended_by">Lent by</string>
     <string name="from">From</string>
     <string name="to">to</string>
     <string name="loan_completed">Loan has been completed</string>
@@ -198,7 +198,7 @@
     <string name="show_movment">Yours Shares</string>
     <string name="carry_out">carry out</string>
     <string name="received">received</string>
-    <string name="lended">lended</string>
+    <string name="lended">lent</string>
     <string name="borrowed">borrowed</string>
     <string name="concluded_loans">concluded loans</string>
     <string name="require_this_book">Require this book</string>
@@ -207,12 +207,15 @@
     <string name="send_message_to_user">Send a message to the user</string>
     <string name="request_book">Request a book</string>
     <string name="borrow_the_book">Borrowed the book</string>
-    <string name="lend_the_book">Lended the book</string>
+    <string name="lend_the_book">Lent the book</string>
     <string name="write_your_review_optional">Write a comment (optional)</string>
     <string name="please_insert_score">Please, insert at least a score</string>
     <string name="all">All</string>
     <string name="warning_no_borrow_book">You didn\'t borrow any book</string>
     <string name="warning_no_lend_book">You didn\'t lend any book</string>
     <string name="warning_no_shared_book">You didn\'t share any book</string>
+    <string name="no_review_available">No review available</string>
+    <string name="book_already_lent">The book is already been lent to another user</string>
+    <string name="request_already_sent">You already sent a request for this book. Please wait a response from the owner.</string>
 
 </resources>

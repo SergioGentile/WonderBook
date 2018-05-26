@@ -44,6 +44,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -54,11 +55,12 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 public class ShowProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MODIFY_PROFILE = 1;
+    private static final int SHOW_MY_PROFILE = 2, SHOW_OTHER_PROFILE=3;
     private ImageButton btnModify;
     private Toolbar toolbar;
     private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail, tvReviews;
     private RatingBar rateReviews;
-
+    private Integer show_mode;
     private User user;
     private LinearLayout llParent, llPhone, llMail, llDescription;
     private CircleImageView circleImageView;
@@ -121,10 +123,33 @@ public class ShowProfile extends AppCompatActivity
         //Initialize the user (must be removed an replace with data stored previously)
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             btnModify.setVisibility(View.GONE);
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+            toolbarNotification.setVisibility(View.GONE);
+            show_mode = SHOW_OTHER_PROFILE;
+
         } else {
+            show_mode = SHOW_MY_PROFILE;
             getUserInfoFromSharedPref();
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+
+            navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+            navView = navigationView.getHeaderView(0);
         }
 
+        if(show_mode==SHOW_OTHER_PROFILE){
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
 
         //Catch when the button modify it's pressed
         btnModify.setOnClickListener(new View.OnClickListener() {
@@ -153,16 +178,6 @@ public class ShowProfile extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         setNotification(notificationManager.getMessageCounter(),0,0);
@@ -187,54 +202,56 @@ public class ShowProfile extends AppCompatActivity
 
     protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
 
-        TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
-        TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
-        TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
-        TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
+        if(show_mode==SHOW_MY_PROFILE) {
+            TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
+            TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
+            TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
+            TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
 
-        if (notificaction_count != 0) {
+            if (notificaction_count != 0) {
 
-            //Set current notification inside initNavBar method
-            message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
+                //Set current notification inside initNavBar method
+                message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+                message_nav_bar.setTypeface(null, Typeface.BOLD);
+                message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+                message_nav_bar.setText(notificaction_count.toString());
 
-            //Set notification on toolbar icon
-            message_nav_bar.setVisibility(View.VISIBLE);
-        }else{
-            message_nav_bar.setVisibility(View.GONE);
-        }
+                //Set notification on toolbar icon
+                message_nav_bar.setVisibility(View.VISIBLE);
+            } else {
+                message_nav_bar.setVisibility(View.GONE);
+            }
 
-        if(notification_pending_count!=0){
-            //Set current notification inside initNavBar method
-            pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
-            pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            pending_request_nav_bar.setText(notification_pending_count.toString());
-            //Set notification on toolbar icon
-            pending_request_nav_bar.setVisibility(View.VISIBLE);
-        }else{
-            pending_request_nav_bar.setVisibility(View.GONE);
-        }
-        if(notification_loans_count!=0){
-            //Set current notification inside initNavBar method
-            loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
-            loans_nav_bar.setTypeface(null, Typeface.BOLD);
-            loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            loans_nav_bar.setText(notification_loans_count.toString());
-            //Set notification on toolbar icon
-            loans_nav_bar.setVisibility(View.VISIBLE);
-        }else{
-            loans_nav_bar.setVisibility(View.GONE);
-        }
-        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
+            if (notification_pending_count != 0) {
+                //Set current notification inside initNavBar method
+                pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+                pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
+                pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+                pending_request_nav_bar.setText(notification_pending_count.toString());
+                //Set notification on toolbar icon
+                pending_request_nav_bar.setVisibility(View.VISIBLE);
+            } else {
+                pending_request_nav_bar.setVisibility(View.GONE);
+            }
+            if (notification_loans_count != 0) {
+                //Set current notification inside initNavBar method
+                loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
+                loans_nav_bar.setTypeface(null, Typeface.BOLD);
+                loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+                loans_nav_bar.setText(notification_loans_count.toString());
+                //Set notification on toolbar icon
+                loans_nav_bar.setVisibility(View.VISIBLE);
+            } else {
+                loans_nav_bar.setVisibility(View.GONE);
+            }
+            Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
 
-        if(tot!= 0){
-            toolbarNotification.setText(tot.toString());
-            toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
-            toolbarNotification.setVisibility(View.GONE);
+            if (tot != 0) {
+                toolbarNotification.setText(tot.toString());
+                toolbarNotification.setVisibility(View.VISIBLE);
+            } else {
+                toolbarNotification.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -245,12 +262,13 @@ public class ShowProfile extends AppCompatActivity
         super.onResume();
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(), notificationManager.getChangeLendingStatusCounter());
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(1).setChecked(true);
+
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             getUserInfoFromExtra();
             setUser();
         } else {
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.getMenu().getItem(1).setChecked(true);
             getUserInfoFromSharedPref();
             setUser();
         }
@@ -519,9 +537,9 @@ public class ShowProfile extends AppCompatActivity
         Bitmap image = null;
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
-            image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
+            //image = BitmapFactory.decodeFile(user.getImagePath().replace("profile.", "profile_samb."));
             circleImageView = findViewById(R.id.profileImage);
-            circleImageView.setImageBitmap(image);
+            Picasso.with(ShowProfile.this).load(user.getUser_image_url()).into(circleImageView);
         } else if (user.getImagePath() != null) {
             image = BitmapFactory.decodeFile(user.getImagePath());
             circleImageView = findViewById(R.id.profileImage);
@@ -644,28 +662,31 @@ public class ShowProfile extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        finish();
     }
 
     private void setUserInfoNavBar() {
-        TextView barName = navView.findViewById(R.id.profileNameNavBar);
-        navView.getBackground().setAlpha(80);
+        if(show_mode==SHOW_MY_PROFILE) {
+            TextView barName = navView.findViewById(R.id.profileNameNavBar);
+            navView.getBackground().setAlpha(80);
 
-        CircleImageView barprofileImage = navView.findViewById(R.id.profileImageNavBar);
-        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
-            User currentUser = getIntent().getExtras().getParcelable("user_owner");
-            barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
-            Bitmap image = null;
-            if (currentUser.getImagePath() != null) {
-                image = BitmapFactory.decodeFile(currentUser.getImagePath());
-                barprofileImage.setImageBitmap(image);
-            }
-        } else {
-            barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
-            Bitmap image = null;
+            CircleImageView barprofileImage = navView.findViewById(R.id.profileImageNavBar);
+            if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_owner") != null) {
+                User currentUser = getIntent().getExtras().getParcelable("user_owner");
+                barName.setText(currentUser.getName().getValue() + " " + currentUser.getSurname().getValue());
+                Bitmap image = null;
+                if (currentUser.getImagePath() != null) {
+                    image = BitmapFactory.decodeFile(currentUser.getImagePath());
+                    barprofileImage.setImageBitmap(image);
+                }
+            } else {
+                barName.setText(this.user.getName().getValue() + " " + this.user.getSurname().getValue());
+                Bitmap image = null;
 
-            if (this.user.getImagePath() != null) {
-                image = BitmapFactory.decodeFile(user.getImagePath());
-                barprofileImage.setImageBitmap(image);
+                if (this.user.getImagePath() != null) {
+                    image = BitmapFactory.decodeFile(user.getImagePath());
+                    barprofileImage.setImageBitmap(image);
+                }
             }
         }
     }

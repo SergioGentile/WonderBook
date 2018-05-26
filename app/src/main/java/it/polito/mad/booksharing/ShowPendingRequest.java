@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +47,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -269,8 +272,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private FirebaseListAdapter<Request> getAdapter(int type) {
         FirebaseListAdapter<Request> adapterToReturn = null;
         if(LAND == type){
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming");
-            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_incoming, databaseReference) {
+            Query query = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").orderByChild("time");
+            adapterToReturn = new FirebaseListAdapter<Request>(this, Request.class, R.layout.adapter_pending_notification_incoming, query) {
                 @Override
                 protected void populateView(View v, final Request request, int position) {
                     LinearLayout ll1 = (LinearLayout) v.findViewById(R.id.item_container);
@@ -297,12 +300,33 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     accept.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
-                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
-                            //change the status of the book from "available" to "not available"
-                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
-                            mNotificationManager.subtractPendingRequestCounter(1);
-                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
+                            //Before accept, check if the book is available
+                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                   if(dataSnapshot.exists()){
+                                       Book bookToAccept = dataSnapshot.getValue(Book.class);
+                                       if(bookToAccept.isAvailable()){
+                                           FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
+                                           FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
+                                           //change the status of the book from "available" to "not available"
+                                           FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
+                                           mNotificationManager.subtractPendingRequestCounter(1);
+                                           setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
+                                       }
+                                       else{
+                                           Toast.makeText(ShowPendingRequest.this, getString(R.string.book_already_lent), Toast.LENGTH_SHORT).show();
+                                       }
+                                   }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
                         }
                     });
                     reject.setOnClickListener(new View.OnClickListener() {
@@ -320,10 +344,12 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            if(dataSnapshot.exists()){
+                                User userToUpdate = dataSnapshot.getValue(User.class);
+                                if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                    //Update it
+                                    FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                                }
                             }
                         }
 
@@ -336,16 +362,41 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
-                            }
+                           if(dataSnapshot.exists()){
+                               User userToUpdate = dataSnapshot.getValue(User.class);
+                               if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                   //Update it
+                                   FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("incoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                               }
+                           }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
+                        }
+                    });
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(DataSnapshot dataSnapshot) {
+                                   User userIntent = dataSnapshot.getValue(User.class);
+                                   Intent intent = new Intent(ShowPendingRequest.this, ShowProfile.class);
+                                   Bundle bundle = new Bundle();
+                                   bundle.putParcelable("user_mp", userIntent);
+                                   bundle.putParcelable("user_owner", user);
+                                   intent.putExtras(bundle);
+                                   startActivity(intent);
+                               }
+
+                               @Override
+                               public void onCancelled(DatabaseError databaseError) {
+
+                               }
+                           });
                         }
                     });
 
@@ -389,10 +440,12 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                            if(dataSnapshot.exists()){
+                                User userToUpdate = dataSnapshot.getValue(User.class);
+                                if(!request.getNameLender().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                    //Update it
+                                    FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameLender").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                                }
                             }
                         }
 
@@ -405,16 +458,55 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                     FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User userToUpdate = dataSnapshot.getValue(User.class);
-                            if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
-                                //Update it
-                                FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
-                            }
+                           if(dataSnapshot.exists()){
+                               User userToUpdate = dataSnapshot.getValue(User.class);
+                               if(!request.getNameBorrower().equals(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue())){
+                                   //Update it
+                                   FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests").child("outcoming").child(request.getKeyRequest()).child("nameBorrower").setValue(userToUpdate.getName().getValue() + " " + userToUpdate.getSurname().getValue());
+                               }
+                           }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
+                        }
+                    });
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference child = reference.child("users").child(request.getKeyLender());
+                            child.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    //Download the updated book and start the activity
+                                    final User currentUser = dataSnapshot.getValue(User.class);
+                                    FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Book bookUpdated = dataSnapshot.getValue(Book.class);
+                                            Intent intent = new Intent(ShowPendingRequest.this, ShowBookFull.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelable("book_mp", bookUpdated);
+                                            bundle.putParcelable("user_mp", currentUser);
+                                            bundle.putParcelable("user_owner", user);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
                         }
                     });
 
@@ -424,6 +516,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
         return adapterToReturn;
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

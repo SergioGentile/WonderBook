@@ -69,7 +69,7 @@
             android:id="@+id/fabRequest"
             android:padding="@dimen/padding"
             android:layout_gravity="right|bottom"
-            android:src="@drawable/ic_share_white_24dp"
+            android:src="@drawable/require_book"
             app:useCompatPadding="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -402,24 +402,24 @@
                         android:layout_alignParentBottom="true"
                         android:layout_width="match_parent"
                         android:layout_height="40dp">
-                    <TextView
-                        android:textSize="@dimen/title_box_size"
-                        android:layout_marginLeft="@dimen/margin_left"
-                        android:textColor="@color/colorPrimary"
-                        android:id="@+id/requireBook"
-                        android:gravity="center_vertical"
-                        android:text="@string/require_this_book"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
+                        <TextView
+                            android:textSize="@dimen/title_box_size"
+                            android:layout_marginLeft="@dimen/margin_left"
+                            android:textColor="@color/colorPrimary"
+                            android:id="@+id/requireBook"
+                            android:gravity="center_vertical"
+                            android:text="@string/require_this_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
 
-                    <ImageView
-                        android:layout_marginTop="2dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_gravity="right|center_vertical"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:src="@drawable/ic_arrow_forward_black_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <ImageView
+                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_gravity="right|center_vertical"
+                            android:layout_marginRight="@dimen/margin_right"
+                            android:src="@drawable/ic_arrow_forward_black_24dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
                 </RelativeLayout>

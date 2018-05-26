@@ -1498,7 +1498,7 @@ public class MainPage extends AppCompatActivity
 
 
                 //Modify the name of shared by if necessary
-                FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addValueEventListener(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User currentUser = dataSnapshot.getValue(User.class);

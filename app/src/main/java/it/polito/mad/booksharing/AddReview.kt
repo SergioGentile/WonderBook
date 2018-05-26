@@ -83,13 +83,13 @@ class AddReview : AppCompatActivity() {
                     override fun doTransaction(mutableData: MutableData?): Transaction.Result {
                         val user = mutableData?.getValue<User>(User::class.java) ?: return Transaction.success(mutableData)!!
 
-                        var numRev: Int = user?.numRev!!
-                        var numStars: Float = rating?.rating!!
-                        var lastScore: Float = user?.numStars!! * user?.numRev!!
-                        numRev++
-                        numStars = (lastScore + numStars)/(numRev)
-                        user.numRev = numRev;
-                        user.numStars = numStars;
+                        var numRev: Int? = user.numRev
+                        var numStars: Float? = rating?.rating
+                        var lastScore: Float? = user.numStars * user.numRev
+                        numRev = numRev!! + 1
+                        numStars = (lastScore!! + numStars!!)/(numRev)
+                        user.numRev = numRev
+                        user.numStars = numStars
 
                         // Set value and report transaction success
                         mutableData.child("numStars").value = numStars

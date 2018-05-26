@@ -210,5 +210,8 @@
     <string name="warning_no_borrow_book">Non hai libri in prestito</string>
     <string name="warning_no_lend_book">Non hai dato libri in prestito</string>
     <string name="warning_no_shared_book">Non hai ancora condiviso libri</string>
+    <string name="no_review_available">Nessuna recensione disponibile</string>
+    <string name="book_already_lent">Il libro è già stato prestato ad un altro utente</string>
+    <string name="request_already_sent">"Hai già chiesto questo libro. Attendi una risposta dal proprietario. "</string>
 
 </resources>
