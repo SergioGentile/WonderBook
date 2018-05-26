@@ -156,7 +156,7 @@
     <string name="position_filter_description">Modify the current position</string>
     <string name="current_position">Current position</string>
     <string name="position_filter_radius">Specify a search radius</string>
-    <string name="radius">Km di raggio</string>
+    <string name="radius">Km radius</string>
     <string name="valid_radius">Attention: insert a valid radius</string>
     <string name="email_private">Set as public/private</string>
     <string name="insert_email">Please insert email</string>
@@ -226,4 +226,5 @@
     <string name="title_rejected_request">Lending Request Rejected</string>
     <string name="message_body_rejected_summary">Some of your lending request was rejected</string>
     <string name="message_body_rejected_simple">Lending request rejected by</string>
+    <string name="use_your_current_position">Set your current position</string>
 </resources>
