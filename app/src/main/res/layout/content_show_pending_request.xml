@@ -20,6 +20,17 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
+          <TextView
+              android:layout_width="15dp"
+              android:layout_height="15dp"
+              android:layout_marginTop="-25dp"
+              android:layout_marginLeft="35dp"
+              android:background="@drawable/round_notification"
+              android:gravity="center"
+              android:text="2"
+              android:textColor="@android:color/white"
+              android:textSize="8sp"
+              android:visibility="visible" />
 
           <android.support.design.widget.TabLayout
 

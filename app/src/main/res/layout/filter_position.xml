@@ -100,7 +100,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="Utilizza la tua posizione attuale"
+                                android:text="@string/use_your_current_position"
                                 android:textColor="@color/colorAccent"
                                 android:textSize="@dimen/subtitle_box_size" />
 
