@@ -171,8 +171,8 @@ public class MyNotificationManager {
         intent.putExtras(bundle);
         intent.putExtra("dispatcherCode", MAIN_PAGE);
 
-        String title = "Lending Request Rejected";
-        String messageBody = "Some of your lending request was rejected";
+        String title = mCtx.getString(R.string.title_rejected_request);
+        String messageBody = mCtx.getString(R.string.message_body_rejected_summary);
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
         stackBuilder.addNextIntentWithParentStack(intent);
@@ -210,7 +210,7 @@ public class MyNotificationManager {
         intent.putExtras(bundle);
         intent.putExtra("dispatcherCode", MAIN_PAGE);
 
-        String messageBody = "Rejected lending request from " + sender.getName().getValue() + " " + sender.getSurname().getValue();
+        String messageBody = mCtx.getString(R.string.message_body_rejected_simple) + " " + sender.getName().getValue() + " " + sender.getSurname().getValue();
 
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
@@ -222,7 +222,7 @@ public class MyNotificationManager {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        String title = "Rejected Lending Request";
+        String title = mCtx.getString(R.string.title_rejected_request);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
@@ -322,8 +322,8 @@ public class MyNotificationManager {
         intent.putExtras(bundle);
         intent.putExtra("dispatcherCode", SHOW_MOVMENT);
 
-        String title = "Lending Request Status";
-        String messageBody = String.valueOf(changeLendingStatusCounter) + " status updates";
+        String title = mCtx.getString(R.string.title_status_lending);
+        String messageBody = String.valueOf(changeLendingStatusCounter) + " " + mCtx.getString(R.string.message_body_status_lending);
 
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
@@ -366,12 +366,12 @@ public class MyNotificationManager {
         String title = "";
         String messageBody = "";
         if(status.equals("accepted")){
-            title = "Lending Request Accepted";
-            messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " accepted your lending request";
+            title = mCtx.getString(R.string.title_accepted_loan);
+            messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " " + mCtx.getString(R.string.message_body_accepted);
         }
         else if (status.equals("wait")){
-            title = "Lending End Request";
-            messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " requested to end lending";
+            title = mCtx.getString(R.string.loan_wait_title);
+            messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " " + mCtx.getString(R.string.message_body_wait);
         }
 
         // Create the TaskStackBuilder and add the intent, which inflates the back stack

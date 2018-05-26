@@ -217,5 +217,13 @@
     <string name="no_review_available">No review available</string>
     <string name="book_already_lent">The book is already been lent to another user</string>
     <string name="request_already_sent">You already sent a request for this book. Please wait a response from the owner.</string>
-
+    <string name="title_status_lending">Loans Status</string>
+    <string name="message_body_status_lending">status updates</string>
+    <string name="title_accepted_loan">Loan Request Accepted</string>
+    <string name="loan_wait_title">Loan End Request</string>
+    <string name="message_body_accepted">accepted your loan request</string>
+    <string name="message_body_wait">requested to end loan</string>
+    <string name="title_rejected_request">Lending Request Rejected</string>
+    <string name="message_body_rejected_summary">Some of your lending request was rejected</string>
+    <string name="message_body_rejected_simple">Lending request rejected by</string>
 </resources>

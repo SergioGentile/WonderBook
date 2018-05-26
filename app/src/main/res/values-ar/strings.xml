@@ -214,4 +214,13 @@
     <string name="warning_no_lend_book">أنت لم تقرض أي كتاب</string>
     <string name="warning_no_shared_book">أنت لم تشارك أي كتاب</string>
     <string name="no_review_available">لا يوجد مراجعة متاحة</string>
+    <string name="title_status_lending">حالة القرض</string>
+    <string name="message_body_status_lending">تحديثات الحالة</string>
+    <string name="title_accepted_loan">قبول طلب القرض</string>
+    <string name="loan_wait_title">طلب قرض نهاية</string>
+    <string name="message_body_accepted">قبل طلب القرض الخاص بك</string>
+    <string name="message_body_wait">طلب إبرام القرض</string>
+    <string name="title_rejected_request">طلب القرض مرفوض</string>
+    <string name="message_body_rejected_summary">تم رفض بعض طلبات القروض</string>
+    <string name="message_body_rejected_simple">طلب القرض مرفوض من قبل</string>
 </resources>

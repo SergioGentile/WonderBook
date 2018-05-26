@@ -213,5 +213,13 @@
     <string name="no_review_available">Nessuna recensione disponibile</string>
     <string name="book_already_lent">Il libro è già stato prestato ad un altro utente</string>
     <string name="request_already_sent">"Hai già chiesto questo libro. Attendi una risposta dal proprietario. "</string>
-
+    <string name="title_status_lending">Stato dei prestiti</string>
+    <string name="message_body_status_lending">aggiornamenti di stato</string>
+    <string name="title_accepted_loan">Richiesta di prestito accettata</string>
+    <string name="loan_wait_title">Richiesta di fine prestito</string>
+    <string name="message_body_accepted">ha accettato la tua rihiesta di prestito</string>
+    <string name="message_body_wait">ha richiesto di concludere il prestito</string>
+    <string name="title_rejected_request">Richesta di prestito rifiutata</string>
+    <string name="message_body_rejected_summary">Alcune richieste di prestito sono state rifiutate</string>
+    <string name="message_body_rejected_simple">Richiesta di prestito rifiutata da</string>
 </resources>
