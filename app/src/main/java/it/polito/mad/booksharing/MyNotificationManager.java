@@ -85,27 +85,48 @@ public class MyNotificationManager {
                     buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                     buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                     notificationCounter++;
+                    messageCounter++;
+
+                    if (userKeyMessageCounter.containsKey(sender.getKey())) {
+                        Long currentCounter = userKeyMessageCounter.get(sender.getKey());
+                        currentCounter++;
+                        userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
+                    } else {
+                        userKeyMessageCounter.put(sender.getKey(), new Long(1));
+                    }
+                    Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
+                    
                 } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
                     buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                     buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                     notificationCounter++;
+                    messageCounter++;
+
+                    if (userKeyMessageCounter.containsKey(sender.getKey())) {
+                        Long currentCounter = userKeyMessageCounter.get(sender.getKey());
+                        currentCounter++;
+                        userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
+                    } else {
+                        userKeyMessageCounter.put(sender.getKey(), new Long(1));
+                    }
+                    Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
                 }
-            }else{
+            }else {
                 buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                 buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                 notificationCounter++;
-            }
+                messageCounter++;
 
-            messageCounter++;
-            if (userKeyMessageCounter.containsKey(sender.getKey())) {
-                Long currentCounter = userKeyMessageCounter.get(sender.getKey());
-                currentCounter++;
-                userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
-            } else {
-                userKeyMessageCounter.put(sender.getKey(), new Long(1));
-            }
-            Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
 
+                if (userKeyMessageCounter.containsKey(sender.getKey())) {
+                    Long currentCounter = userKeyMessageCounter.get(sender.getKey());
+                    currentCounter++;
+                    userKeyMessageCounter.put(sender.getKey(), new Long(currentCounter));
+                } else {
+                    userKeyMessageCounter.put(sender.getKey(), new Long(1));
+                }
+                Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
+            }
             ShortcutBadger.applyCount(mCtx, messageCounter + pendingRequestCounter + changeLendingStatusCounter);
 
             SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
