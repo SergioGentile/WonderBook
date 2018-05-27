@@ -395,7 +395,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         DatabaseReference databaseReferenceUpdate = firebaseDatabaseUpdate.getReference("users").child(user.getKey()).child("chats").child(peerAnonymus.getKeyChat()).child("receiverInformation");
                         if (somethingChange) {
                             name.setText(nameUpdate + " " + surnameUpdate);
-                            databaseReferenceUpdate.setValue(new ReceiverInformation(nameUpdate, surnameUpdate, receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
+                            databaseReferenceUpdate.setValue(new ReceiverInformation(receiverUpdate.getName().getValue(), receiverUpdate.getSurname().getValue(), receiverUpdate.getUser_image_url(), receiverUpdate.getKey()));
                         }
                     }
 
