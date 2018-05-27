@@ -480,14 +480,19 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                                     FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Book bookUpdated = dataSnapshot.getValue(Book.class);
-                                            Intent intent = new Intent(ShowMovment.this, ShowBookFull.class);
-                                            Bundle bundle = new Bundle();
-                                            bundle.putParcelable("book_mp", bookUpdated);
-                                            bundle.putParcelable("user_mp", currentUser);
-                                            bundle.putParcelable("user_owner", user);
-                                            intent.putExtras(bundle);
-                                            startActivity(intent);
+                                            if(dataSnapshot.exists()) {
+                                                Book bookUpdated = dataSnapshot.getValue(Book.class);
+                                                Intent intent = new Intent(ShowMovment.this, ShowBookFull.class);
+                                                Bundle bundle = new Bundle();
+                                                bundle.putParcelable("book_mp", bookUpdated);
+                                                bundle.putParcelable("user_mp", currentUser);
+                                                bundle.putParcelable("user_owner", user);
+                                                intent.putExtras(bundle);
+                                                startActivity(intent);
+                                            }
+                                            else{
+                                                Toast.makeText(ShowMovment.this, getString(R.string.no_longer_available), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
 
                                         @Override

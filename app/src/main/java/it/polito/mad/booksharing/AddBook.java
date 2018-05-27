@@ -42,9 +42,11 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -330,36 +332,72 @@ public class AddBook extends Activity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Ask to the user if he is sure to delete the book.
-                //If yes, i delete all.
-                CharSequence chooses[] = new CharSequence[]{getString(R.string.yes), getString(R.string.no)};
-                AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
-                builder.setTitle(getString(R.string.ask_to_delete_book));
-                builder.setItems(chooses, new DialogInterface.OnClickListener() {
+                //Check if some request outcoming request exist
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey()).child("requests");
+                databaseReference.child("incoming").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int choose) {
-                        if (choose == 0) {
-                            //User is sure, i must delete all
-                            try {
-                                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
-                                storageReference.delete();
-                            } catch (Exception e) {
-                                Log.w("AddBook", "Impossible to delete the file");
+                    public void onDataChange(DataSnapshot dataSnapshotsIncoming) {
+                        if(dataSnapshotsIncoming.exists()){
+                            for(DataSnapshot dataSnapshot : dataSnapshotsIncoming.getChildren()){
+                                Request request = dataSnapshot.getValue(Request.class);
+                                if(request.getKeyBook().equals(book.getKey()) && !request.getStatus().equals(Request.REJECTED)){
+                                    Toast.makeText(AddBook.this, getString(R.string.check_for_delete), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                             }
-                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                            DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
-                            databaseReference.removeValue();
-                            Intent intent = new Intent();
-                            setResult(RESULT_OK, intent);
-                            //Notify to the showBookFull activity that the book was deleted, so do not show it again
-                            intent.putExtra("cancelled", true);
-                            finish();
+                            //Check for outcoming
+                            databaseReference.child("outcoming").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshotsOutcoming) {
+                                    if (dataSnapshotsOutcoming.exists()) {
+                                        for (DataSnapshot dataSnapshot : dataSnapshotsOutcoming.getChildren()) {
+                                            Request request = dataSnapshot.getValue(Request.class);
+                                            if (request.getKeyBook().equals(book.getKey()) && !request.getStatus().equals(Request.REJECTED)) {
+                                                Toast.makeText(AddBook.this, getString(R.string.check_for_delete), Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    btnDelete();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                         }
+                        else{
+                            //Check for outcoming
+                            databaseReference.child("outcoming").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshotsOutcoming) {
+                                    if (dataSnapshotsOutcoming.exists()) {
+                                        for (DataSnapshot dataSnapshot : dataSnapshotsOutcoming.getChildren()) {
+                                            Request request = dataSnapshot.getValue(Request.class);
+                                            if (request.getKeyBook().equals(book.getKey()) && !request.getStatus().equals(Request.REJECTED)) {
+                                                Toast.makeText(AddBook.this, getString(R.string.check_for_delete), Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    btnDelete();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
-                builder.show();
-
             }
         });
 
@@ -556,6 +594,38 @@ public class AddBook extends Activity {
             saveToInternalStorage(rotateImg);
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(photoStorage)));
         }
+    }
+
+    private void btnDelete(){
+        //Ask to the user if he is sure to delete the book.
+        //If yes, i delete all.
+        CharSequence chooses[] = new CharSequence[]{getString(R.string.yes), getString(R.string.no)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddBook.this);
+        builder.setTitle(getString(R.string.ask_to_delete_book));
+        builder.setItems(chooses, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int choose) {
+                if (choose == 0) {
+                    //User is sure, i must delete all
+                    try {
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(book.getUrlMyImage());
+                        storageReference.delete();
+                    } catch (Exception e) {
+                        Log.w("AddBook", "Impossible to delete the file");
+                    }
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference databaseReference = firebaseDatabase.getReference("books/" + key);
+                    databaseReference.removeValue();
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    //Notify to the showBookFull activity that the book was deleted, so do not show it again
+                    intent.putExtra("cancelled", true);
+                    finish();
+
+                }
+            }
+        });
+        builder.show();
     }
 
     //This method will save a bitmap inside the Internal Storage of the application
