@@ -1307,6 +1307,7 @@ public class MainPage extends AppCompatActivity
 
                                                 //Set the right marker on the map for the selected books.
                                                 markers.clear();
+                                                map.clear();
                                                 for (SortedLocationItem sortedLocationItem : sortedLocationItems) {
                                                     Position overlap = avoidOverlap(markers.values(), new Position(sortedLocationItem.getLatitude(), sortedLocationItem.getLongitude()));
                                                     Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.getLatitude(), overlap.getLongitude())).title(User.capitalizeSpace(sortedLocationItem.getBook().getTitle())).snippet(sortedLocationItem.getSnippet()));
@@ -1319,15 +1320,10 @@ public class MainPage extends AppCompatActivity
                                                     for (Marker marker : markers.values()) {
                                                         builder.include(marker.getPosition());
                                                     }
-                                                    LatLngBounds bounds = builder.build();
-                                                    int width = getResources().getDisplayMetrics().widthPixels;
-                                                    int height = getResources().getDisplayMetrics().heightPixels;
-                                                    int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
 
-                                                    CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
-
-                                                    map.animateCamera(cu);
                                                 }
+                                                CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
+                                                map.animateCamera(cu);
                                                 progressAnimation.setVisibility(View.GONE);
                                                 setAdapter(NO_ORDER);
 
