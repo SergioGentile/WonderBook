@@ -1086,13 +1086,6 @@ public class MainPage extends AppCompatActivity
                                         public void onLocationResult(String key, GeoLocation location) {
                                             counter_location++;
                                             if (location != null) {
-                                                String snippet = getString(R.string.shared_by) + " " + User.capitalizeSpace(booksMatch.get(i).getOwnerName());
-                                                //return a new lat and long in order to avoid overlap. The new lat/long is near the previous one and it is choose in a random way
-                                                Position overlap = avoidOverlap(markers.values(), new Position(location.latitude, location.longitude));
-                                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(User.capitalizeFirst(booksMatch.get(i).getTitle())).snippet(snippet));
-                                                m.setTag(bookIds.get(i));
-                                                markers.put(key, m);
-                                                //Evaluate distance for the bok if latPhone and longPhone are available.
 
                                                 if (latPhone != -1 && longPhone != -1) {
                                                     booksMatch.get(i).setDistance(distanceLocation(latPhone, longPhone, location.latitude, location.longitude));
@@ -1100,14 +1093,26 @@ public class MainPage extends AppCompatActivity
                                                     booksMatch.get(i).setDistance(-1);
                                                 }
 
-                                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                                for (Marker marker : markers.values()) {
-                                                    builder.include(marker.getPosition());
+
+                                                if(!((booksMatch.get(i).getDistance() == -1) || booksMatch.get(i).getDistance() > radius)){
+                                                    String snippet = getString(R.string.shared_by) + " " + User.capitalizeSpace(booksMatch.get(i).getOwnerName());
+                                                    //return a new lat and long in order to avoid overlap. The new lat/long is near the previous one and it is choose in a random way
+                                                    Position overlap = avoidOverlap(markers.values(), new Position(location.latitude, location.longitude));
+                                                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(overlap.latitude, overlap.longitude)).title(User.capitalizeFirst(booksMatch.get(i).getTitle())).snippet(snippet));
+                                                    m.setTag(bookIds.get(i));
+                                                    markers.put(key, m);
+                                                    //Evaluate distance for the bok if latPhone and longPhone are available.
+
+                                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                                    for (Marker marker : markers.values()) {
+                                                        builder.include(marker.getPosition());
+                                                    }
+                                                    LatLngBounds bounds = builder.build();
+                                                    int width = getResources().getDisplayMetrics().widthPixels;
+                                                    int height = getResources().getDisplayMetrics().heightPixels;
+                                                    int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
                                                 }
-                                                LatLngBounds bounds = builder.build();
-                                                int width = getResources().getDisplayMetrics().widthPixels;
-                                                int height = getResources().getDisplayMetrics().heightPixels;
-                                                int padding = (int) (width * 0.20); // offset from edges of the map 10% of screen
+
 
                                                 CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
                                                 map.animateCamera(cu);
@@ -1118,7 +1123,6 @@ public class MainPage extends AppCompatActivity
                                             }
                                             if (counter_location == booksMatch.size()) {
                                                 //Qui si setta l'adapter della list view
-                                                //Sort adapter
 
                                                 //Filter by distance
                                                 Iterator<Book> booksToDelete = booksMatch.iterator();
