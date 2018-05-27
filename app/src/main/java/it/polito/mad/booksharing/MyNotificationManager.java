@@ -95,7 +95,7 @@ public class MyNotificationManager {
                         userKeyMessageCounter.put(sender.getKey(), new Long(1));
                     }
                     Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
-                    
+
                 } else if (!lastChatReceiver.equals(sender.getKey()) || !ChatPage.isRunning) {
                     buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                     buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
@@ -153,6 +153,7 @@ public class MyNotificationManager {
             if(status.equals("sended")){
                 pendingRequestCounter++;
                 edit.putInt("pendingRequestCounter",pendingRequestCounter).commit();
+                ShortcutBadger.applyCount(mCtx, messageCounter + pendingRequestCounter + changeLendingStatusCounter);
                 return;
             }
             else if(status.equals("rejected")){

@@ -311,8 +311,6 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
                                            //change the status of the book from "available" to "not available"
                                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
-                                           mNotificationManager.subtractPendingRequestCounter(1);
-                                           setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
                                        }
                                        else{
                                            Toast.makeText(ShowPendingRequest.this, getString(R.string.book_already_lent), Toast.LENGTH_SHORT).show();
@@ -334,8 +332,6 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
-                            mNotificationManager.subtractPendingRequestCounter(1);
-                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeLendingStatusCounter());
                         }
                     });
 
@@ -638,6 +634,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(4).setChecked(true);
+        mNotificationManager.setPendingRequestCounter(0);
         int messageCounter = mNotificationManager.getMessageCounter();
         int pendingRequestCounter = mNotificationManager.getPendingRequestCounter();
         int changeStatusLendingCounter = mNotificationManager.getChangeLendingStatusCounter();
