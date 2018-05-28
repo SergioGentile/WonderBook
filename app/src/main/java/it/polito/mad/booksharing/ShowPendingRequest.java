@@ -64,6 +64,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private NavigationView navigationView;
     private View navView;
     private int posTab;
+    private TabLayout.Tab tab0,tab1;
     private MyBroadcastReceiver mMessageReceiver;
     private MyNotificationManager mNotificationManager;
 
@@ -76,7 +77,11 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
 
+        setCustomTabView();
+
+
         setTabView(1,3);
+        setTabView(2,1);
         setList(BORROW);
         showEmpty(BORROW);
         posTab = 0;
@@ -119,11 +124,16 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
     }
 
-    private void setTabView(Integer carryoutNotification,Integer receivedNotification) {
-        //EFFETTUATE
-
-        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+    private void setCustomTabView() {
+        tab0 = tabLayout.getTabAt(0);
         tab0.setCustomView(R.layout.badged_tab);
+        tab1 = tabLayout.getTabAt(1);
+        tab1.setCustomView(R.layout.badged_tab);
+    }
+
+    private void setTabView(Integer carryoutNotification,Integer receivedNotification) {
+
+
         TextView tvTab0 = (TextView) tab0.getCustomView().findViewById(R.id.tvTab);
 
         tvTab0.setText(R.string.carry_out);
@@ -134,8 +144,6 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
        }else{
            notification0.setVisibility(View.GONE);
        }
-        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
-        tab1.setCustomView(R.layout.badged_tab);
 
         TextView tvTab1 = (TextView) tab1.getCustomView().findViewById(R.id.tvTab);
         tvTab1.setText(getString(R.string.received));

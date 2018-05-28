@@ -61,6 +61,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private NavigationView navigationView;
     private View navView;
     private int posTab;
+    private  TabLayout.Tab tab0,tab1,tab2;
     private  MyBroadcastReceiver mMessageReceiver;
 
     @Override
@@ -76,6 +77,10 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         tabLayout = findViewById(R.id.tabsMovment);
+
+        setCustonTabView();
+
+
         setTabView(1,0,2);
         setList(BORROW);
 
@@ -115,6 +120,18 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
     }
 
+    private void setCustonTabView() {
+
+        tab0 = tabLayout.getTabAt(0);
+        tab0.setCustomView(R.layout.badged_tab);
+
+        tab1=tabLayout.getTabAt(1);
+        tab1.setCustomView(R.layout.badged_tab);
+
+        tab2 = tabLayout.getTabAt(2);
+        tab2.setCustomView(R.layout.badged_tab);
+    }
+
     @Override
     protected void onStart(){
         super.onStart();
@@ -147,8 +164,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private void setTabView(Integer carryoutNotification,Integer receivedNotification,Integer notificationConclusi) {
         //EFFETTUATE
 
-        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
-        tab0.setCustomView(R.layout.badged_tab);
+
         TextView tvTab0 = (TextView) tab0.getCustomView().findViewById(R.id.tvTab);
 
         tvTab0.setText(R.string.borrowed);
@@ -159,8 +175,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         }else{
             notification0.setVisibility(View.GONE);
         }
-        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
-        tab1.setCustomView(R.layout.badged_tab);
+
         TextView tvTab1 = (TextView) tab1.getCustomView().findViewById(R.id.tvTab);
         tvTab1.setText(getString(R.string.lended));
         TextView notification1 = (TextView) tab1.getCustomView().findViewById(R.id.notification_badge);
@@ -172,8 +187,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             notification1.setVisibility(View.GONE);
         }
 
-        TabLayout.Tab tab2 = tabLayout.getTabAt(2);
-        tab2.setCustomView(R.layout.badged_tab);
+        
         TextView tvTab2 = (TextView) tab2.getCustomView().findViewById(R.id.tvTab);
         tvTab2.setText(getString(R.string.concluded_loans));
         TextView notification2 = (TextView) tab2.getCustomView().findViewById(R.id.notification_badge);
