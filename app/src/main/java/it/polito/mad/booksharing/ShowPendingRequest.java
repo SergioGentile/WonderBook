@@ -75,6 +75,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
+
+        setTabView(1,3);
         setList(BORROW);
         showEmpty(BORROW);
         posTab = 0;
@@ -114,6 +116,37 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
             }
         });
+
+    }
+
+    private void setTabView(Integer carryoutNotification,Integer receivedNotification) {
+        //EFFETTUATE
+
+        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+        tab0.setCustomView(R.layout.badged_tab);
+        TextView tvTab0 = (TextView) tab0.getCustomView().findViewById(R.id.tvTab);
+
+        tvTab0.setText(R.string.carry_out);
+        TextView notification0 = (TextView) tab0.getCustomView().findViewById(R.id.notification_badge);
+       if(carryoutNotification!=0) {
+           notification0.setText(carryoutNotification.toString());
+           notification0.setVisibility(View.VISIBLE);
+       }else{
+           notification0.setVisibility(View.GONE);
+       }
+        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+        tab1.setCustomView(R.layout.badged_tab);
+
+        TextView tvTab1 = (TextView) tab1.getCustomView().findViewById(R.id.tvTab);
+        tvTab1.setText(getString(R.string.received));
+        TextView notification1 = (TextView) tab1.getCustomView().findViewById(R.id.notification_badge);
+        if(receivedNotification!=0) {
+
+            notification1.setText(receivedNotification.toString());
+            notification1.setVisibility(View.VISIBLE);
+        }else{
+            notification1.setVisibility(View.GONE);
+        }
 
     }
 

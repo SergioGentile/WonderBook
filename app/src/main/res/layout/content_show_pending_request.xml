@@ -39,8 +39,8 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               app:tabGravity="fill"
-              app:tabPaddingEnd="@dimen/margin_right"
-              app:tabPaddingStart="@dimen/margin_left"
+              app:tabPaddingEnd="10dp"
+              app:tabPaddingStart="10dp"
               app:tabSelectedTextColor="@android:color/white"
               app:tabTextColor="@color/colorTabUnselected">
 

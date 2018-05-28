@@ -630,7 +630,7 @@ public class EditProfile extends AppCompatActivity {
             //If I'm here the user has changed the image so I need to save it inside the Internal Storage
             String imagePath = saveToInternalStorage(profileBitmap);
             saveonFirebase(imagePath);
-            return;
+
         }
 
         updateUser(user);

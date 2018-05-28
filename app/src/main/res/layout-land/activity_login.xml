@@ -20,6 +20,9 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/LoginContainer"
         android:layout_width="match_parent"
@@ -167,6 +170,8 @@
         </ScrollView>
 
         <LinearLayout
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_marginBottom="@dimen/margin_top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -186,6 +191,6 @@
 
 
     </LinearLayout>
-
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
