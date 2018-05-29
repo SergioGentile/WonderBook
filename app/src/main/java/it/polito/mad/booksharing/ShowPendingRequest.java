@@ -1,5 +1,6 @@
 package it.polito.mad.booksharing;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -20,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +44,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -57,6 +64,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
     private NavigationView navigationView;
     private View navView;
     private int posTab;
+    private TabLayout.Tab tab0,tab1;
     private MyBroadcastReceiver mMessageReceiver;
     private MyNotificationManager mNotificationManager;
 
@@ -68,6 +76,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         listOfRequest = (ListView) findViewById(R.id.list_of_requests);
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
+
+        setCustomTabView();
 
         setList(BORROW);
         showEmpty(BORROW);
@@ -109,11 +119,16 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
 
     }
 
-    private void setTabView(Integer carryoutNotification,Integer receivedNotification) {
-        //EFFETTUATE
-
-        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+    private void setCustomTabView() {
+        tab0 = tabLayout.getTabAt(0);
         tab0.setCustomView(R.layout.badged_tab);
+        tab1 = tabLayout.getTabAt(1);
+        tab1.setCustomView(R.layout.badged_tab);
+    }
+
+    private void setTabView(Integer carryoutNotification,Integer receivedNotification) {
+
+
         TextView tvTab0 = (TextView) tab0.getCustomView().findViewById(R.id.tvTab);
 
         tvTab0.setText(R.string.carry_out);
@@ -124,8 +139,6 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
        }else{
            notification0.setVisibility(View.GONE);
        }
-        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
-        tab1.setCustomView(R.layout.badged_tab);
 
         TextView tvTab1 = (TextView) tab1.getCustomView().findViewById(R.id.tvTab);
         tvTab1.setText(getString(R.string.received));
