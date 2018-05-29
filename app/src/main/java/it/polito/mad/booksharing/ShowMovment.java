@@ -42,8 +42,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.Date;
 
@@ -62,6 +60,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private View navView;
     private int posTab;
     private  MyBroadcastReceiver mMessageReceiver;
+    MyNotificationManager myNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,6 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         tabLayout = findViewById(R.id.tabsMovment);
-        setTabView(1,0,2);
         setList(BORROW);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -142,6 +140,13 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         TabLayout.Tab tab = tabLayout.getTabAt(savedInstanceState.getInt("posTab"));
         tab.select();
 
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        myNotificationManager.setLenderStatusNotificationCounter(0);
+        myNotificationManager.setBorrowerStatusNotificationCounter(0);
     }
 
     private void setTabView(Integer carryoutNotification,Integer receivedNotification,Integer notificationConclusi) {
@@ -680,8 +685,14 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                 intent.putExtras(bundle);
                 if (type == LAND) {
                     intent.putExtra("status", "borrow");
+                    myNotificationManager.subtractBorrowerStatusNotificationCounter(1);
+                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                    setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
                 } else {
                     intent.putExtra("status", "land");
+                    myNotificationManager.subtractLenderStatusNotificationCounter(1);
+                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                    setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
                 }
                 startActivity(intent);
             }
@@ -726,7 +737,8 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
             databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
-            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
+            databaseReference.child("lenderStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getLenderStatusNotificationCounter());
+            databaseReference.child("borrowerStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getBorrowerStatusNotificationCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
@@ -758,13 +770,13 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(3).setChecked(true);
-        MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(this);
-        myNotificationManager.setChangeLendingStatusCounter(0);
+        myNotificationManager = MyNotificationManager.getInstance(this);
         int messageCounter = myNotificationManager.getMessageCounter();
         int pendingRequestCounter = myNotificationManager.getPendingRequestCounter();
-        int changeStatusLendingCounter = myNotificationManager.getChangeLendingStatusCounter();
+        int changeStaus = myNotificationManager.getChangeStatusNotifications();
         myNotificationManager.clearNotification();
-        setNotification(messageCounter,pendingRequestCounter,changeStatusLendingCounter);
+        setNotification(messageCounter,pendingRequestCounter,changeStaus);
+        setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
     }
 
 
@@ -858,7 +870,8 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
             }
         }
     }

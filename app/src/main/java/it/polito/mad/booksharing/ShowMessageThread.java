@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -30,10 +29,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -47,8 +43,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.Date;
@@ -101,7 +95,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navView = navigationView.getHeaderView(0);
 
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-        setNotification(notificationManager.getMessageCounter(),0,0);
 
         user = getIntent().getExtras().getParcelable("user");
 
@@ -251,7 +244,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
                     }
                 }
-                setNotification(notificationManager.getMessageCounter(),0,0);
+                setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeStatusNotifications());
             }
 
             @Override
@@ -518,7 +511,8 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
             databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
-            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
+            databaseReference.child("lenderStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getLenderStatusNotificationCounter());
+            databaseReference.child("borrowerStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getBorrowerStatusNotificationCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
@@ -580,7 +574,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().getItem(5).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         notificationManager.clearNotification();
-        setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeLendingStatusCounter());
+        setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeStatusNotifications());
     }
 
     @Override
@@ -659,7 +653,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
                 }
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
                 //Search the right things to update
 
 

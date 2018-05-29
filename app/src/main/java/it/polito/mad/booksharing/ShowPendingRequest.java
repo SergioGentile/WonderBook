@@ -1,6 +1,5 @@
 package it.polito.mad.booksharing;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -9,7 +8,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -22,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,11 +41,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -76,12 +69,9 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tabsRequest);
 
-        setTabView(1,3);
         setList(BORROW);
         showEmpty(BORROW);
         posTab = 0;
-
-        mNotificationManager = MyNotificationManager.getInstance(this);
 
         mMessageReceiver = new ShowPendingRequest.MyBroadcastReceiver();
         mMessageReceiver.setCurrentActivityHandler(this);
@@ -344,6 +334,9 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                                            FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.ACCEPTED);
                                            //change the status of the book from "available" to "not available"
                                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
+                                           mNotificationManager.subtractPendingRequestCounter(1);
+                                           setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeStatusNotifications());
+                                           setTabView(0,mNotificationManager.getPendingRequestCounter());
                                        }
                                        else{
                                            Toast.makeText(ShowPendingRequest.this, getString(R.string.book_already_lent), Toast.LENGTH_SHORT).show();
@@ -365,6 +358,9 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                         public void onClick(View v) {
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
+                            mNotificationManager.subtractPendingRequestCounter(1);
+                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeStatusNotifications());
+                            setTabView(0,mNotificationManager.getPendingRequestCounter());
                         }
                     });
 
@@ -586,7 +582,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
             databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
-            databaseReference.child("changeLendingStatusCounter").setValue(MyNotificationManager.getInstance(this).getChangeLendingStatusCounter());
+            databaseReference.child("lenderStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getLenderStatusNotificationCounter());
+            databaseReference.child("borrowerStatusNotificationCounter").setValue(MyNotificationManager.getInstance(this).getBorrowerStatusNotificationCounter());
             FirebaseAuth.getInstance().signOut();
             getSharedPreferences("UserInfo", Context.MODE_PRIVATE).edit().clear().apply();
             getSharedPreferences("notificationPref", Context.MODE_PRIVATE).edit().clear().apply();
@@ -672,12 +669,13 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(4).setChecked(true);
-        mNotificationManager.setPendingRequestCounter(0);
+        mNotificationManager = MyNotificationManager.getInstance(this);
+        mNotificationManager.clearNotification();
         int messageCounter = mNotificationManager.getMessageCounter();
         int pendingRequestCounter = mNotificationManager.getPendingRequestCounter();
-        int changeStatusLendingCounter = mNotificationManager.getChangeLendingStatusCounter();
-        mNotificationManager.clearNotification();
-        setNotification(messageCounter,pendingRequestCounter,changeStatusLendingCounter);
+        int changeStatus = mNotificationManager.getChangeStatusNotifications();
+        setNotification(messageCounter,pendingRequestCounter,changeStatus);
+        setTabView(0,mNotificationManager.getPendingRequestCounter());
     }
 
 
@@ -716,7 +714,8 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeLendingStatusCounter());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                currentActivity.setTabView(0,mNotificationManager.getPendingRequestCounter());
             }
         }
     }

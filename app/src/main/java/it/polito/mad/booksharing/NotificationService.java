@@ -58,7 +58,7 @@ public class NotificationService extends FirebaseMessagingService {
         }
     }
 
-    private void showLendingNotification(HashMap<String, String> metaData) {
+    private void showLendingNotification(final HashMap<String, String> metaData) {
         final String status = metaData.get(LENDING_STATUS);
         final String sender_key = metaData.get("sender");
         final String receiver = metaData.get("receiver");
@@ -74,7 +74,12 @@ public class NotificationService extends FirebaseMessagingService {
                     user = json.fromJson(receiver, User.class);
                     sender = dataSnapshot.getValue(User.class);
 
-                    mNotificationManager.displayStatusLendingNotification(status, user, sender);
+                    HashMap<String,String> statusMap= new HashMap<>();
+                    statusMap.put("status",status);
+                    if(status.equals("wait")){
+                        statusMap.put("endRequestBy", metaData.get("endRequestBy"));
+                    }
+                    mNotificationManager.displayStatusLendingNotification(statusMap, user, sender);
                     Intent intent = new Intent("UpdateView");
                     broadcaster.sendBroadcast(intent);
                 }

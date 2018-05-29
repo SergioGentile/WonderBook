@@ -96,7 +96,9 @@
             android:label="@string/title_activity_edit_pwd" />
         <activity
             android:name=".ChatPage"
-            android:theme="@style/AppThemeChat" />
+            android:theme="@style/AppThemeChat"
+            android:parentActivityName=".MainPage"/>
+
         <activity android:name=".ShowMessageThread" />
 
         <service android:name=".NotificationService">
@@ -128,7 +130,8 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_channel_id" />
 
-        <activity android:name=".ActivityDispatcher" />
+        <activity android:name=".ActivityDispatcher"
+            android:parentActivityName=".MainPage"/>
         <activity android:name=".ShowReviews" />
         <activity android:name=".AddReview" />
         <activity android:name=".AddNewRequest" />

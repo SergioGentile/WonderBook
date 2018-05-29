@@ -45,13 +45,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -402,6 +399,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                     if(dataSnapshot.exists()){
                         nManager.setPendingRequestCounter(dataSnapshot.getValue(Integer.class));
                     }
+                    else{
+                        nManager.setPendingRequestCounter(0);
+                    }
                 }
 
                 @Override
@@ -409,12 +409,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
                 }
             });
-            ref.child("changeStatusRequestCounter").addListenerForSingleValueEvent(new ValueEventListener() {
+            ref.child("lenderStatusNotificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
-                        nManager.setChangeLendingStatusCounter(dataSnapshot.getValue(Integer.class));
+                        nManager.setLenderStatusNotificationCounter(dataSnapshot.getValue(Integer.class));
                     }
+                    else{
+                        nManager.setLenderStatusNotificationCounter(0);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            ref.child("borrowerStatusNotificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        nManager.setBorrowerStatusNotificationCounter(dataSnapshot.getValue(Integer.class));
+                    }
+                    else{
+                        nManager.setBorrowerStatusNotificationCounter(0);
+                    }
+
                 }
 
                 @Override
