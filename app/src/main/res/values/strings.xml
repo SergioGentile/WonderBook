@@ -230,7 +230,7 @@
     <string name="book_already_lent">The book is already been lent to another user</string>
     <string name="request_already_sent">You already sent a request for this book. Please wait a response from the owner.</string>
     <string name="title_status_lending">Loans Status</string>
-    <string name="message_body_status_lending">status updates</string>
+    <string name="message_body_status_lending">accepted request</string>
     <string name="title_accepted_loan">Loan Request Accepted</string>
     <string name="loan_wait_title">Loan End Request</string>
     <string name="message_body_accepted">accepted your loan request</string>

@@ -701,12 +701,12 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
                 if (type == LAND) {
                     intent.putExtra("status", "borrow");
                     myNotificationManager.subtractBorrowerStatusNotificationCounter(1);
-                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),0);
                     setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
                 } else {
                     intent.putExtra("status", "land");
                     myNotificationManager.subtractLenderStatusNotificationCounter(1);
-                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                    setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),0);
                     setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
                 }
                 startActivity(intent);
@@ -790,7 +790,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         int pendingRequestCounter = myNotificationManager.getPendingRequestCounter();
         int changeStaus = myNotificationManager.getChangeStatusNotifications();
         myNotificationManager.clearNotification();
-        setNotification(messageCounter,pendingRequestCounter,changeStaus);
+        setNotification(messageCounter,pendingRequestCounter,0);
         setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
     }
 
@@ -885,7 +885,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),0);
                 setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);
             }
         }

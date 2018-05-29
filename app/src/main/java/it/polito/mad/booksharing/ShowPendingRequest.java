@@ -348,7 +348,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                                            //change the status of the book from "available" to "not available"
                                            FirebaseDatabase.getInstance().getReference("books").child(request.getKeyBook()).child("available").setValue(false);
                                            mNotificationManager.subtractPendingRequestCounter(1);
-                                           setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeStatusNotifications());
+                                           setNotification(mNotificationManager.getMessageCounter(),0,mNotificationManager.getChangeStatusNotifications());
                                            setTabView(0,mNotificationManager.getPendingRequestCounter());
                                        }
                                        else{
@@ -372,7 +372,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyBorrower()).child("requests").child("outcoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
                             FirebaseDatabase.getInstance().getReference("users").child(request.getKeyLender()).child("requests").child("incoming").child(request.getKeyRequest()).child("status").setValue(Request.REJECTED);
                             mNotificationManager.subtractPendingRequestCounter(1);
-                            setNotification(mNotificationManager.getMessageCounter(),mNotificationManager.getPendingRequestCounter(),mNotificationManager.getChangeStatusNotifications());
+                            setNotification(mNotificationManager.getMessageCounter(),0,mNotificationManager.getChangeStatusNotifications());
                             setTabView(0,mNotificationManager.getPendingRequestCounter());
                         }
                     });
@@ -687,7 +687,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         int messageCounter = mNotificationManager.getMessageCounter();
         int pendingRequestCounter = mNotificationManager.getPendingRequestCounter();
         int changeStatus = mNotificationManager.getChangeStatusNotifications();
-        setNotification(messageCounter,pendingRequestCounter,changeStatus);
+        setNotification(messageCounter,0,changeStatus);
         setTabView(0,mNotificationManager.getPendingRequestCounter());
     }
 
@@ -727,7 +727,7 @@ public class ShowPendingRequest extends AppCompatActivity implements NavigationV
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("UpdateView")) {
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(),0,myNotificationManager.getChangeStatusNotifications());
                 currentActivity.setTabView(0,mNotificationManager.getPendingRequestCounter());
             }
         }
