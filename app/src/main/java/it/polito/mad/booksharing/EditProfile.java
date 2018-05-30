@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +40,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -357,6 +362,32 @@ public class EditProfile extends AppCompatActivity {
                         intent2.putExtras(bundle);
                         startActivity(intent2);
                     }
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            FirebaseDatabase.getInstance().getReference("books").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshots) {
+                                    if(dataSnapshots.exists()){
+                                        for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
+                                            Book book = dataSnapshot.getValue(Book.class);
+                                            if(book.getOwner().equals(user.getKey())){
+                                                if(!book.getOwnerName().toLowerCase().equals(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase())){
+                                                    FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    });
 
                     finish();
 

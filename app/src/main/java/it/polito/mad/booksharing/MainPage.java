@@ -1469,7 +1469,7 @@ public class MainPage extends AppCompatActivity
 
 
                 //Modify the name of shared by if necessary
-                FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addListenerForSingleValueEvent(new ValueEventListener() {
+                /*FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final User currentUser = dataSnapshot.getValue(User.class);
@@ -1485,7 +1485,7 @@ public class MainPage extends AppCompatActivity
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                });*/
 
                 TextView distance = convertView.findViewById(R.id.distance);
                 LinearLayout ll_distance = convertView.findViewById(R.id.ll_location);
