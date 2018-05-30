@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">كتاب تقاسم</string>
+    <string name="app_name">كتاب التجوال</string>
     <string name="action_settings">إعدادات</string>
     <string name="name">اسم</string>
     <string name="surname">لقب</string>
