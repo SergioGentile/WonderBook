@@ -241,5 +241,7 @@
     <string name="use_your_current_position">Set your current position</string>
     <string name="check_for_delete">The book cannot be cancelled. Please check the requests.</string>
     <string name="no_longer_available">The book is no longer available</string>
+    <string name="order_by">Order by</string>
+    <string name="filter_by">Filter by</string>
 
 </resources>

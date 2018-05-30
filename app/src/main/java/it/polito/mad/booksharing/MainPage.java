@@ -1472,7 +1472,7 @@ public class MainPage extends AppCompatActivity
                 FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User currentUser = dataSnapshot.getValue(User.class);
+                        final User currentUser = dataSnapshot.getValue(User.class);
                         if(!book.getOwnerName().equals(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase())){
                             //I have to update it
                             book.setOwnerName(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase());

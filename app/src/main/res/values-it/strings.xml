@@ -226,4 +226,6 @@
     <string name="use_your_current_position">Utilizza la tua posizione attuale</string>
     <string name="check_for_delete">Il libro non può essere cancellato. Controlla le tue richieste.</string>
     <string name="no_longer_available">Il libro non è piu disponibile</string>
+    <string name="order_by">Ordina per</string>
+    <string name="filter_by">Filtra per</string>
 </resources>
