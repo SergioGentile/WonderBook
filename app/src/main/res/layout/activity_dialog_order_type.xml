@@ -4,38 +4,42 @@
     android:id="@+id/dialogOrderSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context="it.polito.mad.booksharing.DialogOrderType">
 
+
     <LinearLayout
-        android:layout_marginTop="@dimen/top_inside_box"
-        android:layout_marginRight="@dimen/margin_right"
-        android:layout_marginLeft="@dimen/margin_left"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginRight="@dimen/margin_right"
+        android:layout_marginTop="@dimen/top_inside_box"
+        android:orientation="horizontal">
+
         <TextView
-            android:textSize="@dimen/title_box_size"
-            android:text="@string/order_by"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/order_by"
+            android:textSize="@dimen/title_box_size" />
+
         <View
-            android:visibility="gone"
-            android:layout_marginRight="@dimen/margin_right"
-            android:layout_marginLeft="@dimen/margin_left"
-            android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/margin_left"
+            android:layout_marginRight="@dimen/margin_right"
+            android:background="@color/colorPrimary"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginBottom="@dimen/bottom_inside_box"
-        android:layout_marginRight="@dimen/margin_right"
-        android:layout_marginLeft="@dimen/margin_left"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/bottom_inside_box"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginRight="@dimen/margin_right"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,9 +52,10 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_left"
                 android:layout_marginRight="@dimen/margin_right"
-                android:src="@drawable/ic_directions_walk_black_24dp" />
+                android:src="@drawable/ic_directions_walk_second_24dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryText"
                 android:id="@+id/distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,9 +73,10 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_left"
                 android:layout_marginRight="@dimen/margin_right"
-                android:src="@drawable/ic_star_black_24dp" />
+                android:src="@drawable/ic_star_second_24dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryText"
                 android:id="@+id/rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,9 +94,10 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_left"
                 android:layout_marginRight="@dimen/margin_right"
-                android:src="@drawable/ic_date_range_black_24dp" />
+                android:src="@drawable/ic_date_range_second_24dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryText"
                 android:id="@+id/recent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,18 +108,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginBottom="@dimen/bottom_inside_box"
-        android:layout_marginRight="@dimen/margin_right"
-        android:layout_marginLeft="@dimen/margin_left"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/bottom_inside_box"
+        android:layout_marginLeft="@dimen/margin_left"
+        android:layout_marginRight="@dimen/margin_right"
+        android:orientation="vertical">
 
         <TextView
-            android:textSize="@dimen/title_box_size"
-            android:text="@string/filter_by"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/filter_by"
+            android:textSize="@dimen/title_box_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -124,9 +131,10 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_left"
                 android:layout_marginRight="@dimen/margin_right"
-                android:src="@drawable/ic_place_black_24dp" />
+                android:src="@drawable/ic_location_on_second_24dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryText"
                 android:id="@+id/myPosition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,5 +142,4 @@
                 android:text="@string/position" />
         </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

@@ -228,4 +228,5 @@
     <string name="no_longer_available">Il libro non è piu disponibile</string>
     <string name="order_by">Ordina per</string>
     <string name="filter_by">Filtra per</string>
+    <string name="your_position">La tua posizione</string>
 </resources>

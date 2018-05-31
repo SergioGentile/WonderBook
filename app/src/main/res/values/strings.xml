@@ -191,7 +191,6 @@
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
     <string name="DeleteRequest">Cancel request</string>
-    <string name="Lender">Lender</string>
     <string name="send">Send</string>
     <string name="show_movment">Yours Shares</string>
     <string name="request">Requests</string>
@@ -243,5 +242,6 @@
     <string name="no_longer_available">The book is no longer available</string>
     <string name="order_by">Order by</string>
     <string name="filter_by">Filter by</string>
+    <string name="your_position">Your position</string>
 
 </resources>

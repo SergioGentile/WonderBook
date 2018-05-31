@@ -78,7 +78,7 @@
                     android:layout_marginTop="@dimen/top_inside_box"
                     android:gravity="center"
                     android:text="@string/loginDescription"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="15dp" />
 
                 <TextView

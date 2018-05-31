@@ -135,6 +135,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+                    <View
+                        android:layout_marginLeft="50dp"
+                        android:layout_gravity="right"
+                        android:background="@color/colorPrimary"
+                        android:layout_marginTop="@dimen/top_inside_box"
+                        android:layout_marginBottom="@dimen/bottom_inside_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"/>
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

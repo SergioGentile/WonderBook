@@ -231,4 +231,5 @@
     <string name="no_longer_available">The book is no longer available</string>
     <string name="order_by">Order by</string>
     <string name="filter_by">Filter by</string>
+    <string name="your_position">Your position</string>
 </resources>

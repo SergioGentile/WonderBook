@@ -79,7 +79,7 @@
                     android:layout_marginLeft="@dimen/margin_left"
 
                     android:text="@string/loginDescription"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimary"
                     android:gravity="center"
                     android:textSize="15dp" />
 
