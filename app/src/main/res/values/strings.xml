@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WanderBook</string>
+    <string name="app_name">WonderBook</string>
     <string name="action_settings">Settings</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
