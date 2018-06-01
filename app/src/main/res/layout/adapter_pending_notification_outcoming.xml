@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -33,104 +32,63 @@
             android:orientation="vertical">
 
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/book_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title"
-                    android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="@dimen/tv_dim" />
-                <TextView
-                    android:id="@+id/book_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity=""
-                    android:text="Il Codice da Vinci"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="@dimen/title" />
+                android:layout_height="wrap_content"
+                android:gravity=""
+                android:text="Il Codice da Vinci"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/title" />
 
-            </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_marginRight="0dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:visibility="gone"
-                        android:layout_weight="0.3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Lender"
-                        android:layout_marginRight="@dimen/margin_right"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="@dimen/tv_dim" />
-
-                    <TextView
-                        android:id="@+id/book_lender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.4"
-                        android:text="Richiesto a Sergio Gentile il 25/04/2018"
-                        android:textColor="@color/colorSecondaryText"
-                        android:textSize="@dimen/tv_dim" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/book_lender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="Richiesto a Sergio Gentile il 25/04/2018"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/tv_dim" />
 
 
             <LinearLayout
-                android:layout_marginTop="@dimen/top_inside_box"
                 android:id="@+id/cancel_ll"
-                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/top_inside_box"
                 android:gravity="right"
                 android:orientation="horizontal"
-                >
+                android:visibility="visible">
 
                 <TextView
-                    android:layout_marginTop="6dp"
                     android:id="@+id/tv_cancel"
-                    android:layout_marginRight="@dimen/margin_right"
-                    android:textColor="@android:color/holo_red_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/title_box_size"
-                    android:text="@string/DeleteRequest"/>
-
+                    android:layout_marginRight="@dimen/margin_right"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="@string/DeleteRequest"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="@dimen/title_box_size" />
 
 
             </LinearLayout>
 
             <View
                 android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="9dp"
-                android:background="@color/colorPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-
+                android:background="@color/colorPrimary" />
 
 
         </LinearLayout>
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>

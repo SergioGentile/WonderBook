@@ -23,7 +23,6 @@ import org.w3c.dom.Text
 import java.util.zip.Inflater
 import android.support.v4.content.ContextCompat
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.activity_add_request.*
 
 
 class ShowReviews : AppCompatActivity() {

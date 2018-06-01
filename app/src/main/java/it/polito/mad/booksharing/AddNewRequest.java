@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class AddNewRequest extends AppCompatActivity {
 
-    private  User userLogged, userOwner;
+    private User userLogged, userOwner;
     private TextView tvTitle, tvUser, tvLocation;
     private TextInputEditText edtMessage;
     private Button send;
@@ -51,15 +51,15 @@ public class AddNewRequest extends AppCompatActivity {
         send = (Button) findViewById(R.id.buttonSend);
 
         tvTitle.setText(book.getTitle());
-        tvUser.setText(userOwner.getName().getValue() + " " + userOwner.getSurname().getValue() );
+        tvUser.setText(userOwner.getName().getValue() + " " + userOwner.getSurname().getValue());
         tvLocation.setText(book.getStreet() + ", " + book.getCity());
-        edtMessage.setText(getString(R.string.message_request_book).replace("*user_name*", userOwner.getName().getValue()).replace("*book_name*", "\""+book.getTitle()+ "\""));
+        edtMessage.setText(getString(R.string.message_request_book).replace("*user_name*", userOwner.getName().getValue()).replace("*book_name*", "\"" + book.getTitle() + "\""));
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(!edtMessage.getText().toString().isEmpty()){
+                if (!edtMessage.getText().toString().isEmpty()) {
                     final User sender = userLogged;
                     final User receiver = userOwner;
                     //User1: the owner of the phone (sender)
@@ -90,25 +90,19 @@ public class AddNewRequest extends AppCompatActivity {
                             }
 
                             //Here i can insert the new message
-
-
-                            //Michelangelo: Qui setto il messaggio
                             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                             DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(keyChat).push();
-                            //La riga successiva setta il messaggio nel server.
-                            //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
-                            //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
                             String key = databaseReference.getKey();
                             databaseReference.setValue(new ChatMessage(sender.getKey(), receiver.getKey(), edtMessage.getText().toString(), key));
 
                             //Set the last message
                             DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(keyChat);
                             databaseReference1.child("lastMessage").setValue(edtMessage.getText().toString());
-                            databaseReference1.child("lastTimestamp").setValue(-1*new Date().getTime());
+                            databaseReference1.child("lastTimestamp").setValue(-1 * new Date().getTime());
 
                             DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(keyChat);
                             databaseReference2.child("lastMessage").setValue(edtMessage.getText().toString());
-                            databaseReference2.child("lastTimestamp").setValue(-1*new Date().getTime());
+                            databaseReference2.child("lastTimestamp").setValue(-1 * new Date().getTime());
 
                             //add new request
                             FirebaseDatabase firebaseDatabaseLogged = FirebaseDatabase.getInstance();

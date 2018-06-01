@@ -35,7 +35,6 @@ public class EditEmail extends AppCompatActivity {
     Button btnEmail;
     EditText edtMail;
     User user;
-    private String fromActivity;
     private String clean_mail;
     private Switch swMail;
     private String email_status;
@@ -60,7 +59,6 @@ public class EditEmail extends AppCompatActivity {
 
         //Set all the variable
         user = getIntent().getParcelableExtra("user");
-        fromActivity = getIntent().getStringExtra("from");
         email_status = user.getEmail().getStatus();
         btnEmail = findViewById(R.id.confirm_new_email);
         edtMail = findViewById(R.id.changeMail);

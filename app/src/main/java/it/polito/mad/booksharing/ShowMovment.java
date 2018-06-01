@@ -63,7 +63,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     private int posTab;
     private  TabLayout.Tab tab0,tab1,tab2;
     private  MyBroadcastReceiver mMessageReceiver;
-    MyNotificationManager myNotificationManager;
+    private MyNotificationManager myNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         setSupportActionBar(toolbar);
         tabLayout = findViewById(R.id.tabsMovment);
 
-        setCustonTabView();
+        setCustomTabView();
 
         setList(BORROW);
 
@@ -119,7 +119,7 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
 
     }
 
-    private void setCustonTabView() {
+    private void setCustomTabView() {
 
         tab0 = tabLayout.getTabAt(0);
         tab0.setCustomView(R.layout.badged_tab);
@@ -168,8 +168,6 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
     }
 
     private void setTabView(Integer carryoutNotification,Integer receivedNotification,Integer notificationConclusi) {
-        //EFFETTUATE
-
 
         TextView tvTab0 = (TextView) tab0.getCustomView().findViewById(R.id.tvTab);
 
@@ -788,7 +786,6 @@ public class ShowMovment extends AppCompatActivity  implements NavigationView.On
         myNotificationManager = MyNotificationManager.getInstance(this);
         int messageCounter = myNotificationManager.getMessageCounter();
         int pendingRequestCounter = myNotificationManager.getPendingRequestCounter();
-        int changeStaus = myNotificationManager.getChangeStatusNotifications();
         myNotificationManager.clearNotification();
         setNotification(messageCounter,pendingRequestCounter,0);
         setTabView(myNotificationManager.getLenderStatusNotificationCounter(),myNotificationManager.getBorrowerStatusNotificationCounter(),0);

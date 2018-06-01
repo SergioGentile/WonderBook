@@ -148,7 +148,6 @@ public class EditProfile extends AppCompatActivity {
 
         }
         //Set all the fields of the user in edtName, edtSurname...
-
         //On the first access it will set up the image to perform the crop operation
         setUpPictureAction();
         setUser(user);
@@ -369,11 +368,11 @@ public class EditProfile extends AppCompatActivity {
                             FirebaseDatabase.getInstance().getReference("books").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshots) {
-                                    if(dataSnapshots.exists()){
-                                        for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()){
+                                    if (dataSnapshots.exists()) {
+                                        for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
                                             Book book = dataSnapshot.getValue(Book.class);
-                                            if(book.getOwner().equals(user.getKey())){
-                                                if(!book.getOwnerName().toLowerCase().equals(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase())){
+                                            if (book.getOwner().equals(user.getKey())) {
+                                                if (!book.getOwnerName().toLowerCase().equals(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase())) {
                                                     FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase());
                                                 }
                                             }

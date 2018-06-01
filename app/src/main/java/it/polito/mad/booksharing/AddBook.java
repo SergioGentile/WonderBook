@@ -337,10 +337,10 @@ public class AddBook extends Activity {
                 databaseReference.child("incoming").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshotsIncoming) {
-                        if(dataSnapshotsIncoming.exists()){
-                            for(DataSnapshot dataSnapshot : dataSnapshotsIncoming.getChildren()){
+                        if (dataSnapshotsIncoming.exists()) {
+                            for (DataSnapshot dataSnapshot : dataSnapshotsIncoming.getChildren()) {
                                 Request request = dataSnapshot.getValue(Request.class);
-                                if(request.getKeyBook().equals(book.getKey()) && !request.getStatus().equals(Request.REJECTED)){
+                                if (request.getKeyBook().equals(book.getKey()) && !request.getStatus().equals(Request.REJECTED)) {
                                     Toast.makeText(AddBook.this, getString(R.string.check_for_delete), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -367,8 +367,7 @@ public class AddBook extends Activity {
                                 }
                             });
 
-                        }
-                        else{
+                        } else {
                             //Check for outcoming
                             databaseReference.child("outcoming").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -596,7 +595,7 @@ public class AddBook extends Activity {
         }
     }
 
-    private void btnDelete(){
+    private void btnDelete() {
         //Ask to the user if he is sure to delete the book.
         //If yes, i delete all.
         CharSequence chooses[] = new CharSequence[]{getString(R.string.yes), getString(R.string.no)};

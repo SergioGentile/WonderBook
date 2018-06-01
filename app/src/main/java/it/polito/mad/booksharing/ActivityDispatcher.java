@@ -29,8 +29,7 @@ public class ActivityDispatcher extends AppCompatActivity {
 
             startActivity(intent);
             finish();
-        }
-        else if(dispatcherCode == MESSAGE_THREAD){
+        } else if (dispatcherCode == MESSAGE_THREAD) {
             //start showThread
             //start ChatPage
             User owner = getIntent().getParcelableExtra("user");
@@ -42,8 +41,7 @@ public class ActivityDispatcher extends AppCompatActivity {
 
             startActivity(intent);
             finish();
-        }
-        else if(dispatcherCode == MAIN_PAGE){
+        } else if (dispatcherCode == MAIN_PAGE) {
             User user = getIntent().getParcelableExtra("user");
             Intent intent = new Intent(this, MainPage.class);
             Bundle bundle = new Bundle();
@@ -51,8 +49,7 @@ public class ActivityDispatcher extends AppCompatActivity {
             intent.putExtras(bundle);
             startActivity(intent);
             finish();
-        }
-        else if(dispatcherCode == SHOW_MOVMENT){
+        } else if (dispatcherCode == SHOW_MOVMENT) {
             User user = getIntent().getParcelableExtra("user");
             Intent intent = new Intent(this, ShowMovment.class);
             Bundle bundle = new Bundle();

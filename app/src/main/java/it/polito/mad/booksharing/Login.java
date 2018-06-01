@@ -352,23 +352,23 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private void startMain(String userEmail) {
         //Start MainPage Activity
         SharedPreferences sharedPreferences = getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
-        Integer messageCounter = sharedPreferences.getInt("messageCounter",-1);
-        if(messageCounter== -1) {
+        Integer messageCounter = sharedPreferences.getInt("messageCounter", -1);
+        if (messageCounter == -1) {
             nManager = MyNotificationManager.getInstance(this);
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
             ref.child("notificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("setCounterLogin","");
-                    if(dataSnapshot.exists()) {
+                    Log.d("setCounterLogin", "");
+                    if (dataSnapshot.exists()) {
                         nManager.setMessageCounter(dataSnapshot.getValue(Integer.class));
 
                         ref.child("notificationMap").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
+                                if (dataSnapshot.exists()) {
 
-                                    nManager.setMap((HashMap<String,Long>)dataSnapshot.getValue());
+                                    nManager.setMap((HashMap<String, Long>) dataSnapshot.getValue());
                                 }
                             }
 
@@ -379,7 +379,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                         });
 
 
-                    }else {
+                    } else {
                         nManager.setMessageCounter(0);
                     }
                     Intent intent = new Intent(Login.this, MainPage.class);
@@ -396,10 +396,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             ref.child("pendingRequestCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         nManager.setPendingRequestCounter(dataSnapshot.getValue(Integer.class));
-                    }
-                    else{
+                    } else {
                         nManager.setPendingRequestCounter(0);
                     }
                 }
@@ -412,10 +411,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             ref.child("lenderStatusNotificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         nManager.setLenderStatusNotificationCounter(dataSnapshot.getValue(Integer.class));
-                    }
-                    else{
+                    } else {
                         nManager.setLenderStatusNotificationCounter(0);
                     }
                 }
@@ -428,10 +426,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             ref.child("borrowerStatusNotificationCounter").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         nManager.setBorrowerStatusNotificationCounter(dataSnapshot.getValue(Integer.class));
-                    }
-                    else{
+                    } else {
                         nManager.setBorrowerStatusNotificationCounter(0);
                     }
 

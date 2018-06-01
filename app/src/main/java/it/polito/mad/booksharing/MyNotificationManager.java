@@ -14,28 +14,31 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class MyNotificationManager {
-    private final static int CHAT_PAGE = 0, MESSAGE_THREAD = 1, SHOW_MOVMENT = 2, MAIN_PAGE=3;
-    private final String LENDER = "LENDER", BORROWER="BORROWER";
+    private final static int CHAT_PAGE = 0, MESSAGE_THREAD = 1, SHOW_MOVMENT = 2, MAIN_PAGE = 3;
+    private final String LENDER = "LENDER", BORROWER = "BORROWER";
     private Context mCtx;
     private static MyNotificationManager mInstance;
     private final String GROUP_KEY_CHAT = "it.polito.mad.BookSharing.CHAT";
     private final String GROUP_KEY_LENDING_STATUS = "it.polito.mad.BookSharing.LENDING_STATUS";
     private final String GROUP_KEY_REJECTED = "it.polito.mad.BookSharing.REJECTED_LENDING";
-    private final int SUMMARY_ID = 0,SUMMARY_ID_REJECTED= 1,SUMMARY_ID_STATUS = 2;
+    private final int SUMMARY_ID = 0, SUMMARY_ID_REJECTED = 1, SUMMARY_ID_STATUS = 2;
     private final String CHANNEL_ID = "channel_chat";
     private int notificationCounter = 0;
     private Integer messageCounter;
-    private HashMap<String, Long> userKeyMessageCounter ;
+    private HashMap<String, Long> userKeyMessageCounter;
     private Integer pendingRequestCounter;
     private Integer lenderStatusNotificationCounter;
     private Integer borrowerStatusNotificationCounter;
@@ -44,12 +47,12 @@ public class MyNotificationManager {
     private MyNotificationManager(Context context) {
         mCtx = context;
 
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
-        messageCounter = sharedPreferences.getInt("messageCounter",0);
-        pendingRequestCounter = sharedPreferences.getInt("pendingRequestCounter",0);
-        lenderStatusNotificationCounter = sharedPreferences.getInt("lenderStatusNotificationCounter",0);
-        borrowerStatusNotificationCounter = sharedPreferences.getInt("borrowerStatusNotificationCounter",0);
-        Log.d("SetCounterSharePref",messageCounter.toString());
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
+        messageCounter = sharedPreferences.getInt("messageCounter", 0);
+        pendingRequestCounter = sharedPreferences.getInt("pendingRequestCounter", 0);
+        lenderStatusNotificationCounter = sharedPreferences.getInt("lenderStatusNotificationCounter", 0);
+        borrowerStatusNotificationCounter = sharedPreferences.getInt("borrowerStatusNotificationCounter", 0);
+        Log.d("SetCounterSharePref", messageCounter.toString());
 
         userKeyMessageCounter = getMapFromSharedPref();
     }
@@ -73,7 +76,7 @@ public class MyNotificationManager {
         ActivityManager activityManager = (ActivityManager) mCtx.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
 
-        if(notificationManager != null){
+        if (notificationManager != null) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -114,7 +117,7 @@ public class MyNotificationManager {
                     }
                     Log.d("NotificationManager", "User " + userKeyMessageCounter.get(sender.getKey()) + " notification");
                 }
-            }else {
+            } else {
                 buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                 buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                 notificationCounter++;
@@ -140,7 +143,7 @@ public class MyNotificationManager {
 
     }
 
-    public void displayStatusLendingNotification(HashMap<String,String> statusMap, User user, User sender){
+    public void displayStatusLendingNotification(HashMap<String, String> statusMap, User user, User sender) {
         int intent = SHOW_MOVMENT;
         SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
@@ -151,37 +154,32 @@ public class MyNotificationManager {
         ActivityManager activityManager = (ActivityManager) mCtx.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
 
-        if(notificationManager != null){
+        if (notificationManager != null) {
 
             //switching according status value
             String status = statusMap.get("status");
-            if(status.equals("sended")){
+            if (status.equals("sended")) {
                 pendingRequestCounter++;
-                edit.putInt("pendingRequestCounter",pendingRequestCounter).commit();
+                edit.putInt("pendingRequestCounter", pendingRequestCounter).commit();
                 ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
                 return;
-            }
-            else if(status.equals("canceled")){
+            } else if (status.equals("canceled")) {
                 pendingRequestCounter--;
-                edit.putInt("pendingRequestCounter",pendingRequestCounter).commit();
+                edit.putInt("pendingRequestCounter", pendingRequestCounter).commit();
                 ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
                 return;
-            }
-            else if(status.equals("rejected")){
+            } else if (status.equals("rejected")) {
                 intent = MAIN_PAGE;
-            }
-            else if(status.equals("accepted")){
+            } else if (status.equals("accepted")) {
                 lenderStatusNotificationCounter++;
-                edit.putInt("lenderStatusNotificationCounter",lenderStatusNotificationCounter).commit();
-            }
-            else if(status.equals("wait")){
-                if(statusMap.get("endRequestBy").equals(LENDER)){
+                edit.putInt("lenderStatusNotificationCounter", lenderStatusNotificationCounter).commit();
+            } else if (status.equals("wait")) {
+                if (statusMap.get("endRequestBy").equals(LENDER)) {
                     lenderStatusNotificationCounter++;
-                    edit.putInt("lenderStatusNotificationCounter",lenderStatusNotificationCounter).commit();
-                }
-                else if(statusMap.get("endRequestBy").equals(BORROWER)){
+                    edit.putInt("lenderStatusNotificationCounter", lenderStatusNotificationCounter).commit();
+                } else if (statusMap.get("endRequestBy").equals(BORROWER)) {
                     borrowerStatusNotificationCounter++;
-                    edit.putInt("borrowerStatusNotificationCounter",borrowerStatusNotificationCounter).commit();
+                    edit.putInt("borrowerStatusNotificationCounter", borrowerStatusNotificationCounter).commit();
                 }
             }
 
@@ -197,7 +195,7 @@ public class MyNotificationManager {
                 //display notification
                 int showMovmentTotalNotifications = lenderStatusNotificationCounter + borrowerStatusNotificationCounter;
                 buildChangeStatusSimpleNotification(status, user, sender, notificationManager);
-                buildChangeStatusSummaryNotification(user,showMovmentTotalNotifications, notificationManager);
+                buildChangeStatusSummaryNotification(user, showMovmentTotalNotifications, notificationManager);
                 notificationCounter++;
             } else if (intent == MAIN_PAGE) {
                 buildRejectedSimpleNotification(user, sender, notificationManager);
@@ -231,8 +229,6 @@ public class MyNotificationManager {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder summaryNotification =
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setContentTitle(title)
@@ -384,8 +380,6 @@ public class MyNotificationManager {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder summaryNotification =
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setContentTitle(title)
@@ -414,11 +408,10 @@ public class MyNotificationManager {
 
         String title = "";
         String messageBody = "";
-        if(status.equals("accepted")){
+        if (status.equals("accepted")) {
             title = mCtx.getString(R.string.title_accepted_loan);
             messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " " + mCtx.getString(R.string.message_body_accepted);
-        }
-        else if (status.equals("wait")){
+        } else if (status.equals("wait")) {
             title = mCtx.getString(R.string.loan_wait_title);
             messageBody = sender.getName().getValue() + " " + sender.getSurname().getValue() + " " + mCtx.getString(R.string.message_body_wait);
         }
@@ -449,10 +442,10 @@ public class MyNotificationManager {
 
     }
 
-    public void clearNotificationUser(String key){
+    public void clearNotificationUser(String key) {
         Long currentNotification = new Long(0);
-        if(userKeyMessageCounter.containsKey(key)){
-            currentNotification =userKeyMessageCounter.get(key);
+        if (userKeyMessageCounter.containsKey(key)) {
+            currentNotification = userKeyMessageCounter.get(key);
         }
         userKeyMessageCounter.put(key, new Long(0));
         subtractMessageCounter(currentNotification.intValue());
@@ -469,19 +462,18 @@ public class MyNotificationManager {
         }
     }
 
-    public void setMessageCounter(Integer messageCounter){
+    public void setMessageCounter(Integer messageCounter) {
         this.messageCounter = messageCounter;
-        if(this.messageCounter<=0){
+        if (this.messageCounter <= 0) {
             ShortcutBadger.removeCount(mCtx);
             this.messageCounter = 0;
-        }
-        else{
+        } else {
             ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
         }
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putInt("messageCounter",this.messageCounter).commit();
-        Log.d("SetCounter",messageCounter.toString());
+        edit.putInt("messageCounter", this.messageCounter).commit();
+        Log.d("SetCounter", messageCounter.toString());
 
     }
 
@@ -492,17 +484,16 @@ public class MyNotificationManager {
     public void subtractMessageCounter(int value) {
         if (messageCounter > 0) {
             messageCounter = messageCounter - value;
-            if(messageCounter<=0){
+            if (messageCounter <= 0) {
                 ShortcutBadger.removeCount(mCtx);
                 messageCounter = 0;
-            }
-            else{
+            } else {
                 ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
             }
 
-            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
-            edit.putInt("messageCounter",messageCounter).commit();
+            edit.putInt("messageCounter", messageCounter).commit();
             saveMap();
 
         }
@@ -514,124 +505,118 @@ public class MyNotificationManager {
 
     public void setPendingRequestCounter(Integer pendingRequestCounter) {
         this.pendingRequestCounter = pendingRequestCounter;
-        if(this.pendingRequestCounter<=0){
+        if (this.pendingRequestCounter <= 0) {
             ShortcutBadger.removeCount(mCtx);
             this.pendingRequestCounter = 0;
-        }
-        else{
+        } else {
             ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
         }
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putInt("pendingRequestCounter",this.pendingRequestCounter).commit();
+        edit.putInt("pendingRequestCounter", this.pendingRequestCounter).commit();
     }
 
-    public void subtractPendingRequestCounter(int value){
-        if(pendingRequestCounter > 0){
-            pendingRequestCounter= pendingRequestCounter - value;
-            if(pendingRequestCounter <= 0){
+    public void subtractPendingRequestCounter(int value) {
+        if (pendingRequestCounter > 0) {
+            pendingRequestCounter = pendingRequestCounter - value;
+            if (pendingRequestCounter <= 0) {
                 pendingRequestCounter = 0;
                 ShortcutBadger.removeCount(mCtx);
-            }
-            else{
+            } else {
                 ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
             }
 
-            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
-            edit.putInt("pendingRequestCounter",pendingRequestCounter).commit();
+            edit.putInt("pendingRequestCounter", pendingRequestCounter).commit();
         }
     }
 
     public void setLenderStatusNotificationCounter(Integer lenderStatusNotificationCounter) {
         this.lenderStatusNotificationCounter = lenderStatusNotificationCounter;
 
-        if(this.lenderStatusNotificationCounter <=0){
+        if (this.lenderStatusNotificationCounter <= 0) {
             ShortcutBadger.removeCount(mCtx);
             this.lenderStatusNotificationCounter = 0;
-        }
-        else{
+        } else {
             ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
         }
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putInt("lenderStatusNotificationCounter",this.lenderStatusNotificationCounter).commit();
+        edit.putInt("lenderStatusNotificationCounter", this.lenderStatusNotificationCounter).commit();
     }
 
     public int getLenderStatusNotificationCounter() {
         return lenderStatusNotificationCounter;
     }
 
-    public void subtractLenderStatusNotificationCounter(int value){
-        if(lenderStatusNotificationCounter > 0){
+    public void subtractLenderStatusNotificationCounter(int value) {
+        if (lenderStatusNotificationCounter > 0) {
             lenderStatusNotificationCounter = lenderStatusNotificationCounter - value;
-            if(lenderStatusNotificationCounter <= 0){
+            if (lenderStatusNotificationCounter <= 0) {
                 lenderStatusNotificationCounter = 0;
                 ShortcutBadger.removeCount(mCtx);
-            }
-            else{
+            } else {
                 ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
             }
 
-            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPref.edit();
             edit.putInt("lenderStatusNotificationCounter", lenderStatusNotificationCounter).commit();
         }
     }
 
-    public int getBorrowerStatusNotificationCounter(){
+    public int getBorrowerStatusNotificationCounter() {
         return this.borrowerStatusNotificationCounter;
     }
 
-    public void setBorrowerStatusNotificationCounter(Integer value){
+    public void setBorrowerStatusNotificationCounter(Integer value) {
         this.borrowerStatusNotificationCounter = value;
 
-        if(this.borrowerStatusNotificationCounter <=0){
+        if (this.borrowerStatusNotificationCounter <= 0) {
             ShortcutBadger.removeCount(mCtx);
             this.borrowerStatusNotificationCounter = 0;
-        }
-        else{
+        } else {
             ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
         }
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putInt("borrowerStatusNotificationCounter",this.borrowerStatusNotificationCounter).commit();
+        edit.putInt("borrowerStatusNotificationCounter", this.borrowerStatusNotificationCounter).commit();
     }
 
-    public void subtractBorrowerStatusNotificationCounter(int value){
+    public void subtractBorrowerStatusNotificationCounter(int value) {
         this.borrowerStatusNotificationCounter = this.borrowerStatusNotificationCounter - value;
 
-        if(this.borrowerStatusNotificationCounter <=0){
+        if (this.borrowerStatusNotificationCounter <= 0) {
             ShortcutBadger.removeCount(mCtx);
             this.borrowerStatusNotificationCounter = 0;
-        }
-        else{
+        } else {
             ShortcutBadger.applyCount(mCtx, getTotalNumberOfNotifications());
         }
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationPref", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putInt("borrowerStatusNotificationCounter",this.borrowerStatusNotificationCounter).commit();
+        edit.putInt("borrowerStatusNotificationCounter", this.borrowerStatusNotificationCounter).commit();
     }
 
-    public int getTotalNumberOfNotifications(){
+    public int getTotalNumberOfNotifications() {
         return messageCounter + pendingRequestCounter + lenderStatusNotificationCounter + borrowerStatusNotificationCounter;
     }
 
-    public int getChangeStatusNotifications(){
+    public int getChangeStatusNotifications() {
         return lenderStatusNotificationCounter + borrowerStatusNotificationCounter;
     }
 
     public Long getReceiverCount(String key) {
-        if(userKeyMessageCounter.containsKey(key)){
+        if (userKeyMessageCounter.containsKey(key)) {
             return userKeyMessageCounter.get(key);
         }
         return new Long(0);
     }
 
-    private void saveMap (){
+    private void saveMap() {
 
-        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationMap",Context.MODE_PRIVATE);
-        if(sharedPref!=null){
+        SharedPreferences sharedPref = mCtx.getSharedPreferences("notificationMap", Context.MODE_PRIVATE);
+        if (sharedPref != null) {
             SharedPreferences.Editor edit = sharedPref.edit();
             Gson json = new GsonBuilder().create();
             String toStore = json.toJson(userKeyMessageCounter);
@@ -641,25 +626,26 @@ public class MyNotificationManager {
         }
     }
 
-    private HashMap<String,Long> getMapFromSharedPref(){
-        HashMap<String,Long> outputMap = new HashMap<>();
+    private HashMap<String, Long> getMapFromSharedPref() {
+        HashMap<String, Long> outputMap = new HashMap<>();
         SharedPreferences SharedPref = mCtx.getSharedPreferences("notificationMap", Context.MODE_PRIVATE);
         String map = SharedPref.getString("notificationMap", "noMap");
-        if(map.equals("noMap")){
+        if (map.equals("noMap")) {
             return outputMap;
         }
         Gson json = new Gson();
-        Type typeOfHashmap = new TypeToken<HashMap<String,Long>>(){}.getType();
+        Type typeOfHashmap = new TypeToken<HashMap<String, Long>>() {
+        }.getType();
         outputMap = json.fromJson(map, typeOfHashmap);
         return outputMap;
     }
 
-    public HashMap<String,Long> getMap(){
-        if(userKeyMessageCounter==null){
+    public HashMap<String, Long> getMap() {
+        if (userKeyMessageCounter == null) {
             userKeyMessageCounter = new HashMap<>();
         }
 
-        return new HashMap<String,Long>(userKeyMessageCounter);
+        return new HashMap<String, Long>(userKeyMessageCounter);
     }
 
     public void setMap(HashMap value) {

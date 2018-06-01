@@ -24,7 +24,6 @@ import android.system.Os.remove
 import com.google.firebase.database.MutableData
 
 
-
 class AddReview : AppCompatActivity() {
 
     var rating: RatingBar? = null
@@ -32,7 +31,7 @@ class AddReview : AppCompatActivity() {
     var userLogged: User? = null
     var userToReview: User? = null
     var userPicture: ImageView? = null
-    var usertv: TextView?=null
+    var usertv: TextView? = null
     var titleBook: String? = null
 
 
@@ -52,7 +51,7 @@ class AddReview : AppCompatActivity() {
 
 
 
-        usertv?.text =  userToReview?.name?.value!!+" "+userToReview?.surname?.value!!
+        usertv?.text = userToReview?.name?.value!! + " " + userToReview?.surname?.value!!
 
         Picasso.with(this@AddReview)
                 .load(userToReview?.user_image_url!!).noFade()
@@ -67,14 +66,14 @@ class AddReview : AppCompatActivity() {
 
         var fab: Button = findViewById(R.id.fab)
         fab.setOnClickListener(View.OnClickListener {
-            if(rating?.rating!!.compareTo(0)!=0){
+            if (rating?.rating!!.compareTo(0) != 0) {
                 //Upload all on firebase
                 var status: String
                 status = intent.getStringExtra("status")
 
-                val review  = Review(tvReview?.text.toString(), status, rating?.rating!!, userLogged?.name?.value!!, userLogged?.surname?.value!!, userLogged?.key!! ,userLogged?.user_image_url!!, titleBook!! )
+                val review = Review(tvReview?.text.toString(), status, rating?.rating!!, userLogged?.name?.value!!, userLogged?.surname?.value!!, userLogged?.key!!, userLogged?.user_image_url!!, titleBook!!)
 
-                if(!tvReview?.text!!.isEmpty()){
+                if (!tvReview?.text!!.isEmpty()) {
                     FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key).child("reviews").push().setValue(review)
                 }
                 var dbRef: DatabaseReference? = FirebaseDatabase.getInstance().getReference("users").child(userToReview?.key);
@@ -87,7 +86,7 @@ class AddReview : AppCompatActivity() {
                         var numStars: Float? = rating?.rating
                         var lastScore: Float? = user.numStars * user.numRev
                         numRev = numRev!! + 1
-                        numStars = (lastScore!! + numStars!!)/(numRev)
+                        numStars = (lastScore!! + numStars!!) / (numRev)
                         user.numRev = numRev
                         user.numStars = numStars
 
@@ -103,8 +102,7 @@ class AddReview : AppCompatActivity() {
                     }
                 })
                 finish()
-            }
-            else{
+            } else {
                 Toast.makeText(applicationContext, getString(R.string.please_insert_score), Toast.LENGTH_SHORT).show()
             }
         })
@@ -113,10 +111,9 @@ class AddReview : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        if(rating?.rating!!.compareTo(0)==0){
+        if (rating?.rating!!.compareTo(0) == 0) {
             Toast.makeText(applicationContext, getString(R.string.please_insert_score), Toast.LENGTH_SHORT).show()
-        }
-        else{
+        } else {
             super.onBackPressed()
             finish()
         }

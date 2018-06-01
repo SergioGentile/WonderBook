@@ -109,9 +109,6 @@ public class ShowBookFull extends AppCompatActivity {
         publisher = findViewById(R.id.shPublisher);
         description = findViewById(R.id.shDescription);
         sv = findViewById(R.id.scrollSh);
-        /*description.setScroller(new Scroller(ShowBookFull.this));
-        description.setMaxLines(5);
-        description.setVerticalScrollBarEnabled(true);*/
 
         toolbar = findViewById(R.id.toolbarShowProfile);
         setSupportActionBar(toolbar);
@@ -348,39 +345,16 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-
-
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!book.isAvailable()){
-                    Toast.makeText(ShowBookFull.this, "Attenzione: questo libro non è disponibile quindi non può essere richiesto.", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("book", book);
-                    bundle.putParcelable("userOwner",  getIntent().getExtras().getParcelable("user_mp"));
-                    bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            }
-        });*/
-
-
-
-        if(book.isAvailable()){
+        if (book.isAvailable()) {
             fab.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             fab.setVisibility(View.GONE);
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User userLogged =  getIntent().getExtras().getParcelable("user_owner");
+                User userLogged = getIntent().getExtras().getParcelable("user_owner");
                 Log.d("User", userLogged.getName().getValue());
                 FirebaseDatabase.getInstance().getReference("users").child(userLogged.getKey()).child("requests").child("outcoming").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -400,8 +374,7 @@ public class ShowBookFull extends AppCompatActivity {
                             bundle.putParcelable("userLogged", getIntent().getExtras().getParcelable("user_owner"));
                             intent.putExtras(bundle);
                             startActivity(intent);
-                        }
-                        else{
+                        } else {
                             Intent intent = new Intent(ShowBookFull.this, AddNewRequest.class);
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("book", book);
@@ -529,7 +502,7 @@ public class ShowBookFull extends AppCompatActivity {
         });
         set.start();
         mCurrentAnimator = set;
-// Upon clicking the zoomed-in image, it should zoom back down
+        // Upon clicking the zoomed-in image, it should zoom back down
         // to the original bounds and show the thumbnail instead of
         // the expanded image.
         final float startScaleFinal = startScale;

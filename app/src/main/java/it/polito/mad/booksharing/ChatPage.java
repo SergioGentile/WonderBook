@@ -112,7 +112,6 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
-        //Log.d("Chat " + chatKey, "Send from:" + sender.getName().getValue() + ", rec by:" + receiver.getName().getValue());
         fab = findViewById(R.id.fab);
         input = findViewById(R.id.input);
 
@@ -124,23 +123,19 @@ public class ChatPage extends AppCompatActivity {
 
                     messageToNot.clear();
 
-                    //Michelangelo: Qui setto il messaggio
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).push();
-                    //La riga successiva setta il messaggio nel server.
-                    //aggiungi cose al costruttore per inserire nuovi valori (come il token che ti servirà)
-                    //la classe a cui dovrai aggiungere le cose è ChatMessage, dovrai solo aggiungere i getter and setters
                     String key = databaseReference.getKey();
                     databaseReference.setValue(new ChatMessage(sender.getKey(), receiver.getKey(), input.getText().toString(), key));
 
                     //Set the last message
                     DatabaseReference databaseReference1 = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
                     databaseReference1.child("lastMessage").setValue(input.getText().toString());
-                    databaseReference1.child("lastTimestamp").setValue(-1*new Date().getTime());
+                    databaseReference1.child("lastTimestamp").setValue(-1 * new Date().getTime());
 
                     DatabaseReference databaseReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(chatKey);
                     databaseReference2.child("lastMessage").setValue(input.getText().toString());
-                    databaseReference2.child("lastTimestamp").setValue(-1*new Date().getTime());
+                    databaseReference2.child("lastTimestamp").setValue(-1 * new Date().getTime());
                     input.setText("");
                 }
 
@@ -189,7 +184,6 @@ public class ChatPage extends AppCompatActivity {
 
                 if (sender.getKey().equals(model.getSender())) {
                     //Case sender
-                    // read.setVisibility(View.VISIBLE);
                     messageText = v.findViewById(R.id.text_message_body_send);
                     messageTime = v.findViewById(R.id.text_message_time_send);
                     read = v.findViewById(R.id.message_read);
@@ -214,20 +208,18 @@ public class ChatPage extends AppCompatActivity {
                 messageText.setText(model.getMessage());
                 messageTime.setText(DateFormat.format("HH:mm", model.getTime()));
 
-                ImageView  messageRecNot = (ImageView) v.findViewById(R.id.message_rec_notification);
-                if(!model.isStatus_read() && model.getReceiver().equals(sender.getKey()) && !messagesRead.contains(model.getKey())){
+                ImageView messageRecNot = (ImageView) v.findViewById(R.id.message_rec_notification);
+                if (!model.isStatus_read() && model.getReceiver().equals(sender.getKey()) && !messagesRead.contains(model.getKey())) {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = firebaseDatabase.getReference("chats").child(chatKey).child(model.getKey()).child("status_read");
                     databaseReference.setValue(true);
-                    //TODO: chekc if the status was been updated
                     model.setStatus_read(true);
                     messageRecNot.setVisibility(View.VISIBLE);
                     messageToNot.add(model.getKey());
                 }
-                if(!messageToNot.contains(model.getKey())){
+                if (!messageToNot.contains(model.getKey())) {
                     messageRecNot.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     messageRecNot.setVisibility(View.VISIBLE);
                 }
 
@@ -274,7 +266,6 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
-                    //Cosa succede se schiaccio l'id
                     case R.id.delete:
                         deleteMessages(keysMessageSelected);
                         mode.finish();
@@ -294,12 +285,9 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private boolean dateToPut(int position) {
-        //Se non è visibile, sicuramente non visualizzerò la data
         if (adapter.getItem(position).getDeleteFor().contains(sender.getKey())) {
             return false;
         }
-        int counter = 0;
-        //Conto quanti visibili ci sono con la stessa data
         for (int i = position - 1; i >= 0; i--) {
             if (!adapter.getItem(i).getDeleteFor().contains(sender.getKey()) && getDate(adapter.getItem(i).getTime()).equals(getDate(adapter.getItem(position).getTime()))) {
                 return false;
@@ -330,22 +318,6 @@ public class ChatPage extends AppCompatActivity {
         }
         return null;
     }
-
-   /* private void destroyNotification(){
-        notificationManager.cancelAll();
-        userNotify.clear();
-    }
-
-    private int searchUserNotifyId(String searched){
-        int i;
-        for(i=0; i<userNotify.size(); i++){
-            if(userNotify.get(i).toLowerCase().equals(searched.toLowerCase())){
-                return i;
-            }
-        }
-        return -1;
-    }*/
-
 
     @Override
     protected void onResume() {
@@ -388,7 +360,7 @@ public class ChatPage extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
         databaseReference.child("lastMessage").setValue(lastMessage);
-        databaseReference.child("lastTimestamp").setValue(-1*lastTime);
+        databaseReference.child("lastTimestamp").setValue(-1 * lastTime);
 
         finish();
     }
@@ -417,7 +389,7 @@ public class ChatPage extends AppCompatActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats").child(chatKey);
         databaseReference.child("lastMessage").setValue(lastMessage);
-        databaseReference.child("lastTimestamp").setValue(-1*lastTime);
+        databaseReference.child("lastTimestamp").setValue(-1 * lastTime);
 
 
     }
@@ -438,7 +410,7 @@ public class ChatPage extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isRunning", isRunning);
         outState.putBoolean("backPressed", backPressed);
-        outState.putStringArrayList("messageReadList",messagesRead);
+        outState.putStringArrayList("messageReadList", messagesRead);
 
     }
 

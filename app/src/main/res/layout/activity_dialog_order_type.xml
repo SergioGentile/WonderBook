@@ -22,15 +22,6 @@
             android:layout_height="wrap_content"
             android:text="@string/order_by"
             android:textSize="@dimen/title_box_size" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="@dimen/margin_left"
-            android:layout_marginRight="@dimen/margin_right"
-            android:background="@color/colorPrimary"
-            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

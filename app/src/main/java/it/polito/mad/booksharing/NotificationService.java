@@ -40,18 +40,15 @@ public class NotificationService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
 
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         // Check if message contains a notification payload.
         Log.d("MessageReceived", remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             HashMap<String, String> metaData = new HashMap<>(remoteMessage.getData());
             String notificationType = metaData.get("notificationType");
-            if(notificationType.equals(CHAT_NOTIFICATION)){
+            if (notificationType.equals(CHAT_NOTIFICATION)) {
                 showChatMessage(metaData);
-            }
-            else if(notificationType.equals(LENDING_NOTIFICATION)){
+            } else if (notificationType.equals(LENDING_NOTIFICATION)) {
                 showLendingNotification(metaData);
             }
 
@@ -74,9 +71,9 @@ public class NotificationService extends FirebaseMessagingService {
                     user = json.fromJson(receiver, User.class);
                     sender = dataSnapshot.getValue(User.class);
 
-                    HashMap<String,String> statusMap= new HashMap<>();
-                    statusMap.put("status",status);
-                    if(status.equals("wait")){
+                    HashMap<String, String> statusMap = new HashMap<>();
+                    statusMap.put("status", status);
+                    if (status.equals("wait")) {
                         statusMap.put("endRequestBy", metaData.get("endRequestBy"));
                     }
                     mNotificationManager.displayStatusLendingNotification(statusMap, user, sender);
@@ -94,7 +91,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     }
 
-    private void showChatMessage(HashMap<String,String> metaData){
+    private void showChatMessage(HashMap<String, String> metaData) {
         final String senderKey = metaData.get(SENDER_CONSTANT);
         final String keyChat = metaData.get(CHAT_KEY_CONSTANT);
         final String receiver = metaData.get(RECEIVER_CONSTANT);
@@ -115,7 +112,7 @@ public class NotificationService extends FirebaseMessagingService {
 
                     mNotificationManager.displayChatNotification(body, sender, user, keyChat);
                     Intent intent = new Intent("UpdateView");
-                    Bundle bundle  = new Bundle();
+                    Bundle bundle = new Bundle();
                     bundle.putParcelable("sender", sender);
                     intent.putExtras(bundle);
                     broadcaster.sendBroadcast(intent);

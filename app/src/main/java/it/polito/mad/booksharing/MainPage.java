@@ -183,7 +183,6 @@ public class MainPage extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // navView = getLayoutInflater().inflate(R.layout.nav_header_main_page, null);
         navView = navigationView.getHeaderView(0);
 
         setDefaultUser();
@@ -391,20 +390,20 @@ public class MainPage extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
-    protected void setNotification(Integer notificaction_count, Integer notification_pending_count, Integer notification_loans_count) {
+    protected void setNotification(Integer notification_count, Integer notification_pending_count, Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
         TextView pending_request_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.pending_request));
         TextView loans_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_loans));
 
-        if (notificaction_count != 0) {
+        if (notification_count != 0) {
 
             //Set current notification inside initNavBar method
             message_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             message_nav_bar.setTypeface(null, Typeface.BOLD);
-            message_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
-            message_nav_bar.setText(notificaction_count.toString());
+            message_nav_bar.setTextColor(getColor(R.color.colorAccent));
+            message_nav_bar.setText(notification_count.toString());
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
@@ -416,7 +415,7 @@ public class MainPage extends AppCompatActivity
             //Set current notification inside initNavBar method
             pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
-            pending_request_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            pending_request_nav_bar.setTextColor(getColor(R.color.colorAccent));
             pending_request_nav_bar.setText(notification_pending_count.toString());
             //Set notification on toolbar icon
             pending_request_nav_bar.setVisibility(View.VISIBLE);
@@ -427,14 +426,14 @@ public class MainPage extends AppCompatActivity
             //Set current notification inside initNavBar method
             loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             loans_nav_bar.setTypeface(null, Typeface.BOLD);
-            loans_nav_bar.setTextColor(getResources().getColor(R.color.colorAccent));
+            loans_nav_bar.setTextColor(getColor(R.color.colorAccent));
             loans_nav_bar.setText(notification_loans_count.toString());
             //Set notification on toolbar icon
             loans_nav_bar.setVisibility(View.VISIBLE);
         } else {
             loans_nav_bar.setVisibility(View.GONE);
         }
-        Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
+        Integer tot = notification_count + notification_pending_count + notification_loans_count;
 
         if (tot != 0) {
             toolbarNotification.setText(tot.toString());
@@ -503,7 +502,6 @@ public class MainPage extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setMaxZoomPreference(18);
-        //enableMyLocationIfPermitted(map);
         map.setOnInfoWindowClickListener(this);
     }
 
@@ -519,11 +517,7 @@ public class MainPage extends AppCompatActivity
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
                 getUserBook(dataSnapshot.getValue(Book.class));
-
-
             }
 
             @Override
@@ -579,18 +573,6 @@ public class MainPage extends AppCompatActivity
         }
     }
 
-    private void enableMyLocationIfPermitted(GoogleMap map) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        } else if (map != null) {
-            map.setMyLocationEnabled(true);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -703,22 +685,9 @@ public class MainPage extends AppCompatActivity
                         }
 
                         //Here get the position and store it on latPhone and longPhone
-
-                        //*POSIZIONE*
-                        //Qua viene cercata la posizione attuale.
-                        //Bisogna gestire i permessi.
-                        //Se non si ha il permesso entra nel primo ramo dell'if e calcola la distanza libro/posizione rispetto alla posizione
-                        //che si ha sulla showProfile.
                         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         if (ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             Log.d("Permission dis-enabled:", user.getName().getValue());
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
                             Geocoder geocoder = new Geocoder(MainPage.this);
                             List<Address> addresses;
                             String location = user.getStreet().getValue() + " " + user.getCap().getValue() + " " + user.getCity().getValue();
@@ -983,17 +952,17 @@ public class MainPage extends AppCompatActivity
     }
 
 
-    private BitmapDescriptor getIconPos(){
+    private BitmapDescriptor getIconPos() {
 
         Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
         Matrix m = new Matrix();
-        m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 25,25), Matrix.ScaleToFit.CENTER);
+        m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 35, 35), Matrix.ScaleToFit.CENTER);
         Bitmap bm = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
 
-        int[] pixels = new int[bm.getHeight()*bm.getWidth()];
+        int[] pixels = new int[bm.getHeight() * bm.getWidth()];
         bm.getPixels(pixels, 0, bm.getWidth(), 0, 0, bm.getWidth(), bm.getHeight());
-        for (int i=0; i<bm.getWidth()*bm.getWidth(); i++){
-            if(pixels[i] == Color.BLACK){
+        for (int i = 0; i < bm.getWidth() * bm.getWidth(); i++) {
+            if (pixels[i] == Color.BLACK) {
                 pixels[i] = Color.BLUE;
             }
         }
@@ -1177,7 +1146,7 @@ public class MainPage extends AppCompatActivity
 
 
     //This function return a position near p but not the same.
-    //In particoular check if the same position exist in the list markerList and add a random number to lat and longit.
+    //In particular check if the same position exist in the list markerList and add a random number to lat and long.
     private Position avoidOverlap(Collection<Marker> markerList, Position p) {
 
         boolean found = false;
@@ -1410,39 +1379,6 @@ public class MainPage extends AppCompatActivity
                 }
             });
         }
-        /*else if (YOUR_CITY == order) {
-            tvOrderType.setText(R.string.in_your_city);
-            //Choose only the book in our city
-            List<Book> tmp = new ArrayList<>();
-            for(int i=0; i<bookIds.size(); i++) {
-                Geocoder geocoder = new Geocoder(MainPage.this);
-                List<Address> addresses;
-                try {
-                    addresses = geocoder.getFromLocation(markers.get(bookIds.get(i)).getPosition().latitude, markers.get(bookIds.get(i)).getPosition().longitude, 1);
-                    Log.d("The locality is: " , addresses.get(0).getLocality());
-                    if (addresses.size() > 0) {
-                        if (addresses.get(0).getLocality().toLowerCase().equals(user.getCity().getValue().toLowerCase())) {
-                            tmp.add(booksMatch.get(i));
-                        }
-                    }
-                } catch (Exception e) {
-
-                }
-            }
-
-            booksMatch.clear();
-            for(Book book : tmp){
-                booksMatch.add(book);
-            }
-            Collections.sort(booksMatch, new Comparator<Book>() {
-
-                @Override
-                public int compare(Book b1, Book b2) {
-                    return b1.getDistance().compareTo(b2.getDistance());
-                }
-            });
-        }*/
-
 
         final List<String> colors = new ArrayList<>();
         colors.add(new String("#42A5F5"));
@@ -1504,26 +1440,6 @@ public class MainPage extends AppCompatActivity
                 final TextView owner = convertView.findViewById(R.id.shared_name);
                 owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
 
-
-                //Modify the name of shared by if necessary
-                /*FirebaseDatabase.getInstance().getReference("users").child(book.getOwner()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        final User currentUser = dataSnapshot.getValue(User.class);
-                        if(!book.getOwnerName().equals(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase())){
-                            //I have to update it
-                            book.setOwnerName(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase());
-                            owner.setText(getString(R.string.shared_by) + " " + User.capitalizeSpace(book.getOwnerName()));
-                            FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(currentUser.getName().getValue().toLowerCase() + " " + currentUser.getSurname().getValue().toLowerCase());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
-
                 TextView distance = convertView.findViewById(R.id.distance);
                 LinearLayout ll_distance = convertView.findViewById(R.id.ll_location);
 
@@ -1540,10 +1456,6 @@ public class MainPage extends AppCompatActivity
                 title.setText(User.capitalizeSpace(book.getTitle()));
                 author.setText(User.capitalizeSpace(book.getAuthor()));
                 rb.setRating(new Float(book.getRating()));
-
-               /*CardView cv = (CardView) convertView.findViewById(R.id.adapter_cv_searched);
-                cv.setCardBackgroundColor(Color.parseColor(colors.get(position % colors.size())));*/
-
 
                 LinearLayout llAdapter = convertView.findViewById(R.id.ll_adapter_searched_book);
 
@@ -1776,7 +1688,6 @@ public class MainPage extends AppCompatActivity
                         textView = convertView.findViewById(R.id.tv_search_runtime);
                         imageView = convertView.findViewById(R.id.image_search_runtime);
                         ll = convertView.findViewById(R.id.ll_adapter_runtime);
-                        view = convertView.findViewById(R.id.line_search_runtime);
 
                         //Depends on what the user search, I set a different image
                         Drawable d = null;

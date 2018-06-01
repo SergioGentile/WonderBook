@@ -108,8 +108,6 @@
     <string name="insert_new_email">أدخل بريدًا إلكترونيًا جديدًا</string>
     <string name="insert_new_password">أدخل كلمة مرور جديدة</string>
     <string name="title_activity_main_page">MainPage</string>
-    <string name="title_activity_start">Start</string>
-    <string name="title_activity_sign_in">Sign In</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_test">Test</string>
@@ -223,4 +221,15 @@
     <string name="message_body_rejected_summary">تم رفض بعض طلبات القروض</string>
     <string name="message_body_rejected_simple">طلب القرض مرفوض من قبل</string>
     <string name="description_value">مرحبا بالعالم</string>
+    <string name="book_already_lent">تم بالفعل إقراض الكتاب لمستخدم آخر</string>
+    <string name="request_already_sent">لقد أرسلت بالفعل طلبًا لهذا الكتاب. يرجى الانتظار ردا من المالك.</string>
+    <string name="use_your_current_position">ضبط موقعك الحالي</string>
+    <string name="check_for_delete">لا يمكن إلغاء الكتاب. يرجى التحقق من الطلبات.</string>
+    <string name="no_longer_available">الكتاب لم يعد متاحًا</string>
+    <string name="order_by">ترتيب حسب</string>
+    <string name="filter_by">مصنف بواسطة</string>
+    <string name="your_position">موقعك</string>
+    <string name="title_activity_start">بداية</string>
+    <string name="title_activity_sign_in">تسجيل الدخول</string>
+    <string name="add_book">أضف كتاب</string>
 </resources>

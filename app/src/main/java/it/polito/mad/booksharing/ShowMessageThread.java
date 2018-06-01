@@ -60,7 +60,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     private DatabaseReference databaseReferenceAccess;
     boolean updateStatusOnline;
     private MyBroadcastReceiver mMessageReceiver;
-    SwipeMenuListView listOfMessage;
+    private SwipeMenuListView listOfMessage;
     private float x1, x2;
     static final int MIN_DISTANCE = 40;
     private boolean imDelete;
@@ -94,8 +94,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
         navView = navigationView.getHeaderView(0);
 
-        MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
-
         user = getIntent().getExtras().getParcelable("user");
 
 
@@ -120,7 +118,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             }
         };
 
-// set creator
+        // set creator
         listOfMessage.setMenuCreator(creator);
         listOfMessage.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
 
@@ -244,7 +242,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                         databaseReferenceMessages.child(cm.getKey()).child("deleteFor").setValue(cm.getDeleteFor());
                     }
                 }
-                setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeStatusNotifications());
+                setNotification(notificationManager.getMessageCounter(), notificationManager.getPendingRequestCounter(), notificationManager.getChangeStatusNotifications());
             }
 
             @Override
@@ -275,7 +273,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         }
     }
 
-    protected void setNotification(Integer notificaction_count,Integer notification_pending_count,Integer notification_loans_count) {
+    protected void setNotification(Integer notificaction_count, Integer notification_pending_count, Integer notification_loans_count) {
 
         TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
         TextView message_nav_bar = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_show_chat));
@@ -292,11 +290,11 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
             //Set notification on toolbar icon
             message_nav_bar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             message_nav_bar.setVisibility(View.GONE);
         }
 
-        if(notification_pending_count!=0){
+        if (notification_pending_count != 0) {
             //Set current notification inside initNavBar method
             pending_request_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             pending_request_nav_bar.setTypeface(null, Typeface.BOLD);
@@ -304,10 +302,10 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             pending_request_nav_bar.setText(notification_pending_count.toString());
             //Set notification on toolbar icon
             pending_request_nav_bar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             pending_request_nav_bar.setVisibility(View.GONE);
         }
-        if(notification_loans_count!=0){
+        if (notification_loans_count != 0) {
             //Set current notification inside initNavBar method
             loans_nav_bar.setGravity(Gravity.CENTER_VERTICAL);
             loans_nav_bar.setTypeface(null, Typeface.BOLD);
@@ -315,20 +313,18 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             loans_nav_bar.setText(notification_loans_count.toString());
             //Set notification on toolbar icon
             loans_nav_bar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             loans_nav_bar.setVisibility(View.GONE);
         }
         Integer tot = notificaction_count + notification_pending_count + notification_loans_count;
 
-        if(tot!= 0){
+        if (tot != 0) {
             toolbarNotification.setText(tot.toString());
             toolbarNotification.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbarNotification.setVisibility(View.GONE);
         }
     }
-
-
 
 
     private void showAllChat() {
@@ -398,14 +394,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
                     }
                 });
 
-                LinearLayout ll = v.findViewById(R.id.adapter_message_thread);
-                LinearLayout ll1 = v.findViewById(R.id.ll1);
-                LinearLayout ll2 = v.findViewById(R.id.ll2);
-                LinearLayout ll3 = v.findViewById(R.id.ll2);
-                LinearLayout container = v.findViewById(R.id.container);
-                LinearLayout centerContainer = v.findViewById(R.id.center_container);
-                FrameLayout frameLayout = v.findViewById(R.id.frame);
-                View line = v.findViewById(R.id.view_line);
 
                 if (peer.getLastMessage().isEmpty()) {
                     v.setVisibility(View.GONE);
@@ -494,20 +482,19 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
             DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        } if (id == R.id.pending_request) {
+        }
+        if (id == R.id.pending_request) {
             //Start the intent
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowMessageThread.this, ShowPendingRequest.class).putExtras(bundle));
-        }
-        else if(id == R.id.nav_loans){
+        } else if (id == R.id.nav_loans) {
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             startActivity(new Intent(ShowMessageThread.this, ShowMovment.class).putExtras(bundle));
-        }
-        else if (id == R.id.nav_exit) {
-            DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
-            databaseReference.child( "loggedIn").setValue(false);
+        } else if (id == R.id.nav_exit) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(user.getKey());
+            databaseReference.child("loggedIn").setValue(false);
             databaseReference.child("notificationMap").setValue(MyNotificationManager.getInstance(this).getMap());
             databaseReference.child("notificationCounter").setValue(MyNotificationManager.getInstance(this).getMessageCounter());
             databaseReference.child("pendingRequestCounter").setValue(MyNotificationManager.getInstance(this).getPendingRequestCounter());
@@ -574,7 +561,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().getItem(5).setChecked(true);
         MyNotificationManager notificationManager = MyNotificationManager.getInstance(this);
         notificationManager.clearNotification();
-        setNotification(notificationManager.getMessageCounter(),notificationManager.getPendingRequestCounter(),notificationManager.getChangeStatusNotifications());
+        setNotification(notificationManager.getMessageCounter(), notificationManager.getPendingRequestCounter(), notificationManager.getChangeStatusNotifications());
     }
 
     @Override
@@ -619,7 +606,6 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
     }
 
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -653,9 +639,7 @@ public class ShowMessageThread extends AppCompatActivity implements NavigationVi
 
                 }
                 MyNotificationManager myNotificationManager = MyNotificationManager.getInstance(currentActivity);
-                currentActivity.setNotification(myNotificationManager.getMessageCounter(),myNotificationManager.getPendingRequestCounter(),myNotificationManager.getChangeStatusNotifications());
-                //Search the right things to update
-
+                currentActivity.setNotification(myNotificationManager.getMessageCounter(), myNotificationManager.getPendingRequestCounter(), myNotificationManager.getChangeStatusNotifications());
 
             }
         }
