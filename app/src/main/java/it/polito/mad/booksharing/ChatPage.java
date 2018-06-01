@@ -58,6 +58,7 @@ public class ChatPage extends AppCompatActivity {
     private ListView listOfMessage;
     private Toolbar toolbar;
     private TextInputEditText input;
+    private LinearLayout llShowProfile;
 
     private ArrayList<String> messagesRead = new ArrayList<>();
     private FirebaseDatabase firebaseDatabaseAccess;
@@ -148,6 +149,33 @@ public class ChatPage extends AppCompatActivity {
         notificationManager.clearNotificationUser(receiver.getKey());
 
         displayChatMessage();
+
+        llShowProfile = (LinearLayout) findViewById(R.id.llShowProfile);
+        llShowProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference("users").child(receiver.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            User userIntent = dataSnapshot.getValue(User.class);
+                            Intent intent = new Intent(ChatPage.this, ShowProfile.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("user_mp", userIntent);
+                            bundle.putParcelable("user_owner", sender);
+                            intent.putExtras(bundle);
+                            intent.putExtra("showMessage", false);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
     }
 
     private String getDate(long timestamp) {

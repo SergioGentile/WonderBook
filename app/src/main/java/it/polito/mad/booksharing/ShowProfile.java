@@ -54,7 +54,7 @@ public class ShowProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int MODIFY_PROFILE = 1;
     private static final int SHOW_MY_PROFILE = 2, SHOW_OTHER_PROFILE=3;
-    private ImageButton btnModify;
+    private ImageButton btnModify, btnMessage;
     private Toolbar toolbar;
     private TextView tvDescription, tvName, tvStreet, tvPhone, tvMail, tvReviews;
     private RatingBar rateReviews;
@@ -88,6 +88,7 @@ public class ShowProfile extends AppCompatActivity
         tvMail = findViewById(R.id.tvMail);
         tvDescription = findViewById(R.id.tvDescription);
         btnModify = findViewById(R.id.btnModify);
+        btnMessage = findViewById(R.id.btnMessage);
 
         llMail = findViewById(R.id.llMail);
         llPhone = findViewById(R.id.llPhone);
@@ -121,6 +122,12 @@ public class ShowProfile extends AppCompatActivity
         //Initialize the user (must be removed an replace with data stored previously)
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable("user_mp") != null) {
             btnModify.setVisibility(View.GONE);
+            if(getIntent().getBooleanExtra("showMessage", true)){
+                btnMessage.setVisibility(View.VISIBLE);
+            }
+            else{
+                btnMessage.setVisibility(View.GONE);
+            }
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
             TextView toolbarNotification = findViewById(R.id.tv_nav_drawer_notification);
             toolbarNotification.setVisibility(View.GONE);
@@ -138,6 +145,7 @@ public class ShowProfile extends AppCompatActivity
             navigationView = findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
             navView = navigationView.getHeaderView(0);
+            btnMessage.setVisibility(View.GONE);
         }
 
         if(show_mode==SHOW_OTHER_PROFILE){
@@ -168,6 +176,58 @@ public class ShowProfile extends AppCompatActivity
             }
         });
 
+        btnMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Start activity for chat
+                //Check if a chat between me and the other user exist
+                final User sender = getIntent().getExtras().getParcelable("user_owner");
+                final User receiver = getIntent().getExtras().getParcelable("user_mp");
+                //User1: the owner of the phone (sender)
+                //User2: the owner of the book (receiver)
+                final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats");
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String keyChat = null;
+                        if (dataSnapshot.exists()) {
+                            //Chat list already exist
+                            //Find previous chat between peer
+                            boolean found = false;
+                            for (DataSnapshot dataPeer : dataSnapshot.getChildren()) {
+                                Peer peer = dataPeer.getValue(Peer.class);
+                                if (peer.getReceiverInformation().getKey().equals(receiver.getKey())) {
+                                    //Chat already exist
+                                    found = true;
+                                    keyChat = dataPeer.getKey();
+                                }
+                            }
+                            if (!found) {
+                                keyChat = createInstanceOfChat(sender, receiver);
+                            }
+                        } else {
+                            keyChat = createInstanceOfChat(sender, receiver);
+                        }
+
+                        //Here i have a chat with key keyChat
+                        Intent intent = new Intent(ShowProfile.this, ChatPage.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("sender", sender);
+                        bundle.putParcelable("receiver", receiver);
+                        intent.putExtra("key_chat", keyChat);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
         //Zoom the image when pressed
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,8 +237,22 @@ public class ShowProfile extends AppCompatActivity
         });
 
         setUserInfoNavBar();
+    }
 
+    private String createInstanceOfChat(User sender, User receiver) {
+        //Create chat list
+        //For the user1
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(sender.getKey()).child("chats");
+        DatabaseReference instanceReference1 = databaseReference.push();
+        String key = instanceReference1.getKey();
+        instanceReference1.setValue(new Peer(receiver, key));
 
+        //For the receiver: i put the sender
+        DatabaseReference instanceReference2 = firebaseDatabase.getReference("users").child(receiver.getKey()).child("chats").child(key);
+        instanceReference2.setValue(new Peer(sender, key));
+
+        return key;
     }
 
     @Override
