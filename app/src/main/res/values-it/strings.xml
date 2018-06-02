@@ -61,7 +61,7 @@
     <string name="state_point">Stato:</string>
     <string name="available">disponibile</string>
     <string name="unavailable">non disponibile</string>
-    <string name="available_by_point">Disponibile dal:</string>
+    <string name="available_by_point">Condiviso il:</string>
     <string name="edit">Modifica</string>
     <string name="show_my_shared_book">Mostra i miei libri condivisi</string>
     <string name="fill_all_fields">Attenzione: compilare tutti i campi devono essere compilati</string>
@@ -139,7 +139,7 @@
     <string name="own_pos_not_found">Attenzione: non è stato possibile trovare la tua posizione</string>
     <string name="closest_to_you">I più vicini a te</string>
     <string name="most_rating">I più votati</string>
-    <string name="latest_releases">Le ultime uscite</string>
+    <string name="latest_releases">Data di condivisione</string>
     <string name="km_from_you">Km da te</string>
     <string name="in_your_city">Nella tua città</string>
     <string name="enable_position_performances">Attenzione: attiva il GPS per usufruire di un utilizzo migliore</string>

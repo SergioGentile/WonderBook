@@ -91,7 +91,7 @@
     <string name="unavailable">unavailable</string>
     <string name="available_upper">Available</string>
     <string name="unavailable_upper">Unavailable</string>
-    <string name="available_by_point">Available from:</string>
+    <string name="available_by_point">Shared on:</string>
     <string name="show_my_shared_book">Show my shared books</string>
     <string name="fill_all_fields">Attention: all fields must be fill in</string>
     <string name="fill_not_possible">Attention: it wasn\'t possible to pre-fill all the fields</string>
@@ -149,7 +149,7 @@
     <string name="latest_releases_near_you">The latest releases near you</string>
     <string name="distance">Distance</string>
     <string name="rating">Rating</string>
-    <string name="latest_releases">The latest releases</string>
+    <string name="latest_releases">Sharing date</string>
     <string name="own_pos_not_found">Warning: it was not possible to find your position</string>
     <string name="closest_to_you">The closest to you</string>
     <string name="most_rating">The most rating</string>

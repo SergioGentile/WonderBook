@@ -50,7 +50,7 @@
     <string name="state_point">State:</string>
     <string name="available">available</string>
     <string name="unavailable">unavailable</string>
-    <string name="available_by_point">Available from:</string>
+    <string name="available_by_point">Shared on:</string>
     <string name="edit">Edit</string>
     <string name="show_my_shared_book">Show my shared book</string>
     <string name="fill_all_fields">Attention: all fields must be fill in</string>
@@ -134,7 +134,7 @@
     <string name="order">ORDER</string>
     <string name="no_results">The search did not return any results</string>
     <string name="latest_releases_near_you">The latest releases near you</string>
-    <string name="latest_releases">The latest releases</string>
+    <string name="latest_releases">Sharing date</string>
     <string name="rating">Rating</string>
     <string name="distance">Distance</string>
     <string name="own_pos_not_found">Warning: it was not possible to find your position</string>
