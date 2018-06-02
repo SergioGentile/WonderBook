@@ -336,7 +336,8 @@ public class MyNotificationManager {
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mCtx);
         stackBuilder.addNextIntentWithParentStack(intent);
-        stackBuilder.addParentStack(ActivityDispatcher.class);
+
+
 
         //FLAG_UPDATE_CURRENT necessary otherwise the extras are lost
         // Get the PendingIntent containing the entire back stack

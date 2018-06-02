@@ -96,8 +96,7 @@
             android:label="@string/title_activity_edit_pwd" />
         <activity
             android:name=".ChatPage"
-            android:theme="@style/AppThemeChat"
-            android:parentActivityName=".MainPage"/>
+            android:theme="@style/AppThemeChat" />
 
         <activity android:name=".ShowMessageThread" />
 
