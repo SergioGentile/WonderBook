@@ -345,10 +345,12 @@ public class ShowBookFull extends AppCompatActivity {
             }
         });
 
-        if (book.isAvailable()) {
-            fab.setVisibility(View.VISIBLE);
-        } else {
-            fab.setVisibility(View.GONE);
+        if(fab.getVisibility() == View.VISIBLE) {
+            if (book.isAvailable()) {
+                fab.setVisibility(View.VISIBLE);
+            } else {
+                fab.setVisibility(View.GONE);
+            }
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
