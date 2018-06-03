@@ -232,4 +232,7 @@
     <string name="title_activity_start">بداية</string>
     <string name="title_activity_sign_in">تسجيل الدخول</string>
     <string name="add_book">أضف كتاب</string>
+    <string name="notification_channel_id">channel_chat</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_edit_pwd">EditPwd</string>
 </resources>

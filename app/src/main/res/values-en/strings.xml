@@ -233,4 +233,7 @@
     <string name="filter_by">Filter by</string>
     <string name="your_position">Your position</string>
     <string name="add_book">Add Book</string>
+    <string name="notification_channel_id">channel_chat</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_edit_pwd">EditPwd</string>
 </resources>

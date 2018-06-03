@@ -56,8 +56,6 @@ class ShowReviews : AppCompatActivity() {
 
         userLogged = intent.extras.getParcelable("user_logged")
         userToReview = intent.extras.getParcelable("user_to_review")
-        Log.d("User", "User Logged " + userLogged?.key)
-        Log.d("User", "User to rev " + userToReview?.key)
         listOfReviews = findViewById<ListView>(R.id.list_of_reviews)
 
         var toolbar = findViewById<Toolbar>(R.id.toolbar)

@@ -1316,6 +1316,10 @@ public class MainPage extends AppCompatActivity
                                         }
                                     });
                                 }
+                                if(booksMatch.isEmpty() && latPhone!=-1 && longPhone!=-1){
+                                    CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(new LatLng(latPhone, longPhone), 12);
+                                    map.animateCamera(cu);
+                                }
 
                             }
                         }
