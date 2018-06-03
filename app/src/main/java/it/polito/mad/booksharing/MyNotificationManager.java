@@ -87,7 +87,7 @@ public class MyNotificationManager {
 
             if (tasks != null && !tasks.isEmpty()) {
                 String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
-                if (!className.contains("ChatPage")) {
+                if (!className.contains("ChatPage") || className == null) {
                     buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                     buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                     notificationCounter++;
