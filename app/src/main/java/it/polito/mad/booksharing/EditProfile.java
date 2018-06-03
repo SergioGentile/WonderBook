@@ -372,8 +372,8 @@ public class EditProfile extends AppCompatActivity {
                                         for (DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
                                             Book book = dataSnapshot.getValue(Book.class);
                                             if (book.getOwner().equals(user.getKey())) {
-                                                if (!book.getOwnerName().toLowerCase().equals(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase())) {
-                                                    FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(user.getName().getValue().toLowerCase() + " " + user.getSurname().getValue().toLowerCase());
+                                                if (!book.getOwnerName().toLowerCase().equals(user.getName().getValue().toLowerCase().trim() + " " + user.getSurname().getValue().toLowerCase().trim())) {
+                                                    FirebaseDatabase.getInstance().getReference("books").child(book.getKey()).child("ownerName").setValue(user.getName().getValue().toLowerCase().trim() + " " + user.getSurname().getValue().toLowerCase().trim());
                                                 }
                                             }
                                         }

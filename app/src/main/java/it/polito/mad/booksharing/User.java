@@ -433,24 +433,24 @@ public class User implements Parcelable {
         }
 
         MyPair(String value, String status) {
-            this.value = value;
-            this.status = status;
+            this.value = value.trim();
+            this.status = status.trim();
         }
 
         public MyPair(MyPair name) {
-            this.value = new String(name.getValue());
-            this.status = new String(name.getStatus());
+            this.value = new String(name.getValue().trim());
+            this.status = new String(name.getStatus().trim());
         }
 
         protected MyPair(Parcel in) {
-            value = in.readString();
-            status = in.readString();
+            value = in.readString().trim();
+            status = in.readString().trim();
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(value);
-            dest.writeString(status);
+            dest.writeString(value.trim());
+            dest.writeString(status.trim());
         }
 
         @Override
@@ -459,20 +459,20 @@ public class User implements Parcelable {
         }
 
         public String getStatus() {
-            return status;
+            return status.trim();
         }
 
 
         public void setStatus(String status) {
-            this.status = status;
+            this.status = status.trim();
         }
 
         public String getValue() {
-            return value;
+            return value.trim();
         }
 
         public void setValue(String value) {
-            this.value = value;
+            this.value = value.trim();
         }
 
     }

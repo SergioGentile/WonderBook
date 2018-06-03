@@ -36,19 +36,19 @@ public class Book implements Parcelable {
         this.title = title.toLowerCase().trim();
         this.subtitle = subtitle;
         this.author = author.toLowerCase().trim();
-        this.year = year;
+        this.year = year.trim();
         this.urlImage = urlImage;
         this.urlMyImage = urlMyImage;
-        this.owner = owner;
-        this.isbn10 = isbn10;
-        this.isbn13 = isbn13;
+        this.owner = owner.trim();
+        this.isbn10 = isbn10.trim();
+        this.isbn13 = isbn13.trim();
         this.publisher = publisher.toLowerCase().trim();
         this.description = description;
         this.rating = rating;
         this.available = available;
         this.city = city.toLowerCase().trim();
-        this.street = street;
-        this.cap = cap;
+        this.street = street.trim();
+        this.cap = cap.trim();
         this.ownerName = ownerName.toLowerCase().trim();
         Date dateCalendar = Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -92,11 +92,11 @@ public class Book implements Parcelable {
     }
 
     public String getSubtitle() {
-        return subtitle;
+        return subtitle.trim();
     }
 
     public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+        this.subtitle = subtitle.trim();
     }
 
     public String getDate() {
@@ -140,27 +140,27 @@ public class Book implements Parcelable {
     }
 
     public String getIsbn10() {
-        return isbn10;
+        return isbn10.trim();
     }
 
     public void setIsbn10(String isbn10) {
-        this.isbn10 = isbn10;
+        this.isbn10 = isbn10.trim();
     }
 
     public String getIsbn13() {
-        return isbn13;
+        return isbn13.trim();
     }
 
     public void setIsbn13(String isbn13) {
-        this.isbn13 = isbn13;
+        this.isbn13 = isbn13.trim();
     }
 
     public String getOwner() {
-        return owner;
+        return owner.trim();
     }
 
     public void setOwner(String owner) {
-        this.owner = owner;
+        this.owner = owner.trim();
     }
 
     public String getTitle() {
@@ -180,11 +180,11 @@ public class Book implements Parcelable {
     }
 
     public String getYear() {
-        return year;
+        return year.trim();
     }
 
     public void setYear(String year) {
-        this.year = year;
+        this.year = year.trim();
     }
 
     public String getUrlImage() {

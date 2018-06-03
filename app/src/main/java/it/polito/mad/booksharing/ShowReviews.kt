@@ -56,7 +56,9 @@ class ShowReviews : AppCompatActivity() {
 
         userLogged = intent.extras.getParcelable("user_logged")
         userToReview = intent.extras.getParcelable("user_to_review")
-        listOfReviews = findViewById(R.id.list_of_reviews)
+        Log.d("User", "User Logged " + userLogged?.key)
+        Log.d("User", "User to rev " + userToReview?.key)
+        listOfReviews = findViewById<ListView>(R.id.list_of_reviews)
 
         var toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setNavigationOnClickListener(View.OnClickListener {
@@ -137,7 +139,7 @@ class ShowReviews : AppCompatActivity() {
                     if(reviews.isEmpty()){
                         ll.visibility = View.VISIBLE
                     }
-                    listOfReviews?.adapter = AdapterReviews(reviews, this@ShowReviews, userLogged!!)
+                    listOfReviews?.adapter = AdapterReviews(reviews, this@ShowReviews, userToReview!!)
 
                     //Check if something change and update it if necessary. Do it in background
 
@@ -221,13 +223,13 @@ open class AdapterReviews() : BaseAdapter() {
                     if (!review.name.equals(user.name.value)) {
                         //Update the name
                         someChange = true;
-                        FirebaseDatabase.getInstance().getReference("users").child(userLogged?.key).child("reviews").child(review.key).child("name").setValue(user.name.value)
+                        FirebaseDatabase.getInstance().getReference("users").child(userLogged?.key).child("reviews").child(review.key).child("name").setValue(user.name.value.trim())
                         review.name = user.name.value
                     }
                     if (!review.surname.equals(user.surname.value)) {
                         //Update the name
                         someChange = true;
-                        FirebaseDatabase.getInstance().getReference("users").child(userLogged?.key).child("reviews").child(review.key).child("surname").setValue(user.surname.value)
+                        FirebaseDatabase.getInstance().getReference("users").child(userLogged?.key).child("reviews").child(review.key).child("surname").setValue(user.surname.value.trim())
                         review.surname = user.surname.value
                     }
                     if (!review.imageUser.equals(user.user_image_url)) {
