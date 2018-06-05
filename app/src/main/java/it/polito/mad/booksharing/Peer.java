@@ -2,6 +2,8 @@ package it.polito.mad.booksharing;
 
 import android.widget.TextView;
 
+import java.util.Date;
+
 class Peer {
     private ReceiverInformation receiverInformation;
     private String keyChat, lastMessage;
@@ -12,6 +14,7 @@ class Peer {
         receiverInformation = new ReceiverInformation(receiver.getName().getValue(), receiver.getSurname().getValue(), receiver.getUser_image_url(), receiver.getKey());
         this.keyChat = keyChat;
         this.lastMessage = "";
+        this.lastTimestamp = Long.parseLong("1");
     }
 
     public Peer() {

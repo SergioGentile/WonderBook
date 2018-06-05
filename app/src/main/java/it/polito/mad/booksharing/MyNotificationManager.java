@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -86,8 +87,12 @@ public class MyNotificationManager {
             }
 
             if (tasks != null && !tasks.isEmpty()) {
-                String className = tasks.get(0).getTaskInfo().topActivity.getClassName();
-                if (!className.contains("ChatPage") || className == null) {
+                ComponentName componentName = tasks.get(0).getTaskInfo().topActivity;
+                String className = "";
+                if(componentName != null){
+                    className = componentName.getClassName();
+                }
+                if (!className.contains("ChatPage") ) {
                     buildChatSimpleNotification(messageBody, sender, receiver, keyChat, notificationManager);
                     buildChatSummaryNotification(mCtx.getString(R.string.incoming_msg), receiver, notificationCounter + 1, notificationManager);
                     notificationCounter++;
