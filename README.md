@@ -32,7 +32,7 @@
   
   <div>
   <div>
-    <p>An Home Page with a map and a list show you all the books near to you.<br>A search bar is provided, with whichis possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.</p>
+    <p>An Home Page with a map and a list show you all the books near to you.<br>A search bar is provided, with which is possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.</p>
    </div>
    
    <div align="center">
