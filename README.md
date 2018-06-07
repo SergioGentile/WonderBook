@@ -11,15 +11,15 @@
 
 <p>The main features provided by the application are:</p>
 <ul>
-  <li>Create your own profile</li>
-  <li>Share your library</li>
+  <li><a href="#1">Create your own profile</a></li>
+  <li><a href="#2">Share your library</a></li>
   <li><a href="#3">Share books near to you</a></li>
-  <li>Messages with other users</li>
-  <li>Borrow and lend books</li>
+  <li><a href="#4"><a href="#3">Messages with other users</a></li>
+  <li><a href="#5">Borrow and lend books</a></li>
 </ul>
 
 
-<h3>Create your own profile</h3>
+<h3 id="1">Create your own profile</h3>
   
   <div>
   <div>
@@ -32,7 +32,7 @@
    </div>
 
  
- <h3>Share your library</h3>
+ <h3 id="2" >Share your library</h3>
   
   <div>
   <div>
@@ -62,7 +62,21 @@
  </div>
  
  
-  <h3>Messages with other users</h3>
+  <h3 id="4">Messages with other users</h3>
+  
+  <div>
+  <div>
+    <p></p>
+   </div>
+   
+   <div align="center">
+   <img src="" width="250"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+  
+  </div>
+ </div>
+ 
+ <h3 id="5">Borrow and lend book</h3>
   
   <div>
   <div>
