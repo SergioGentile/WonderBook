@@ -14,7 +14,7 @@
   <li><a href="#1">Create your own profile</a></li>
   <li><a href="#2">Share your library</a></li>
   <li><a href="#3">Share books near to you</a></li>
-  <li><a href="#4"><a href="#3">Messages with other users</a></li>
+  <li><a href="#4">Messages with other users</a></li>
   <li><a href="#5">Borrow and lend books</a></li>
 </ul>
 
@@ -67,11 +67,20 @@
   
   <div>
   <div>
-    <p></p>
+    <p>WonderBook provide a chat where the user can exploit to enter in contact with the other peer in an easy way.<br>
+      Push notification advertise the user for new message incoming. 
+    A chat page provide the current status of the user: 
+      <ul>
+        <il>Online: if the user currently use the application</il>
+        <il>Last seen: where the last access of an user is shown</il>
+        </ul>
+   </p>
    </div>
    
    <div align="center">
-   <img src="" width="250"/>
+   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366574.png?alt=media&token=55528141-48b4-4f11-a81f-c6af6de3882c" width="250"/>
+  <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366794.png?alt=media&token=13a5afb8-f04a-41f7-983f-e9a8c2fd7f23" width="250"/>
+ 
 &nbsp;&nbsp;&nbsp;&nbsp;
   
   </div>
