@@ -68,13 +68,12 @@
   <div>
   <div>
     <p>WonderBook provide a chat where the user can exploit to enter in contact with the other peer in an easy way.<br>
-      Push notification advertise the user for new message incoming. 
-    A chat page provide the current status of the user: 
+      Push notification advertise the user for new message incoming.<br>A chat page provide the current status of the user:</p> 
       <ul>
         <il>Online: if the user currently use the application</il>
         <il>Last seen: where the last access of an user is shown</il>
-        </ul>
-   </p>
+       </ul>
+  
    </div>
    
    <div align="center">
