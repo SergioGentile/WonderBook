@@ -5,9 +5,9 @@
   If you want to see a short video about WonderBook <a href="https://youtu.be/7pbpI8PZU7c">click here</a>.<br>
 </p>
 
-<iframe width="420" height="315"
-src="https://youtu.be/7pbpI8PZU7c">
-</iframe>
+<video width="320" height="240" controls>
+  <source src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.mp4?alt=media&token=9815b4cd-9ff2-47e1-9cb6-9a01d27741c2" type="video/mp4">
+</video>
 
 <p>The main features provided by the application are:</p>
 <ul>
