@@ -42,7 +42,6 @@
    <div align="center">
    <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366499.png?alt=media&token=ee0d4748-dd6f-4c40-bfa2-42744751b589" width="250"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
-  <div align="center">
    <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366536.png?alt=media&token=0a478675-dedd-4675-8c08-8d8d01fa8a2e" width="250"/>
   
   </div>
