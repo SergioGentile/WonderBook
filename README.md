@@ -9,7 +9,7 @@
 <ul>
   <li>Create your own profile</li>
   <li>Share your library</li>
-  <li>Share books near to you</li>
+  <li><a href="#3">Share books near to you</a></li>
   <li>Messages with other users</li>
   <li>Borrow and lend books</li>
 </ul>
@@ -26,20 +26,49 @@
    <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366466.png?alt=media&token=bcdc0130-8a55-419a-b8fd-e00abeb3d757" width="250"/>
   </div>
    </div>
-   
-   
-   <h3>Home Page</h3>
+
+ 
+ <h3>Share your library</h3>
   
   <div>
   <div>
-    <p>An Home Page with a map and a list show you all the books near to you.<br>A search bar is provided, with which is possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.</p>
+    <p>A dedicated section shows all the books shared by the user.</p>
+   </div>
+   
+   <div align="center">
+   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366499.png?alt=media&token=ee0d4748-dd6f-4c40-bfa2-42744751b589" width="250"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+  
+  </div>
+ </div>
+ 
+ 
+ <h3 id="3">Share books near to you</h3>
+  
+  <div>
+  <div>
+    <p>An Home Page with a map and a list show you all the books near to you.<br>A search bar is provided, with which is possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.<br>It's also possible order all the result specifying a criteria (distance, condition score...).</p>
    </div>
    
    <div align="center">
    <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366366.png?alt=media&token=6f97e6da-cd2e-4dc5-9f56-b30a76e7070f" width="250"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366383.png?alt=media&token=c41c1199-9924-48ae-a86a-8708029e3b6d" width="250"/>
+  </div>
+ </div>
  
+ 
+  <h3>Messages with other users</h3>
+  
+  <div>
+  <div>
+    <p></p>
+   </div>
+   
+   <div align="center">
+   <img src="" width="250"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+  
   </div>
  </div>
    
