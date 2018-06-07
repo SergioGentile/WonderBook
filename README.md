@@ -70,17 +70,29 @@
     <p>WonderBook provide a chat where the user can exploit to enter in contact with the other peer in an easy way.<br>
       Push notification advertise the user for new message incoming.<br>A chat page provide the current status of the user:</p> 
       <ul>
-        <il>Online: if the user currently use the application</il>
-        <il>Last seen: where the last access of an user is shown</il>
+        <li>Online: if the user currently use the application</li>
+        <li>Last seen: where the last access of an user is shown</li>
        </ul>
+    <p>Check icon near the chat mesage notify if a message has been read by the other user or not<br></p>
   
    </div>
    
    <div align="center">
    <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366574.png?alt=media&token=55528141-48b4-4f11-a81f-c6af6de3882c" width="250"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366794.png?alt=media&token=13a5afb8-f04a-41f7-983f-e9a8c2fd7f23" width="250"/>
- 
+  
+  <p>Chat editing features are also provided, in fact it is possible:
+    <ul>
+        <li>Delete a chat with a swipe gesure to the left</li>
+        <li>Delete a single message pressing on it</li>
+       </ul>
+       <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366572.png?alt=media&token=a7de39ad-16be-447c-8994-c43039e552ec" width="250"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366806.png?alt=media&token=fec5eb8b-902f-4338-8ec8-376103962380" width="250"/>
+</p> 
+ 
+
   
   </div>
  </div>
