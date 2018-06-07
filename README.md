@@ -5,6 +5,10 @@
   If you want to see a short video about WonderBook <a href="https://youtu.be/7pbpI8PZU7c">click here</a>.<br>
 </p>
 
+<iframe width="420" height="315"
+src="https://youtu.be/7pbpI8PZU7c">
+</iframe>
+
 <p>The main features provided by the application are:</p>
 <ul>
   <li>Create your own profile</li>
