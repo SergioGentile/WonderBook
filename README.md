@@ -82,11 +82,16 @@
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366794.png?alt=media&token=13a5afb8-f04a-41f7-983f-e9a8c2fd7f23" width="250"/>
   
+ </div>
+ <div>
+  
   <p>Chat editing features are also provided, in fact it is possible:
     <ul>
         <li>Delete a chat with a swipe gesure to the left</li>
         <li>Delete a single message pressing on it</li>
        </ul>
+       </div>
+       <div align="center">
        <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366572.png?alt=media&token=a7de39ad-16be-447c-8994-c43039e552ec" width="250"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366806.png?alt=media&token=fec5eb8b-902f-4338-8ec8-376103962380" width="250"/>
