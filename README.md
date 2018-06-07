@@ -1,7 +1,10 @@
 <h1>WonderBook</h1>
 <i><h4>Share your library, find a world of books</h4></i><br>
 
-<p>WonderBook is an android application developed by Carosella Alessia, Decaro Daniele, Gentile Sergio and Michelangelo Matina that allow you to share your books with our community.<br>If you want to download the installation APK on your mobile phone please <a href="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.apk?alt=media&token=5ebcfa0a-ff39-4bf2-bb6c-86d62988f2df" download>click here</a></p>
+<p>WonderBook is an android application developed by Carosella Alessia, Decaro Daniele, Gentile Sergio and Michelangelo Matina that allow you to share your books with our community.<br>How does it work?<br>Search for the book you are interested in reading. Check if any users have shared this book. If you find a book that meets your needs, contact the user through the appropriate chat, meet him and activate a loan.<br>When the loan is closed, review your experience in order to give others feedback on the user.<br>Add books to your library so that others can contact you for loans.<br><br>If you want to download the installation APK on your mobile phone please <a href="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.apk?alt=media&token=5ebcfa0a-ff39-4bf2-bb6c-86d62988f2df" download>click here</a>.<br>
+  If you want to see a short video about WonderBook <a href="https://youtu.be/7pbpI8PZU7c">click here</a>.<br>
+</p>
+
 <p>The main features provided by the application are:</p>
 <ul>
   <li>Create your own profile</li>
