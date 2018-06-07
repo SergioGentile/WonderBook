@@ -106,7 +106,21 @@
   
   <div>
   <div>
-    <p></p>
+    <p>Lend and borrow books are the main features of our application.<br>If you are interested on a book, you can tap on the item of the list and require it. By default, a message with the relative information about the request is send to the user.<br>
+ </div>
+   
+   <div align="center">
+   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366655.png?alt=media&token=b2f5a8de-7293-49b0-8f2a-2589a14f57b5" width="250"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+   <img src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FScreenshot_1528366661.png?alt=media&token=81d2fbaa-9f7e-4e63-9aae-6f4cc934949f" width="250"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+   </div>
+ </div>
+ 
+  <div>
+  <div>
+    <p>The lender can accept or reject the request. In both cases the borrower will be advertise with notifications.<br>If the lender accept the request, the loan start and the book becomes unavailable. Only when both the users conclude the loan the system allow you to review the other.</p>
    </div>
    
    <div align="center">
