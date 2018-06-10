@@ -1,13 +1,9 @@
 <h1>WonderBook</h1>
 <i><h4>Share your library, find a world of books</h4></i><br>
 
-<p>WonderBook is an android application developed by Carosella Alessia, Decaro Daniele, Gentile Sergio and Michelangelo Matina that allow you to share your books with our community.<br>How does it work?<br>Search for the book you are interested in reading. Check if any users have shared this book. If you find a book that meets your needs, contact the user through the appropriate chat, meet him and activate a loan.<br>When the loan is closed, review your experience in order to give others feedback on the user.<br>Add books to your library so that others can contact you for loans.<br><br>If you want to download the installation APK for your mobile phone please <a href="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.apk?alt=media&token=5ebcfa0a-ff39-4bf2-bb6c-86d62988f2df" download>click here</a>.<br>
+<p>WonderBook is an android application developed by Carosella Alessia, Decaro Daniele, Gentile Sergio and Michelangelo Matina that allows you to share your books with our community.<br>How does it work?<br>Search for the book you are interested in reading. Check if any users have shared this book. If you find a book that meets your needs, contact the user through the appropriate chat, meet him and activate a loan.<br>When the loan is closed, review your experience in order to give others feedback on the user.<br>Add books to your library so that others can contact you for loans.<br><br>If you want to download the installation APK for your mobile phone please <a href="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.apk?alt=media&token=5ebcfa0a-ff39-4bf2-bb6c-86d62988f2df" download>click here</a>.<br>
   If you want to see a short video about WonderBook <a href="https://youtu.be/7pbpI8PZU7c">click here</a>.<br>
 </p>
-
-<video width="320" height="240" controls>
-  <source src="https://firebasestorage.googleapis.com/v0/b/sharingbook-5d02a.appspot.com/o/github%2FWonderBook.mp4?alt=media&token=9815b4cd-9ff2-47e1-9cb6-9a01d27741c2" type="video/mp4">
-</video>
 
 <p>The main features provided by the application are:</p>
 <ul>
@@ -23,7 +19,7 @@
   
   <div>
   <div>
-   <p>Create your own profile putting your information, describing your self and deciding what information keep public and  private.<br>In order to exploit all the provided servicies, you must sign in and verify your E-Mail Address.</p>
+   <p>Create your own profile putting your information, describing your self and deciding what information keep public and  private.<br>In order to exploit all the provided servicies, you must sign in and verify your E-Mail address.</p>
     </div>
    
    <div align="center">
@@ -54,7 +50,7 @@
   
   <div>
   <div>
-    <p>An Home Page with a map and a list show you all the books near to you.<br>A search bar is provided, with which is possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.<br>It's also possible order all the result specifying a criteria (distance, condition score...).</p>
+    <p>An Home Page with a map and a list shows you all the books near to you.<br>A search bar is provided, with which is possible to search by author, publisher, city, owner and so on.<br>It's possible to filter the result based on a field, or leave the application the opportunity to understand the field.<br>It's also possible order all the results specifying a criteria (distance, condition score...).</p>
    </div>
    
    <div align="center">
@@ -76,7 +72,7 @@
         <li>Online: if the user currently use the application</li>
         <li>Last seen: where the last access of an user is shown</li>
        </ul>
-    <p>Check icon near the chat mesage notify if a message has been read by the other user or not<br></p>
+    <p>Check icon near the chat message notify if a message has been read by the other user or not.<br></p>
   
    </div>
    
